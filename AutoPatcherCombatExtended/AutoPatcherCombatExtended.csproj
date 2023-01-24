@@ -14,10 +14,10 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\RimWorld\Mods\APCE\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -40,11 +40,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="CombatExtended">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\1631756268\Assemblies\CombatExtended.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2890901044\Assemblies\CombatExtended.dll</HintPath>
     </Reference>
     <Reference Include="HugsLib">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\818773962\Assemblies\HugsLib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,7 +60,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DetermineGunType.cs" />
+    <Compile Include="MiscMethods.cs" />
+    <Compile Include="PatchApparels.cs" />
+    <Compile Include="PatchHediffs.cs" />
+    <Compile Include="PatchPawns.cs" />
+    <Compile Include="PatchTurrets.cs" />
+    <Compile Include="PatchWeapons.cs" />
+    <Compile Include="MakeLists.cs" />
+    <Compile Include="MagicNumbers.cs" />
+    <Compile Include="APCECore.cs" />
+    <Compile Include="PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
