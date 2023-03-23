@@ -1,6 +1,4 @@
 ﻿using CombatExtended;
-using HugsLib;
-using HugsLib.Utils;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -10,9 +8,9 @@ using System.Reflection;
 using System.Text;
 using Verse;
 
-namespace AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended
 {
-    public partial class Base : ModBase
+    public partial class AutoPatcherCombatExtended : Mod
     {
         //TODO
     }

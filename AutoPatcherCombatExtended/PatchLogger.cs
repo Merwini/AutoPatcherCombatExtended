@@ -1,6 +1,4 @@
 ﻿using CombatExtended;
-using HugsLib;
-using HugsLib.Utils;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -10,9 +8,9 @@ using System.Text;
 using System.Reflection;
 using Verse;
 
-namespace AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended
 {
-    public partial class Base : ModBase
+    public partial class AutoPatcherCombatExtended : Mod
     {
         Stopwatch stopwatch = new Stopwatch();
         Stopwatch stopwatchMaster = new Stopwatch();

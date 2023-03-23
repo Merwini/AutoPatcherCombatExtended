@@ -1,6 +1,4 @@
 ﻿using CombatExtended;
-using HugsLib;
-using HugsLib.Utils;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -10,14 +8,21 @@ using System.Text;
 using System.Reflection;
 using Verse;
 
-namespace AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended
 {
     [StaticConstructorOnStartup]
-    public partial class Base : ModBase
+    public partial class AutoPatcherCombatExtended : Mod
     {
-        public override string ModIdentifier
+        APCESettings Settings;
+
+        public AutoPatcherCombatExtended(ModContentPack content) : base(content)
         {
-            get { return "AutoPatcherCE"; }
+            this.Settings = GetSettings<APCESettings>();
+        }
+
+        public override string SettingsCategory()
+        {
+            return "Autopatcher for Combat Extended";
         }
 
         public override void DefsLoaded()

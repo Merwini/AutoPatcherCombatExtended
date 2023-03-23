@@ -7,7 +7,7 @@
     <ProjectGuid>{DC20AD9C-D97A-4C5C-8622-3D9150E37E71}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoPatcherCombatExtended</RootNamespace>
+    <RootNamespace>nuff.AutoPatcherCombatExtended</RootNamespace>
     <AssemblyName>AutoPatcherCombatExtended</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APCESettings.cs" />
     <Compile Include="DetermineGunType.cs" />
     <Compile Include="MiscMethods.cs" />
     <Compile Include="PatchApparels.cs" />
