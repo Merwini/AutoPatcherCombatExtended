@@ -30,7 +30,7 @@ namespace nuff.AutoPatcherCombatExtended
             if (printDebug)
             {
                 stopwatch.Start();
-                Logger.Message("Auto-Patcher for Combat Extended list-making has started.");
+                Log.Message("Autopatcher for Combat Extended list-making has started.");
             }
             #endregion
 
@@ -84,7 +84,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 catch(Exception ex)
                 {
-                    Logger.Message("Error on Thing: " + td.defName);
+                    Log.Message("Error on Thing: " + td.defName);
                     BasicException(ex);
                     continue;
                 }
@@ -119,7 +119,7 @@ namespace nuff.AutoPatcherCombatExtended
             if (printDebug)
             {
                 stopwatch.Stop();
-                Logger.Message($"Combat Extended Auto-Patcher has finished making lists in {stopwatch.ElapsedMilliseconds / 1000f} seconds.");
+                Logger.Message($"Combat Extended Autopatcher has finished making lists in {stopwatch.ElapsedMilliseconds / 1000f} seconds.");
                 stopwatch.Reset();
             }
             #endregion

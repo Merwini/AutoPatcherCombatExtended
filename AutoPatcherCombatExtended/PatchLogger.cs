@@ -22,18 +22,17 @@ namespace nuff.AutoPatcherCombatExtended
         //3 : integer, defs successfully patched
         //4 : integer, defs unsuccessfully patched
         //used for logging
-        string patchedMessage = "Patched defs of type {0} in {1:F4} seconds. {2} patched out of {3}, {4} failed.";
         int defsPatched = 0; //2
         int defsTotal = 0; //3
         int defsFailed = 0; //4
-        StringBuilder failureList = new StringBuilder(); //will be logged after patchedMessage if defsFailed > 0
+        StringBuilder failureList = new StringBuilder(); //will be logged after PatchString if defsFailed > 0
 
         private void BeginPatch(string defCat)
         {
             if (printDebug)
             {
                 stopwatch.Start();
-                Logger.Message($"Attempting to patch {defCat} Defs");
+                Log.Message($"Attempting to patch {defCat} Defs");
             }
 
         }
@@ -43,10 +42,10 @@ namespace nuff.AutoPatcherCombatExtended
             if (printDebug)
             {
                 stopwatch.Stop();
-                Logger.Message(patchedMessage, defCat, stopwatch.ElapsedMilliseconds / 1000f, defsPatched, defsTotal, defsFailed);
+                Log.Message(EndPatchString(defCat));
                 if (defsFailed != 0)
                 {
-                    Logger.Error($"Failed to patch the following {defCat} defs: \n {failureList}");
+                    Log.Error($"Failed to patch the following {defCat} defs: \n {failureList}");
                     failureList.Clear();
                 }
 
@@ -57,6 +56,10 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        private string EndPatchString(string defCat)
+        {
+            return String.Format("Patched defs of type {0} in {1:F4} seconds. {2} patched out of {3}, {4} failed.", defCat, stopwatch.ElapsedMilliseconds / 1000f, defsPatched, defsTotal, defsFailed);
+        }
 
     }
 }

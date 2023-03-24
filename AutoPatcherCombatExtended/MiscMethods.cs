@@ -14,7 +14,7 @@ namespace nuff.AutoPatcherCombatExtended
     {
         public void BasicException(Exception ex)
         {
-            Logger.Error(ex.ToString());
+            Log.Error(ex.ToString());
         }
 
         public void UpdateModList(ThingDef td)

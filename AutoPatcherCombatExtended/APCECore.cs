@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using Verse;
+using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -25,11 +26,8 @@ namespace nuff.AutoPatcherCombatExtended
             return "Autopatcher for Combat Extended";
         }
 
-        public override void DefsLoaded()
+        public void APCEPatchController()
         {
-            if (!ModIsActive)
-                return;
-
             stopwatchMaster.Start();
 
             MakeLists();
@@ -43,25 +41,7 @@ namespace nuff.AutoPatcherCombatExtended
             stopwatchMaster.Stop();
             if (printDebug)
             {
-                Logger.Message($"Auto-Patcher for Combat Extended finished in {stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
-            }
-
-            if (modsNeedingPatches.Count > 0)
-            {
-                foreach (ModContentPack mcp in modsNeedingPatches)
-                {
-                    Logger.Message("Mod needing patches: " + mcp.PackageId);
-                }
-            }
-
-            foreach (ThingDef td in weaponList)
-            {
-                Logger.Message("weapons patched: " + td.defName);
-            }
-
-            foreach (ThingDef td in apparelList)
-            {
-                Logger.Message("apparels patched: " + td.defName);
+                Log.Message($"Autopatcher for Combat Extended finished in {stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
             }
         }
     }
