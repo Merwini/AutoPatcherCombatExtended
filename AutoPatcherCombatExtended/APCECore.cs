@@ -39,7 +39,7 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO: patch hediffs (fix armor values etc)
 
             stopwatchMaster.Stop();
-            if (printDebug)
+            if (Settings.printDebug)
             {
                 Log.Message($"Autopatcher for Combat Extended finished in {stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
             }

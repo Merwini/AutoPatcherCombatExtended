@@ -165,8 +165,8 @@ namespace nuff.AutoPatcherCombatExtended
 			SOFTWARE.
 		 */
 		#endregion
-		public static void ListControl(this Listing_Standard listingStandard, Rect inRect, ref List<Faction> leftList, ref List<Faction> rightList, ref List<Faction> antiList,
-										ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition, ref Faction leftSelectedObject, ref Faction rightSelectedObject,
+		public static void ListControl(this Listing_Standard listingStandard, Rect inRect, ref List<ModContentPack> leftList, ref List<ModContentPack> rightList, ref List<ModContentPack> antiList,
+										ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition, ref ModContentPack leftSelectedObject, ref ModContentPack rightSelectedObject,
 										string columnLabel, float rectPCT)
 		{
 			string tempString = searchTerm;
@@ -183,23 +183,23 @@ namespace nuff.AutoPatcherCombatExtended
 
 			Rect leftRect = bottomRect.LeftHalf().RightPart(pct: 0.9f).LeftPart(pct: 0.9f);
 			GUI.BeginGroup(position: leftRect, style: new GUIStyle(other: GUI.skin.box));
-			List<Faction> tempList2 = rightList;
-			List<Faction> tempList = leftList.Where(predicate: fact => fact.Name.ToLower().Contains(tempString.ToLower())
-																		&& !tempList2.Contains(fact)).ToList();
+			List<ModContentPack> tempList2 = rightList;
+			List<ModContentPack> tempList = leftList.Where(predicate: mcp => mcp.Name.ToLower().Contains(tempString.ToLower())
+																		&& !tempList2.Contains(mcp)).ToList();
 			float num = 3f;
 			Widgets.BeginScrollView(outRect: leftRect.AtZero(), scrollPosition: ref leftScrollPosition,
 									viewRect: new Rect(x: 0f, y: 0f, width: leftRect.width / 10 * 9, height: tempList.Count * 32f));
 			if (!tempList.NullOrEmpty())
 			{
-				foreach (Faction fact in tempList)
+				foreach (ModContentPack mcp in tempList)
 				{
 					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
 					Widgets.DrawHighlightIfMouseover(rect: rowRect);
-					if (fact == leftSelectedObject)
+					if (mcp == leftSelectedObject)
 						Widgets.DrawHighlightSelected(rect: rowRect);
-					Widgets.Label(rect: rowRect, label: fact.Name);
+					Widgets.Label(rect: rowRect, label: mcp.Name);
 					if (Widgets.ButtonInvisible(butRect: rowRect))
-						leftSelectedObject = fact;
+						leftSelectedObject = mcp;
 
 					num += 32f;
 				}
@@ -220,15 +220,15 @@ namespace nuff.AutoPatcherCombatExtended
 									viewRect: new Rect(x: 0f, y: 0f, width: rightRect.width / 5 * 4, height: rightList.Count * 32f));
 			if (!rightList.NullOrEmpty())
 			{
-				foreach (Faction fact in rightList.Where(predicate: fact => (fact.Name.Contains(value: tempString))))
+				foreach (ModContentPack mcp in rightList.Where(predicate: mcp => (mcp.Name.Contains(value: tempString))))
 				{
 					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
 					Widgets.DrawHighlightIfMouseover(rect: rowRect);
-					if (fact == rightSelectedObject)
+					if (mcp == rightSelectedObject)
 						Widgets.DrawHighlightSelected(rect: rowRect);
-					Widgets.Label(rect: rowRect, label: fact.Name);
+					Widgets.Label(rect: rowRect, label: mcp.Name);
 					if (Widgets.ButtonInvisible(butRect: rowRect))
-						rightSelectedObject = fact;
+						rightSelectedObject = mcp;
 
 					num += 32f;
 				}
@@ -249,7 +249,7 @@ namespace nuff.AutoPatcherCombatExtended
 				{
 					antiList.Remove(leftSelectedObject);
 				}
-				rightList = rightList.OrderBy(keySelector: fact => fact.Name).ToList();
+				rightList = rightList.OrderBy(keySelector: mcp => mcp.Name).ToList();
 				rightSelectedObject = leftSelectedObject;
 				leftSelectedObject = null;
 			}

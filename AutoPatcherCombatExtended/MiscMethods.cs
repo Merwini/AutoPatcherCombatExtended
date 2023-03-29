@@ -25,6 +25,17 @@ namespace nuff.AutoPatcherCombatExtended
                 modsNeedingPatches.Add(td.modContentPack);
             }
         }
+
+        public static void CleanModList(List<ModContentPack> modList)
+        {
+            foreach (ModContentPack mcp in modList)
+            {
+                if (mcp == null)
+                {
+                    modList.Remove(mcp);
+                }
+            }
+        }
     }
 
 }

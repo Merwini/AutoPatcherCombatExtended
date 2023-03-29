@@ -15,6 +15,5 @@ namespace nuff.AutoPatcherCombatExtended
         //TODO
         //Placeholders for settings that will eventually be configurable
 
-        bool printDebug = true;
     }
 }

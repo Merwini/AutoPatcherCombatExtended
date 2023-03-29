@@ -27,7 +27,7 @@ namespace nuff.AutoPatcherCombatExtended
         private void MakeLists()
         {
             #region TimerStart
-            if (printDebug)
+            if (Settings.printDebug)
             {
                 stopwatch.Start();
                 Log.Message("Autopatcher for Combat Extended list-making has started.");
@@ -116,10 +116,10 @@ namespace nuff.AutoPatcherCombatExtended
             */
 
             #region TimerStop
-            if (printDebug)
+            if (Settings.printDebug)
             {
                 stopwatch.Stop();
-                Logger.Message($"Combat Extended Autopatcher has finished making lists in {stopwatch.ElapsedMilliseconds / 1000f} seconds.");
+                Log.Message($"Combat Extended Autopatcher has finished making lists in {stopwatch.ElapsedMilliseconds / 1000f} seconds.");
                 stopwatch.Reset();
             }
             #endregion

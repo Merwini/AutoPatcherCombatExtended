@@ -29,7 +29,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         private void BeginPatch(string defCat)
         {
-            if (printDebug)
+            if (Settings.printDebug)
             {
                 stopwatch.Start();
                 Log.Message($"Attempting to patch {defCat} Defs");
@@ -39,7 +39,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         private void EndPatch(string defCat)
         {
-            if (printDebug)
+            if (Settings.printDebug)
             {
                 stopwatch.Stop();
                 Log.Message(EndPatchString(defCat));

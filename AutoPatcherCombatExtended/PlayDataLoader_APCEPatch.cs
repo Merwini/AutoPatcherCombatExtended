@@ -16,7 +16,8 @@ namespace nuff.AutoPatcherCombatExtended
         [HarmonyPostfix]
         private static void APCEInitModsHook()
         {
-
+            AutoPatcherCombatExtended.CleanModList(APCESettings.modsToPatch);
+            //TODO call patch method
         }
     }
 }

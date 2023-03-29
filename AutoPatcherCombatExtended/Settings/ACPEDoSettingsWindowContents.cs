@@ -13,30 +13,32 @@ namespace nuff.AutoPatcherCombatExtended
         public override void DoSettingsWindowContents(Rect inRect)
         {
             Listing_Standard listingStandard = new Listing_Standard();
-            APCESettings.SettingsTabs settingsTabs = APCESettings.SettingsTabs.General_Settings;
 
             Text.Font = GameFont.Medium;
-            listingStandard.EnumSelector(ref settingsTabs, "", "", "select settings page");
+            listingStandard.Begin(inRect);
+            listingStandard.EnumSelector(ref APCESettings.settingsTabs, "", "", "select settings page");
 
-            if (settingsTabs == APCESettings.SettingsTabs.General_Settings)
+            if (APCESettings.settingsTabs == APCESettings.SettingsTabs.General_Settings)
             {
-
+                listingStandard.TextEntry("General Settings");
             }
 
-            else if (settingsTabs == APCESettings.SettingsTabs.Modlist)
+            else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Modlist)
             {
-
+                //listingStandard.ListControl(inRect, )
             }
 
-            else if (settingsTabs == APCESettings.SettingsTabs.Balance_Control)
+            else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Balance_Control)
             {
-
+                listingStandard.TextEntry("Balance Control");
             }
 
             else
             {
                 throw new Exception("The legendary FOURTH TAB of the settings window has been found.");
             }
+
+            listingStandard.End();
         }
     }
 }
