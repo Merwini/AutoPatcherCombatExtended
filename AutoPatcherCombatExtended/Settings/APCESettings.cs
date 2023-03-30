@@ -15,10 +15,10 @@ namespace nuff.AutoPatcherCombatExtended
             Balance_Control,
         }
 
-        internal static APCESettings.SettingsTabs settingsTabs = APCESettings.SettingsTabs.General_Settings;
+        internal static SettingsTabs settingsTabs = SettingsTabs.General_Settings;
 
         //General Settings
-        internal bool printDebug = true;
+        internal static bool printDebug = true;
 
 
         //Modlist Settings

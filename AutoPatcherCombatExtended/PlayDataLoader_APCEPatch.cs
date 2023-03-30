@@ -8,6 +8,7 @@ using HarmonyLib;
 
 namespace nuff.AutoPatcherCombatExtended
 {
+    /*
     [HarmonyPatch(typeof(PlayDataLoader), "DoPlayLoad")]
     class PlayDataLoader_APCEPatch
     {
@@ -20,4 +21,5 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO call patch method
         }
     }
+    */
 }

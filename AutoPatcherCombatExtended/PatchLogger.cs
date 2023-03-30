@@ -10,10 +10,10 @@ using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    public partial class AutoPatcherCombatExtended : Mod
+    public class APCEPatchLogger
     {
+        static internal Stopwatch stopwatchMaster = new Stopwatch();
         Stopwatch stopwatch = new Stopwatch();
-        Stopwatch stopwatchMaster = new Stopwatch();
 
         //to be used by the four patch methods
         //0 : string, type of def being patched by that method
@@ -26,39 +26,34 @@ namespace nuff.AutoPatcherCombatExtended
         int defsTotal = 0; //3
         int defsFailed = 0; //4
         StringBuilder failureList = new StringBuilder(); //will be logged after PatchString if defsFailed > 0
+        ModContentPack currentMod;
 
-        private void BeginPatch(string defCat)
+        APCEPatchLogger(ModContentPack mod)
         {
-            if (Settings.printDebug)
-            {
-                stopwatch.Start();
-                Log.Message($"Attempting to patch {defCat} Defs");
-            }
+            currentMod = mod;
+        }
+        
 
+        internal void BeginPatch()
+        {
+            stopwatch.Start();
+            Log.Message($"Attempting to patch defs from {currentMod.Name}");
         }
 
-        private void EndPatch(string defCat)
+        internal void EndPatch(string defCat)
         {
-            if (Settings.printDebug)
+            stopwatch.Stop();
+            Log.Message(EndPatchString());
+            if (defsFailed != 0)
             {
-                stopwatch.Stop();
-                Log.Message(EndPatchString(defCat));
-                if (defsFailed != 0)
-                {
-                    Log.Error($"Failed to patch the following {defCat} defs: \n {failureList}");
-                    failureList.Clear();
-                }
-
-                stopwatch.Reset();
-                defsPatched = 0;
-                defsTotal = 0;
-                defsFailed = 0;
+                Log.Error($"Failed to patch the following {defsFailed} defs: \n {failureList}");
             }
+            stopwatch.Reset();
         }
 
-        private string EndPatchString(string defCat)
+        internal string EndPatchString()
         {
-            return String.Format("Patched defs of type {0} in {1:F4} seconds. {2} patched out of {3}, {4} failed.", defCat, stopwatch.ElapsedMilliseconds / 1000f, defsPatched, defsTotal, defsFailed);
+            return String.Format($"Patching finished on {currentMod.Name}. Successfully patched {defsFailed} out of {defsTotal} defs.");
         }
 
     }

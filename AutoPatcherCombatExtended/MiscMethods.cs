@@ -28,19 +28,27 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static List<ModContentPack> GetActiveModsList()
         {
-            Log.Message("finding mods");
+            //Log.Message("finding mods");
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod).OrderBy(mod => mod.Name).ToList());
-            Log.Message($"Found {activeMods.Count} mods");
+            //Log.Message($"Found {activeMods.Count} mods");
             return activeMods;
         }
 
         public static void CleanModList(List<ModContentPack> modList)
         {
-            foreach (ModContentPack mcp in modList)
+            foreach (ModContentPack mod in modList)
             {
-                if (mcp == null)
+                //I know these could be combined into one check, but it's easier this way
+                if (mod == null)
                 {
-                    modList.Remove(mcp);
+                    modList.Remove(mod);
+                    return;
+                }
+                if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
+                {
+                    Log.Message($"Mod named \"{mod.Name}\" has no defs to patch. Removing from the list.");
+                    modList.Remove(mod);
+                    return;
                 }
             }
         }

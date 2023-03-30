@@ -7,9 +7,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Verse;
-
+/*
 namespace nuff.AutoPatcherCombatExtended
+
 {
+
     public partial class AutoPatcherCombatExtended : Mod
     {
         // declare lists here TODO
@@ -113,10 +115,9 @@ namespace nuff.AutoPatcherCombatExtended
 
                 }
             }
-            */
 
-            #region TimerStop
-            if (Settings.printDebug)
+#region TimerStop
+if (Settings.printDebug)
             {
                 stopwatch.Stop();
                 Log.Message($"Combat Extended Autopatcher has finished making lists in {stopwatch.ElapsedMilliseconds / 1000f} seconds.");
@@ -125,4 +126,6 @@ namespace nuff.AutoPatcherCombatExtended
             #endregion
         }
     }
+    
 }
+*/

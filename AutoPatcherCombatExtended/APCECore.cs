@@ -20,7 +20,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             this.Settings = GetSettings<APCESettings>();
             APCESettings.activeMods = AutoPatcherCombatExtended.GetActiveModsList();
-            AutoPatcherCombatExtended.CleanModList(APCESettings.modsToPatch);
+            APCEPatchController();
         }
 
         public override string SettingsCategory()
@@ -30,21 +30,30 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void APCEPatchController()
         {
-            stopwatchMaster.Start();
+            if (APCESettings.printDebug)
+            {
+                APCEPatchLogger.stopwatchMaster.Start();
+            }
+            CleanModList(APCESettings.modsToPatch);
+            foreach (ModContentPack mod in APCESettings.modsToPatch)
+            {
+                PatchMod(mod);
+            }
+            if (APCESettings.printDebug)
+            {
+                APCEPatchLogger.stopwatchMaster.Stop();
+                Log.Message($"Autopatcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
+            }
+        }
 
-            MakeLists();
+        public void PatchMod(ModContentPack mod)
+        {
             //PatchWeapons(weaponList);
             //PatchApparel(apparelList);
             //PatchPawns(alienList);
             //PatchTurrets(turretList);
             //PatchHediffs(hediffList);
             //TODO: patch hediffs (fix armor values etc)
-
-            stopwatchMaster.Stop();
-            if (Settings.printDebug)
-            {
-                Log.Message($"Autopatcher for Combat Extended finished in {stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
-            }
         }
     }
 }
