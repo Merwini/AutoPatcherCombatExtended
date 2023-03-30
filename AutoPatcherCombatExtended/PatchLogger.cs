@@ -15,25 +15,18 @@ namespace nuff.AutoPatcherCombatExtended
         static internal Stopwatch stopwatchMaster = new Stopwatch();
         Stopwatch stopwatch = new Stopwatch();
 
-        //to be used by the four patch methods
-        //0 : string, type of def being patched by that method
-        //1 : float, stopwatch time elapsed for that patch operation
-        //2 : integer, defs of that type found
-        //3 : integer, defs successfully patched
-        //4 : integer, defs unsuccessfully patched
         //used for logging
-        int defsPatched = 0; //2
-        int defsTotal = 0; //3
-        int defsFailed = 0; //4
+        int defsPatched = 0;
+        int defsTotal = 0;
+        int defsFailed = 0;
         StringBuilder failureList = new StringBuilder(); //will be logged after PatchString if defsFailed > 0
         ModContentPack currentMod;
 
-        APCEPatchLogger(ModContentPack mod)
+        internal APCEPatchLogger(ModContentPack mod)
         {
             currentMod = mod;
         }
         
-
         internal void BeginPatch()
         {
             stopwatch.Start();
@@ -53,7 +46,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal string EndPatchString()
         {
-            return String.Format($"Patching finished on {currentMod.Name}. Successfully patched {defsFailed} out of {defsTotal} defs.");
+            return String.Format($"Patching finished on {currentMod.Name}. Successfully patched {defsPatched} out of {defsTotal} defs.");
         }
 
     }

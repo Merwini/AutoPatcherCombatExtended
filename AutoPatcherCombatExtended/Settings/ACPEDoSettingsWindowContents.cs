@@ -20,7 +20,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (APCESettings.settingsTabs == APCESettings.SettingsTabs.General_Settings)
             {
-                listingStandard.CheckboxLabeled("Enable Debug Mode", ref Settings.printDebug);
+                listingStandard.CheckboxLabeled("Enable Debug Mode", ref APCESettings.printDebug);
             }
 
             else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Modlist)

@@ -17,15 +17,6 @@ namespace nuff.AutoPatcherCombatExtended
             Log.Error(ex.ToString());
         }
 
-        public void UpdateModList(ThingDef td)
-        {
-            if (!td.modContentPack.PackageId.Contains("ludeon")
-                && !modsNeedingPatches.Contains(td.modContentPack))
-            {
-                modsNeedingPatches.Add(td.modContentPack);
-            }
-        }
-
         public static List<ModContentPack> GetActiveModsList()
         {
             //Log.Message("finding mods");

@@ -48,6 +48,11 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void PatchMod(ModContentPack mod)
         {
+            APCEPatchLogger log = new APCEPatchLogger(mod);
+            foreach (Def def in mod.AllDefs)
+            {
+                Log.Message(def.defName);
+            }
             //PatchWeapons(weaponList);
             //PatchApparel(apparelList);
             //PatchPawns(alienList);
