@@ -26,6 +26,14 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        public static List<ModContentPack> GetActiveModsList()
+        {
+            Log.Message("finding mods");
+            List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod).OrderBy(mod => mod.Name).ToList());
+            Log.Message($"Found {activeMods.Count} mods");
+            return activeMods;
+        }
+
         public static void CleanModList(List<ModContentPack> modList)
         {
             foreach (ModContentPack mcp in modList)

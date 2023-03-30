@@ -165,7 +165,7 @@ namespace nuff.AutoPatcherCombatExtended
 			SOFTWARE.
 		 */
 		#endregion
-		public static void ListControl(this Listing_Standard listingStandard, Rect inRect, ref List<ModContentPack> leftList, ref List<ModContentPack> rightList, ref List<ModContentPack> antiList,
+		public static void ListControl(this Listing_Standard listingStandard, Rect inRect, ref List<ModContentPack> leftList, ref List<ModContentPack> rightList,
 										ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition, ref ModContentPack leftSelectedObject, ref ModContentPack rightSelectedObject,
 										string columnLabel, float rectPCT)
 		{
@@ -245,10 +245,12 @@ namespace nuff.AutoPatcherCombatExtended
 				leftSelectedObject != null)
 			{
 				rightList.Add(item: leftSelectedObject);
+				/* this is from my original implementation of this
 				if (antiList.Contains(leftSelectedObject))
 				{
 					antiList.Remove(leftSelectedObject);
 				}
+				*/
 				rightList = rightList.OrderBy(keySelector: mcp => mcp.Name).ToList();
 				rightSelectedObject = leftSelectedObject;
 				leftSelectedObject = null;

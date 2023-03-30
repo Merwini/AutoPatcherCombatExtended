@@ -20,17 +20,19 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (APCESettings.settingsTabs == APCESettings.SettingsTabs.General_Settings)
             {
-                listingStandard.TextEntry("General Settings");
+                listingStandard.CheckboxLabeled("Enable Debug Mode", ref Settings.printDebug);
             }
 
             else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Modlist)
             {
-                //listingStandard.ListControl(inRect, )
+                listingStandard.Label("modlist placeholder");
+                listingStandard.ListControl(inRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
+                    ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 0.85f);
             }
 
             else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Balance_Control)
             {
-                listingStandard.TextEntry("Balance Control");
+                listingStandard.Label("Balance Control placeholder");
             }
 
             else

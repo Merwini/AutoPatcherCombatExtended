@@ -19,6 +19,8 @@ namespace nuff.AutoPatcherCombatExtended
         public AutoPatcherCombatExtended(ModContentPack content) : base(content)
         {
             this.Settings = GetSettings<APCESettings>();
+            APCESettings.activeMods = AutoPatcherCombatExtended.GetActiveModsList();
+            AutoPatcherCombatExtended.CleanModList(APCESettings.modsToPatch);
         }
 
         public override string SettingsCategory()
