@@ -1,8 +1,6 @@
-﻿using RimWorld;
-using Verse;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -22,7 +20,8 @@ namespace nuff.AutoPatcherCombatExtended
         internal static bool patchApparels = true;
         internal static bool patchPawns = true;
         internal static bool patchHediffs = true;
-        internal static bool printDebug = true;
+        internal static bool printLogs = false;
+        internal static bool printPatchErrors = false;
 
 
         //Modlist Settings
@@ -44,7 +43,8 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             //General Settings
-            Scribe_Values.Look(ref printDebug, "printDebug");
+            Scribe_Values.Look(ref printLogs, "printDebug");
+            Scribe_Values.Look(ref printPatchErrors, "printPatchErrors");
             Scribe_Values.Look(ref patchWeapons, "patchWeapons");
             Scribe_Values.Look(ref patchApparels, "patchApparels");
             Scribe_Values.Look(ref patchPawns, "patchPawns");

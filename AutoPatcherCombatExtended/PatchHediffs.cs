@@ -13,9 +13,17 @@ namespace nuff.AutoPatcherCombatExtended
     partial class APCEController
     {
         //TODO
-        internal static bool PatchHediff(HediffDef def)
+        internal static void PatchHediff(HediffDef def, APCEPatchLogger log)
         {
-            return true;
+            try
+            {
+                //TODO
+                log.PatchSucceeded();
+            }
+            catch (Exception ex)
+            {
+                log.PatchFailed(def.defName, ex);
+            }
         }
     }
 }

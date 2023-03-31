@@ -13,9 +13,17 @@ namespace nuff.AutoPatcherCombatExtended
     partial class APCEController
     {
         //TODO
-        internal static bool PatchApparel(ThingDef def)
+        internal static void PatchApparel(ThingDef def, APCEPatchLogger log)
         {
-            return true;
+            try
+            {
+                //TODO
+                log.PatchSucceeded();
+            }
+            catch (Exception ex)
+            {
+                log.PatchFailed(def.defName, ex);
+            }
         }
     }
 }

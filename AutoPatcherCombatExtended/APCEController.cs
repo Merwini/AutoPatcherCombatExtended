@@ -20,7 +20,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static void APCEPatchController()
         {
-            if (APCESettings.printDebug)
+            if (APCESettings.printLogs)
             {
                 APCEPatchLogger.stopwatchMaster.Start();
             }
@@ -29,7 +29,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 PatchMod(mod);
             }
-            if (APCESettings.printDebug)
+            if (APCESettings.printLogs)
             {
                 APCEPatchLogger.stopwatchMaster.Stop();
                 Log.Message($"Autopatcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
@@ -49,45 +49,22 @@ namespace nuff.AutoPatcherCombatExtended
                     {
                         if (APCESettings.patchApparels)
                         {
-                            if (PatchApparel(td))
-                            {
-
-                            }
-                            else
-                            {
-
-                            }
-                        }
-                        
+                            PatchApparel(td, log);
+                            continue;
+                        }  
                     }
                     else if (td.IsWeapon)
                     {
                         if (APCESettings.patchWeapons)
                         {
-                            if (PatchWeapon(td))
-                            {
-
-                            }
-                            else
-                            {
-
-                            }
+                            PatchWeapon(td, log);
+                            continue;
                         }
-                        
                     }
                     else if (typeof(Pawn).IsAssignableFrom(td.GetType()))
                     {
-                        if (APCESettings.patchPawns)
-                        {
-                            if (PatchPawn(td))
-                            {
-
-                            }
-                            else
-                            {
-
-                            }
-                        }
+                        PatchPawn(td, log);
+                        continue;
                     }
                 }
                 else if (typeof(HediffDef).IsAssignableFrom(def.GetType()))
@@ -95,22 +72,11 @@ namespace nuff.AutoPatcherCombatExtended
                     HediffDef hd = def as HediffDef;
                     if (APCESettings.patchHediffs)
                     {
-                        if (PatchHediff(hd))
-                        {
-
-                        }
-                        else
-                        {
-
-                        }
+                        PatchHediff(hd, log);
+                        continue;
                     }
                 }
             }
-            //PatchWeapons(weaponList);
-            //PatchApparel(apparelList);
-            //PatchPawns(pawnList);
-            //PatchHediffs(hediffList);
-            //PatchTurrets(turretList);
             log.EndPatch();
         }
     }

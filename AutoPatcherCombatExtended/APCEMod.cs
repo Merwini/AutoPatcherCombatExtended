@@ -40,7 +40,8 @@ namespace nuff.AutoPatcherCombatExtended
                 listingStandard.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
                 listingStandard.CheckboxLabeled("Patch pawns from selected mods", ref APCESettings.patchPawns);
                 listingStandard.CheckboxLabeled("Patch hediffs from selected mods", ref APCESettings.patchHediffs);
-                listingStandard.CheckboxLabeled("Enable Debug Mode", ref APCESettings.printDebug);
+                listingStandard.CheckboxLabeled("Show patch logs", ref APCESettings.printLogs);
+                listingStandard.CheckboxLabeled("Enable Debug Mode (print errors)", ref APCESettings.printPatchErrors);
             }
 
             else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Modlist)

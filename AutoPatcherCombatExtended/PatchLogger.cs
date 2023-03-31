@@ -19,7 +19,8 @@ namespace nuff.AutoPatcherCombatExtended
         int defsPatched = 0;
         int defsTotal = 0;
         int defsFailed = 0;
-        StringBuilder failureList = new StringBuilder(); //will be logged after PatchString if defsFailed > 0
+        List<string> failureList = new List<string>(); //will be logged after PatchString if defsFailed > 0
+        List<Exception> errorList = new List<Exception>();
         ModContentPack currentMod;
 
         internal APCEPatchLogger(ModContentPack mod)
@@ -30,7 +31,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal void BeginPatch()
         {
             stopwatch.Start();
-            if (APCESettings.printDebug)
+            if (APCESettings.printLogs)
             {
                 Log.Message($"Attempting to patch defs from {currentMod.Name}");
             }
@@ -42,17 +43,18 @@ namespace nuff.AutoPatcherCombatExtended
             defsPatched++;
         }
 
-        internal void PatchFailed(string defName)
+        internal void PatchFailed(string defName, Exception ex)
         {
             defsTotal++;
             defsFailed++;
-            failureList.AppendLine(defName);
+            failureList.Add(defName);
+            errorList.Add(ex);
         }
 
         internal void EndPatch()
         {
             stopwatch.Stop();
-            if (APCESettings.printDebug)
+            if (APCESettings.printLogs)
             {
                 Log.Message(EndPatchString());
                 if (defsFailed != 0)
