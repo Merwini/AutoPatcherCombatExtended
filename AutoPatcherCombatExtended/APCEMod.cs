@@ -44,8 +44,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Modlist)
-            {
-                listingStandard.Label("modlist placeholder");
+            {;
                 listingStandard.ListControl(inRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
                     ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 0.85f);
             }

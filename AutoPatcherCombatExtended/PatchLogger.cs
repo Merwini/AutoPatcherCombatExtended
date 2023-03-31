@@ -30,16 +30,35 @@ namespace nuff.AutoPatcherCombatExtended
         internal void BeginPatch()
         {
             stopwatch.Start();
-            Log.Message($"Attempting to patch defs from {currentMod.Name}");
+            if (APCESettings.printDebug)
+            {
+                Log.Message($"Attempting to patch defs from {currentMod.Name}");
+            }
         }
 
-        internal void EndPatch(string defCat)
+        internal void PatchSucceeded()
+        {
+            defsTotal++;
+            defsPatched++;
+        }
+
+        internal void PatchFailed(string defName)
+        {
+            defsTotal++;
+            defsFailed++;
+            failureList.AppendLine(defName);
+        }
+
+        internal void EndPatch()
         {
             stopwatch.Stop();
-            Log.Message(EndPatchString());
-            if (defsFailed != 0)
+            if (APCESettings.printDebug)
             {
-                Log.Error($"Failed to patch the following {defsFailed} defs: \n {failureList}");
+                Log.Message(EndPatchString());
+                if (defsFailed != 0)
+                {
+                    Log.Error($"Failed to patch the following {defsFailed} defs: \n {failureList}");
+                }
             }
             stopwatch.Reset();
         }

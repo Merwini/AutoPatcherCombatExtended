@@ -13,5 +13,9 @@ namespace nuff.AutoPatcherCombatExtended
     partial class APCEController
     {
         //TODO
+        internal static bool PatchWeapon(ThingDef def)
+        {
+            return true;
+        }
     }
 }

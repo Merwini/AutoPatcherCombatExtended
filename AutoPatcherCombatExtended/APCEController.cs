@@ -8,16 +8,17 @@ using Verse;
 namespace nuff.AutoPatcherCombatExtended
 {
     [StaticConstructorOnStartup]
-    partial class APCEController
+    public partial class APCEController
     {
-        public APCEController()
+        static APCEController()
         {
+            Log.Message("APCE Controller constructed");
             APCESettings.activeMods = GetActiveModsList();
             APCESettings.modsToPatch = RebuildModsToPatch();
             APCEPatchController();
         }
 
-        public void APCEPatchController()
+        public static void APCEPatchController()
         {
             if (APCESettings.printDebug)
             {
@@ -35,18 +36,82 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void PatchMod(ModContentPack mod)
+        public static void PatchMod(ModContentPack mod)
         {
             APCEPatchLogger log = new APCEPatchLogger(mod);
+            log.BeginPatch();
             foreach (Def def in mod.AllDefs)
             {
-                Log.Message(def.defName);
+                if (typeof(ThingDef).IsAssignableFrom(def.GetType()))
+                {
+                    ThingDef td = def as ThingDef;
+                    if (td.IsApparel)
+                    {
+                        if (APCESettings.patchApparels)
+                        {
+                            if (PatchApparel(td))
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        
+                    }
+                    else if (td.IsWeapon)
+                    {
+                        if (APCESettings.patchWeapons)
+                        {
+                            if (PatchWeapon(td))
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        
+                    }
+                    else if (typeof(Pawn).IsAssignableFrom(td.GetType()))
+                    {
+                        if (APCESettings.patchPawns)
+                        {
+                            if (PatchPawn(td))
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
+                }
+                else if (typeof(HediffDef).IsAssignableFrom(def.GetType()))
+                {
+                    HediffDef hd = def as HediffDef;
+                    if (APCESettings.patchHediffs)
+                    {
+                        if (PatchHediff(hd))
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
             }
             //PatchWeapons(weaponList);
             //PatchApparel(apparelList);
             //PatchPawns(pawnList);
             //PatchHediffs(hediffList);
             //PatchTurrets(turretList);
+            log.EndPatch();
         }
     }
 

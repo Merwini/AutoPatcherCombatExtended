@@ -13,5 +13,9 @@ namespace nuff.AutoPatcherCombatExtended
     partial class APCEController
     {
         //TODO
+        internal static bool PatchHediff(HediffDef def)
+        {
+            return true;
+        }
     }
 }
