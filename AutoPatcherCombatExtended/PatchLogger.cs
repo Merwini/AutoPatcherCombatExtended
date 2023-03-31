@@ -59,7 +59,15 @@ namespace nuff.AutoPatcherCombatExtended
                 Log.Message(EndPatchString());
                 if (defsFailed != 0)
                 {
-                    Log.Error($"Failed to patch the following {defsFailed} defs: \n {failureList}");
+                    for (int i = 0; i < failureList.Count; i++)
+                    {
+                        Log.Warning($"Failed to patch def: {failureList[i]}");
+                        if (APCESettings.printPatchErrors)
+                        {
+                            Log.Warning(errorList[i].ToString());
+                        }
+                    }
+                    
                 }
             }
             stopwatch.Reset();
