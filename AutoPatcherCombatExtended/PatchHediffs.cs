@@ -10,7 +10,7 @@ using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    public partial class AutoPatcherCombatExtended : Mod
+    partial class APCEController
     {
         //TODO
     }

@@ -10,7 +10,7 @@ using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    public partial class AutoPatcherCombatExtended : Mod
+    partial class APCEController
     {
         public void BasicException(Exception ex)
         {
@@ -23,6 +23,24 @@ namespace nuff.AutoPatcherCombatExtended
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod).OrderBy(mod => mod.Name).ToList());
             //Log.Message($"Found {activeMods.Count} mods");
             return activeMods;
+        }
+
+        public static List<ModContentPack> RebuildModsToPatch()
+        {
+            List<ModContentPack> modsToPatch = new List<ModContentPack>();
+            foreach (ModContentPack mod in APCESettings.activeMods)
+            {
+                Log.Message($"{mod.Name} has {mod.AllDefs.Count()} defs");
+                foreach (Def def in mod.AllDefs)
+                {
+                    Log.Message(def.defName);
+                }
+                if (APCESettings.modsByPackageId.Contains(mod.PackageId))
+                {
+                    modsToPatch.Add(mod);
+                }
+            }
+            return modsToPatch;
         }
 
         public static void CleanModList(List<ModContentPack> modList)

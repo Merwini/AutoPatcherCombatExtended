@@ -245,6 +245,7 @@ namespace nuff.AutoPatcherCombatExtended
 				leftSelectedObject != null)
 			{
 				rightList.Add(item: leftSelectedObject);
+				APCESettings.modsByPackageId.Add(leftSelectedObject.PackageId); //TODO more elegant way of updating this
 				/* this is from my original implementation of this
 				if (antiList.Contains(leftSelectedObject))
 				{
@@ -260,6 +261,7 @@ namespace nuff.AutoPatcherCombatExtended
 				rightSelectedObject != null)
 			{
 				rightList.Remove(item: rightSelectedObject);
+				APCESettings.modsByPackageId.Remove(leftSelectedObject.PackageId); //TODO more elegant way of updating this
 				leftSelectedObject = rightSelectedObject;
 				rightSelectedObject = null;
 			}

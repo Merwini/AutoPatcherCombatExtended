@@ -1,15 +1,31 @@
-﻿using System;
+﻿using CombatExtended;
+using RimWorld;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+using System.Reflection;
 using Verse;
+using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    public partial class AutoPatcherCombatExtended : Mod
+    [StaticConstructorOnStartup]
+    public class AutoPatcherCombatExtended : Mod
     {
+        APCESettings Settings;
+
+        public AutoPatcherCombatExtended(ModContentPack content) : base(content)
+        {
+            this.Settings = GetSettings<APCESettings>();
+        }
+
+        public override string SettingsCategory()
+        {
+            return "Autopatcher for Combat Extended";
+        }
+
         public override void DoSettingsWindowContents(Rect inRect)
         {
             Listing_Standard listingStandard = new Listing_Standard();
@@ -20,6 +36,10 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (APCESettings.settingsTabs == APCESettings.SettingsTabs.General_Settings)
             {
+                listingStandard.CheckboxLabeled("Patch weapons from selected mods", ref APCESettings.patchWeapons);
+                listingStandard.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
+                listingStandard.CheckboxLabeled("Patch pawns from selected mods", ref APCESettings.patchPawns);
+                listingStandard.CheckboxLabeled("Patch hediffs from selected mods", ref APCESettings.patchHediffs);
                 listingStandard.CheckboxLabeled("Enable Debug Mode", ref APCESettings.printDebug);
             }
 

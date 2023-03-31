@@ -57,21 +57,25 @@
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APCEAmmoDefOf.cs" />
+    <Compile Include="APCEController.cs" />
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
-    <Compile Include="Settings\ACPEDoSettingsWindowContents.cs" />
     <Compile Include="Settings\APCESettings.cs" />
     <Compile Include="DetermineGunType.cs" />
     <Compile Include="PlayDataLoader_APCEPatch.cs" />
@@ -82,8 +86,7 @@
     <Compile Include="PatchTurrets.cs" />
     <Compile Include="PatchWeapons.cs" />
     <Compile Include="MakeLists.cs" />
-    <Compile Include="MagicNumbers.cs" />
-    <Compile Include="APCECore.cs" />
+    <Compile Include="APCEMod.cs" />
     <Compile Include="PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

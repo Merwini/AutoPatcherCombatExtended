@@ -1,31 +1,20 @@
-﻿using CombatExtended;
-using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Reflection;
+using System.Threading.Tasks;
 using Verse;
-using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
     [StaticConstructorOnStartup]
-    public partial class AutoPatcherCombatExtended : Mod
+    partial class APCEController
     {
-        APCESettings Settings;
-
-        public AutoPatcherCombatExtended(ModContentPack content) : base(content)
+        public APCEController()
         {
-            this.Settings = GetSettings<APCESettings>();
-            APCESettings.activeMods = AutoPatcherCombatExtended.GetActiveModsList();
+            APCESettings.activeMods = GetActiveModsList();
+            APCESettings.modsToPatch = RebuildModsToPatch();
             APCEPatchController();
-        }
-
-        public override string SettingsCategory()
-        {
-            return "Autopatcher for Combat Extended";
         }
 
         public void APCEPatchController()
@@ -55,10 +44,11 @@ namespace nuff.AutoPatcherCombatExtended
             }
             //PatchWeapons(weaponList);
             //PatchApparel(apparelList);
-            //PatchPawns(alienList);
-            //PatchTurrets(turretList);
+            //PatchPawns(pawnList);
             //PatchHediffs(hediffList);
-            //TODO: patch hediffs (fix armor values etc)
+            //PatchTurrets(turretList);
         }
     }
+
+
 }

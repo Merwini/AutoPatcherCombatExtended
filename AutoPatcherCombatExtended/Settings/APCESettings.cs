@@ -18,12 +18,18 @@ namespace nuff.AutoPatcherCombatExtended
         internal static SettingsTabs settingsTabs = SettingsTabs.General_Settings;
 
         //General Settings
+        internal static bool patchWeapons = true;
+        internal static bool patchApparels = true;
+        internal static bool patchPawns = true;
+        internal static bool patchHediffs = true;
         internal static bool printDebug = true;
 
 
         //Modlist Settings
         public static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
-        public static List<ModContentPack> modsToPatch = new List<ModContentPack>();
+        public static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
+        public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
+
 
         public string searchTerm = "";
         public Vector2 leftScrollPosition = new Vector2();
@@ -39,10 +45,13 @@ namespace nuff.AutoPatcherCombatExtended
         {
             //General Settings
             Scribe_Values.Look(ref printDebug, "printDebug");
-
+            Scribe_Values.Look(ref patchWeapons, "patchWeapons");
+            Scribe_Values.Look(ref patchApparels, "patchApparels");
+            Scribe_Values.Look(ref patchPawns, "patchPawns");
+            Scribe_Values.Look(ref patchHediffs, "patchHediffs");
 
             //Modlist Settings
-            Scribe_Collections.Look(ref modsToPatch, "modsToPatch", LookMode.Value);
+            Scribe_Collections.Look(ref modsByPackageId, "modsByPackageId", LookMode.Value);
 
 
             //Balance Control Settings
