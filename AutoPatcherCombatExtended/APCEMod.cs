@@ -23,36 +23,75 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override string SettingsCategory()
         {
-            return "Autopatcher for Combat Extended";
+            return "Autopatcher for CE";
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            Listing_Standard listingStandard = new Listing_Standard();
+            Listing_Standard list = new Listing_Standard();
 
             Text.Font = GameFont.Medium;
-            listingStandard.Begin(inRect);
-            listingStandard.EnumSelector(ref APCESettings.settingsTabs, "", "", "select settings page");
+            list.Begin(inRect);
+            list.EnumSelector(ref APCESettings.settingsTabs, "", "", "select settings page");
 
             if (APCESettings.settingsTabs == APCESettings.SettingsTabs.General_Settings)
             {
-                listingStandard.CheckboxLabeled("Patch weapons from selected mods", ref APCESettings.patchWeapons);
-                listingStandard.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
-                listingStandard.CheckboxLabeled("Patch pawns from selected mods", ref APCESettings.patchPawns);
-                listingStandard.CheckboxLabeled("Patch hediffs from selected mods", ref APCESettings.patchHediffs);
-                listingStandard.CheckboxLabeled("Show patch logs", ref APCESettings.printLogs);
-                listingStandard.CheckboxLabeled("Enable Debug Mode (print errors)", ref APCESettings.printPatchErrors);
+                list.CheckboxLabeled("Patch weapons from selected mods", ref APCESettings.patchWeapons);
+                list.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
+                list.CheckboxLabeled("Patch pawns from selected mods", ref APCESettings.patchPawns);
+                list.CheckboxLabeled("Patch hediffs from selected mods", ref APCESettings.patchHediffs);
+                list.CheckboxLabeled("Show patch logs", ref APCESettings.printLogs);
+                list.CheckboxLabeled("Enable Debug Mode (print errors)", ref APCESettings.printPatchErrors);
             }
 
             else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Modlist)
-            {;
-                listingStandard.ListControl(inRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
+            {
+                list.ListControl(inRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
                     ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 0.85f);
             }
 
             else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Balance_Control)
             {
-                listingStandard.Label("Balance Control placeholder");
+                list.Label("Balance Control placeholder");
+                list.EnumSelector(ref APCESettings.balanceTabs, "", "", "select balance category");
+                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Apparel)
+                {
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Armor value settings");
+                    Text.Font = GameFont.Small;
+
+                    list.Gap();
+                    list.Label("These multipliers will apply to all apparels, and are then further multiplied by techlevel");
+                    list.TextFieldNumericLabeled("Armor sharp base multiplier (default: 10)", ref APCESettings.apparelSharpMult, ref APCESettings.apparelSharpMultBuffer);
+                    list.TextFieldNumericLabeled("Armor blunt base multiplier (default: 40)", ref APCESettings.apparelBluntMult, ref APCESettings.apparelBluntMultBuffer);
+                    list.Gap();
+                    
+                    list.TextFieldNumericLabeled("Tech level 'Animal' armor multiplier (default: 0.25)", ref APCESettings.armorTechMultAnimal, ref APCESettings.armorTechMultAnimalBuffer);
+                    list.TextFieldNumericLabeled("Tech level 'Neolithic' armor multiplier (default: 0.5)", ref APCESettings.armorTechMultNeolithic, ref APCESettings.armorTechMultNeolithicBuffer);
+                    list.TextFieldNumericLabeled("Tech level 'Medieval' armor multiplier (default: 0.75)", ref APCESettings.armorTechMultMedieval, ref APCESettings.armorTechMultMedievalBuffer);
+                    list.TextFieldNumericLabeled("Tech level 'Industrial' armor multiplier (default: 1.0)", ref APCESettings.armorTechMultIndustrial, ref APCESettings.armorTechMultIndustrialBuffer);
+                    list.TextFieldNumericLabeled("Tech level 'Spacer' armor multiplier (default: 2.0)", ref APCESettings.armorTechMultSpacer, ref APCESettings.armorTechMultSpacerBuffer);
+                    list.TextFieldNumericLabeled("Tech level 'Ultratech' armor multiplier (default: 3.0)", ref APCESettings.armorTechMultUltratech, ref APCESettings.armorTechMultUltratechBuffer);
+                    list.TextFieldNumericLabeled("Tech level 'Archotech' armor multiplier (default: 4.0)", ref APCESettings.armorTechMultArchotech, ref APCESettings.armorTechMultArchotechBuffer);
+                    
+                    list.NewColumn();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Bulk value settings");
+                    Text.Font = GameFont.Small;
+                }
+                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Weapons)
+                {
+                    list.Label("Weapons Balance placeholder");
+                }
+                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Pawns)
+                {
+                    list.Label("Pawns Balance placeholder");
+                }
+                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Hediffs)
+                {
+                    list.Label("Hediffs Balance placeholder");
+                }
             }
 
             else
@@ -60,7 +99,7 @@ namespace nuff.AutoPatcherCombatExtended
                 throw new Exception("The legendary FOURTH TAB of the settings window has been found.");
             }
 
-            listingStandard.End();
+            list.End();
         }
     }
 }

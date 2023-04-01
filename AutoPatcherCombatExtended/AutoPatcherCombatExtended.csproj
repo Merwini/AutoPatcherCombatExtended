@@ -78,14 +78,12 @@
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Settings\APCESettings.cs" />
     <Compile Include="DetermineGunType.cs" />
-    <Compile Include="PlayDataLoader_APCEPatch.cs" />
     <Compile Include="MiscMethods.cs" />
     <Compile Include="PatchApparels.cs" />
     <Compile Include="PatchHediffs.cs" />
     <Compile Include="PatchPawns.cs" />
     <Compile Include="PatchTurrets.cs" />
     <Compile Include="PatchWeapons.cs" />
-    <Compile Include="MakeLists.cs" />
     <Compile Include="APCEMod.cs" />
     <Compile Include="PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
