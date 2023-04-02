@@ -83,8 +83,16 @@ namespace nuff.AutoPatcherCombatExtended
         //weapon settings
 
         //pawn settings
+        internal static float pawnArmorSharpMult = 10; internal static string pawnArmorSharpMultBuffer = "10";
+        internal static float pawnArmorBluntMult = 40; internal static string pawnArmorBluntMultBuffer = "40";
+
+        internal static float pawnToolPowerMult = 2f; internal static string pawnToolPowerMultBuffer = "2";
+        internal static float pawnToolSharpPenetration = 10f; internal static string pawnToolSharpPenetrationBuffer = "10";
+        internal static float pawnToolBluntPenetration = 40f; internal static string pawnToolBluntPenetrationBuffer = "40";
 
         //hediff settings
+        internal static float hediffSharpMult = 10; internal static string hediffSharpMultBuffer = "10";
+        internal static float hediffBluntMult = 40; internal static string hediffBluntMultBuffer = "40";
 
         public override void ExposeData()
         {
@@ -101,6 +109,7 @@ namespace nuff.AutoPatcherCombatExtended
 
 
             //Balance Control Settings
+            //armor
             Scribe_Values.Look(ref apparelSharpMult, "apparelSharpMult");   Scribe_Values.Look(ref apparelSharpMultBuffer, "apparelSharpMultBuffer");
             Scribe_Values.Look(ref apparelBluntMult, "apparelBluntMult");   Scribe_Values.Look(ref apparelBluntMultBuffer, "apparelBluntMultBuffer");
             Scribe_Values.Look(ref armorTechMultAnimal, "armorTechMultAnimal"); Scribe_Values.Look(ref armorTechMultAnimalBuffer, "armorTechMultAnimalBuffer");
@@ -110,6 +119,17 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref armorTechMultSpacer, "armorTechMultSpacer"); Scribe_Values.Look(ref armorTechMultSpacerBuffer, "armorTechMultSpacerBuffer");
             Scribe_Values.Look(ref armorTechMultUltratech, "armorTechMultUltratech"); Scribe_Values.Look(ref armorTechMultUltratechBuffer, "armorTechMultUltratechBuffer");
             Scribe_Values.Look(ref armorTechMultArchotech, "armorTechMultArchotech"); Scribe_Values.Look(ref armorTechMultArchotechBuffer, "armorTechMultArchotechBuffer");
+
+            //hediff
+            Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult"); Scribe_Values.Look(ref hediffSharpMultBuffer, "hediffSharpMultBuffer");
+            Scribe_Values.Look(ref hediffBluntMult, "hediffBluntMult"); Scribe_Values.Look(ref hediffBluntMultBuffer, "hediffBluntMultBuffer");
+
+            //pawn
+            Scribe_Values.Look(ref pawnArmorSharpMult, "pawnArmorSharpMult"); Scribe_Values.Look(ref pawnArmorSharpMultBuffer, "pawnArmorSharpMultBuffer");
+            Scribe_Values.Look(ref pawnArmorBluntMult, "pawnArmorBluntMult"); Scribe_Values.Look(ref pawnArmorBluntMultBuffer, "pawnArmorBluntMultBuffer");
+            Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolPowerMult"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolPowerMultBuffer");
+            Scribe_Values.Look(ref pawnToolSharpPenetration, "pawnToolSharpPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolSharpPenetrationBuffer");
+            Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolBluntPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolBluntPenetrationBuffer");
 
             base.ExposeData();
         }

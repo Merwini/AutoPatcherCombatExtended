@@ -61,7 +61,7 @@ namespace nuff.AutoPatcherCombatExtended
                             continue;
                         }
                     }
-                    else if (typeof(Pawn).IsAssignableFrom(td.GetType()))
+                    else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
                     {
                         PatchPawn(td, log);
                         continue;

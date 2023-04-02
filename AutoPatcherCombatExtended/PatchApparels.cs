@@ -71,7 +71,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                 foreach (ApparelLayerDef ald in def.apparel.layers)
                 {
-                    int massIndex = def.statBases.FindIndex(wob => wob.stat == StatDefOf.Mass);
+                    int massIndex = def.statBases.FindIndex(x => x.stat == StatDefOf.Mass);
                     float mass = 0;
                     if (massIndex >= 0)
                     {
@@ -118,11 +118,9 @@ namespace nuff.AutoPatcherCombatExtended
 
                 def.AddOrChangeStat(statModBulk);
                 def.AddOrChangeStat(statModWornBulk);
-
                 #endregion
 
                 #region HelmetMods             
-
                 if (def.apparel.bodyPartGroups != null)
                 {
                     if (def.apparel.bodyPartGroups.Any(bpgd =>
@@ -156,7 +154,6 @@ namespace nuff.AutoPatcherCombatExtended
                 #endregion
 
                 #region BodyArmorMods
-
                 if (def.apparel.bodyPartGroups != null)
                 {
                     if (def.apparel.bodyPartGroups.Any(bpgd => bpgd == BodyPartGroupDefOf.Torso))
@@ -187,7 +184,6 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                     }
                 }
-
                 #endregion
 
                 log.PatchSucceeded();

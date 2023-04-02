@@ -87,10 +87,31 @@ namespace nuff.AutoPatcherCombatExtended
                 if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Pawns)
                 {
                     list.Label("Pawns Balance placeholder");
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Pawn armor settings");
+                    Text.Font = GameFont.Small;
+                    list.TextFieldNumericLabeled("Pawn sharp armor multiplier (default: 10)", ref APCESettings.pawnArmorSharpMult, ref APCESettings.pawnArmorSharpMultBuffer);
+                    list.TextFieldNumericLabeled("Pawn blunt armor multiplier (default: 40)", ref APCESettings.pawnArmorBluntMult, ref APCESettings.pawnArmorBluntMultBuffer);
+
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Pawn tool (melee attack) settings");
+                    Text.Font = GameFont.Small;
+                    list.TextFieldNumericLabeled("Pawn tool power (damage) multiplier (default: 2)", ref APCESettings.pawnToolPowerMult, ref APCESettings.pawnToolPowerMultBuffer);
+                    list.TextFieldNumericLabeled("Pawn tool sharp penetration multiplier (default: 10)", ref APCESettings.pawnToolSharpPenetration, ref APCESettings.pawnToolSharpPenetrationBuffer);
+                    list.TextFieldNumericLabeled("Pawn tool blunt penetration multiplier (default: 40)", ref APCESettings.pawnToolBluntPenetration, ref APCESettings.pawnToolBluntPenetrationBuffer);
                 }
                 if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Hediffs)
                 {
-                    list.Label("Hediffs Balance placeholder");
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Hediff settings (really just armor values from Hediffs)");
+                    Text.Font = GameFont.Small;
+
+                    list.Gap();
+                    list.TextFieldNumericLabeled("Hediff sharp armor multiplier (default: 10)", ref APCESettings.hediffSharpMult, ref APCESettings.hediffSharpMultBuffer);
+                    list.TextFieldNumericLabeled("Hediff blunt armor multiplier (default: 40)", ref APCESettings.hediffBluntMult, ref APCESettings.hediffBluntMultBuffer);
                 }
             }
 

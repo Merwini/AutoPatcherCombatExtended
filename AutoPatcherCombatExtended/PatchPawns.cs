@@ -18,6 +18,30 @@ namespace nuff.AutoPatcherCombatExtended
             try
             {
                 //TODO
+
+                #region ArmorValues
+                int sharpIndex = def.statBases.FindIndex(x => x.stat == StatDefOf.ArmorRating_Sharp);
+                int bluntIndex = def.statBases.FindIndex(x => x.stat == StatDefOf.ArmorRating_Blunt);
+                
+                if (sharpIndex >= 0)
+                {
+                    def.statBases[sharpIndex].value *= APCESettings.pawnArmorSharpMult;
+                }
+                if (bluntIndex >= 0)
+                {
+                    def.statBases[bluntIndex].value *= APCESettings.pawnArmorBluntMult;
+                }
+                #endregion
+
+                #region Tools
+                List<Tool> newToolsCE = new List<Tool>();
+                foreach (Tool tool in def.tools)
+                {
+                    newToolsCE.Add(PatchTool(tool));
+                }
+                def.tools = newToolsCE;
+                #endregion
+
                 log.PatchSucceeded();
             }
             catch (Exception ex)

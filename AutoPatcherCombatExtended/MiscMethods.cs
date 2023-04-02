@@ -55,5 +55,21 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
         }
+
+        public static ToolCE PatchTool(Tool tool)
+        {
+            ToolCE newToolCE = new ToolCE();
+            newToolCE.label = tool.label;
+            newToolCE.capacities = tool.capacities;
+            newToolCE.power = tool.power * APCESettings.pawnToolPowerMult;
+            newToolCE.cooldownTime = tool.cooldownTime;
+            newToolCE.linkedBodyPartsGroup = tool.linkedBodyPartsGroup;
+            if (tool.armorPenetration >= 0)
+            {
+                newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.pawnToolSharpPenetration;
+                newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.pawnToolBluntPenetration;
+            }
+            return newToolCE;
+        }
     }
 }
