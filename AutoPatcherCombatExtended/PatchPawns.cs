@@ -22,7 +22,7 @@ namespace nuff.AutoPatcherCombatExtended
                 #region ArmorValues
                 int sharpIndex = def.statBases.FindIndex(x => x.stat == StatDefOf.ArmorRating_Sharp);
                 int bluntIndex = def.statBases.FindIndex(x => x.stat == StatDefOf.ArmorRating_Blunt);
-                
+
                 if (sharpIndex >= 0)
                 {
                     def.statBases[sharpIndex].value *= APCESettings.pawnArmorSharpMult;
@@ -34,12 +34,7 @@ namespace nuff.AutoPatcherCombatExtended
                 #endregion
 
                 #region Tools
-                List<Tool> newToolsCE = new List<Tool>();
-                foreach (Tool tool in def.tools)
-                {
-                    newToolsCE.Add(PatchTool(tool));
-                }
-                def.tools = newToolsCE;
+                PatchAllTools(def);
                 #endregion
 
                 log.PatchSucceeded();
@@ -49,5 +44,7 @@ namespace nuff.AutoPatcherCombatExtended
                 log.PatchFailed(def.defName, ex);
             }
         }
+
+        
     }
 }

@@ -56,6 +56,19 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        private static void PatchAllTools(ThingDef def)
+        {
+            if (def.tools == null)
+                return;
+
+            List<Tool> newToolsCE = new List<Tool>();
+            foreach (Tool tool in def.tools)
+            {
+                newToolsCE.Add(PatchTool(tool));
+            }
+            def.tools = newToolsCE;
+        }
+
         public static ToolCE PatchTool(Tool tool)
         {
             ToolCE newToolCE = new ToolCE();

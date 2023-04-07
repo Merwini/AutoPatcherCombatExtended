@@ -20,6 +20,20 @@ namespace nuff.AutoPatcherCombatExtended
             Pawns,
             Hediffs,
         }
+        public enum gunTypes
+        {
+            Bow,
+            Grenade,
+            Handgun,
+            SMG,
+            assaultRifle,
+            Shotgun,
+            precisionRifle,
+            MachineGun,
+            ExplosiveLauncher,
+            Turret,
+            Other
+        }
 
         internal static SettingsTabs settingsTabs = SettingsTabs.General_Settings;
         internal static BalanceTabs balanceTabs = BalanceTabs.Apparel;
