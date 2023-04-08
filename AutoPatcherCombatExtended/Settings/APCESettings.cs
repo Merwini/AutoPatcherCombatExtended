@@ -20,7 +20,7 @@ namespace nuff.AutoPatcherCombatExtended
             Pawns,
             Hediffs,
         }
-        public enum gunTypes
+        public enum gunKinds
         {
             Bow,
             Grenade,
@@ -33,6 +33,38 @@ namespace nuff.AutoPatcherCombatExtended
             ExplosiveLauncher,
             Turret,
             Other
+        }
+
+        public enum VanillaStatBases //StatModifiers used by vanilla and not CE
+        {
+            AccuracyTouch,
+            AccuracyShort,
+            AccuracyMedium,
+            AccuracyLong,
+        }
+
+        public enum CEStatBases //StatModifiers used by CE but not vanilla
+        {
+            SightsEfficiency,
+            ShotSpread,
+            SwayFactor,
+            Bulk,
+            TicksBetweenBurstShots,
+            BurstShotCount,
+            Recoil,
+            ReloadTime
+        }
+        public enum SharedStatBases //StatModifiers used by both vanilla and CE
+        {
+            MaxHitPoints,
+            Flammability,
+            DeteriorationRate,
+            Beauty,
+            SellPriceFactor,
+            MarketValue,
+            Mass,
+            RangedWeapon_Cooldown,
+            WorkToMake
         }
 
         internal static SettingsTabs settingsTabs = SettingsTabs.General_Settings;

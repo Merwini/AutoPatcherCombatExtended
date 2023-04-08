@@ -21,12 +21,17 @@ namespace nuff.AutoPatcherCombatExtended
                 PatchAllTools(def);
                 #endregion
 
-                List<VerbProperties> newVerbsCE = new List<VerbProperties>();
-                List<StatModifier> newStatBases = new List<StatModifier>();
-                APCESettings.gunTypes gunType = new APCESettings.gunTypes();
 
+                APCESettings.gunKinds gunKind = DetermineGunKind(def);
+                List<StatModifier> newStatBases = PatchStatBases(def, gunKind);
 
-                //TODO
+                PatchAllVerbs(def);
+                def.statBases = newStatBases;
+
+                if (APCESettings.printLogs)
+                {
+                    Log.Message($"APCE thinks that {def.label} is a gun of kind: {gunKind}");
+                }
                 log.PatchSucceeded();
             }
             catch (Exception ex)
