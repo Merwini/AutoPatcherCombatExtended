@@ -73,8 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APCEAmmoDefOf.cs" />
+    <Compile Include="APCEDefOf.cs" />
     <Compile Include="APCEController.cs" />
+    <Compile Include="GenerateAmmo.cs" />
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Settings\APCESettings.cs" />
     <Compile Include="DetermineGunType.cs" />

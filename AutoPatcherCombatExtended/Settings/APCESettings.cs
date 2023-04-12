@@ -126,13 +126,16 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float advancedArmorShootingAccuracy = 0.2f; //TODO customize
 
         internal static int testInt = 5;
+
         //weapon settings
+        internal static float gunSharpPenMult = 20f; internal static string gunSharpPenMultBuffer = "20";
+        internal static float gunBluntPenMult = 80f; internal static string gunBluntPenMultBuffer = "80";
 
         //pawn settings
         internal static float pawnArmorSharpMult = 10; internal static string pawnArmorSharpMultBuffer = "10";
         internal static float pawnArmorBluntMult = 40; internal static string pawnArmorBluntMultBuffer = "40";
 
-        internal static float pawnToolPowerMult = 2f; internal static string pawnToolPowerMultBuffer = "2";
+        internal static float pawnToolPowerMult = 1f; internal static string pawnToolPowerMultBuffer = "1";
         internal static float pawnToolSharpPenetration = 10f; internal static string pawnToolSharpPenetrationBuffer = "10";
         internal static float pawnToolBluntPenetration = 40f; internal static string pawnToolBluntPenetrationBuffer = "40";
 
@@ -176,6 +179,10 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolPowerMult"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolPowerMultBuffer");
             Scribe_Values.Look(ref pawnToolSharpPenetration, "pawnToolSharpPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolSharpPenetrationBuffer");
             Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolBluntPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolBluntPenetrationBuffer");
+
+            //weapon
+            Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult"); Scribe_Values.Look(ref gunSharpPenMultBuffer, "gunSharpPenMultBuffer");
+            Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult"); Scribe_Values.Look(ref gunBluntPenMultBuffer, "gunBluntPenMultBuffer");
 
             base.ExposeData();
         }

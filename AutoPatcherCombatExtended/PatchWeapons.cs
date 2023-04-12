@@ -25,8 +25,13 @@ namespace nuff.AutoPatcherCombatExtended
                 APCESettings.gunKinds gunKind = DetermineGunKind(def);
                 List<StatModifier> newStatBases = PatchStatBases(def, gunKind);
 
+
+
                 PatchAllVerbs(def);
                 def.statBases = newStatBases;
+                AddCompsAmmoUser(def, gunKind);
+                AddCompsFireModes(def, gunKind);
+
 
                 if (APCESettings.printLogs)
                 {

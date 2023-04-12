@@ -18,21 +18,26 @@ namespace nuff.AutoPatcherCombatExtended
             try
             {
                 //TODO
-                foreach (HediffStage hs in def.stages)
+                if (def.stages != null)
                 {
-                    int sharpIndex = hs.statOffsets.FindIndex(x => x.stat == StatDefOf.ArmorRating_Sharp);
-                    int bluntIndex = hs.statOffsets.FindIndex(x => x.stat == StatDefOf.ArmorRating_Blunt);
+                    foreach (HediffStage hs in def.stages)
+                    {
+                        if (hs.statOffsets != null)
+                        {
+                            int sharpIndex = hs.statOffsets.FindIndex(x => x.stat == StatDefOf.ArmorRating_Sharp);
+                            int bluntIndex = hs.statOffsets.FindIndex(x => x.stat == StatDefOf.ArmorRating_Blunt);
 
-                    if (sharpIndex >= 0)
-                    {
-                        hs.statOffsets[sharpIndex].value *= APCESettings.hediffSharpMult;
-                    }
-                    if (bluntIndex >= 0)
-                    {
-                        hs.statOffsets[bluntIndex].value *= APCESettings.hediffBluntMult;
+                            if (sharpIndex >= 0)
+                            {
+                                hs.statOffsets[sharpIndex].value *= APCESettings.hediffSharpMult;
+                            }
+                            if (bluntIndex >= 0)
+                            {
+                                hs.statOffsets[bluntIndex].value *= APCESettings.hediffBluntMult;
+                            }
+                        }
                     }
                 }
-
                 log.PatchSucceeded();
             }
             catch (Exception ex)

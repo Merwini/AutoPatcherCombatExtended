@@ -77,7 +77,7 @@ namespace nuff.AutoPatcherCombatExtended
                     
                     list.NewColumn();
                     Text.Font = GameFont.Medium;
-                    list.Label("Bulk value settings");
+                    //list.Label("Bulk value settings");
                     Text.Font = GameFont.Small;
                 }
                 if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Weapons)
@@ -98,7 +98,7 @@ namespace nuff.AutoPatcherCombatExtended
                     Text.Font = GameFont.Medium;
                     list.Label("Pawn tool (melee attack) settings");
                     Text.Font = GameFont.Small;
-                    list.TextFieldNumericLabeled("Pawn tool power (damage) multiplier (default: 2)", ref APCESettings.pawnToolPowerMult, ref APCESettings.pawnToolPowerMultBuffer);
+                    list.TextFieldNumericLabeled("Pawn tool power (damage) multiplier (default: 1)", ref APCESettings.pawnToolPowerMult, ref APCESettings.pawnToolPowerMultBuffer);
                     list.TextFieldNumericLabeled("Pawn tool sharp penetration multiplier (default: 10)", ref APCESettings.pawnToolSharpPenetration, ref APCESettings.pawnToolSharpPenetrationBuffer);
                     list.TextFieldNumericLabeled("Pawn tool blunt penetration multiplier (default: 40)", ref APCESettings.pawnToolBluntPenetration, ref APCESettings.pawnToolBluntPenetrationBuffer);
                 }

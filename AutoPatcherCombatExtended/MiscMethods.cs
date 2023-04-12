@@ -231,22 +231,24 @@ namespace nuff.AutoPatcherCombatExtended
             //sights efficiency, float, ex: bows 0.6, small industrial arms 0.7, assault rifle 1.0, sniper rifle 3.5, charge rifle 1.1, charge smg 1.1, positive correlation to accuracy, tech level seems to be a factor, 
             StatModifier sightsEfficiency = new StatModifier();
             sightsEfficiency.stat = StatDef.Named("SightsEfficiency");
+
             //ShotSpread: float, ex: charge rifle 0.12, FAL 0.06, sniper rifles 0.02-0.04, negatively correlates to accuracy
             StatModifier shotSpread = new StatModifier();
             shotSpread.stat = StatDef.Named("ShotSpread");
-            //SwayFactor: float, ex: charge smg 0.75, judge 0.91, ak47 1.23, charge rifle 1.2, seems to positively correlate to mass, lower if "2 handed". need to categorize guns?
+
             StatModifier swayFactor = new StatModifier();
             swayFactor.stat = StatDef.Named("SwayFactor");
+
             //Bulk: float, for "1 handed" guns seems to be = mass, for "2 handed" = 2 * mass
             StatModifier gunBulk = new StatModifier();
             gunBulk.stat = StatDef.Named("Bulk");
-            //Recoil: float, ex: USAS-12 2.36, charge smg 1.2, flamethrower 0.85, FAL 2.07. seems to negatively correlate to mass. maybe damage / mass * x?
+
             StatModifier recoil = new StatModifier();
             recoil.stat = StatDef.Named("Recoil");
+
             //ReloadTime: in seconds
             //StatModifier reloadTime = new StatModifier();
             //reloadTime.stat = StatDef.Named("ReloadTime");
-
 
             float gunTechModFlat = (((float)def.techLevel - (float)TechLevel.Industrial) * 0.1f);
             float gunTechModPercent = (1 - gunTechModFlat);
@@ -268,72 +270,66 @@ namespace nuff.AutoPatcherCombatExtended
                 case APCESettings.gunKinds.Handgun:
                     shotSpread.value = (0.2f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = 0.7f + gunTechModFlat;
-                    swayFactor.value = gunMass * 0.9f;
+                    swayFactor.value = 1f;
                     gunBulk.value = 1f * gunMass;
-                    //reloadTime.value = 4f;
                     break;
                 case APCESettings.gunKinds.SMG:
                     shotSpread.value = (0.17f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = 0.7f + gunTechModFlat;
-                    swayFactor.value = gunMass * 0.8f;
+                    swayFactor.value = 2f;
                     gunBulk.value = 1f * gunMass;
                     recoil.value = (2f - (gunMass * 0.1f)) * recoilTechMod;
-                    //reloadTime.value = 4f;
                     break;
                 case APCESettings.gunKinds.Shotgun:
                     shotSpread.value = (0.17f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
-                    swayFactor.value = gunMass * 0.4f;
+                    swayFactor.value = 1.2f;
                     gunBulk.value = 2f * gunMass;
-                    //reloadTime.value = 4f;
                     break;
                 case APCESettings.gunKinds.assaultRifle:
                     shotSpread.value = (0.13f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
-                    swayFactor.value = gunMass * 0.35f;
+                    swayFactor.value = 1.33f;
                     gunBulk.value = 2f * gunMass;
                     recoil.value = (1.8f - (gunMass * 0.1f)) * recoilTechMod;
-                    //reloadTime.value = 4f;
                     break;
                 case APCESettings.gunKinds.MachineGun:
                     shotSpread.value = (0.13f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
-                    swayFactor.value = gunMass * 0.17f;
+                    swayFactor.value = 1.4f;
                     gunBulk.value = 1.5f * gunMass;
                     recoil.value = (2.3f - (gunMass * 0.1f)) * recoilTechMod;
-                    //reloadTime.value = 8f; //TODO placeholder, actual value will be mag size * 0.04
                     break;
                 case APCESettings.gunKinds.precisionRifle:
                     shotSpread.value = (0.1f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = 2.6f + gunTechModFlat;
-                    swayFactor.value = 2f - (gunMass * 0.1f); //unlike other guns, precision rifles are more steady as they get heavier
+                    swayFactor.value = 1.35f;
                     gunBulk.value = 2f * gunMass;
                     break;
                 case APCESettings.gunKinds.ExplosiveLauncher:
                     shotSpread.value = 0.122f + (forcedMissRadius * 0.02f);
                     sightsEfficiency.value = seDefault;
-                    swayFactor.value = (float)Math.Sqrt(gunMass) * 0.6f;
+                    swayFactor.value = 1.8f;
                     gunBulk.value = 2f * gunMass;
                     break;
                 case APCESettings.gunKinds.Turret:
                     shotSpread.value = (0.1f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
-                    swayFactor.value = 1f; //since they aren't carried, we can't expect any sort of consistency for turret mass, so we can't factor it in
+                    swayFactor.value = 1.5f;
                     gunBulk.value = 2f * gunMass;
                     recoil.value = 1f;
                     break;
                 case APCESettings.gunKinds.Grenade:
-                    sightsEfficiency.value = 0.65f; //grenades don't have shot spread or def sway
+                    sightsEfficiency.value = 0.65f;
                     break;
                 default:
                     shotSpread.value = shotSpread.value = (0.15f - ssAccuracyMod) * gunTechModPercent; //somewhere between an SMG and assault rifle
                     sightsEfficiency.value = seDefault;
-                    swayFactor.value = gunMass * 0.5f;
+                    swayFactor.value = 2.3f - (gunMass * 0.1f);
                     gunBulk.value = 2f * gunMass;
                     recoil.value = 1f;
                     break;
             }
-
 
             //TicksBetweenBurstShots is part of the verb_shoot in xml, but somehow ends up in statbases? rimworld is confusing. int ex: 4 for LMGs, 10 for AR, 12 for CR
             StatModifier ticksBBS = new StatModifier();
@@ -358,25 +354,41 @@ namespace nuff.AutoPatcherCombatExtended
             newStatBases.Add(ticksBBS);
             newStatBases.Add(burstShotCount);
             newStatBases.Add(recoil);
-            //newStatBases.Add(reloadTime);
 
             return newStatBases;
         }
 
-        private void AddCompsAmmoUser(ThingDef weapon) //TODO WIP 
+        internal static void AddCompsAmmoUser(ThingDef weapon, APCESettings.gunKinds gunKind)
         {
             CombatExtended.CompProperties_AmmoUser newAUComp = new CombatExtended.CompProperties_AmmoUser();
-            newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 5;
-            newAUComp.reloadTime = 4f;//TODO change based on gun type
+            newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 5; //TODO maybe switch based on gun kind
+            switch (gunKind)
+            {
+                case APCESettings.gunKinds.Bow:
+                    {
+                        newAUComp.reloadTime = 1f;
+                        break;
+                    }
+                case APCESettings.gunKinds.MachineGun:
+                    {
+                        newAUComp.reloadTime = newAUComp.magazineSize * 0.09f;
+                        break;
+                    }
+                default:
+                    {
+                        newAUComp.reloadTime = 4f;
+                        break;
+                    }
+            }
             newAUComp.reloadOneAtATime = false; //TODO heuristic
             newAUComp.throwMote = true;
-            //newAUComp.ammoSet = GenerateAmmo(weapon); //TODO new Generator method
+            newAUComp.ammoSet = GenerateAmmoSet(weapon, gunKind);
             newAUComp.loadedAmmoBulkFactor = 0;
             newAUComp.compClass = typeof(CombatExtended.CompAmmoUser);
             weapon.comps.Add(newAUComp);
         }
 
-        private void AddCompsFireModes(ThingDef weapon) // TODO WIP 
+        internal static void AddCompsFireModes(ThingDef weapon, APCESettings.gunKinds gunKind) // TODO WIP 
         {
             CombatExtended.CompProperties_FireModes newFMComp = new CombatExtended.CompProperties_FireModes();
             if (weapon.Verbs[0].burstShotCount > 1)
@@ -387,11 +399,22 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 newFMComp.aimedBurstShotCount = 1;
             }
-            newFMComp.aiUseBurstMode = true; //sure?
+            newFMComp.aiUseBurstMode = true;
             newFMComp.noSingleShot = false; //TODO figure out what types of CE guns don't have this
             newFMComp.noSnapshot = false; //TODO same as above
             newFMComp.aiAimMode = AimMode.Snapshot; //TODO if statement based on gun type?
             weapon.comps.Add(newFMComp);
+        }
+
+        internal static void PatchBaseBullet(ThingDef bullet)
+        {
+            bullet.category = ThingCategory.Projectile;
+            bullet.tickerType = TickerType.Normal;
+            bullet.altitudeLayer = AltitudeLayer.Projectile;
+            bullet.thingClass = typeof(CombatExtended.BulletCE);
+            bullet.useHitPoints = false;
+            bullet.neverMultiSelect = true;
+            bullet.graphicData.shaderType = ShaderTypeDefOf.Transparent;
         }
     }
 }
