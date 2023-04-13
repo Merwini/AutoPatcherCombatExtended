@@ -57,8 +57,16 @@ namespace nuff.AutoPatcherCombatExtended
                     {
                         if (APCESettings.patchWeapons)
                         {
-                            PatchWeapon(td, log);
-                            continue;
+                            if (td.IsRangedWeapon)
+                            {
+                                PatchRangedWeapon(td, log);
+                                continue;
+                            }
+                            else if (td.IsMeleeWeapon)
+                            {
+                                PatchMeleeWeapon(td, log);
+                                continue;
+                            }
                         }
                     }
                     else if (typeof(Pawn).IsAssignableFrom(td.thingClass))

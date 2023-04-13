@@ -13,25 +13,19 @@ namespace nuff.AutoPatcherCombatExtended
     partial class APCEController
     {
         //TODO
-        internal static void PatchWeapon(ThingDef def, APCEPatchLogger log)
+        internal static void PatchRangedWeapon(ThingDef def, APCEPatchLogger log)
         {
             try
             {
-                #region Tools
                 PatchAllTools(def);
-                #endregion
-
 
                 APCESettings.gunKinds gunKind = DetermineGunKind(def);
                 List<StatModifier> newStatBases = PatchStatBases(def, gunKind);
-
-
 
                 PatchAllVerbs(def);
                 def.statBases = newStatBases;
                 AddCompsAmmoUser(def, gunKind);
                 AddCompsFireModes(def, gunKind);
-
 
                 if (APCESettings.printLogs)
                 {

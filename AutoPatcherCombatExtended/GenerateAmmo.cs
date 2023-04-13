@@ -29,8 +29,8 @@ namespace nuff.AutoPatcherCombatExtended
             newAmmoCat.defName = weapon.defName + "_AmmoCat";
             newAmmoCat.label = weapon.label + " Ammo";
             newAmmoCat.childThingDefs = new List<ThingDef>();
-            newAmmoCat.childCategories = new List<ThingCategoryDef>(); //TODO not sure yet if this is better to leave null or initialize empty
-            newAmmoCat.childSpecialFilters = new List<SpecialThingFilterDef>(); //TODO not sure yet if this is better to leave null or initialize empty
+            newAmmoCat.childCategories = new List<ThingCategoryDef>();
+            newAmmoCat.childSpecialFilters = new List<SpecialThingFilterDef>();
             newAmmoCat.parent = APCEDefOf.Ammo;
             newAmmoCat.iconPath = "UI/Icons/ThingCategories/Ammo";
             newAmmoCat.resourceReadoutRoot = false;
@@ -116,6 +116,7 @@ namespace nuff.AutoPatcherCombatExtended
                                             newSD2.amount = (int)(damageHolder * 0.5f + 0.5f);
                                             newSD2.chance = 1;
                                             newPPCE.empShieldBreakChance = 0.2f;
+                                            newPPCE.secondaryDamage.Add(newSD2);
                                             break;
                                         }
                                     default:
@@ -124,7 +125,7 @@ namespace nuff.AutoPatcherCombatExtended
                                         }
                                 }
                                 SetDamage(newPPCE, damageHolder);
-                                //TODO block to convert ExtraDamages to SecondaryDamages and add them
+                                newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
                                 newProjectile.projectile = newPPCE;
                                 newProjectiles.Add(newProjectile);
                                 DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
@@ -226,7 +227,7 @@ namespace nuff.AutoPatcherCombatExtended
                                         }
                                 }
                                 SetDamage(newPPCE, damageHolder);
-                                //TODO block to convert ExtraDamages to SecondaryDamages and add them
+                                newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
                                 newProjectile.projectile = newPPCE;
                                 newProjectiles.Add(newProjectile);
                                 DefGenerator.AddImpliedDef<ThingDef>(newProjectile);

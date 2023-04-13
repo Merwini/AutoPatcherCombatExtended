@@ -76,6 +76,7 @@
     <Compile Include="APCEDefOf.cs" />
     <Compile Include="APCEController.cs" />
     <Compile Include="GenerateAmmo.cs" />
+    <Compile Include="PatchMeleeWeapon.cs" />
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Settings\APCESettings.cs" />
     <Compile Include="DetermineGunType.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="PatchHediffs.cs" />
     <Compile Include="PatchPawns.cs" />
     <Compile Include="PatchTurrets.cs" />
-    <Compile Include="PatchWeapons.cs" />
+    <Compile Include="PatchRangedWeapon.cs" />
     <Compile Include="APCEMod.cs" />
     <Compile Include="PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
