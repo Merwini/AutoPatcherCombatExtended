@@ -31,17 +31,112 @@ namespace nuff.AutoPatcherCombatExtended
             newAmmoCat.childThingDefs = new List<ThingDef>();
             newAmmoCat.childCategories = new List<ThingCategoryDef>();
             newAmmoCat.childSpecialFilters = new List<SpecialThingFilterDef>();
-            newAmmoCat.parent = APCEDefOf.Ammo;
             newAmmoCat.iconPath = "UI/Icons/ThingCategories/Ammo";
             newAmmoCat.resourceReadoutRoot = false;
 
+
+            //TODO extract duplicate code
             switch (gunKind)
             {
-                /*
+                
                 case APCESettings.gunKinds.Bow:
                     {
+                        newAmmoCat.parent = APCEDefOf.AmmoArrows;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            ThingDef newProjectile = new ThingDef();
+                            newProjectile.graphicData = new GraphicData();
+                            ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
+                            newPPCE.secondaryDamage = new List<SecondaryDamage>();
+
+                            int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
+                            PatchBaseBullet(newProjectile);
+                            newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
+                            newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
+                            newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
+
+                            newPPCE.speed = 20;
+                            newPPCE.dropsCasings = false;
+                            newPPCE.explosionDamageFalloff = true;
+                            newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
+                            newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult;
+                            newPPCE.flyOverhead = false;
+                            //TODO maybe use CE's arrow textures?
+                            switch (i)
+                            {
+                                case 0:
+                                    {//stone
+                                        newProjectile.defName = ("APCE_Stone_Arrow_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " stone arrow");
+                                        newPPCE.speed *= 0.9f;
+                                        newPPCE.armorPenetrationSharp *= 0.4f;
+                                        newPPCE.armorPenetrationBlunt *= 0.33f;
+                                        newAmmos[i] = APCEDefOf.Ammo_Arrow_Stone;
+                                        newPPCE.preExplosionSpawnChance = 0.333f;
+                                        newPPCE.preExplosionSpawnThingDef = APCEDefOf.Ammo_Arrow_Stone;
+                                        break;
+                                    }
+                                case 1:
+                                    {//steel
+                                        newProjectile.defName = ("APCE_Steel_Arrow_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " steel arrow");
+                                        damageHolder = (int)(damageHolder * 1.25f + 0.5f);
+                                        newAmmos[i] = APCEDefOf.Ammo_Arrow_Steel;
+                                        newPPCE.preExplosionSpawnChance = 0.666f;
+                                        newPPCE.preExplosionSpawnThingDef = APCEDefOf.Ammo_Arrow_Steel;
+                                        break;
+                                    }
+                                case 2:
+                                    {//plasteel
+                                        newProjectile.defName = ("APCE_Plasteel_Arrow_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " plasteel arrow");
+                                        newPPCE.speed *= 1.1f;
+                                        newPPCE.armorPenetrationSharp *= 2f;
+                                        newPPCE.armorPenetrationBlunt *= 0.5f;
+                                        newAmmos[i] = APCEDefOf.Ammo_Arrow_Plasteel;
+                                        newPPCE.preExplosionSpawnChance = 0.8f;
+                                        newPPCE.preExplosionSpawnThingDef = APCEDefOf.Ammo_Arrow_Plasteel;
+                                        break;
+                                    }
+                                case 3:
+                                    {//venom
+                                        newProjectile.defName = ("APCE_Venom_Arrow_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " venom arrow");
+                                        damageHolder = (int)(damageHolder * 1.25f + 0.5f);
+                                        SecondaryDamage newSD2 = new SecondaryDamage();
+                                        newSD2.def = APCEDefOf.ArrowVenom;
+                                        newSD2.amount = (int)(damageHolder * 0.25f + 0.5f);
+                                        newSD2.chance = 1;
+                                        newPPCE.secondaryDamage.Add(newSD2);
+                                        newAmmos[i] = APCEDefOf.Ammo_Arrow_Venom;
+                                        newPPCE.preExplosionSpawnChance = 0.666f;
+                                        newPPCE.preExplosionSpawnThingDef = APCEDefOf.Ammo_Arrow_Venom;
+                                        break;
+                                    }
+                                case 4:
+                                    {//flame
+                                        newProjectile.defName = ("APCE_Flame_Arrow_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " flame arrow");
+                                        newProjectile.thingClass = typeof(CombatExtended.ProjectileCE_Explosive);
+                                        newPPCE.damageDef = APCEDefOf.ArrowFlame;
+                                        damageHolder = (int)(damageHolder * 0.25f + 0.5f);
+                                        newPPCE.armorPenetrationSharp = 0f;
+                                        newPPCE.armorPenetrationBlunt = 0f;
+                                        newAmmos[i] = APCEDefOf.Ammo_Arrow_Flame;
+                                        newPPCE.preExplosionSpawnChance = 0.16f;
+                                        newPPCE.preExplosionSpawnThingDef = APCEDefOf.Filth_Fuel;
+                                        break;
+                                    }
+                            }
+                            SetDamage(newPPCE, damageHolder);
+                            newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
+                            newProjectile.projectile = newPPCE;
+                            newProjectiles.Add(newProjectile);
+                            DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
+                        }
                         break;
                     }
+                    /*
                 case APCESettings.gunKinds.Shotgun:
                     {
                         break;
@@ -59,7 +154,7 @@ namespace nuff.AutoPatcherCombatExtended
                     {
                         if ((weapon.techLevel - TechLevel.Spacer) >= 0) //TODO re-implement after testing
                         {
-                            newAmmoCat.parent = ThingCategoryDef.Named("AmmoAdvanced");
+                            newAmmoCat.parent = APCEDefOf.AmmoAdvanced;
                             newAmmoSet.similarTo = APCEDefOf.AmmoSet_ChargedRifle;
 
                             for (int i = 0; i < 3; i++)
@@ -134,6 +229,7 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                         else
                         {
+                            newAmmoCat.parent = APCEDefOf.Ammo;
                             newAmmoSet.similarTo = APCEDefOf.AmmoSet_RifleIntermediate;
 
                             for (int i = 0; i < 6; i++)

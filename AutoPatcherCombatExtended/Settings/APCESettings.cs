@@ -131,6 +131,11 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float gunSharpPenMult = 20f; internal static string gunSharpPenMultBuffer = "20";
         internal static float gunBluntPenMult = 80f; internal static string gunBluntPenMultBuffer = "80";
 
+        internal static float weaponToolPowerMult = 1f; internal static string weaponToolPowerMultBuffer = "1";
+        internal static float weaponToolSharpPenetration = 10f; internal static string weaponToolSharpPenetrationBuffer = "10";
+        internal static float weaponToolBluntPenetration = 40f; internal static string weaponToolBluntPenetrationBuffer = "40";
+
+
         //pawn settings
         internal static float pawnArmorSharpMult = 10; internal static string pawnArmorSharpMultBuffer = "10";
         internal static float pawnArmorBluntMult = 40; internal static string pawnArmorBluntMultBuffer = "40";

@@ -16,6 +16,13 @@ namespace nuff.AutoPatcherCombatExtended
         //TODO fill this bad boy up
 
         public static ThingCategoryDef Ammo;
+        public static ThingCategoryDef AmmoAdvanced;
+        public static ThingCategoryDef AmmoArrows;
+
+        public static DamageDef ArrowVenom;
+        public static DamageDef ArrowFlame;
+
+        public static ThingDef Filth_Fuel;
 
         //industrial gun
         public static ThingDef APCE_Gun_Generic;
