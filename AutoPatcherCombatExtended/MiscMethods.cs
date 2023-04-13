@@ -64,12 +64,12 @@ namespace nuff.AutoPatcherCombatExtended
             List<Tool> newToolsCE = new List<Tool>();
             foreach (Tool tool in def.tools)
             {
-                newToolsCE.Add(PatchTool(tool));
+                newToolsCE.Add(PatchTool(tool, !def.IsWeapon));
             }
             def.tools = newToolsCE;
         }
 
-        public static ToolCE PatchTool(Tool tool)
+        public static ToolCE PatchTool(Tool tool, bool isPawn)
         {
             ToolCE newToolCE = new ToolCE();
             newToolCE.label = tool.label;
@@ -79,8 +79,17 @@ namespace nuff.AutoPatcherCombatExtended
             newToolCE.linkedBodyPartsGroup = tool.linkedBodyPartsGroup;
             if (tool.armorPenetration >= 0)
             {
-                newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.pawnToolSharpPenetration;
-                newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.pawnToolBluntPenetration;
+                if (isPawn)
+                {
+                    newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.pawnToolSharpPenetration;
+                    newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.pawnToolBluntPenetration;
+                }
+                else
+                {
+                    newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.weaponToolSharpPenetration;
+                    newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.weaponToolBluntPenetration;
+                }
+                
             }
             return newToolCE;
         }
