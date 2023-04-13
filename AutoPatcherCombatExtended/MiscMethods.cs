@@ -182,7 +182,7 @@ namespace nuff.AutoPatcherCombatExtended
             return ppceHolder;
         }
 
-        private static List<SecondaryDamage> ExtraToSecondary(List<ExtraDamage> ed)
+        internal static List<SecondaryDamage> ExtraToSecondary(List<ExtraDamage> ed)
         {
             List<SecondaryDamage> newSDList = new List<SecondaryDamage>();
             if (!(ed == null) && !(ed.Count == 0))
@@ -200,7 +200,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newSDList;
         }
 
-        private static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
+        internal static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
         {
             //experimental reflection attempt
             Type tpp = typeof(ProjectileProperties);
@@ -208,7 +208,7 @@ namespace nuff.AutoPatcherCombatExtended
             dab.SetValue(newPPCE, (int)damage);
         }
 
-        public static List<StatModifier> PatchStatBases(ThingDef def, APCESettings.gunKinds gunKind)
+        internal static List<StatModifier> PatchStatBases(ThingDef def, APCESettings.gunKinds gunKind)
         {
             List<StatModifier> newStatBases = new List<StatModifier>();
             foreach (string statMod in Enum.GetNames(typeof(APCESettings.SharedStatBases)))
@@ -325,7 +325,7 @@ namespace nuff.AutoPatcherCombatExtended
                 default:
                     shotSpread.value = shotSpread.value = (0.15f - ssAccuracyMod) * gunTechModPercent; //somewhere between an SMG and assault rifle
                     sightsEfficiency.value = seDefault;
-                    swayFactor.value = 2.3f - (gunMass * 0.1f);
+                    swayFactor.value = 2.0f;
                     gunBulk.value = 2f * gunMass;
                     recoil.value = 1f;
                     break;
