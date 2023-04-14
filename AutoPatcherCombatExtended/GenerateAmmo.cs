@@ -140,7 +140,7 @@ namespace nuff.AutoPatcherCombatExtended
                 case APCESettings.gunKinds.Shotgun:
                     {
                         newAmmoCat.parent = APCEDefOf.Ammo;
-                        for (int i = 0; i < 5; i++)
+                        for (int i = 0; i < 4; i++)
                         {
                             ThingDef newProjectile = new ThingDef();
                             newProjectile.graphicData = new GraphicData();
@@ -153,7 +153,7 @@ namespace nuff.AutoPatcherCombatExtended
                             newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
                             newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
 
-                            newPPCE.dropsCasings = false;
+                            newPPCE.dropsCasings = true;
                             newPPCE.explosionDamageFalloff = true;
                             newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
                             newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult / 4f;
@@ -192,6 +192,7 @@ namespace nuff.AutoPatcherCombatExtended
                                         newPPCE.armorPenetrationSharp = 0f;
                                         newPPCE.armorPenetrationBlunt *= 0.75f;
                                         newPPCE.spreadMult = 2f;
+                                        newPPCE.speed = 22;
                                         break;
                                     }
                                 case 3:
@@ -220,11 +221,88 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                         break;
                     }
-                /*
+                
             case APCESettings.gunKinds.ExplosiveLauncher:
                 {
-                    break;
+                        newAmmoCat.parent = APCEDefOf.Ammo;
+                        for (int i = 0; i < 4; i++)
+                        {
+                            ThingDef newProjectile = new ThingDef();
+                            newProjectile.graphicData = new GraphicData();
+                            ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
+                            newPPCE.secondaryDamage = new List<SecondaryDamage>();
+
+                            int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
+                            PatchBaseBullet(newProjectile);
+                            newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
+                            newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
+                            newProjectile.graphicData.shaderType = weapon.Verbs[0].defaultProjectile.graphicData.shaderType;
+                            newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
+
+                            newPPCE.dropsCasings = true;
+                            newPPCE.explosionDamageFalloff = true;
+                            newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
+                            newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult / 4f;
+                            newPPCE.flyOverhead = false;
+                            switch (i)
+                            {
+                                case 0:
+                                    {//incendiary
+                                        newProjectile.defName = ("APCE_Incendiary_Bullet_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " incendiary bullet");
+                                        newAmmos[i] = APCEDefOf.Ammo_APCELauncher_Incendiary;
+                                        damageHolder = (int)(damageHolder * 0.66f + 0.5f);
+                                        newPPCE.damageDef = APCEDefOf.PrometheumFlame;
+                                        newPPCE.explosionRadius = weapon.Verbs[0].defaultProjectile.projectile.explosionRadius * 4f;
+                                        newPPCE.speed = 40;
+                                        newPPCE.preExplosionSpawnChance = 0.2f;
+                                        newPPCE.preExplosionSpawnThingDef = APCEDefOf.FilthPrometheum;
+                                        newPPCE.ai_IsIncendiary = true;
+                                        break;
+                                    }
+                                case 1:
+                                    {//thermobaric
+                                        newProjectile.defName = ("APCE_Thermobaric_Bullet_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " thermobaric bullet");
+                                        newAmmos[i] = APCEDefOf.Ammo_APCELauncher_Thermobaric;
+                                        damageHolder = (int)(damageHolder * 5f + 0.5f);
+                                        newPPCE.damageDef = APCEDefOf.Thermobaric;
+                                        newPPCE.explosionRadius = weapon.Verbs[0].defaultProjectile.projectile.explosionRadius * 2f;
+                                        newPPCE.speed = 40;
+                                        newPPCE.ai_IsIncendiary = true;
+                                        newPPCE.applyDamageToExplosionCellsNeighbors = true;
+                                        newPPCE.soundExplode = APCEDefOf.MortarBomb_Explode;
+                                        break;
+                                    }
+                                case 2:
+                                    {//foam
+                                        newProjectile.defName = ("APCE_Foam_Bullet_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " foam bullet");
+                                        newAmmos[i] = APCEDefOf.Ammo_APCELauncher_Foam;
+                                        //damageHolder = 0f; //TODO???
+                                        newPPCE.damageDef = DamageDefOf.Extinguish;
+                                        newPPCE.explosionRadius = weapon.Verbs[0].defaultProjectile.projectile.explosionRadius * 3f;
+                                        newPPCE.speed = 40;
+                                        newPPCE.suppressionFactor = 0f;
+                                        newPPCE.dangerFactor = 0f;
+                                        newPPCE.preExplosionSpawnChance = 1f;
+                                        newPPCE.preExplosionSpawnThingDef = APCEDefOf.Filth_FireFoam;
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        break;
+                                    }
+                            }
+                            SetDamage(newPPCE, damageHolder);
+                            newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
+                            newProjectile.projectile = newPPCE;
+                            newProjectiles.Add(newProjectile);
+                            DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
+                        }
+                        break;
                 }
+                    /*
             case APCESettings.gunKinds.Grenade;
                 {//TODO
                     break;

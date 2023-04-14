@@ -22,8 +22,15 @@ namespace nuff.AutoPatcherCombatExtended
         public static DamageDef ArrowVenom;
         public static DamageDef ArrowFlame;
         public static DamageDef Beanbag;
+        public static DamageDef PrometheumFlame;
+        public static DamageDef Thermobaric;
+
 
         public static ThingDef Filth_Fuel;
+        public static ThingDef FilthPrometheum;
+        public static ThingDef Filth_FireFoam;
+
+        public static SoundDef MortarBomb_Explode;
 
         //industrial gun
         public static ThingDef APCE_Gun_Generic;
@@ -56,7 +63,7 @@ namespace nuff.AutoPatcherCombatExtended
         //spacer shotgun
         //might not be needed
 
-        //bow
+        //explosive launcher
         public static ThingDef APCE_ExplosiveLauncher_Generic;
 
         public static AmmoSetDef AmmoSet_APCEGenericExplosiveLauncher;
@@ -64,7 +71,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static AmmoDef Ammo_APCELauncher_Thermobaric;
         public static AmmoDef Ammo_APCELauncher_Foam;
 
-        //explosive launcher
+        //bow
         public static ThingDef APCE_Bow_Generic;
 
         public static AmmoSetDef AmmoSet_Arrow;
