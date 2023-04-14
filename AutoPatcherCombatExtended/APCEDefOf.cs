@@ -21,6 +21,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static DamageDef ArrowVenom;
         public static DamageDef ArrowFlame;
+        public static DamageDef Beanbag;
 
         public static ThingDef Filth_Fuel;
 

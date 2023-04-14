@@ -136,23 +136,103 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                         break;
                     }
-                    /*
+                    
                 case APCESettings.gunKinds.Shotgun:
                     {
+                        newAmmoCat.parent = APCEDefOf.Ammo;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            ThingDef newProjectile = new ThingDef();
+                            newProjectile.graphicData = new GraphicData();
+                            ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
+                            newPPCE.secondaryDamage = new List<SecondaryDamage>();
+
+                            int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
+                            PatchBaseBullet(newProjectile);
+                            newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
+                            newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
+                            newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
+
+                            newPPCE.dropsCasings = false;
+                            newPPCE.explosionDamageFalloff = true;
+                            newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
+                            newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult / 4f;
+                            newPPCE.flyOverhead = false;
+                            switch (i)
+                            {
+                                case 0:
+                                    {//buck
+                                        newProjectile.defName = ("APCE_Buckshot_Bullet_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " buckshot bullet");
+                                        newAmmos[i] = APCEDefOf.Ammo_APCEGeneric_Buck;
+                                        damageHolder = (int)(damageHolder * 0.5f + 0.5f);
+                                        newPPCE.pelletCount = 9;
+                                        newPPCE.spreadMult = 8.9f;
+                                        newPPCE.speed = 72;
+                                        break;
+                                    }
+                                case 1:
+                                    {//slug
+                                        newProjectile.defName = ("APCE_Slug_Bullet_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " slug bullet");
+                                        newAmmos[i] = APCEDefOf.Ammo_APCEGeneric_Slug;
+                                        damageHolder = (int)(damageHolder * 3f + 0.5f);
+                                        newPPCE.armorPenetrationSharp *= 1.5f;
+                                        newPPCE.armorPenetrationBlunt *= 20f;
+                                        newPPCE.speed = 110;
+                                        break;
+                                    }
+                                case 2:
+                                    {//beanbag
+                                        newProjectile.defName = ("APCE_Beanbag_Bullet_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " beanbag bullet");
+                                        newAmmos[i] = APCEDefOf.Ammo_APCEGeneric_Beanbag;
+                                        damageHolder = (int)(damageHolder * 0.5f + 0.5f);
+                                        newPPCE.damageDef = APCEDefOf.Beanbag;
+                                        newPPCE.armorPenetrationSharp = 0f;
+                                        newPPCE.armorPenetrationBlunt *= 0.75f;
+                                        newPPCE.spreadMult = 2f;
+                                        break;
+                                    }
+                                case 3:
+                                    {//electroslug
+                                        newProjectile.defName = ("APCE_ElectroSlug_Bullet_" + weapon.defName);
+                                        newProjectile.label = (weapon.label + " ion charged bullet");
+                                        newAmmos[i] = APCEDefOf.Ammo_APCEGeneric_ElectroSlug;
+                                        damageHolder = (int)(damageHolder * 1.25f + 0.5f);
+                                        newPPCE.damageDef = DamageDefOf.EMP;
+                                        newPPCE.armorPenetrationSharp = 0f;
+                                        newPPCE.armorPenetrationBlunt = 0f;
+                                        newPPCE.speed = 30f;
+                                        newPPCE.empShieldBreakChance = 0.2f;
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        break;
+                                    }
+                            }
+                            SetDamage(newPPCE, damageHolder);
+                            newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
+                            newProjectile.projectile = newPPCE;
+                            newProjectiles.Add(newProjectile);
+                            DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
+                        }
                         break;
                     }
-                case APCESettings.gunKinds.ExplosiveLauncher:
-                    {
-                        break;
-                    }
-                case APCESettings.gunKinds.Grenade;
-                    {
-                        break;
-                    }
-                */
+                /*
+            case APCESettings.gunKinds.ExplosiveLauncher:
+                {
+                    break;
+                }
+            case APCESettings.gunKinds.Grenade;
+                {//TODO
+                    break;
+                }
+            */
                 default:
                     {
-                        if ((weapon.techLevel - TechLevel.Spacer) >= 0) //TODO re-implement after testing
+                        if ((weapon.techLevel - TechLevel.Spacer) >= 0)
                         {
                             newAmmoCat.parent = APCEDefOf.AmmoAdvanced;
                             newAmmoSet.similarTo = APCEDefOf.AmmoSet_ChargedRifle;
