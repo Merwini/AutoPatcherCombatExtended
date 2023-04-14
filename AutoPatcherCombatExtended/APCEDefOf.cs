@@ -90,5 +90,8 @@ namespace nuff.AutoPatcherCombatExtended
         public static AmmoSetDef AmmoSet_RifleIntermediate;
         public static AmmoSetDef AmmoSet_ChargedRifle;
         public static AmmoSetDef AmmoSet_Shotgun;
+
+        //StatDefs
+
     }
 }
