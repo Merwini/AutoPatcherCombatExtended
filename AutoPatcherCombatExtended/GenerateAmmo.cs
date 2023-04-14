@@ -118,7 +118,7 @@ namespace nuff.AutoPatcherCombatExtended
                                         newProjectile.defName = ("APCE_Flame_Arrow_" + weapon.defName);
                                         newProjectile.label = (weapon.label + " flame arrow");
                                         newProjectile.thingClass = typeof(CombatExtended.ProjectileCE_Explosive);
-                                        newPPCE.damageDef = APCEDefOf.ArrowFlame;
+                                        newPPCE.damageDef = APCEDefOf.ArrowFire;
                                         damageHolder = (int)(damageHolder * 0.25f + 0.5f);
                                         newPPCE.armorPenetrationSharp = 0f;
                                         newPPCE.armorPenetrationBlunt = 0f;

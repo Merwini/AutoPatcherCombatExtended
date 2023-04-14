@@ -20,7 +20,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static ThingCategoryDef AmmoArrows;
 
         public static DamageDef ArrowVenom;
-        public static DamageDef ArrowFlame;
+        public static DamageDef ArrowFire;
         public static DamageDef Beanbag;
         public static DamageDef PrometheumFlame;
         public static DamageDef Thermobaric;
