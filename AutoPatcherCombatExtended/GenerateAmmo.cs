@@ -140,6 +140,7 @@ namespace nuff.AutoPatcherCombatExtended
                 case APCESettings.gunKinds.Shotgun:
                     {
                         newAmmoCat.parent = APCEDefOf.Ammo;
+                        newAmmoSet.similarTo = APCEDefOf.AmmoSet_Shotgun;
                         for (int i = 0; i < 4; i++)
                         {
                             ThingDef newProjectile = new ThingDef();
@@ -154,6 +155,8 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
 
                             newPPCE.dropsCasings = true;
+                            newPPCE.casingMoteDefname = "Mote_ShotgunShell";
+                            newPPCE.casingFilthDefname = "Filth_ShotgunAmmoCasings";
                             newPPCE.explosionDamageFalloff = true;
                             newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
                             newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult / 4f;
@@ -225,6 +228,7 @@ namespace nuff.AutoPatcherCombatExtended
             case APCESettings.gunKinds.ExplosiveLauncher:
                 {
                         newAmmoCat.parent = APCEDefOf.Ammo;
+
                         for (int i = 0; i < 3; i++)
                         {
                             ThingDef newProjectile = new ThingDef();
@@ -302,12 +306,6 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                         break;
                 }
-                    /*
-            case APCESettings.gunKinds.Grenade;
-                {//TODO
-                    break;
-                }
-            */
                 default:
                     {
                         if ((weapon.techLevel - TechLevel.Spacer) >= 0)
@@ -332,7 +330,7 @@ namespace nuff.AutoPatcherCombatExtended
                                 //newPPCE.damageDef = DamageDefOf.Bullet;
 
                                 newPPCE.speed = 160;
-                                newPPCE.dropsCasings = true;
+                                newPPCE.dropsCasings = false;
                                 newPPCE.explosionDamageFalloff = true;
                                 newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
                                 newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult;
@@ -407,6 +405,8 @@ namespace nuff.AutoPatcherCombatExtended
                                 //newPPCE.damageDef = DamageDefOf.Bullet;
                                 newPPCE.speed = 185;
                                 newPPCE.dropsCasings = true;
+                                newPPCE.casingMoteDefname = "Mote_EmptyCasing";
+                                newPPCE.casingFilthDefname = "Filth_RifleAmmoCasings";
                                 newPPCE.explosionDamageFalloff = true;
                                 newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
                                 newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult;

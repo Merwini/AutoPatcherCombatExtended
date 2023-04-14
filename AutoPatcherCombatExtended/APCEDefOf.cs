@@ -29,8 +29,12 @@ namespace nuff.AutoPatcherCombatExtended
         public static ThingDef Filth_Fuel;
         public static ThingDef FilthPrometheum;
         public static ThingDef Filth_FireFoam;
+        public static ThingDef Filth_ShotgunAmmoCasings;
 
         public static SoundDef MortarBomb_Explode;
+
+        public static FleckDef Mote_GrenadePin;
+        public static FleckDef Mote_ShotgunShell;
 
         //industrial gun
         public static ThingDef APCE_Gun_Generic;
