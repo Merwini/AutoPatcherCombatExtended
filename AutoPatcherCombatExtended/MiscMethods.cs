@@ -259,21 +259,21 @@ namespace nuff.AutoPatcherCombatExtended
 
             //sights efficiency, float, ex: bows 0.6, small industrial arms 0.7, assault rifle 1.0, sniper rifle 3.5, charge rifle 1.1, charge smg 1.1, positive correlation to accuracy, tech level seems to be a factor, 
             StatModifier sightsEfficiency = new StatModifier();
-            sightsEfficiency.stat = StatDef.Named("SightsEfficiency");
+            sightsEfficiency.stat = CE_StatDefOf.SightsEfficiency;
 
             //ShotSpread: float, ex: charge rifle 0.12, FAL 0.06, sniper rifles 0.02-0.04, negatively correlates to accuracy
             StatModifier shotSpread = new StatModifier();
-            shotSpread.stat = StatDef.Named("ShotSpread");
+            shotSpread.stat = CE_StatDefOf.ShotSpread;
 
             StatModifier swayFactor = new StatModifier();
-            swayFactor.stat = StatDef.Named("SwayFactor");
+            swayFactor.stat = CE_StatDefOf.SwayFactor;
 
             //Bulk: float, for "1 handed" guns seems to be = mass, for "2 handed" = 2 * mass
             StatModifier gunBulk = new StatModifier();
-            gunBulk.stat = StatDef.Named("Bulk");
+            gunBulk.stat = CE_StatDefOf.Bulk;
 
             StatModifier recoil = new StatModifier();
-            recoil.stat = StatDef.Named("Recoil");
+            recoil.stat = CE_StatDefOf.Recoil;
 
             //ReloadTime: in seconds
             //StatModifier reloadTime = new StatModifier();
@@ -362,12 +362,12 @@ namespace nuff.AutoPatcherCombatExtended
 
             //TicksBetweenBurstShots is part of the verb_shoot in xml, but somehow ends up in statbases? rimworld is confusing. int ex: 4 for LMGs, 10 for AR, 12 for CR
             StatModifier ticksBBS = new StatModifier();
-            ticksBBS.stat = StatDef.Named("TicksBetweenBurstShots");
+            ticksBBS.stat = CE_StatDefOf.TicksBetweenBurstShots;
             ticksBBS.value = def.Verbs[0].ticksBetweenBurstShots;
 
             //BurstShotCount as above. int, ex: AR 3, LMG 10, pistols 1
             StatModifier burstShotCount = new StatModifier();
-            burstShotCount.stat = StatDef.Named("BurstShotCount");
+            burstShotCount.stat = CE_StatDefOf.BurstShotCount;
             if (def.Verbs[0].burstShotCount == 1)
                 burstShotCount.value = 1;
             else
