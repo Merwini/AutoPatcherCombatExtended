@@ -76,6 +76,7 @@
     <Compile Include="APCEDefOf.cs" />
     <Compile Include="APCEController.cs" />
     <Compile Include="GenerateAmmo.cs" />
+    <Compile Include="PatchGrenade.cs" />
     <Compile Include="PatchMeleeWeapon.cs" />
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Settings\APCESettings.cs" />

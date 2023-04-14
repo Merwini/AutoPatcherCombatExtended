@@ -16,7 +16,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             PatchAllTools(def);
 
-
+            //TODO add secondary stats like crits and dodge
         }
     }
 }
