@@ -225,7 +225,7 @@ namespace nuff.AutoPatcherCombatExtended
             case APCESettings.gunKinds.ExplosiveLauncher:
                 {
                         newAmmoCat.parent = APCEDefOf.Ammo;
-                        for (int i = 0; i < 4; i++)
+                        for (int i = 0; i < 3; i++)
                         {
                             ThingDef newProjectile = new ThingDef();
                             newProjectile.graphicData = new GraphicData();
@@ -233,16 +233,16 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.secondaryDamage = new List<SecondaryDamage>();
 
                             int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
+                            if (weapon.Verbs[0].defaultProjectile.projectile.damageDef == DamageDefOf.Bomb && damageHolder == 635)
+                            {//CE Changes the defaultDamage of the Bomb DamageDef to 635. Any weapon relying on the default will do too much damage
+                                damageHolder = 50;
+                            }
                             PatchBaseBullet(newProjectile);
                             newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
                             newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
-                            newProjectile.graphicData.shaderType = weapon.Verbs[0].defaultProjectile.graphicData.shaderType;
-                            newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
 
                             newPPCE.dropsCasings = true;
                             newPPCE.explosionDamageFalloff = true;
-                            newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
-                            newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult / 4f;
                             newPPCE.flyOverhead = false;
                             switch (i)
                             {
