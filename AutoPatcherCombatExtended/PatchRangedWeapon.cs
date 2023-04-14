@@ -31,8 +31,15 @@ namespace nuff.AutoPatcherCombatExtended
 
                 PatchAllVerbs(def);
                 def.statBases = newStatBases;
-                AddCompsAmmoUser(def, gunKind);
-                AddCompsFireModes(def, gunKind);
+                if (gunKind != APCESettings.gunKinds.Grenade)
+                {
+                    AddCompsAmmoUser(def, gunKind);
+                    AddCompsFireModes(def, gunKind);
+                }
+                else
+                {
+                    PatchGrenade(def);
+                }
             }
             catch (Exception ex)
             {

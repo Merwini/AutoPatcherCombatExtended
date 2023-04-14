@@ -72,25 +72,39 @@ namespace nuff.AutoPatcherCombatExtended
         public static ToolCE PatchTool(Tool tool, bool isPawn)
         {
             ToolCE newToolCE = new ToolCE();
-            newToolCE.label = tool.label;
-            newToolCE.capacities = tool.capacities;
-            newToolCE.power = tool.power * APCESettings.pawnToolPowerMult;
-            newToolCE.cooldownTime = tool.cooldownTime;
+
+            newToolCE.id = tool.id;
+            newToolCE.ensureLinkedBodyPartsGroupAlwaysUsable = tool.ensureLinkedBodyPartsGroupAlwaysUsable;
             newToolCE.linkedBodyPartsGroup = tool.linkedBodyPartsGroup;
+            newToolCE.soundMeleeMiss = tool.soundMeleeMiss;
+            newToolCE.extraMeleeDamages = tool.extraMeleeDamages;
+            newToolCE.alwaysTreatAsWeapon = tool.alwaysTreatAsWeapon;
+            newToolCE.chanceFactor = tool.chanceFactor;
+            newToolCE.hediff = tool.hediff;
+            newToolCE.soundMeleeHit = tool.soundMeleeHit;
+            newToolCE.cooldownTime = tool.cooldownTime;
             if (tool.armorPenetration >= 0)
             {
                 if (isPawn)
                 {
                     newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.pawnToolSharpPenetration;
                     newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.pawnToolBluntPenetration;
+                    newToolCE.power = tool.power * APCESettings.pawnToolPowerMult;
                 }
                 else
                 {
                     newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.weaponToolSharpPenetration;
                     newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.weaponToolBluntPenetration;
+                    newToolCE.power = tool.power * APCESettings.weaponToolPowerMult;
                 }
-                
+
             }
+            newToolCE.capacities = tool.capacities;
+            newToolCE.labelUsedInLogging = tool.labelUsedInLogging;
+            newToolCE.untranslatedLabel = tool.untranslatedLabel;
+            newToolCE.label = tool.label;
+            newToolCE.surpriseAttack = tool.surpriseAttack;
+
             return newToolCE;
         }
 
@@ -119,35 +133,40 @@ namespace nuff.AutoPatcherCombatExtended
             try
             {
                 VerbPropertiesCE newVPCE = new VerbPropertiesCE();
-                if ((vp.verbClass.ToString().Equals("Verse.Verb_Shoot")) || (vp.verbClass.ToString().Equals("Verse.Verb_ShootOneUse")) || vp.verbClass.ToString().Equals("Verse.Verb_LaunchProjectile")) //todo make this only for verbshoot once the other verbs are implemented
+
+                newVPCE.label = vp.label;
+                newVPCE.soundCast = vp.soundCast;
+                newVPCE.soundCastTail = vp.soundCastTail;
+                newVPCE.soundAiming = vp.soundAiming;
+                newVPCE.muzzleFlashScale = vp.muzzleFlashScale;
+                newVPCE.hasStandardCommand = vp.hasStandardCommand;
+                newVPCE.range = vp.range;
+                newVPCE.ticksBetweenBurstShots = vp.ticksBetweenBurstShots;
+                newVPCE.warmupTime = vp.warmupTime;
+                newVPCE.targetParams = vp.targetParams;
+                newVPCE.rangedFireRulepack = vp.rangedFireRulepack;
+                newVPCE.ai_IsBuildingDestroyer = vp.ai_IsBuildingDestroyer;
+                newVPCE.ai_AvoidFriendlyFireRadius = vp.ai_AvoidFriendlyFireRadius;
+                newVPCE.onlyManualCast = vp.onlyManualCast;
+                newVPCE.stopBurstWithoutLos = vp.stopBurstWithoutLos;
+                //newVPCE.ForcedMissRadius = vp.ForcedMissRadius; //not used by Verb_ShootCE
+                newVPCE.burstShotCount = vp.burstShotCount * 2;
+                newVPCE.defaultProjectile = vp.defaultProjectile;
+                newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
+                newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+                if ((vp.verbClass == typeof(Verb_Shoot)) || (vp.verbClass == typeof(Verb_ShootOneUse)) || vp.verbClass == typeof(Verb_LaunchProjectile)) //todo make this only for verbshoot once the other verbs are implemented
                 {
-                    newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE);
-                    newVPCE.label = vp.label;
-                    newVPCE.soundCast = vp.soundCast;
-                    newVPCE.soundCastTail = vp.soundCastTail;
-                    newVPCE.soundAiming = vp.soundAiming;
-                    newVPCE.muzzleFlashScale = vp.muzzleFlashScale;
-                    newVPCE.hasStandardCommand = vp.hasStandardCommand;
-                    newVPCE.range = vp.range;
-                    newVPCE.ticksBetweenBurstShots = vp.ticksBetweenBurstShots;
-                    newVPCE.warmupTime = vp.warmupTime;
-                    newVPCE.targetParams = vp.targetParams;
-                    newVPCE.rangedFireRulepack = vp.rangedFireRulepack;
-                    newVPCE.ai_IsBuildingDestroyer = vp.ai_IsBuildingDestroyer;
-                    newVPCE.ai_AvoidFriendlyFireRadius = vp.ai_AvoidFriendlyFireRadius;
-                    newVPCE.onlyManualCast = vp.onlyManualCast;
-                    newVPCE.stopBurstWithoutLos = vp.stopBurstWithoutLos;
-                    //newVPCE.ForcedMissRadius = vp.ForcedMissRadius; //not used by Verb_ShootCE
-                    newVPCE.burstShotCount = vp.burstShotCount * 2;
-                    newVPCE.defaultProjectile = vp.defaultProjectile;
-                    newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
-                    newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
-                    return newVPCE;
+                    newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE); 
+                }
+                else if (vp.verbClass == typeof(Verb_LaunchProjectile))
+                {
+                    newVPCE.verbClass = typeof(Verb_ShootCEOneUse);
                 }
                 else
                 {
-                    return null;
+                    throw new Exception($"Unable to patch verb {vp.label}");
                 }
+                return newVPCE;
             }
 
             catch (Exception ex)
@@ -165,6 +184,7 @@ namespace nuff.AutoPatcherCombatExtended
             ppceHolder.explosionEffect = ppHolder.explosionEffect;
             ppceHolder.explosionDamageFalloff = ppHolder.explosionDamageFalloff;
             ppceHolder.explosionChanceToStartFire = ppHolder.explosionChanceToStartFire;
+            ppceHolder.explosionRadius = ppHolder.explosionRadius;
             ppceHolder.applyDamageToExplosionCellsNeighbors = ppHolder.applyDamageToExplosionCellsNeighbors;
             ppceHolder.postExplosionSpawnThingCount = ppHolder.postExplosionSpawnThingCount;
             ppceHolder.postExplosionSpawnChance = ppHolder.postExplosionSpawnChance;
