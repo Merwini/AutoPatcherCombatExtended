@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
     [DefOf]
     class APCEDefOf
     {
-#pragma warning disable CS0649
+        #pragma warning disable CS0649
         //TODO fill this bad boy up
 
         public static ThingCategoryDef Ammo;

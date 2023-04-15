@@ -63,6 +63,7 @@ namespace nuff.AutoPatcherCombatExtended
                 #endregion
 
                 #region BulkValues
+                #pragma warning disable CS0219
                 bool isSkin = false;
                 bool isMid = false;
                 bool isShell = false;

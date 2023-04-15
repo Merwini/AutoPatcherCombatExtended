@@ -128,8 +128,15 @@ namespace nuff.AutoPatcherCombatExtended
         internal static int testInt = 5;
 
         //weapon settings
-        internal static float gunSharpPenMult = 20f; internal static string gunSharpPenMultBuffer = "20";
-        internal static float gunBluntPenMult = 80f; internal static string gunBluntPenMultBuffer = "80";
+        internal static float gunSharpPenMult = 10f; internal static string gunSharpPenMultBuffer = "10";
+        internal static float gunBluntPenMult = 40f; internal static string gunBluntPenMultBuffer = "40";
+        internal static float gunTechMultAnimal = 0.5f; internal static string gunTechMultAnimalBuffer = "0.5";
+        internal static float gunTechMultNeolithic = 1f; internal static string gunTechMultNeolithicBuffer = "1.0";
+        internal static float gunTechMultMedieval = 2f; internal static string gunTechMultMedievalBuffer = "2.0";
+        internal static float gunTechMultIndustrial = 4; internal static string gunTechMultIndustrialBuffer = "4";
+        internal static float gunTechMultSpacer = 5; internal static string gunTechMultSpacerBuffer = "5";
+        internal static float gunTechMultUltratech = 6; internal static string gunTechMultUltratechBuffer = "6";
+        internal static float gunTechMultArchotech = 8; internal static string gunTechMultArchotechBuffer = "8";
 
         internal static float weaponToolPowerMult = 1f; internal static string weaponToolPowerMultBuffer = "1";
         internal static float weaponToolSharpPenetration = 10f; internal static string weaponToolSharpPenetrationBuffer = "10";

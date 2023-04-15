@@ -34,6 +34,34 @@ namespace nuff.AutoPatcherCombatExtended
             newAmmoCat.iconPath = "UI/Icons/ThingCategories/Ammo";
             newAmmoCat.resourceReadoutRoot = false;
 
+            float gunTechMult = 1f;
+            switch (weapon.techLevel)
+            {
+                case TechLevel.Animal:
+                    gunTechMult *= APCESettings.gunTechMultAnimal;
+                    break;
+                case TechLevel.Neolithic:
+                    gunTechMult *= APCESettings.gunTechMultNeolithic;
+                    break;
+                case TechLevel.Medieval:
+                    gunTechMult *= APCESettings.gunTechMultMedieval;
+                    break;
+                case TechLevel.Industrial:
+                    gunTechMult *= APCESettings.gunTechMultIndustrial;
+                    break;
+                case TechLevel.Spacer:
+                    gunTechMult *= APCESettings.gunTechMultSpacer;
+                    break;
+                case TechLevel.Ultra:
+                    gunTechMult *= APCESettings.gunTechMultUltratech;
+                    break;
+                case TechLevel.Archotech:
+                    gunTechMult *= APCESettings.gunTechMultArchotech;
+                    break;
+                default:
+                    break;
+            }
+
 
             //TODO extract duplicate code
             switch (gunKind)
@@ -58,8 +86,7 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.speed = 20;
                             newPPCE.dropsCasings = false;
                             newPPCE.explosionDamageFalloff = true;
-                            newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
-                            newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult;
+                            SetPenetrationMults(weapon, newPPCE, gunTechMult);
                             newPPCE.flyOverhead = false;
                             //TODO maybe use CE's arrow textures?
                             switch (i)
@@ -158,8 +185,8 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.casingMoteDefname = "Mote_ShotgunShell";
                             newPPCE.casingFilthDefname = "Filth_ShotgunAmmoCasings";
                             newPPCE.explosionDamageFalloff = true;
-                            newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
-                            newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult / 4f;
+                            SetPenetrationMults(weapon, newPPCE, gunTechMult);
+                            newPPCE.armorPenetrationBlunt *= 0.25f; //just for shotguns
                             newPPCE.flyOverhead = false;
                             switch (i)
                             {
@@ -308,7 +335,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 default:
                     {
-                        if ((weapon.techLevel - TechLevel.Spacer) >= 0)
+                        if ((weapon.techLevel == TechLevel.Spacer) || (weapon.techLevel == TechLevel.Ultra) || (weapon.techLevel == TechLevel.Archotech))
                         {
                             newAmmoCat.parent = APCEDefOf.AmmoAdvanced;
                             newAmmoSet.similarTo = APCEDefOf.AmmoSet_ChargedRifle;
@@ -332,8 +359,7 @@ namespace nuff.AutoPatcherCombatExtended
                                 newPPCE.speed = 160;
                                 newPPCE.dropsCasings = false;
                                 newPPCE.explosionDamageFalloff = true;
-                                newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
-                                newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult;
+                                SetPenetrationMults(weapon, newPPCE, gunTechMult);
                                 newPPCE.flyOverhead = false;
 
                                 switch(i)
@@ -408,8 +434,7 @@ namespace nuff.AutoPatcherCombatExtended
                                 newPPCE.casingMoteDefname = "Mote_EmptyCasing";
                                 newPPCE.casingFilthDefname = "Filth_RifleAmmoCasings";
                                 newPPCE.explosionDamageFalloff = true;
-                                newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult;
-                                newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult;
+                                SetPenetrationMults(weapon, newPPCE, gunTechMult);
                                 newPPCE.flyOverhead = false;
                                 switch (i)
                                 {
@@ -506,6 +531,12 @@ namespace nuff.AutoPatcherCombatExtended
             newAmmoSet.ammoTypes = newAmmoLinks;
             DefGenerator.AddImpliedDef<AmmoSetDef>(newAmmoSet);
             return newAmmoSet;
+        }
+
+        private static void SetPenetrationMults(ThingDef weapon, ProjectilePropertiesCE newPPCE, float gunTechMult)
+        {
+            newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult * gunTechMult;
+            newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult * gunTechMult;
         }
     }
 }
