@@ -78,6 +78,7 @@
     <Compile Include="GenerateAmmo.cs" />
     <Compile Include="PatchGrenade.cs" />
     <Compile Include="PatchMeleeWeapon.cs" />
+    <Compile Include="PatchMortar.cs" />
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Settings\APCESettings.cs" />
     <Compile Include="DetermineGunType.cs" />

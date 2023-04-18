@@ -12,6 +12,30 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        //TODO
+        internal static void PatchTurretBase(ThingDef turretBase, APCEPatchLogger log)
+        {
+            try
+            {
+                if (turretBase.fillPercent < 0.85)
+                {
+                    turretBase.fillPercent = 0.85f;
+                }
+
+                turretBase.thingClass = typeof(CombatExtended.Building_TurretGunCE);
+                
+                if (!(turretBase.weaponTags == null) && (turretBase.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0)))
+                {
+                    turretBase.building.turretBurstCooldownTime = 2;
+                    turretBase.building.spawnedConceptLearnOpportunity = CE_ConceptDefOf.CE_MortarDirectFire;
+                    //turretBase.inspectorTabs = new List<Type>(); //TODO I dunno, but some patches remove this? Not sure what it does.
+                }
+
+                log.PatchSucceeded();
+            }
+            catch (Exception ex)
+            {
+                log.PatchFailed(turretBase.defName, ex);
+            }
+        }
     }
 }

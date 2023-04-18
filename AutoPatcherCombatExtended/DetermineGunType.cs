@@ -19,7 +19,9 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO new logic. This is from the old version of the mod
 
             //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
-            if (weapon.weaponTags.Any(str => str.IndexOf("TurretGun", StringComparison.OrdinalIgnoreCase) >= 0))
+            if (weapon.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))
+                return APCESettings.gunKinds.Mortar;
+            else if (weapon.weaponTags.Any(str => str.IndexOf("TurretGun", StringComparison.OrdinalIgnoreCase) >= 0))
                 return APCESettings.gunKinds.Turret;
             //a bow is a pre-industrial ranged weapon with a burst count of 1. Can't find a good way to discern high-tech bows
             else if ((weapon.techLevel.CompareTo(TechLevel.Medieval) <= 0) && (weapon.Verbs[0].burstShotCount == 1))

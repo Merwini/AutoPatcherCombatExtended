@@ -25,13 +25,13 @@ namespace nuff.AutoPatcherCombatExtended
                 </Operation>
             */
 
-
+            //TODO patch verb
             PatchGrenadePP(grenade);
 
-            AddCompExplosiveCE(grenade);
+            AddCompProperties_ExplosiveCE(grenade);
             if (grenade.Verbs[0].defaultProjectile.projectile.damageDef == DamageDefOf.Bomb)
             {
-                AddCompFragments(grenade);
+                AddCompProperties_Fragments(grenade);
             }
         }
 
@@ -55,7 +55,7 @@ namespace nuff.AutoPatcherCombatExtended
             SetDamage(grenadePPCE, damageHolder);
         }
 
-        internal static void AddCompExplosiveCE(ThingDef weapon)
+        internal static void AddCompProperties_ExplosiveCE(ThingDef weapon)
         {
             //TODO
             CompProperties_ExplosiveCE compEx = new CompProperties_ExplosiveCE();
@@ -65,7 +65,7 @@ namespace nuff.AutoPatcherCombatExtended
             weapon.comps.Add(compEx);
         }
 
-        internal static void AddCompFragments(ThingDef weapon)
+        internal static void AddCompProperties_Fragments(ThingDef weapon)
         {
             //TODO
             CompProperties_Fragments compFrag = new CompProperties_Fragments();

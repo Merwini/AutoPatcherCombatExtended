@@ -32,6 +32,7 @@ namespace nuff.AutoPatcherCombatExtended
             MachineGun,
             ExplosiveLauncher,
             Turret,
+            Mortar,
             Other
         }
 

@@ -390,28 +390,42 @@ namespace nuff.AutoPatcherCombatExtended
         internal static void AddCompsAmmoUser(ThingDef weapon, APCESettings.gunKinds gunKind)
         {
             CombatExtended.CompProperties_AmmoUser newAUComp = new CombatExtended.CompProperties_AmmoUser();
-            newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 5; //TODO maybe switch based on gun kind
-            switch (gunKind)
+
+            if (!(gunKind == APCESettings.gunKinds.Bow) && !(gunKind == APCESettings.gunKinds.Mortar) && !(gunKind == APCESettings.gunKinds.MachineGun))
             {
-                case APCESettings.gunKinds.Bow:
-                    {
-                        newAUComp.reloadTime = 1f;
-                        break;
-                    }
-                case APCESettings.gunKinds.MachineGun:
-                    {
-                        newAUComp.reloadTime = newAUComp.magazineSize * 0.09f;
-                        break;
-                    }
-                default:
-                    {
-                        newAUComp.reloadTime = 4f;
-                        break;
-                    }
+                newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 5;
+                newAUComp.reloadTime = 4f; 
+                newAUComp.throwMote = true;
             }
-            newAUComp.reloadOneAtATime = false; //TODO heuristic
-            newAUComp.throwMote = true;
-            newAUComp.ammoSet = GenerateAmmoSet(weapon, gunKind);
+            else if (gunKind == APCESettings.gunKinds.MachineGun)
+            {
+                newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 10;
+                newAUComp.reloadTime = newAUComp.magazineSize * 0.09f;
+                newAUComp.throwMote = true;
+            }
+            else if (gunKind == APCESettings.gunKinds.Bow)
+            {
+                newAUComp.magazineSize = 1;
+                newAUComp.reloadTime = 1f;
+                newAUComp.throwMote = false;
+            }
+            else if (gunKind == APCESettings.gunKinds.Mortar)
+            {
+                newAUComp.magazineSize = 1;
+                newAUComp.reloadTime = 5f;
+                newAUComp.throwMote = false;
+            }
+
+            if (!(gunKind == APCESettings.gunKinds.Mortar))
+            {
+                newAUComp.ammoSet = GenerateAmmoSet(weapon, gunKind);
+            }
+            else
+            {
+                newAUComp.ammoSet = APCEDefOf.AmmoSet_81mmMortarShell; //TODO add non-vanilla mortar shells to this ammoset
+            }
+
+            newAUComp.reloadOneAtATime = false; //TODO heuristic?
             newAUComp.loadedAmmoBulkFactor = 0;
             newAUComp.compClass = typeof(CombatExtended.CompAmmoUser);
             weapon.comps.Add(newAUComp);

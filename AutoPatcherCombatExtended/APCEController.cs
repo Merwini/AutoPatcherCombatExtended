@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using RimWorld;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -51,7 +52,7 @@ namespace nuff.AutoPatcherCombatExtended
                         {
                             PatchApparel(td, log);
                             continue;
-                        }  
+                        }
                     }
                     else if (td.IsWeapon)
                     {
@@ -73,6 +74,10 @@ namespace nuff.AutoPatcherCombatExtended
                     {
                         PatchPawn(td, log);
                         continue;
+                    }
+                    else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
+                    {
+                        PatchTurretBase(td, log);
                     }
                 }
                 else if (typeof(HediffDef).IsAssignableFrom(def.GetType()))
