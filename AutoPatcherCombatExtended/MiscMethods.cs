@@ -149,7 +149,6 @@ namespace nuff.AutoPatcherCombatExtended
                 newVPCE.ai_AvoidFriendlyFireRadius = vp.ai_AvoidFriendlyFireRadius;
                 newVPCE.onlyManualCast = vp.onlyManualCast;
                 newVPCE.stopBurstWithoutLos = vp.stopBurstWithoutLos;
-                //newVPCE.ForcedMissRadius = vp.ForcedMissRadius; //not used by Verb_ShootCE
                 newVPCE.burstShotCount = vp.burstShotCount * 2;
                 newVPCE.defaultProjectile = vp.defaultProjectile;
                 newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
@@ -387,7 +386,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newStatBases;
         }
 
-        internal static void AddCompsAmmoUser(ThingDef weapon, APCESettings.gunKinds gunKind)
+        internal static void AddCompProperties_AmmoUser(ThingDef weapon, APCESettings.gunKinds gunKind)
         {
             CombatExtended.CompProperties_AmmoUser newAUComp = new CombatExtended.CompProperties_AmmoUser();
 
@@ -431,7 +430,7 @@ namespace nuff.AutoPatcherCombatExtended
             weapon.comps.Add(newAUComp);
         }
 
-        internal static void AddCompsFireModes(ThingDef weapon, APCESettings.gunKinds gunKind) // TODO WIP 
+        internal static void AddCompProperties_FireModes(ThingDef weapon, APCESettings.gunKinds gunKind)
         {
             CombatExtended.CompProperties_FireModes newFMComp = new CombatExtended.CompProperties_FireModes();
             if (weapon.Verbs[0].burstShotCount > 1)

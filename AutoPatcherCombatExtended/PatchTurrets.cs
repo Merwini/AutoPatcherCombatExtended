@@ -22,13 +22,19 @@ namespace nuff.AutoPatcherCombatExtended
                 }
 
                 turretBase.thingClass = typeof(CombatExtended.Building_TurretGunCE);
-                
+
+                if (turretBase.comps != null)
+                {
+                    turretBase.comps.RemoveAll(comp => comp.GetType() == typeof(CompProperties_Refuelable));
+                }
                 if (!(turretBase.weaponTags == null) && (turretBase.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0)))
                 {
                     turretBase.building.turretBurstCooldownTime = 2;
                     turretBase.building.spawnedConceptLearnOpportunity = CE_ConceptDefOf.CE_MortarDirectFire;
                     //turretBase.inspectorTabs = new List<Type>(); //TODO I dunno, but some patches remove this? Not sure what it does.
                 }
+
+                Log.Warning(turretBase.defName); //DEBUG
 
                 log.PatchSucceeded();
             }

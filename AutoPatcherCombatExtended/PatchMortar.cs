@@ -15,7 +15,8 @@ namespace nuff.AutoPatcherCombatExtended
         internal static void PatchMortar(ThingDef mortar)
         {
             AddMortarStats(mortar);
-            AddCompsAmmoUser(mortar, APCESettings.gunKinds.Mortar);
+            AddCompProperties_AmmoUser(mortar, APCESettings.gunKinds.Mortar);
+            AddCompProperties_Charges(mortar);
             mortar.weaponTags.Add("TurretGun");
             PatchVerbMortar(mortar);
         }
@@ -25,14 +26,14 @@ namespace nuff.AutoPatcherCombatExtended
             StatModifier sightsEfficiency = new StatModifier();
             sightsEfficiency.stat = CE_StatDefOf.SightsEfficiency;
             sightsEfficiency.value = 0.5f;
-
             mortar.statBases.Add(sightsEfficiency);
         }
 
         internal static void AddCompProperties_Charges(ThingDef mortar)
         {
-            CompProperties_Charges compCh = new CompProperties_Charges();
-            compCh.chargeSpeeds = new List<int> { 30, 50, 70, 90 }; //honestly no idea what these do
+            CompProperties_Charges compProp_Ch = new CompProperties_Charges();
+            compProp_Ch.chargeSpeeds = new List<int> { 30, 50, 70, 90 };
+            mortar.comps.Add(compProp_Ch);
         }
 
         internal static void PatchVerbMortar(ThingDef mortar)
@@ -55,8 +56,8 @@ namespace nuff.AutoPatcherCombatExtended
             newVerb.circularError = 1;
             newVerb.indirectFirePenalty = 0.2f;
             newVerb.targetParams = oldVerb.targetParams;
-
-            mortar.Verbs[0] = newVerb;
+            mortar.Verbs.Clear();
+            mortar.Verbs.Add(newVerb);
         }
 
         

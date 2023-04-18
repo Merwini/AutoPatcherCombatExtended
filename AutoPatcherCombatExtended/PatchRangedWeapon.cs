@@ -12,7 +12,6 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        //TODO
         internal static void PatchRangedWeapon(ThingDef def, APCEPatchLogger log)
         {
             try
@@ -34,8 +33,8 @@ namespace nuff.AutoPatcherCombatExtended
                     def.statBases = newStatBases;
                     if (!(gunKind == APCESettings.gunKinds.Grenade))
                     {
-                        AddCompsAmmoUser(def, gunKind);
-                        AddCompsFireModes(def, gunKind);
+                        AddCompProperties_AmmoUser(def, gunKind);
+                        AddCompProperties_FireModes(def, gunKind);
                     }
                     else
                     {
