@@ -28,7 +28,7 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO patch verb
             PatchGrenadePP(grenade);
 
-            AddCompProperties_ExplosiveCE(grenade);
+            ConvertCompProperties_Explosive(grenade);
             if (grenade.Verbs[0].defaultProjectile.projectile.damageDef == DamageDefOf.Bomb)
             {
                 AddCompProperties_Fragments(grenade);
@@ -65,17 +65,64 @@ namespace nuff.AutoPatcherCombatExtended
             weapon.comps.Add(compEx);
         }
 
+        internal static void ConvertCompProperties_Explosive(ThingDef weapon)
+        {
+            CompProperties_Explosive compEx = weapon.GetCompProperties<CompProperties_Explosive>();
+            if (compEx != null)
+            {
+                //convert logic
+                CompProperties_ExplosiveCE compExCE = new CompProperties_ExplosiveCE();
+
+                // Get all the fields of the two classes
+                FieldInfo[] fieldsExplosive = typeof(CompProperties_Explosive).GetFields(BindingFlags.Public | BindingFlags.Instance);
+                FieldInfo[] fieldsExplosiveCE = typeof(CompProperties_ExplosiveCE).GetFields(BindingFlags.Public | BindingFlags.Instance);
+
+                // Iterate through the fields
+                foreach (FieldInfo fieldExplosive in fieldsExplosive)
+                {
+                    foreach (FieldInfo fieldExplosiveCE in fieldsExplosiveCE)
+                    {
+                        // Check if the fields have the same name and type
+                        if (fieldExplosive.Name == fieldExplosiveCE.Name && fieldExplosive.FieldType == fieldExplosiveCE.FieldType)
+                        {
+                            // Copy the value from the CompProperties_Explosive field to the CompProperties_ExplosiveCE field
+                            fieldExplosiveCE.SetValue(compExCE, fieldExplosive.GetValue(compEx));
+                            break;
+                        }
+                    }
+                }
+
+                if (compExCE.damageAmountBase == 635 && compExCE.explosiveDamageType == DamageDefOf.Bomb)
+                {
+                    compExCE.damageAmountBase = 50;
+                }
+
+                for (int i = weapon.comps.Count - 1; i >= 0; i--)
+                {
+                    if (weapon.comps[i] is CompProperties_Explosive)
+                    {
+                        weapon.comps.RemoveAt(i);
+                    }
+                }
+
+                weapon.comps.Add(compExCE);
+            }
+            else
+            {
+                return;
+            }
+        }
+
         internal static void AddCompProperties_Fragments(ThingDef weapon)
         {
             //TODO
             CompProperties_Fragments compFrag = new CompProperties_Fragments();
-            compFrag.fragments = new List<ThingDefCountClass>() { new ThingDefCountClass(APCEDefOf.Fragment_Small, 40)}; //maybe change 40 to something like damage * 0.8?
+            compFrag.fragments = new List<ThingDefCountClass>() { new ThingDefCountClass(APCEDefOf.Fragment_Small, 40)}; //TODO maybe change 40 to something like damage * 0.8?
             weapon.comps.Add(compFrag);
         }
 
         internal static void SetForcedMiss(VerbProperties vp, float radius)
         {
-            //experimental reflection attempt
             Type tvp = typeof(VerbProperties);
             FieldInfo fmr = tvp.GetField("forcedMissRadius", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             fmr.SetValue(vp, (float)radius);
