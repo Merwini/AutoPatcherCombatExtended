@@ -177,7 +177,9 @@ namespace nuff.AutoPatcherCombatExtended
         private static ProjectilePropertiesCE ConvertPP(ProjectileProperties ppHolder)
         {
             ProjectilePropertiesCE ppceHolder = new ProjectilePropertiesCE();
-
+            Log.Warning("0");
+            CopyFields(ppHolder, ppceHolder);
+            /*
             ppceHolder.speed = ppHolder.speed;
             ppceHolder.ai_IsIncendiary = ppHolder.ai_IsIncendiary;
             ppceHolder.explosionEffect = ppHolder.explosionEffect;
@@ -195,7 +197,7 @@ namespace nuff.AutoPatcherCombatExtended
             ppceHolder.soundAmbient = ppHolder.soundAmbient;
             ppceHolder.flyOverhead = ppHolder.flyOverhead;
             ppceHolder.explosionRadius = ppHolder.explosionRadius;
-            ppceHolder.damageDef = ppHolder.damageDef; // TODO DamageDefOf.Stun seems to not actually injure the target, just stun them. might need to account for that
+            ppceHolder.damageDef = ppHolder.damageDef;
             ppceHolder.stoppingPower = ppHolder.stoppingPower;
             ppceHolder.alwaysFreeIntercept = ppHolder.alwaysFreeIntercept;
             ppceHolder.shadowSize = ppHolder.shadowSize;
@@ -203,9 +205,14 @@ namespace nuff.AutoPatcherCombatExtended
             ppceHolder.soundExplode = ppHolder.soundExplode;
             ppceHolder.soundImpactAnticipate = ppHolder.soundImpactAnticipate;
             ppceHolder.arcHeightFactor = ppHolder.arcHeightFactor;
+            */
+            Log.Warning("1");
             ppceHolder.armorPenetrationBlunt = 1;
-            ppceHolder.armorPenetrationSharp = 1; //TODO maybe change these? only applicable if default projectile is used, which it never is
-            SetDamage(ppceHolder, ppHolder.GetDamageAmount(1f, null));
+            Log.Warning("2");
+            ppceHolder.armorPenetrationSharp = 1;
+            Log.Warning("3");
+            SetDamage(ppceHolder, ppHolder.GetDamageAmount(1));
+            Log.Warning("4");
             ppceHolder.secondaryDamage = ExtraToSecondary(ppHolder.extraDamages);
             return ppceHolder;
         }
@@ -458,5 +465,65 @@ namespace nuff.AutoPatcherCombatExtended
             bullet.neverMultiSelect = true;
             bullet.graphicData.shaderType = ShaderTypeDefOf.Transparent;
         }
+
+        internal static void MakeMortarAmmoLink(ThingDef def)
+        {//WIP - writing for just mortar shells for now. Might need to make a general one later
+
+            ConvertCompProperties_Explosive(def);
+            if (def.projectile != null)
+            {
+                def.projectile = ConvertPP(def.projectile);
+            }
+            AmmoLink newAmmoLink = new AmmoLink((AmmoDef)def, def.projectileWhenLoaded);
+            AmmoSetDef ammoSet81 = APCEDefOf.AmmoSet_81mmMortarShell;
+            ammoSet81.ammoTypes.Add(newAmmoLink);
+
+            /*
+            CopyFields(def, newAmmo);
+            newAmmo.ammoClass = APCEDefOf.Ammo81mmMortarShells;
+            newAmmo.comps = def.comps;
+            ConvertCompProperties_Explosive(newAmmo);
+            newAmmo.projectile = ConvertPP(def.projectile);
+            AmmoLink newAmmoLink = new AmmoLink(newAmmo, def.projectileWhenLoaded);
+            //TODO remove old def from DefDatabase, add new one with same name
+            //That might be impossible
+            */
+        }
+
+        public static void CopyFields(object source, object destination)
+        {//TODO use this in place of manual foo.blah = bar.blah
+            if (source == null || destination == null)
+            {
+                return;
+            }
+            Type sourceType = source.GetType();
+            Type destType = destination.GetType();
+
+            foreach (FieldInfo sourceField in sourceType.GetFields(BindingFlags.Public | BindingFlags.Instance))
+            {
+                FieldInfo destField = destType.GetField(sourceField.Name, BindingFlags.Public | BindingFlags.Instance);
+                if (destField != null && destField.FieldType == sourceField.FieldType)
+                {
+                    object value = sourceField.GetValue(source);
+                    if (destField != null)
+                    {
+                        destField.SetValue(destination, value);
+                    }
+                }
+            }
+        }
+
+        public static void RemoveListDuplicates(List<string> list)
+        {
+            HashSet<string> uniqueItems = new HashSet<string>();
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (!uniqueItems.Add(list[i]))
+                {
+                    list.RemoveAt(i);
+                }
+            }
+        }
+
     }
 }

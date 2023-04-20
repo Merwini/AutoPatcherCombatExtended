@@ -144,5 +144,12 @@ namespace nuff.AutoPatcherCombatExtended
 
             list.End();
         }
+
+        public override void WriteSettings()
+        {
+            //DEBUG
+            APCEController.RemoveListDuplicates(APCESettings.modsByPackageId);
+            base.WriteSettings();
+        }
     }
 }

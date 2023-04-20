@@ -18,6 +18,8 @@ namespace nuff.AutoPatcherCombatExtended
         public static ThingCategoryDef Ammo;
         public static ThingCategoryDef AmmoAdvanced;
         public static ThingCategoryDef AmmoArrows;
+        public static ThingCategoryDef MortarShells;
+
 
         public static DamageDef ArrowVenom;
         public static DamageDef ArrowFire;
@@ -87,6 +89,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static ThingDef APCE_GrenadeGeneric;
 
         //mortar
+        //public static AmmoCategoryDef Ammo81mmMortarShells;
         public static AmmoSetDef AmmoSet_81mmMortarShell;
         public static ThingDef Bullet_81mmMortarShell_HE;
 
