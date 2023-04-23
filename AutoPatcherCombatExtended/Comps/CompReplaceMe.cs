@@ -13,14 +13,14 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void CompTick()
         {
-            if (true) //TODO add setting to enable/disable this behavior
+            if (parent.Map != null && parent.Position != null)
             {
-
+                Thing replacementThing = ThingMaker.MakeThing(Props.thingToSpawn);
+                IntVec3 position = parent.Position;
+                Map map = parent.Map;
+                this.parent.Destroy(DestroyMode.Vanish);
+                GenSpawn.Spawn(replacementThing, position, map);
             }
-            this.parent.Destroy(DestroyMode.Vanish);
-            Thing replacementThing = ThingMaker.MakeThing(Props.thingToSpawn);
-            GenSpawn.Spawn(replacementThing, parent.Position, parent.Map);
-
             base.CompTick();
         }
     }
