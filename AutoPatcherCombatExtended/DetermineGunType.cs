@@ -36,11 +36,11 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             //a shotgun is an industrial or higher weapon and has one of the following: shotgun in its defname, label, or description, OR shotgun or gauge in its projectile
-            else if ((weapon.techLevel.CompareTo(TechLevel.Industrial) >= 0) && ((weapon.defName.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
-                                                                                || (weapon.label.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
-                                                                                || (weapon.description.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
-                                                                                || (weapon.Verbs[0].defaultProjectile.ToString().IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
-                                                                                || (weapon.Verbs[0].defaultProjectile.ToString().IndexOf("gauge", 0, StringComparison.OrdinalIgnoreCase) != -1)))
+            else if ((weapon.defName.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
+                        || (weapon.label.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
+                        || (weapon.description.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
+                        || (weapon.Verbs[0].defaultProjectile.ToString().IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
+                        || (weapon.Verbs[0].defaultProjectile.ToString().IndexOf("gauge", 0, StringComparison.OrdinalIgnoreCase) != -1))
                 return APCESettings.gunKinds.Shotgun;
             //a handgun is an industrial or higher weapon with burst count 1 and a range < 13
             else if ((weapon.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (weapon.Verbs[0].burstShotCount == 1) && (weapon.Verbs[0].range < 13))
