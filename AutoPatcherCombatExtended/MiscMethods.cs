@@ -227,14 +227,30 @@ namespace nuff.AutoPatcherCombatExtended
                 newVPCE.hasStandardCommand = vp.hasStandardCommand;
                 newVPCE.range = vp.range;
                 newVPCE.ticksBetweenBurstShots = vp.ticksBetweenBurstShots;
-                newVPCE.warmupTime = vp.warmupTime;
+                if (vp.warmupTime >= 0.07f)
+                {
+                    //This took so long to debug why a turret would fire once then stop. 
+                    //Turns out that a turret fires when burstWarmupTicksLeft ticks down to 0, and a warmupTime lower than 0.07 causes it to get stuck at 0, unable to tick down. 
+                    newVPCE.warmupTime = vp.warmupTime;
+                }
+                else
+                {
+                    newVPCE.warmupTime = 0.1f;
+                }
                 newVPCE.targetParams = vp.targetParams;
                 newVPCE.rangedFireRulepack = vp.rangedFireRulepack;
                 newVPCE.ai_IsBuildingDestroyer = vp.ai_IsBuildingDestroyer;
                 newVPCE.ai_AvoidFriendlyFireRadius = vp.ai_AvoidFriendlyFireRadius;
                 newVPCE.onlyManualCast = vp.onlyManualCast;
                 newVPCE.stopBurstWithoutLos = vp.stopBurstWithoutLos;
-                newVPCE.burstShotCount = vp.burstShotCount * 2;
+                if (vp.burstShotCount != 1)
+                {
+                    newVPCE.burstShotCount = vp.burstShotCount * 2;
+                }
+                else
+                {
+                    newVPCE.burstShotCount = vp.burstShotCount;
+                }
                 newVPCE.defaultProjectile = vp.defaultProjectile;
                 newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
                 newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
@@ -358,6 +374,7 @@ namespace nuff.AutoPatcherCombatExtended
             StatModifier gunBulk = new StatModifier();
             gunBulk.stat = CE_StatDefOf.Bulk;
 
+            //this is not actually used? Need to refactor code to not use this, but still get a value into the verb
             StatModifier recoil = new StatModifier();
             recoil.stat = CE_StatDefOf.Recoil;
 
@@ -365,9 +382,10 @@ namespace nuff.AutoPatcherCombatExtended
             //StatModifier reloadTime = new StatModifier();
             //reloadTime.stat = StatDef.Named("ReloadTime");
 
-            float gunTechModFlat = (((float)def.techLevel - (float)TechLevel.Industrial) * 0.1f);
+            float gunTechModFlat = (def.techLevel.CompareTo(TechLevel.Industrial) * 0.1f);
             float gunTechModPercent = (1 - gunTechModFlat);
-            float ssAccuracyMod = (def.Verbs[0].accuracyLong * 0.1f);
+            //float ssAccuracyMod = (def.Verbs[0].accuracyLong * 0.1f); 
+            float ssAccuracyMod = 0.1f; //TODO goddam it, CE has already removed accuracyLong at this point so it returns 1. placeholder for now 
             float seDefault = 1f + gunTechModFlat;
             float recoilTechMod = (1 - (((float)def.techLevel - 3) * 0.2f));
             float gunMass = def.statBases.GetStatValueFromList(StatDefOf.Mass, 1);
@@ -393,7 +411,7 @@ namespace nuff.AutoPatcherCombatExtended
                     sightsEfficiency.value = 0.7f + gunTechModFlat;
                     swayFactor.value = 2f;
                     gunBulk.value = 1f * gunMass;
-                    recoil.value = (2f - (gunMass * 0.1f)) * recoilTechMod;
+                    recoil.value = 2f  * recoilTechMod;
                     break;
                 case APCESettings.gunKinds.Shotgun:
                     shotSpread.value = (0.17f - ssAccuracyMod) * gunTechModPercent;
@@ -406,14 +424,14 @@ namespace nuff.AutoPatcherCombatExtended
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.33f;
                     gunBulk.value = 2f * gunMass;
-                    recoil.value = (1.8f - (gunMass * 0.1f)) * recoilTechMod;
+                    recoil.value = 1.8f * recoilTechMod;
                     break;
                 case APCESettings.gunKinds.MachineGun:
                     shotSpread.value = (0.13f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.4f;
                     gunBulk.value = 1.5f * gunMass;
-                    recoil.value = (2.3f - (gunMass * 0.1f)) * recoilTechMod;
+                    recoil.value = 2.3f * recoilTechMod;
                     break;
                 case APCESettings.gunKinds.precisionRifle:
                     shotSpread.value = (0.1f - ssAccuracyMod) * gunTechModPercent;
@@ -426,6 +444,7 @@ namespace nuff.AutoPatcherCombatExtended
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.8f;
                     gunBulk.value = 2f * gunMass;
+                    recoil.value = 2.3f * recoilTechMod;
                     break;
                 case APCESettings.gunKinds.Turret:
                     shotSpread.value = (0.1f - ssAccuracyMod) * gunTechModPercent;
@@ -508,7 +527,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else
             {
-                newAUComp.ammoSet = APCEDefOf.AmmoSet_81mmMortarShell; //TODO add non-vanilla mortar shells to this ammoset
+                newAUComp.ammoSet = APCEDefOf.AmmoSet_81mmMortarShell;
             }
 
             newAUComp.reloadOneAtATime = false; //TODO heuristic?
@@ -528,10 +547,21 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 newFMComp.aimedBurstShotCount = 1;
             }
-            newFMComp.aiUseBurstMode = true;
-            newFMComp.noSingleShot = false; //TODO figure out what types of CE guns don't have this
-            newFMComp.noSnapshot = false; //TODO same as above
-            newFMComp.aiAimMode = AimMode.Snapshot; //TODO if statement based on gun type?
+            if (!(gunKind == APCESettings.gunKinds.Turret))
+            {
+                newFMComp.aiUseBurstMode = true;
+                newFMComp.noSingleShot = false;
+                newFMComp.noSnapshot = false;
+                newFMComp.aiAimMode = AimMode.Snapshot;
+            }
+            else
+            {
+                newFMComp.aiUseBurstMode = false;
+                newFMComp.noSingleShot = true;
+                newFMComp.noSnapshot = true;
+                newFMComp.aiAimMode = AimMode.AimedShot;
+            }
+            
             weapon.comps.Add(newFMComp);
         }
 

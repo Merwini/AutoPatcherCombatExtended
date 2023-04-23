@@ -30,11 +30,25 @@ namespace nuff.AutoPatcherCombatExtended
                     List<StatModifier> newStatBases = PatchStatBases(def, gunKind);
 
                     PatchAllVerbs(def);
+
                     def.statBases = newStatBases;
                     if (!(gunKind == APCESettings.gunKinds.Grenade))
                     {
                         AddCompProperties_AmmoUser(def, gunKind);
                         AddCompProperties_FireModes(def, gunKind);
+
+                        VerbPropertiesCE vpce = def.Verbs[0] as VerbPropertiesCE;
+                        vpce.recoilAmount = newStatBases.GetStatValueFromList(CE_StatDefOf.Recoil, 1.25f);
+
+                        
+                        if (!(gunKind == APCESettings.gunKinds.Turret) && !(gunKind == APCESettings.gunKinds.MachineGun))
+                        {
+                            vpce.recoilPattern = RecoilPattern.Regular;
+                        }
+                        else
+                        {
+                            vpce.recoilPattern = RecoilPattern.Mounted;
+                        }
                     }
                     else
                     {

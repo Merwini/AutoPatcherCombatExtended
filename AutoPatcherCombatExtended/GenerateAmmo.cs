@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static AmmoSetDef GenerateAmmoSet(ThingDef weapon, APCESettings.gunKinds gunKind) //TODO WIP
+        internal static AmmoSetDef GenerateAmmoSet(ThingDef weapon, APCESettings.gunKinds gunKind) //TODO - stoppingPower esp for shotguns
         {
 
             ThingCategoryDef newAmmoCat = new ThingCategoryDef();
@@ -62,6 +62,10 @@ namespace nuff.AutoPatcherCombatExtended
                     break;
             }
 
+            if ((gunKind == APCESettings.gunKinds.Turret) && (weapon.techLevel == TechLevel.Undefined))
+            {//overrides tech level for turrets if undefined, since it seems common to not bother setting one
+                gunTechMult *= APCESettings.gunTechMultIndustrial;
+            }
 
             //TODO extract duplicate code
             switch (gunKind)
