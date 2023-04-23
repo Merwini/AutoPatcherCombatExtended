@@ -12,13 +12,13 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        public void BasicException(Exception ex)
+        internal void BasicException(Exception ex)
         {
             Log.Error(ex.ToString());
             //TODO more
         }
 
-        public static List<ModContentPack> GetActiveModsList()
+        internal static List<ModContentPack> GetActiveModsList()
         {//TODO filter out other mods that will never need patching, like CE, Harmony, APCE, etc. + mods that have no defs
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod).OrderBy(mod => mod.Name).ToList());
             return activeMods;
@@ -95,7 +95,7 @@ namespace nuff.AutoPatcherCombatExtended
         }
         */
 
-        public static List<ModContentPack> RebuildModsToPatch()
+        internal static List<ModContentPack> RebuildModsToPatch()
         {
             Dictionary<string, ModContentPack> modDict = new Dictionary<string, ModContentPack>();
             List<ModContentPack> modsToPatch = new List<ModContentPack>();
@@ -117,10 +117,12 @@ namespace nuff.AutoPatcherCombatExtended
                     APCESettings.modsByPackageId.RemoveAt(i);
                 }
             }
+            APCESettings.thisMod = modDict.TryGetValue("Nuff.CEAutoPatcher");
+            
             return modsToPatch;
         }
 
-        public static void CleanModList(List<ModContentPack> modList)
+        internal static void CleanModList(List<ModContentPack> modList)
         {
             foreach (ModContentPack mod in modList)
             {
@@ -139,7 +141,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        private static void PatchAllTools(ThingDef def)
+        internal static void PatchAllTools(ThingDef def)
         {
             if (def.tools == null)
                 return;
@@ -152,7 +154,7 @@ namespace nuff.AutoPatcherCombatExtended
             def.tools = newToolsCE;
         }
 
-        public static ToolCE PatchTool(Tool tool, bool isPawn)
+        internal static ToolCE PatchTool(Tool tool, bool isPawn)
         {
             ToolCE newToolCE = new ToolCE();
 
@@ -191,13 +193,13 @@ namespace nuff.AutoPatcherCombatExtended
             return newToolCE;
         }
 
-        public static ProjectileCE PatchProjectile(Projectile proj)
+        internal static ProjectileCE PatchProjectile(Projectile proj)
         {
             //TODO
             return null;
         }
 
-        public static void PatchAllVerbs(ThingDef def)
+        internal static void PatchAllVerbs(ThingDef def)
         {
             List<VerbPropertiesCE> newVerbsCE = new List<VerbPropertiesCE>();
             foreach (VerbProperties vp in def.Verbs)
@@ -211,7 +213,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public static VerbPropertiesCE PatchVerb(VerbProperties vp)
+        internal static VerbPropertiesCE PatchVerb(VerbProperties vp)
         {
             try
             {
@@ -257,7 +259,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        private static ProjectilePropertiesCE ConvertPP(ProjectileProperties ppHolder)
+        internal static ProjectilePropertiesCE ConvertPP(ProjectileProperties ppHolder)
         {
             ProjectilePropertiesCE ppceHolder = new ProjectilePropertiesCE();
             CopyFields(ppHolder, ppceHolder);
@@ -545,7 +547,7 @@ namespace nuff.AutoPatcherCombatExtended
             bullet.graphicData.graphicClass = typeof(Graphic_Single);
         }
 
-        public static void CopyFields(object source, object destination)
+        internal static void CopyFields(object source, object destination)
         {//TODO use this in place of manual foo.blah = bar.blah
             if (source == null || destination == null)
             {
@@ -568,7 +570,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public static void RemoveListDuplicates(List<string> list)
+        internal static void RemoveListDuplicates(List<string> list)
         {
             HashSet<string> uniqueItems = new HashSet<string>();
             for (int i = list.Count - 1; i >= 0; i--)
