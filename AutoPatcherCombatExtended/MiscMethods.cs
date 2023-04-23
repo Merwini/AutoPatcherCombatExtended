@@ -158,16 +158,8 @@ namespace nuff.AutoPatcherCombatExtended
         {
             ToolCE newToolCE = new ToolCE();
 
-            newToolCE.id = tool.id;
-            newToolCE.ensureLinkedBodyPartsGroupAlwaysUsable = tool.ensureLinkedBodyPartsGroupAlwaysUsable;
-            newToolCE.linkedBodyPartsGroup = tool.linkedBodyPartsGroup;
-            newToolCE.soundMeleeMiss = tool.soundMeleeMiss;
-            newToolCE.extraMeleeDamages = tool.extraMeleeDamages;
-            newToolCE.alwaysTreatAsWeapon = tool.alwaysTreatAsWeapon;
-            newToolCE.chanceFactor = tool.chanceFactor;
-            newToolCE.hediff = tool.hediff;
-            newToolCE.soundMeleeHit = tool.soundMeleeHit;
-            newToolCE.cooldownTime = tool.cooldownTime;
+            CopyFields(tool, newToolCE);
+            newToolCE.id = "APCE_Tool_" + tool.id;
             if (tool.armorPenetration >= 0)
             {
                 if (isPawn)
@@ -184,11 +176,23 @@ namespace nuff.AutoPatcherCombatExtended
                 }
 
             }
+            /*
+            newToolCE.ensureLinkedBodyPartsGroupAlwaysUsable = tool.ensureLinkedBodyPartsGroupAlwaysUsable;
+            newToolCE.linkedBodyPartsGroup = tool.linkedBodyPartsGroup;
+            newToolCE.soundMeleeMiss = tool.soundMeleeMiss;
+            newToolCE.extraMeleeDamages = tool.extraMeleeDamages;
+            newToolCE.alwaysTreatAsWeapon = tool.alwaysTreatAsWeapon;
+            newToolCE.chanceFactor = tool.chanceFactor;
+            newToolCE.hediff = tool.hediff;
+            newToolCE.soundMeleeHit = tool.soundMeleeHit;
+            newToolCE.cooldownTime = tool.cooldownTime;
+            
             newToolCE.capacities = tool.capacities;
             newToolCE.labelUsedInLogging = tool.labelUsedInLogging;
             newToolCE.untranslatedLabel = tool.untranslatedLabel;
             newToolCE.label = tool.label;
             newToolCE.surpriseAttack = tool.surpriseAttack;
+            */
 
             return newToolCE;
         }
@@ -378,14 +382,11 @@ namespace nuff.AutoPatcherCombatExtended
             StatModifier recoil = new StatModifier();
             recoil.stat = CE_StatDefOf.Recoil;
 
-            //ReloadTime: in seconds
-            //StatModifier reloadTime = new StatModifier();
-            //reloadTime.stat = StatDef.Named("ReloadTime");
-
             float gunTechModFlat = (def.techLevel.CompareTo(TechLevel.Industrial) * 0.1f);
             float gunTechModPercent = (1 - gunTechModFlat);
-            //float ssAccuracyMod = (def.Verbs[0].accuracyLong * 0.1f); 
-            float ssAccuracyMod = 0.1f; //TODO goddam it, CE has already removed accuracyLong at this point so it returns 1. placeholder for now 
+            float accuracyLong = def.statBases.GetStatValueFromList(StatDefOf.AccuracyLong, 0.5f);
+            float ssAccuracyMod = (accuracyLong * 0.1f); 
+            //float ssAccuracyMod = 0.1f;
             float seDefault = 1f + gunTechModFlat;
             float recoilTechMod = (1 - (((float)def.techLevel - 3) * 0.2f));
             float gunMass = def.statBases.GetStatValueFromList(StatDefOf.Mass, 1);
