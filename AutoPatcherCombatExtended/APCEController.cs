@@ -26,6 +26,7 @@ namespace nuff.AutoPatcherCombatExtended
                 APCEPatchLogger.stopwatchMaster.Start();
             }
             //CleanModList(APCESettings.modsToPatch);
+            InjectedDefHasher.PrepareReflection();
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
                 PatchMod(mod);
