@@ -89,6 +89,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static ThingDef APCE_GrenadeGeneric;
 
         //mortar
+        public static AmmoCategoryDef GrenadeHE;
         public static ThingCategoryDef Ammo81mmMortarShells;
         public static AmmoSetDef AmmoSet_81mmMortarShell;
         public static ThingDef Bullet_81mmMortarShell_HE;

@@ -55,7 +55,7 @@ namespace nuff.AutoPatcherCombatExtended
 					hashDelegate(def, defType, takenHashes);
 				};
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
 				//HugsLibController.Logger.Error($"Failed to reflect short hash dependencies: {e.Message}");
 				//TODO make my own exception for this
