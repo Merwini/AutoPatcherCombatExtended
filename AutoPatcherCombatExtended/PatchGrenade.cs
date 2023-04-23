@@ -97,6 +97,11 @@ namespace nuff.AutoPatcherCombatExtended
                     compExCE.damageAmountBase = 50;
                 }
 
+                compExCE.compClass = typeof(CompExplosiveCE); // need to change this back, since the above reflection changes it to CompExplosive
+
+                weapon.comps.RemoveAll(cp => cp is CompProperties_Explosive);
+
+                /*
                 for (int i = weapon.comps.Count - 1; i >= 0; i--)
                 {
                     if (weapon.comps[i] is CompProperties_Explosive)
@@ -104,6 +109,7 @@ namespace nuff.AutoPatcherCombatExtended
                         weapon.comps.RemoveAt(i);
                     }
                 }
+                */
 
                 weapon.comps.Add(compExCE);
             }
