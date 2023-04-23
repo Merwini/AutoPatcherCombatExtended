@@ -160,21 +160,28 @@ namespace nuff.AutoPatcherCombatExtended
 
             CopyFields(tool, newToolCE);
             newToolCE.id = "APCE_Tool_" + tool.id;
-            if (tool.armorPenetration >= 0)
+            if (tool.armorPenetration <= 0) //CE is far more punishing if you have no armor penetration than vanilla is, so it is essential to have some
             {
-                if (isPawn)
-                {
-                    newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.pawnToolSharpPenetration;
-                    newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.pawnToolBluntPenetration;
-                    newToolCE.power = tool.power * APCESettings.pawnToolPowerMult;
-                }
-                else
-                {
-                    newToolCE.armorPenetrationSharp = tool.armorPenetration * APCESettings.weaponToolSharpPenetration;
-                    newToolCE.armorPenetrationBlunt = tool.armorPenetration * APCESettings.weaponToolBluntPenetration;
-                    newToolCE.power = tool.power * APCESettings.weaponToolPowerMult;
-                }
+                newToolCE.armorPenetrationSharp = tool.power * 0.01f;
+                newToolCE.armorPenetrationBlunt = tool.power * 0.01f;
+            }
+            else
+            {
+                newToolCE.armorPenetrationSharp = tool.armorPenetration;
+                newToolCE.armorPenetrationBlunt = tool.armorPenetration;
+            }
 
+            if (isPawn)
+            {
+                newToolCE.armorPenetrationSharp *= APCESettings.pawnToolSharpPenetration;
+                newToolCE.armorPenetrationBlunt *= APCESettings.pawnToolBluntPenetration;
+                newToolCE.power = tool.power * APCESettings.pawnToolPowerMult;
+            }
+            else
+            {
+                newToolCE.armorPenetrationSharp *= APCESettings.weaponToolSharpPenetration;
+                newToolCE.armorPenetrationBlunt *= APCESettings.weaponToolBluntPenetration;
+                newToolCE.power = tool.power * APCESettings.weaponToolPowerMult;
             }
             /*
             newToolCE.ensureLinkedBodyPartsGroupAlwaysUsable = tool.ensureLinkedBodyPartsGroupAlwaysUsable;
