@@ -73,14 +73,12 @@ namespace nuff.AutoPatcherCombatExtended
                         for (int i = 0; i < 5; i++)
                         {
                             ThingDef newProjectile = new ThingDef();
-                            newProjectile.graphicData = new GraphicData();
+                            newProjectile.graphicData = weapon.Verbs[0].defaultProjectile.graphicData;
                             ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
                             newPPCE.secondaryDamage = new List<SecondaryDamage>();
 
                             int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
                             PatchBaseBullet(newProjectile);
-                            newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
-                            newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
                             newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
 
                             newPPCE.speed = 20;
@@ -159,6 +157,7 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
                             newProjectile.projectile = newPPCE;
                             newProjectiles.Add(newProjectile);
+                            InjectedDefHasher.GiveShortHashToDef(newProjectile, typeof(ThingDef));
                             DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
                         }
                         break;
@@ -171,14 +170,12 @@ namespace nuff.AutoPatcherCombatExtended
                         for (int i = 0; i < 4; i++)
                         {
                             ThingDef newProjectile = new ThingDef();
-                            newProjectile.graphicData = new GraphicData();
+                            newProjectile.graphicData = weapon.Verbs[0].defaultProjectile.graphicData;
                             ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
                             newPPCE.secondaryDamage = new List<SecondaryDamage>();
 
                             int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
                             PatchBaseBullet(newProjectile);
-                            newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
-                            newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
                             newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
 
                             newPPCE.dropsCasings = true;
@@ -247,6 +244,7 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
                             newProjectile.projectile = newPPCE;
                             newProjectiles.Add(newProjectile);
+                            InjectedDefHasher.GiveShortHashToDef(newProjectile, typeof(ThingDef));
                             DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
                         }
                         break;
@@ -259,7 +257,7 @@ namespace nuff.AutoPatcherCombatExtended
                         for (int i = 0; i < 3; i++)
                         {
                             ThingDef newProjectile = new ThingDef();
-                            newProjectile.graphicData = new GraphicData();
+                            newProjectile.graphicData = weapon.Verbs[0].defaultProjectile.graphicData;
                             ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
                             newPPCE.secondaryDamage = new List<SecondaryDamage>();
 
@@ -269,8 +267,6 @@ namespace nuff.AutoPatcherCombatExtended
                                 damageHolder = 50;
                             }
                             PatchBaseBullet(newProjectile);
-                            newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
-                            newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
 
                             newPPCE.dropsCasings = true;
                             newPPCE.explosionDamageFalloff = true;
@@ -329,6 +325,7 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
                             newProjectile.projectile = newPPCE;
                             newProjectiles.Add(newProjectile);
+                            InjectedDefHasher.GiveShortHashToDef(newProjectile, typeof(ThingDef));
                             DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
                         }
                         break;
@@ -343,16 +340,12 @@ namespace nuff.AutoPatcherCombatExtended
                             for (int i = 0; i < 3; i++)
                             {
                                 ThingDef newProjectile = new ThingDef();
-                                newProjectile.graphicData = new GraphicData();
+                                newProjectile.graphicData = weapon.Verbs[0].defaultProjectile.graphicData;
                                 ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
                                 newPPCE.secondaryDamage = new List<SecondaryDamage>();
 
                                 int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
                                 PatchBaseBullet(newProjectile);
-                                newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
-                                //newProjectile.graphicData.texPath = "Things/Projectile/Bullet_Small";
-                                newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
-                                //newProjectile.graphicData.graphicClass = typeof(Graphic_Single);
                                 newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
                                 //newPPCE.damageDef = DamageDefOf.Bullet;
 
@@ -405,6 +398,7 @@ namespace nuff.AutoPatcherCombatExtended
                                 newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
                                 newProjectile.projectile = newPPCE;
                                 newProjectiles.Add(newProjectile);
+                                InjectedDefHasher.GiveShortHashToDef(newProjectile, typeof(ThingDef));
                                 DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
                             }
 
@@ -417,18 +411,14 @@ namespace nuff.AutoPatcherCombatExtended
                             for (int i = 0; i < 6; i++)
                             {//make the projectiles
                                 ThingDef newProjectile = new ThingDef();
-                                newProjectile.graphicData = new GraphicData();
+                                newProjectile.graphicData = weapon.Verbs[0].defaultProjectile.graphicData;
                                 ProjectilePropertiesCE newPPCE = new ProjectilePropertiesCE();
                                 newPPCE.secondaryDamage = new List<SecondaryDamage>();
 
                                 int damageHolder = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
                                 PatchBaseBullet(newProjectile);
-                                newProjectile.graphicData.texPath = weapon.Verbs[0].defaultProjectile.graphicData.texPath;
-                                //newProjectile.graphicData.texPath = "Things/Projectile/Bullet_Small";
-                                newProjectile.graphicData.graphicClass = weapon.Verbs[0].defaultProjectile.graphicData.graphicClass;
-                                //newProjectile.graphicData.graphicClass = typeof(Graphic_Single);
+
                                 newPPCE.damageDef = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
-                                //newPPCE.damageDef = DamageDefOf.Bullet;
                                 newPPCE.speed = 185;
                                 newPPCE.dropsCasings = true;
                                 newPPCE.casingMoteDefname = "Mote_EmptyCasing";
@@ -509,6 +499,7 @@ namespace nuff.AutoPatcherCombatExtended
                                 newPPCE.secondaryDamage.AddRange(ExtraToSecondary(weapon.Verbs[0].defaultProjectile.projectile.extraDamages));
                                 newProjectile.projectile = newPPCE;
                                 newProjectiles.Add(newProjectile);
+                                InjectedDefHasher.GiveShortHashToDef(newProjectile, typeof(ThingDef));
                                 DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
                             }
                         }
@@ -526,14 +517,16 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             newAmmoCat.treeNode = new TreeNode_ThingCategory(newAmmoCat);
+            InjectedDefHasher.GiveShortHashToDef(newAmmoCat, typeof(ThingCategoryDef));
             DefGenerator.AddImpliedDef<ThingCategoryDef>(newAmmoCat);
 
             newAmmoSet.ammoTypes = newAmmoLinks;
+            InjectedDefHasher.GiveShortHashToDef(newAmmoSet, typeof(AmmoSetDef));
             DefGenerator.AddImpliedDef<AmmoSetDef>(newAmmoSet);
             return newAmmoSet;
         }
 
-        private static void SetPenetrationMults(ThingDef weapon, ProjectilePropertiesCE newPPCE, float gunTechMult)
+        internal static void SetPenetrationMults(ThingDef weapon, ProjectilePropertiesCE newPPCE, float gunTechMult)
         {
             newPPCE.armorPenetrationSharp = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunSharpPenMult * gunTechMult;
             newPPCE.armorPenetrationBlunt = weapon.Verbs[0].defaultProjectile.projectile.GetArmorPenetration(1) * APCESettings.gunBluntPenMult * gunTechMult;

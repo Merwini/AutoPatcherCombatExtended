@@ -31,10 +31,8 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     turretBase.building.turretBurstCooldownTime = 2;
                     turretBase.building.spawnedConceptLearnOpportunity = CE_ConceptDefOf.CE_MortarDirectFire;
-                    //turretBase.inspectorTabs = new List<Type>(); //TODO I dunno, but some patches remove this? Not sure what it does.
+                    //turretBase.inspectorTabs = new List<Type>(); //TODO look into the necessity of this
                 }
-
-                Log.Warning(turretBase.defName); //DEBUG
 
                 log.PatchSucceeded();
             }

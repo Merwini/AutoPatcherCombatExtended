@@ -75,7 +75,10 @@
   <ItemGroup>
     <Compile Include="APCEDefOf.cs" />
     <Compile Include="APCEController.cs" />
+    <Compile Include="Comps\CompProperties_ReplaceMe.cs" />
+    <Compile Include="Comps\CompReplaceMe.cs" />
     <Compile Include="GenerateAmmo.cs" />
+    <Compile Include="InjectedDefHasher.cs" />
     <Compile Include="PatchGrenade.cs" />
     <Compile Include="PatchMeleeWeapon.cs" />
     <Compile Include="PatchMortar.cs" />

@@ -261,8 +261,8 @@ namespace nuff.AutoPatcherCombatExtended
 				rightSelectedObject != null)
 			{
 				rightList.Remove(item: rightSelectedObject);
-				APCESettings.modsByPackageId.Remove(leftSelectedObject.PackageId); //TODO more elegant way of updating this
 				leftSelectedObject = rightSelectedObject;
+				APCESettings.modsByPackageId.Remove(leftSelectedObject.PackageId); //TODO more elegant way of updating this
 				rightSelectedObject = null;
 			}
 

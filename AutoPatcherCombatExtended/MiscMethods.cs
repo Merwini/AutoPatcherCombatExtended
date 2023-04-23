@@ -19,11 +19,13 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
         public static List<ModContentPack> GetActiveModsList()
-        {
+        {//TODO filter out other mods that will never need patching, like CE, Harmony, APCE, etc. + mods that have no defs
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod).OrderBy(mod => mod.Name).ToList());
             return activeMods;
         }
 
+        /*
+         * first attempt
         public static List<ModContentPack> RebuildModsToPatch()
         {
             List<ModContentPack> modsToPatch = new List<ModContentPack>();
@@ -32,6 +34,87 @@ namespace nuff.AutoPatcherCombatExtended
                 if (APCESettings.modsByPackageId.Contains(mod.PackageId))
                 {
                     modsToPatch.Add(mod);
+                }                    
+            }
+            foreach (string str in APCESettings.modsByPackageId)
+            {
+                bool isActive = false;
+                foreach (ModContentPack mod in APCESettings.activeMods)
+                {
+                    if (mod.PackageId.Equals(str))
+                    {
+                        isActive = true;
+                    }
+                }
+                if (!isActive)
+                {
+                    APCESettings.modsByPackageId.Remove(str);
+                }
+            }
+            return modsToPatch;
+        }
+        */
+
+        /*
+         * ChatGPT made this one
+        public static List<ModContentPack> RebuildModsToPatch()
+        {
+            List<ModContentPack> modsToPatch = new List<ModContentPack>();
+            HashSet<string> activePackageIds = new HashSet<string>();
+
+            foreach (ModContentPack mod in APCESettings.activeMods)
+            {
+                activePackageIds.Add(mod.PackageId);
+            }
+
+            foreach (string packageId in APCESettings.modsByPackageId)
+            {
+                if (activePackageIds.Contains(packageId))
+                {
+                    modsToPatch.Add(GetModByPackageId(packageId));
+                }
+                else
+                {
+                    APCESettings.modsByPackageId.Remove(packageId);
+                }
+            }
+
+            return modsToPatch;
+        }
+
+        public static ModContentPack GetModByPackageId(string packageId)
+        {
+            foreach (ModContentPack mod in APCESettings.activeMods)
+            {
+                if (mod.PackageId.Equals(packageId))
+                {
+                    return mod;
+                }
+            }
+            return null;
+        }
+        */
+
+        public static List<ModContentPack> RebuildModsToPatch()
+        {
+            Dictionary<string, ModContentPack> modDict = new Dictionary<string, ModContentPack>();
+            List<ModContentPack> modsToPatch = new List<ModContentPack>();
+
+            foreach (ModContentPack mod in APCESettings.activeMods)
+            {
+                modDict[mod.PackageId] = mod;
+            }
+
+            for (int i = APCESettings.modsByPackageId.Count - 1; i >= 0; i--)
+            {
+                string packageId = APCESettings.modsByPackageId[i];
+                if (modDict.TryGetValue(packageId, out ModContentPack mod) && mod != null)
+                {
+                    modsToPatch.Add(mod);
+                }
+                else
+                {
+                    APCESettings.modsByPackageId.RemoveAt(i);
                 }
             }
             return modsToPatch;
@@ -177,7 +260,6 @@ namespace nuff.AutoPatcherCombatExtended
         private static ProjectilePropertiesCE ConvertPP(ProjectileProperties ppHolder)
         {
             ProjectilePropertiesCE ppceHolder = new ProjectilePropertiesCE();
-            Log.Warning("0");
             CopyFields(ppHolder, ppceHolder);
             /*
             ppceHolder.speed = ppHolder.speed;
@@ -206,13 +288,9 @@ namespace nuff.AutoPatcherCombatExtended
             ppceHolder.soundImpactAnticipate = ppHolder.soundImpactAnticipate;
             ppceHolder.arcHeightFactor = ppHolder.arcHeightFactor;
             */
-            Log.Warning("1");
             ppceHolder.armorPenetrationBlunt = 1;
-            Log.Warning("2");
             ppceHolder.armorPenetrationSharp = 1;
-            Log.Warning("3");
             SetDamage(ppceHolder, ppHolder.GetDamageAmount(1));
-            Log.Warning("4");
             ppceHolder.secondaryDamage = ExtraToSecondary(ppHolder.extraDamages);
             return ppceHolder;
         }
@@ -464,30 +542,7 @@ namespace nuff.AutoPatcherCombatExtended
             bullet.useHitPoints = false;
             bullet.neverMultiSelect = true;
             bullet.graphicData.shaderType = ShaderTypeDefOf.Transparent;
-        }
-
-        internal static void MakeMortarAmmoLink(ThingDef def)
-        {//WIP - writing for just mortar shells for now. Might need to make a general one later
-
-            ConvertCompProperties_Explosive(def);
-            if (def.projectile != null)
-            {
-                def.projectile = ConvertPP(def.projectile);
-            }
-            AmmoLink newAmmoLink = new AmmoLink((AmmoDef)def, def.projectileWhenLoaded);
-            AmmoSetDef ammoSet81 = APCEDefOf.AmmoSet_81mmMortarShell;
-            ammoSet81.ammoTypes.Add(newAmmoLink);
-
-            /*
-            CopyFields(def, newAmmo);
-            newAmmo.ammoClass = APCEDefOf.Ammo81mmMortarShells;
-            newAmmo.comps = def.comps;
-            ConvertCompProperties_Explosive(newAmmo);
-            newAmmo.projectile = ConvertPP(def.projectile);
-            AmmoLink newAmmoLink = new AmmoLink(newAmmo, def.projectileWhenLoaded);
-            //TODO remove old def from DefDatabase, add new one with same name
-            //That might be impossible
-            */
+            bullet.graphicData.graphicClass = typeof(Graphic_Single);
         }
 
         public static void CopyFields(object source, object destination)
@@ -524,6 +579,5 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
         }
-
     }
 }

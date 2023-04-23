@@ -25,7 +25,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 APCEPatchLogger.stopwatchMaster.Start();
             }
-            CleanModList(APCESettings.modsToPatch);
+            //CleanModList(APCESettings.modsToPatch);
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
                 PatchMod(mod);
@@ -78,6 +78,10 @@ namespace nuff.AutoPatcherCombatExtended
                     else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
                     {
                         PatchTurretBase(td, log);
+                    }
+                    else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
+                    {
+                        PatchMortarShell(td, log);
                     }
                 }
                 else if (typeof(HediffDef).IsAssignableFrom(def.GetType()))
