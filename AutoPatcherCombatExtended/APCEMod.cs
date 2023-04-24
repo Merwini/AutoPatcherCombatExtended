@@ -34,7 +34,7 @@ namespace nuff.AutoPatcherCombatExtended
             list.Begin(inRect);
             list.EnumSelector(ref APCESettings.settingsTabs, "", "", "select settings page");
 
-            if (APCESettings.settingsTabs == APCESettings.SettingsTabs.General_Settings)
+            if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.General_Settings)
             {
                 list.CheckboxLabeled("Patch weapons from selected mods", ref APCESettings.patchWeapons);
                 list.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
@@ -44,17 +44,17 @@ namespace nuff.AutoPatcherCombatExtended
                 list.CheckboxLabeled("Enable Debug Mode (print errors)", ref APCESettings.printPatchErrors);
             }
 
-            else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Modlist)
+            else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Modlist)
             {
                 list.ListControl(inRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
                     ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 0.85f);
             }
 
-            else if (APCESettings.settingsTabs == APCESettings.SettingsTabs.Balance_Control)
+            else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Balance_Control)
             {
                 list.Label("Balance Control placeholder");
                 list.EnumSelector(ref APCESettings.balanceTabs, "", "", "select balance category");
-                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Apparel)
+                if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Apparel)
                 {
                     list.Gap();
                     Text.Font = GameFont.Medium;
@@ -80,7 +80,7 @@ namespace nuff.AutoPatcherCombatExtended
                     //list.Label("Bulk value settings");
                     Text.Font = GameFont.Small;
                 }
-                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Weapons)
+                if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Weapons)
                 {
                     list.Gap();
                     Text.Font = GameFont.Medium;
@@ -107,7 +107,7 @@ namespace nuff.AutoPatcherCombatExtended
                     list.TextFieldNumericLabeled("Weapon tool blunt penetration multiplier (default: 40)", ref APCESettings.weaponToolBluntPenetration, ref APCESettings.weaponToolBluntPenetrationBuffer);
 
                 }
-                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Pawns)
+                if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Pawns)
                 {
                     list.Gap();
                     Text.Font = GameFont.Medium;
@@ -124,7 +124,7 @@ namespace nuff.AutoPatcherCombatExtended
                     list.TextFieldNumericLabeled("Pawn tool sharp penetration multiplier (default: 10)", ref APCESettings.pawnToolSharpPenetration, ref APCESettings.pawnToolSharpPenetrationBuffer);
                     list.TextFieldNumericLabeled("Pawn tool blunt penetration multiplier (default: 40)", ref APCESettings.pawnToolBluntPenetration, ref APCESettings.pawnToolBluntPenetrationBuffer);
                 }
-                if (APCESettings.balanceTabs == APCESettings.BalanceTabs.Hediffs)
+                if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Hediffs)
                 {
                     list.Gap();
                     Text.Font = GameFont.Medium;

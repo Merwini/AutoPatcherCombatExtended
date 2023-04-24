@@ -13,26 +13,26 @@ namespace nuff.AutoPatcherCombatExtended
     partial class APCEController
     {
         //TODO
-        internal static APCESettings.gunKinds DetermineGunKind(ThingDef weapon)
+        internal static APCEConstants.gunKinds DetermineGunKind(ThingDef weapon)
         {
             float gunMass = weapon.statBases.GetStatFactorFromList(StatDefOf.Mass);
             //TODO new logic. This is from the old version of the mod
 
             //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             if (weapon.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))
-                return APCESettings.gunKinds.Mortar;
+                return APCEConstants.gunKinds.Mortar;
             else if (weapon.weaponTags.Any(str => str.IndexOf("TurretGun", StringComparison.OrdinalIgnoreCase) >= 0))
-                return APCESettings.gunKinds.Turret; //TODO account for explosive and advanced turrets
+                return APCEConstants.gunKinds.Turret; //TODO account for explosive and advanced turrets
             //a bow is a pre-industrial ranged weapon with a burst count of 1. Can't find a good way to discern high-tech bows
             else if ((weapon.techLevel.CompareTo(TechLevel.Medieval) <= 0) && (weapon.Verbs[0].burstShotCount == 1))
-                return APCESettings.gunKinds.Bow;
+                return APCEConstants.gunKinds.Bow;
             //a grenade uses a different verb from most weapons
-            else if (weapon.Verbs[0].verbClass.ToString().EqualsIgnoreCase("Verse.Verb_ShootLaunchProjectile"))
-                return APCESettings.gunKinds.Grenade;
+            else if (weapon.Verbs[0].verbClass == typeof(Verb_LaunchProjectile))
+                return APCEConstants.gunKinds.Grenade;
             //explosive launchers
             else if ((weapon.Verbs[0].CausesExplosion))
             {
-                return APCESettings.gunKinds.ExplosiveLauncher;
+                return APCEConstants.gunKinds.ExplosiveLauncher;
             }
 
             //a shotgun is an industrial or higher weapon and has one of the following: shotgun in its defname, label, or description, OR shotgun or gauge in its projectile
@@ -41,24 +41,24 @@ namespace nuff.AutoPatcherCombatExtended
                         || (weapon.description.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
                         || (weapon.Verbs[0].defaultProjectile.ToString().IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
                         || (weapon.Verbs[0].defaultProjectile.ToString().IndexOf("gauge", 0, StringComparison.OrdinalIgnoreCase) != -1))
-                return APCESettings.gunKinds.Shotgun;
+                return APCEConstants.gunKinds.Shotgun;
             //a handgun is an industrial or higher weapon with burst count 1 and a range < 13
             else if ((weapon.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (weapon.Verbs[0].burstShotCount == 1) && (weapon.Verbs[0].range < 13))
-                return APCESettings.gunKinds.Handgun;
+                return APCEConstants.gunKinds.Handgun;
             // a precision rifle is an industrial or higher weapon with burst count 1 and a range >= 13
             else if ((weapon.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (weapon.Verbs[0].burstShotCount == 1) && (weapon.Verbs[0].range >= 13))
-                return APCESettings.gunKinds.precisionRifle;
+                return APCEConstants.gunKinds.precisionRifle;
             //an SMG is an industrial or higher weapon with burst count > 1 but < 6 and a range < 26
             else if ((weapon.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (weapon.Verbs[0].burstShotCount > 1) && (weapon.Verbs[0].burstShotCount < 6) && (weapon.Verbs[0].range < 25.9))
-                return APCESettings.gunKinds.SMG;
+                return APCEConstants.gunKinds.SMG;
             //an assault rifle is an industrial or higher weapon with burst count > 1 but <= 6 and a range >= 26
             else if ((weapon.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (weapon.Verbs[0].burstShotCount > 1) && (weapon.Verbs[0].burstShotCount <= 3) && (weapon.Verbs[0].range >= 25.9))
-                return APCESettings.gunKinds.assaultRifle;
+                return APCEConstants.gunKinds.assaultRifle;
             //a machine gun is an industrial or higher weapon with range >= 26 and burst count >= 3
             else if ((weapon.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (weapon.Verbs[0].range >= 25.8) && (weapon.Verbs[0].burstShotCount > 3))
-                return APCESettings.gunKinds.MachineGun;
+                return APCEConstants.gunKinds.MachineGun;
             else
-                return APCESettings.gunKinds.Other;
+                return APCEConstants.gunKinds.Other;
         }
     }
 }

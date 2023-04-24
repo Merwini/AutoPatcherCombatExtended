@@ -35,7 +35,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else
                 {
-                    turretBase.building.turretBurstCooldownTime = 1; //TODO formula
+                    turretBase.building.turretBurstCooldownTime *= 0.5f; //TODO seems to generally be lowered, refine formula
                 }
 
                 if (!(turretBase.statBases == null))

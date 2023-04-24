@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static AmmoSetDef GenerateAmmoSet(ThingDef weapon, APCESettings.gunKinds gunKind) //TODO - stoppingPower esp for shotguns
+        internal static AmmoSetDef GenerateAmmoSet(ThingDef weapon, APCEConstants.gunKinds gunKind) //TODO - stoppingPower esp for shotguns
         {
 
             ThingCategoryDef newAmmoCat = new ThingCategoryDef();
@@ -62,7 +62,7 @@ namespace nuff.AutoPatcherCombatExtended
                     break;
             }
 
-            if ((gunKind == APCESettings.gunKinds.Turret) && (weapon.techLevel == TechLevel.Undefined))
+            if ((gunKind == APCEConstants.gunKinds.Turret) && (weapon.techLevel == TechLevel.Undefined))
             {//overrides tech level for turrets if undefined, since it seems common to not bother setting one
                 gunTechMult *= APCESettings.gunTechMultIndustrial;
             }
@@ -71,7 +71,7 @@ namespace nuff.AutoPatcherCombatExtended
             switch (gunKind)
             {
                 
-                case APCESettings.gunKinds.Bow:
+                case APCEConstants.gunKinds.Bow:
                     {
                         newAmmoCat.parent = APCEDefOf.AmmoArrows;
                         for (int i = 0; i < 5; i++)
@@ -167,7 +167,7 @@ namespace nuff.AutoPatcherCombatExtended
                         break;
                     }
                     
-                case APCESettings.gunKinds.Shotgun:
+                case APCEConstants.gunKinds.Shotgun:
                     {
                         newAmmoCat.parent = APCEDefOf.Ammo;
                         newAmmoSet.similarTo = APCEDefOf.AmmoSet_Shotgun;
@@ -254,7 +254,7 @@ namespace nuff.AutoPatcherCombatExtended
                         break;
                     }
                 
-            case APCESettings.gunKinds.ExplosiveLauncher:
+            case APCEConstants.gunKinds.ExplosiveLauncher:
                 {
                         newAmmoCat.parent = APCEDefOf.Ammo;
 

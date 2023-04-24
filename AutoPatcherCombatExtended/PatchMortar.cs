@@ -15,7 +15,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal static void PatchMortar(ThingDef mortar)
         {
             AddMortarStats(mortar);
-            AddCompProperties_AmmoUser(mortar, APCESettings.gunKinds.Mortar);
+            AddCompProperties_AmmoUser(mortar, APCEConstants.gunKinds.Mortar);
             AddCompProperties_Charges(mortar);
             mortar.weaponTags.Add("TurretGun");
             PatchVerbMortar(mortar);

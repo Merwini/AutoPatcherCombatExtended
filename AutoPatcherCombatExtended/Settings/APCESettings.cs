@@ -6,70 +6,8 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class APCESettings : ModSettings
     {
-        public enum SettingsTabs
-        {
-            General_Settings,
-            Modlist,
-            Balance_Control,
-        }
-
-        public enum BalanceTabs
-        {
-            Apparel,
-            Weapons,
-            Pawns,
-            Hediffs,
-        }
-        public enum gunKinds
-        {
-            Bow,
-            Grenade,
-            Handgun,
-            SMG,
-            assaultRifle,
-            Shotgun,
-            precisionRifle,
-            MachineGun,
-            ExplosiveLauncher,
-            Turret,
-            Mortar,
-            Other
-        }
-
-        public enum VanillaStatBases //StatModifiers used by vanilla and not CE
-        {
-            AccuracyTouch,
-            AccuracyShort,
-            AccuracyMedium,
-            AccuracyLong,
-        }
-
-        public enum CEStatBases //StatModifiers used by CE but not vanilla
-        {
-            SightsEfficiency,
-            ShotSpread,
-            SwayFactor,
-            Bulk,
-            TicksBetweenBurstShots,
-            BurstShotCount,
-            Recoil,
-            ReloadTime
-        }
-        public enum SharedStatBases //StatModifiers used by both vanilla and CE
-        {
-            MaxHitPoints,
-            Flammability,
-            DeteriorationRate,
-            Beauty,
-            SellPriceFactor,
-            MarketValue,
-            Mass,
-            RangedWeapon_Cooldown,
-            WorkToMake
-        }
-
-        internal static SettingsTabs settingsTabs = SettingsTabs.General_Settings;
-        internal static BalanceTabs balanceTabs = BalanceTabs.Apparel;
+        internal static APCEConstants.SettingsTabs settingsTabs = APCEConstants.SettingsTabs.General_Settings;
+        internal static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
 
         //General Settings
         internal static bool patchWeapons = true;

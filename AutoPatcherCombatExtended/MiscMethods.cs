@@ -372,7 +372,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal static List<StatModifier> PatchStatBases(ThingDef def, APCEConstants.gunKinds gunKind)
         {
             List<StatModifier> newStatBases = new List<StatModifier>();
-            foreach (string statMod in Enum.GetNames(typeof(APCESettings.SharedStatBases)))
+            foreach (string statMod in Enum.GetNames(typeof(APCEConstants.SharedStatBases)))
             {
                 int index = def.statBases.FindIndex(sm => sm.stat.ToString().EqualsIgnoreCase(statMod));
                 if (index < 0)

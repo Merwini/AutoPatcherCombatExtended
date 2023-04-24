@@ -17,14 +17,14 @@ namespace nuff.AutoPatcherCombatExtended
             try
             {
 
-                APCESettings.gunKinds gunKind = DetermineGunKind(def);
+                APCEConstants.gunKinds gunKind = DetermineGunKind(def);
 
                 if (APCESettings.printLogs)
                 {
                     Log.Message($"APCE thinks that {def.label} is a gun of kind: {gunKind}");
                 }
 
-                if (!(gunKind == APCESettings.gunKinds.Mortar))
+                if (!(gunKind == APCEConstants.gunKinds.Mortar))
                 {
                     PatchAllTools(def);
                     List<StatModifier> newStatBases = PatchStatBases(def, gunKind);
@@ -32,7 +32,7 @@ namespace nuff.AutoPatcherCombatExtended
                     PatchAllVerbs(def);
 
                     def.statBases = newStatBases;
-                    if (!(gunKind == APCESettings.gunKinds.Grenade))
+                    if (!(gunKind == APCEConstants.gunKinds.Grenade))
                     {
                         AddCompProperties_AmmoUser(def, gunKind);
                         AddCompProperties_FireModes(def, gunKind);
@@ -41,7 +41,7 @@ namespace nuff.AutoPatcherCombatExtended
                         vpce.recoilAmount = newStatBases.GetStatValueFromList(CE_StatDefOf.Recoil, 1.25f);
 
                         
-                        if (!(gunKind == APCESettings.gunKinds.Turret) && !(gunKind == APCESettings.gunKinds.MachineGun))
+                        if (!(gunKind == APCEConstants.gunKinds.Turret) && !(gunKind == APCEConstants.gunKinds.MachineGun))
                         {
                             vpce.recoilPattern = RecoilPattern.Regular;
                         }
