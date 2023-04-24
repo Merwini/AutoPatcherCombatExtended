@@ -19,9 +19,11 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
         internal static List<ModContentPack> GetActiveModsList()
-        {//TODO filter out other mods that will never need patching, like CE, Harmony, APCE, etc. + mods that have no defs
+        {
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod
-                                                                                                              && (mod.AllDefs.Count() != 0)     
+                                                                                                              && !(mod.AllDefs.Count() == 0)
+                                                                                                              && !(mod.PackageId == "ceteam.combatextended")
+                                                                                                              && !(mod.PackageId == "nuff.ceautopatcher")
                                                                                                               ).OrderBy(mod => mod.Name).ToList());
             return activeMods;
         }
