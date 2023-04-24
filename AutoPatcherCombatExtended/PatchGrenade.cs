@@ -25,7 +25,7 @@ namespace nuff.AutoPatcherCombatExtended
                 </Operation>
             */
 
-            //TODO patch verb
+            PatchAllVerbs(grenade);
             PatchGrenadePP(grenade);
 
             ConvertCompProperties_Explosive(grenade);

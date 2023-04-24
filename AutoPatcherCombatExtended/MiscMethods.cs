@@ -20,7 +20,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static List<ModContentPack> GetActiveModsList()
         {//TODO filter out other mods that will never need patching, like CE, Harmony, APCE, etc. + mods that have no defs
-            List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod).OrderBy(mod => mod.Name).ToList());
+            List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod
+                                                                                                              && (mod.AllDefs.Count() != 0)     
+                                                                                                              ).OrderBy(mod => mod.Name).ToList());
             return activeMods;
         }
 
@@ -204,12 +206,6 @@ namespace nuff.AutoPatcherCombatExtended
             return newToolCE;
         }
 
-        internal static ProjectileCE PatchProjectile(Projectile proj)
-        {
-            //TODO
-            return null;
-        }
-
         internal static void PatchAllVerbs(ThingDef def)
         {
             List<VerbPropertiesCE> newVerbsCE = new List<VerbPropertiesCE>();
@@ -228,8 +224,13 @@ namespace nuff.AutoPatcherCombatExtended
         {
             try
             {
+                if ((vp.verbClass == typeof(Verb_ShootCE)) || (vp.verbClass == typeof(Verb_ShootCEOneUse)))
+                {
+                    return vp as VerbPropertiesCE;
+                }
                 VerbPropertiesCE newVPCE = new VerbPropertiesCE();
-
+                CopyFields(vp, newVPCE);
+                /*
                 newVPCE.label = vp.label;
                 newVPCE.soundCast = vp.soundCast;
                 newVPCE.soundCastTail = vp.soundCastTail;
@@ -238,6 +239,7 @@ namespace nuff.AutoPatcherCombatExtended
                 newVPCE.hasStandardCommand = vp.hasStandardCommand;
                 newVPCE.range = vp.range;
                 newVPCE.ticksBetweenBurstShots = vp.ticksBetweenBurstShots;
+                
                 if (vp.warmupTime >= 0.07f)
                 {
                     //This took so long to debug why a turret would fire once then stop. 
@@ -263,19 +265,36 @@ namespace nuff.AutoPatcherCombatExtended
                     newVPCE.burstShotCount = vp.burstShotCount;
                 }
                 newVPCE.defaultProjectile = vp.defaultProjectile;
-                newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
-                newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
-                if ((vp.verbClass == typeof(Verb_Shoot)) || (vp.verbClass == typeof(Verb_ShootOneUse)) || vp.verbClass == typeof(Verb_LaunchProjectile)) //todo make this only for verbshoot once the other verbs are implemented
+                */
+                if (newVPCE.warmupTime < 0.07)
                 {
-                    newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE); 
+                    newVPCE.warmupTime = 0.1f;
                 }
-                else if (vp.verbClass == typeof(Verb_LaunchProjectile))
+                if (newVPCE.burstShotCount != 1)
+                {
+                    newVPCE.burstShotCount *= 2;
+                }
+
+                
+
+                if (vp.verbClass == typeof(Verb_Shoot))
+                {
+                    newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE);
+
+                    //these are done just in case. weapon should not ever use defaultProjectile.
+                    newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
+                    newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+                }
+                else if (vp.verbClass == typeof(Verb_LaunchProjectile) || (vp.verbClass == typeof(Verb_ShootOneUse)))
                 {
                     newVPCE.verbClass = typeof(Verb_ShootCEOneUse);
+
+                    newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.ProjectileCE_Explosive);
+                    newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
                 }
                 else
                 {
-                    throw new Exception($"Unable to patch verb {vp.label}");
+                    throw new Exception($"Unable to patch verb {vp.label} due to unrecognized verbClass: {vp.verbClass}");
                 }
                 return newVPCE;
             }
@@ -350,7 +369,7 @@ namespace nuff.AutoPatcherCombatExtended
             dab.SetValue(newPPCE, (int)damage);
         }
 
-        internal static List<StatModifier> PatchStatBases(ThingDef def, APCESettings.gunKinds gunKind)
+        internal static List<StatModifier> PatchStatBases(ThingDef def, APCEConstants.gunKinds gunKind)
         {
             List<StatModifier> newStatBases = new List<StatModifier>();
             foreach (string statMod in Enum.GetNames(typeof(APCESettings.SharedStatBases)))
@@ -401,67 +420,67 @@ namespace nuff.AutoPatcherCombatExtended
 
             switch (gunKind)
             {
-                case APCESettings.gunKinds.Bow:
+                case APCEConstants.gunKinds.Bow:
                     sightsEfficiency.value = 0.6f;
                     shotSpread.value = 1f;
                     swayFactor.value = 2f;
                     gunBulk.value = 2f * gunMass;
                     //reloadTime.value = 1f;
                     break;
-                case APCESettings.gunKinds.Handgun:
+                case APCEConstants.gunKinds.Handgun:
                     shotSpread.value = (0.2f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = 0.7f + gunTechModFlat;
                     swayFactor.value = 1f;
                     gunBulk.value = 1f * gunMass;
                     break;
-                case APCESettings.gunKinds.SMG:
+                case APCEConstants.gunKinds.SMG:
                     shotSpread.value = (0.17f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = 0.7f + gunTechModFlat;
                     swayFactor.value = 2f;
                     gunBulk.value = 1f * gunMass;
                     recoil.value = 2f  * recoilTechMod;
                     break;
-                case APCESettings.gunKinds.Shotgun:
+                case APCEConstants.gunKinds.Shotgun:
                     shotSpread.value = (0.17f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.2f;
                     gunBulk.value = 2f * gunMass;
                     break;
-                case APCESettings.gunKinds.assaultRifle:
+                case APCEConstants.gunKinds.assaultRifle:
                     shotSpread.value = (0.13f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.33f;
                     gunBulk.value = 2f * gunMass;
                     recoil.value = 1.8f * recoilTechMod;
                     break;
-                case APCESettings.gunKinds.MachineGun:
+                case APCEConstants.gunKinds.MachineGun:
                     shotSpread.value = (0.13f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.4f;
                     gunBulk.value = 1.5f * gunMass;
                     recoil.value = 2.3f * recoilTechMod;
                     break;
-                case APCESettings.gunKinds.precisionRifle:
+                case APCEConstants.gunKinds.precisionRifle:
                     shotSpread.value = (0.1f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = 2.6f + gunTechModFlat;
                     swayFactor.value = 1.35f;
                     gunBulk.value = 2f * gunMass;
                     break;
-                case APCESettings.gunKinds.ExplosiveLauncher:
+                case APCEConstants.gunKinds.ExplosiveLauncher:
                     shotSpread.value = 0.122f + (forcedMissRadius * 0.02f);
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.8f;
                     gunBulk.value = 2f * gunMass;
                     recoil.value = 2.3f * recoilTechMod;
                     break;
-                case APCESettings.gunKinds.Turret:
+                case APCEConstants.gunKinds.Turret:
                     shotSpread.value = (0.1f - ssAccuracyMod) * gunTechModPercent;
                     sightsEfficiency.value = seDefault;
                     swayFactor.value = 1.5f;
                     gunBulk.value = 2f * gunMass;
                     recoil.value = 1f;
                     break;
-                case APCESettings.gunKinds.Grenade:
+                case APCEConstants.gunKinds.Grenade:
                     sightsEfficiency.value = 0.65f;
                     break;
                 default:
@@ -486,7 +505,7 @@ namespace nuff.AutoPatcherCombatExtended
             else
                 burstShotCount.value = 2 * def.Verbs[0].burstShotCount;
 
-            if (gunKind != APCESettings.gunKinds.Grenade)
+            if (gunKind != APCEConstants.gunKinds.Grenade)
             {
                 newStatBases.Add(shotSpread);
                 newStatBases.Add(swayFactor);
@@ -500,36 +519,36 @@ namespace nuff.AutoPatcherCombatExtended
             return newStatBases;
         }
 
-        internal static void AddCompProperties_AmmoUser(ThingDef weapon, APCESettings.gunKinds gunKind)
+        internal static void AddCompProperties_AmmoUser(ThingDef weapon, APCEConstants.gunKinds gunKind)
         {
             CombatExtended.CompProperties_AmmoUser newAUComp = new CombatExtended.CompProperties_AmmoUser();
 
-            if (!(gunKind == APCESettings.gunKinds.Bow) && !(gunKind == APCESettings.gunKinds.Mortar) && !(gunKind == APCESettings.gunKinds.MachineGun))
+            if (!(gunKind == APCEConstants.gunKinds.Bow) && !(gunKind == APCEConstants.gunKinds.Mortar) && !(gunKind == APCEConstants.gunKinds.MachineGun))
             {
                 newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 5;
                 newAUComp.reloadTime = 4f; 
                 newAUComp.throwMote = true;
             }
-            else if (gunKind == APCESettings.gunKinds.MachineGun)
+            else if (gunKind == APCEConstants.gunKinds.MachineGun)
             {
                 newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 10;
                 newAUComp.reloadTime = newAUComp.magazineSize * 0.09f;
                 newAUComp.throwMote = true;
             }
-            else if (gunKind == APCESettings.gunKinds.Bow)
+            else if (gunKind == APCEConstants.gunKinds.Bow)
             {
                 newAUComp.magazineSize = 1;
                 newAUComp.reloadTime = 1f;
                 newAUComp.throwMote = false;
             }
-            else if (gunKind == APCESettings.gunKinds.Mortar)
+            else if (gunKind == APCEConstants.gunKinds.Mortar)
             {
                 newAUComp.magazineSize = 1;
                 newAUComp.reloadTime = 5f;
                 newAUComp.throwMote = false;
             }
 
-            if (!(gunKind == APCESettings.gunKinds.Mortar))
+            if (!(gunKind == APCEConstants.gunKinds.Mortar))
             {
                 newAUComp.ammoSet = GenerateAmmoSet(weapon, gunKind);
             }
@@ -544,7 +563,7 @@ namespace nuff.AutoPatcherCombatExtended
             weapon.comps.Add(newAUComp);
         }
 
-        internal static void AddCompProperties_FireModes(ThingDef weapon, APCESettings.gunKinds gunKind)
+        internal static void AddCompProperties_FireModes(ThingDef weapon, APCEConstants.gunKinds gunKind)
         {
             CombatExtended.CompProperties_FireModes newFMComp = new CombatExtended.CompProperties_FireModes();
             if (weapon.Verbs[0].burstShotCount > 1)
@@ -555,7 +574,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 newFMComp.aimedBurstShotCount = 1;
             }
-            if (!(gunKind == APCESettings.gunKinds.Turret))
+            if (!(gunKind == APCEConstants.gunKinds.Turret))
             {
                 newFMComp.aiUseBurstMode = true;
                 newFMComp.noSingleShot = false;
@@ -581,12 +600,16 @@ namespace nuff.AutoPatcherCombatExtended
             bullet.thingClass = typeof(CombatExtended.BulletCE);
             bullet.useHitPoints = false;
             bullet.neverMultiSelect = true;
-            bullet.graphicData.shaderType = ShaderTypeDefOf.Transparent;
-            bullet.graphicData.graphicClass = typeof(Graphic_Single);
+            if (bullet.graphicData != null)
+            {
+                bullet.graphicData.shaderType = ShaderTypeDefOf.Transparent;
+                bullet.graphicData.graphicClass = typeof(Graphic_Single);
+            }
+            
         }
 
         internal static void CopyFields(object source, object destination)
-        {//TODO use this in place of manual foo.blah = bar.blah
+        {
             if (source == null || destination == null)
             {
                 return;
