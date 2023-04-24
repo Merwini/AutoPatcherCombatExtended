@@ -12,13 +12,10 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        //TODO
         internal static void PatchApparel(ThingDef def, APCEPatchLogger log)
         {
             try
             {
-                //TODO
-
                 #region ArmorValues
                 float armorTechMult = 1f;
                 switch (def.techLevel)
@@ -90,6 +87,15 @@ namespace nuff.AutoPatcherCombatExtended
                             newBulk += APCESettings.midBulkAdd;
                             newWornBulk += APCESettings.midWulkAdd;
                         }
+                        if ((APCESettings.patchHeadgearLayers) && (ald == ApparelLayerDefOf.Overhead))
+                        {
+                            def.apparel.layers.Add(CE_ApparelLayerDefOf.OnHead);
+                            if (def.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear))
+                            {
+                                def.apparel.layers.Add(CE_ApparelLayerDefOf.StrappedHead);
+                            }
+                        }
+
                     }
                     if (ald == ApparelLayerDefOf.Shell || ald.ToString().ToUpper().Contains("SHELL") || ald.ToString().ToUpper().Contains("OUTER")) //had to add extra conditions to try to account for modded alien layers
                     {

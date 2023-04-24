@@ -67,7 +67,6 @@ namespace nuff.AutoPatcherCombatExtended
                 gunTechMult *= APCESettings.gunTechMultIndustrial;
             }
 
-            //TODO extract duplicate code
             switch (gunKind)
             {
                 
@@ -90,7 +89,6 @@ namespace nuff.AutoPatcherCombatExtended
                             newPPCE.explosionDamageFalloff = true;
                             SetPenetrationMults(weapon, newPPCE, gunTechMult);
                             newPPCE.flyOverhead = false;
-                            //TODO maybe use CE's arrow textures?
                             switch (i)
                             {
                                 case 0:
@@ -310,7 +308,6 @@ namespace nuff.AutoPatcherCombatExtended
                                         newProjectile.defName = ("APCE_Foam_Bullet_" + weapon.defName);
                                         newProjectile.label = (weapon.label + " foam bullet");
                                         newAmmos[i] = APCEDefOf.Ammo_APCELauncher_Foam;
-                                        //damageHolder = 0f; //TODO???
                                         newPPCE.damageDef = DamageDefOf.Extinguish;
                                         newPPCE.explosionRadius = weapon.Verbs[0].defaultProjectile.projectile.explosionRadius * 3f;
                                         newPPCE.speed = 40;

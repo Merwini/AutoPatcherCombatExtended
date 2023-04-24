@@ -38,6 +38,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 list.CheckboxLabeled("Patch weapons from selected mods", ref APCESettings.patchWeapons);
                 list.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
+                list.CheckboxLabeled("Patch headgear layers", ref APCESettings.patchHeadgearLayers);
                 list.CheckboxLabeled("Patch pawns from selected mods", ref APCESettings.patchPawns);
                 list.CheckboxLabeled("Patch hediffs from selected mods", ref APCESettings.patchHediffs);
                 list.CheckboxLabeled("Show patch logs", ref APCESettings.printLogs);
@@ -128,7 +129,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     list.Gap();
                     Text.Font = GameFont.Medium;
-                    list.Label("Hediff settings (really just armor values from Hediffs)");
+                    list.Label("Hediff settings");
                     Text.Font = GameFont.Small;
 
                     list.Gap();

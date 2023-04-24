@@ -12,11 +12,9 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        //TODO
         internal static APCEConstants.gunKinds DetermineGunKind(ThingDef weapon)
         {
             float gunMass = weapon.statBases.GetStatFactorFromList(StatDefOf.Mass);
-            //TODO new logic. This is from the old version of the mod
 
             //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             if (weapon.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))

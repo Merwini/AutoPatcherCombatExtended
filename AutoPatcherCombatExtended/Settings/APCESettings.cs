@@ -14,7 +14,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal static bool patchApparels = true;
         internal static bool patchPawns = true;
         internal static bool patchHediffs = true;
-        internal static bool patchHeadgearLayers = true; //TODO
+        internal static bool patchHeadgearLayers = true;
         internal static bool printLogs = false;
         internal static bool printPatchErrors = false;
 
@@ -101,6 +101,7 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref printPatchErrors, "printPatchErrors");
             Scribe_Values.Look(ref patchWeapons, "patchWeapons");
             Scribe_Values.Look(ref patchApparels, "patchApparels");
+            Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers");
             Scribe_Values.Look(ref patchPawns, "patchPawns");
             Scribe_Values.Look(ref patchHediffs, "patchHediffs");
 
