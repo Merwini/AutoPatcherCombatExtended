@@ -37,6 +37,7 @@ namespace nuff.AutoPatcherCombatExtended
             if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.General_Settings)
             {
                 list.CheckboxLabeled("Patch weapons from selected mods", ref APCESettings.patchWeapons);
+                list.CheckboxLabeled("Try to patch custom verbs on guns (safety not guaranteed)", ref APCESettings.patchCustomVerbs);
                 list.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
                 list.CheckboxLabeled("Patch headgear layers", ref APCESettings.patchHeadgearLayers);
                 list.CheckboxLabeled("Patch pawns from selected mods", ref APCESettings.patchPawns);

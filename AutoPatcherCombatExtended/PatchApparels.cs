@@ -64,6 +64,7 @@ namespace nuff.AutoPatcherCombatExtended
                 bool isSkin = false;
                 bool isMid = false;
                 bool isShell = false;
+                bool isHeadgear = false;
                 float newBulk = 0;
                 float newWornBulk = 0;
 
@@ -87,13 +88,9 @@ namespace nuff.AutoPatcherCombatExtended
                             newBulk += APCESettings.midBulkAdd;
                             newWornBulk += APCESettings.midWulkAdd;
                         }
-                        if ((APCESettings.patchHeadgearLayers) && (ald == ApparelLayerDefOf.Overhead))
+                        if (ald == ApparelLayerDefOf.Overhead)
                         {
-                            def.apparel.layers.Add(CE_ApparelLayerDefOf.OnHead);
-                            if (def.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear))
-                            {
-                                def.apparel.layers.Add(CE_ApparelLayerDefOf.StrappedHead);
-                            }
+                            isHeadgear = true;
                         }
 
                     }
@@ -113,6 +110,15 @@ namespace nuff.AutoPatcherCombatExtended
                                 newWornBulk *= APCESettings.shellWulkMult;
                             }
                         }
+                    }
+                }
+                //gotta do this outside the for loop, or it causes an IOE
+                if ((APCESettings.patchHeadgearLayers) && (isHeadgear))
+                {
+                    def.apparel.layers.Add(CE_ApparelLayerDefOf.OnHead);
+                    if (def.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear))
+                    {
+                        def.apparel.layers.Add(CE_ApparelLayerDefOf.StrappedHead);
                     }
                 }
                 StatModifier statModBulk = new StatModifier();

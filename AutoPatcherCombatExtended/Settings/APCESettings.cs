@@ -11,6 +11,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         //General Settings
         internal static bool patchWeapons = true;
+        internal static bool patchCustomVerbs = false;
         internal static bool patchApparels = true;
         internal static bool patchPawns = true;
         internal static bool patchHediffs = true;
@@ -100,6 +101,7 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref printLogs, "printDebug");
             Scribe_Values.Look(ref printPatchErrors, "printPatchErrors");
             Scribe_Values.Look(ref patchWeapons, "patchWeapons");
+            Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs");
             Scribe_Values.Look(ref patchApparels, "patchApparels");
             Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers");
             Scribe_Values.Look(ref patchPawns, "patchPawns");

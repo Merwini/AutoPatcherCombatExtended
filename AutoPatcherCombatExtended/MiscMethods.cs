@@ -296,7 +296,17 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else
                 {
-                    throw new Exception($"Unable to patch verb {vp.label} due to unrecognized verbClass: {vp.verbClass}");
+                    if (APCESettings.patchCustomVerbs)
+                    {
+                        newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE);
+
+                        newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
+                        newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+                    }
+                    else
+                    {
+                        throw new Exception($"Unable to patch verb {vp.label} due to unrecognized verbClass: {vp.verbClass}");
+                    }
                 }
                 return newVPCE;
             }

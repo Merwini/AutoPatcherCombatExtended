@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static AmmoSetDef GenerateAmmoSet(ThingDef weapon, APCEConstants.gunKinds gunKind) //TODO - stoppingPower esp for shotguns
+        internal static AmmoSetDef GenerateAmmoSet(ThingDef weapon, APCEConstants.gunKinds gunKind)
         {
 
             ThingCategoryDef newAmmoCat = new ThingCategoryDef();
