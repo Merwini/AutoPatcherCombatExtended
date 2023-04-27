@@ -1,0 +1,3 @@
+﻿TODO maybe try to filter out mods that are already CE patched? Not sure yet how to do this.
+TODO patch newly added mods during WriteSettings - make a Hashset of patched mods that populates as they are patched. Compare modsToPatch against this when settings window is closed and patch any that aren't already on it.
+TODO explosive and advanced turrets

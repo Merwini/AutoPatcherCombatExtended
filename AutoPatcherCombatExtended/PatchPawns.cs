@@ -33,6 +33,54 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 #endregion
 
+                #region MeleeStatBases
+                StatModifier mdc = new StatModifier();
+                mdc.stat = CE_StatDefOf.MeleeDodgeChance;
+                mdc.value = 1;
+                def.statBases.Add(mdc);
+
+                StatModifier mcc = new StatModifier();
+                mcc.stat = CE_StatDefOf.MeleeCritChance;
+                mcc.value = 1;
+                def.statBases.Add(mcc);
+
+                StatModifier mpc = new StatModifier();
+                mpc.stat = CE_StatDefOf.MeleeParryChance;
+                mcc.value = 1;
+                def.statBases.Add(mpc);
+
+                StatModifier smokes = new StatModifier();
+                smokes.stat = CE_StatDefOf.SmokeSensitivity;
+                smokes.value = 1;
+                def.statBases.Add(smokes);
+                #endregion
+
+                #region Comps
+                if (def.comps == null)
+                {
+                    def.comps = new List<CompProperties>();
+                }
+
+                CompProperties_Suppressable cp_s = new CompProperties_Suppressable();
+                def.comps.Add(cp_s);
+
+                CompProperties cpg = new CompProperties { compClass = typeof(CompPawnGizmo) };
+                def.comps.Add(cpg);
+                #endregion
+
+                #region ModExtensions
+                //TODO think of a better way to evaluate what bodyshape to use
+                RacePropertiesExtensionCE rpece = new RacePropertiesExtensionCE();
+                if (def.race.intelligence != Intelligence.Animal)
+                {
+                    rpece.bodyShape = CE_BodyShapeDefOf.Humanoid;
+                }
+                else
+                {
+                    rpece.bodyShape = CE_BodyShapeDefOf.Quadruped;
+                }
+                #endregion
+
                 #region Tools
                 PatchAllTools(def);
                 #endregion

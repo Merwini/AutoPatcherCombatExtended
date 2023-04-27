@@ -82,6 +82,7 @@
     <Compile Include="PatchGrenade.cs" />
     <Compile Include="PatchMeleeWeapon.cs" />
     <Compile Include="PatchMortar.cs" />
+    <Compile Include="PatchPawnKinds.cs" />
     <Compile Include="Settings\APCEConstants.cs" />
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Settings\APCESettings.cs" />
@@ -95,6 +96,9 @@
     <Compile Include="APCEMod.cs" />
     <Compile Include="PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Todo list.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

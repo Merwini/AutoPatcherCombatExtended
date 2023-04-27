@@ -122,11 +122,12 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
                 StatModifier statModBulk = new StatModifier();
-                statModBulk.stat = StatDef.Named("Bulk");
+                
+                statModBulk.stat = CE_StatDefOf.Bulk;
                 statModBulk.value = newBulk;
 
                 StatModifier statModWornBulk = new StatModifier();
-                statModWornBulk.stat = StatDef.Named("WornBulk");
+                statModWornBulk.stat = CE_StatDefOf.WornBulk;
                 statModWornBulk.value = newWornBulk;
 
                 def.AddOrChangeStat(statModBulk);
