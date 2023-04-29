@@ -70,6 +70,10 @@ namespace nuff.AutoPatcherCombatExtended
                                 continue;
                             }
                         }
+                        else
+                        {
+                            DisableGenericAmmos();
+                        }
                     }
                     else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
                     {

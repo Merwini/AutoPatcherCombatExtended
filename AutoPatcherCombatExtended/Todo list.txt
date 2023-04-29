@@ -1,3 +1,5 @@
 ﻿TODO maybe try to filter out mods that are already CE patched? Not sure yet how to do this.
 TODO patch newly added mods during WriteSettings - make a Hashset of patched mods that populates as they are patched. Compare modsToPatch against this when settings window is closed and patch any that aren't already on it.
 TODO explosive and advanced turrets
+TODO make a list of generic ammos, so if the user doesn't want weapons patched, they will be disabled
+TODO test adding/removing mid-save

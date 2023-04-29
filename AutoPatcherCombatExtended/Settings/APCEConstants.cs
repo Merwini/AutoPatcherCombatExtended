@@ -10,6 +10,7 @@ using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
+    [StaticConstructorOnStartup]
     public class APCEConstants
     {
         public enum SettingsTabs
