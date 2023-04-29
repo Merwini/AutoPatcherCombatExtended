@@ -25,6 +25,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
         internal static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
         internal static ModContentPack thisMod;
+        internal static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>();
 
         internal string searchTerm = "";
         internal Vector2 leftScrollPosition = new Vector2();

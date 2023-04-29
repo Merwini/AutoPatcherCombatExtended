@@ -151,6 +151,13 @@ namespace nuff.AutoPatcherCombatExtended
         {
             //DEBUG
             APCEController.RemoveListDuplicates(APCESettings.modsByPackageId);
+            foreach (ModContentPack mod in APCESettings.modsToPatch)
+            {
+                if (APCESettings.modsAlreadyPatched.Add(mod))
+                {
+                    APCEController.PatchMod(mod);
+                }
+            }
             base.WriteSettings();
         }
     }

@@ -29,7 +29,10 @@ namespace nuff.AutoPatcherCombatExtended
             InjectedDefHasher.PrepareReflection();
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
-                PatchMod(mod);
+                if (APCESettings.modsAlreadyPatched.Add(mod))
+                {
+                    PatchMod(mod);
+                }
             }
             if (APCESettings.printLogs)
             {
