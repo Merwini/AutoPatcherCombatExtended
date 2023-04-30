@@ -14,7 +14,16 @@ namespace nuff.AutoPatcherCombatExtended
     {
         internal static APCEConstants.gunKinds DetermineGunKind(ThingDef weapon)
         {
-            float gunMass = weapon.statBases.GetStatFactorFromList(StatDefOf.Mass);
+            if (weapon.statBases == null)
+            {
+                weapon.statBases = new List<StatModifier>();
+            }
+            float gunMass = weapon.statBases.GetStatValueFromList(StatDefOf.Mass, 1f);
+
+            if (weapon.weaponTags == null)
+            {
+                weapon.weaponTags = new List<string>();
+            }
             
             //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             if (weapon.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))

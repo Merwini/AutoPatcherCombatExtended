@@ -78,7 +78,7 @@
     <Compile Include="Settings\APCEConstants.cs" />
     <Compile Include="Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Settings\APCESettings.cs" />
-    <Compile Include="DetermineGunType.cs" />
+    <Compile Include="DetermineGunKind.cs" />
     <Compile Include="MiscMethods.cs" />
     <Compile Include="PatchApparels.cs" />
     <Compile Include="PatchHediffs.cs" />
