@@ -1,2 +1,1 @@
 ﻿TODO maybe try to filter out mods that are already CE patched? Not sure yet how to do this.
-TODO test adding/removing mid-save
