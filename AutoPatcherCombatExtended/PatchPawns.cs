@@ -12,13 +12,10 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        //TODO
         internal static void PatchPawn(ThingDef def, APCEPatchLogger log)
         {
             try
             {
-                //TODO
-
                 #region ArmorValues
                 int sharpIndex = def.statBases.FindIndex(x => x.stat == StatDefOf.ArmorRating_Sharp);
                 int bluntIndex = def.statBases.FindIndex(x => x.stat == StatDefOf.ArmorRating_Blunt);

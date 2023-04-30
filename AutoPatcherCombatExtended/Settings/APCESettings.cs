@@ -25,7 +25,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
         internal static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
         internal static ModContentPack thisMod;
-        internal static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>();
+        internal static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
 
         internal string searchTerm = "";
         internal Vector2 leftScrollPosition = new Vector2();
@@ -62,9 +62,9 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float shellBulkMult = 20f;
         internal static float shellWulkMult = 5f;
 
-        internal static float advancedArmorCarryWeight = 80f; //TODO customize
-        internal static float advancedArmorCarryBulk = 10f; //TODO customize
-        internal static float advancedArmorShootingAccuracy = 0.2f; //TODO customize
+        internal static float advancedArmorCarryWeight = 80f;
+        internal static float advancedArmorCarryBulk = 10f;
+        internal static float advancedArmorShootingAccuracy = 0.2f; 
 
         internal static int testInt = 5;
 

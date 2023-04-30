@@ -12,12 +12,10 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        //TODO
         internal static void PatchHediff(HediffDef def, APCEPatchLogger log)
         {
             try
             {
-                //TODO
                 if (def.stages != null)
                 {
                     foreach (HediffStage hs in def.stages)

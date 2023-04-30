@@ -15,7 +15,6 @@ namespace nuff.AutoPatcherCombatExtended
         internal void BasicException(Exception ex)
         {
             Log.Error(ex.ToString());
-            //TODO more
         }
 
         internal static List<ModContentPack> GetActiveModsList()
@@ -282,26 +281,29 @@ namespace nuff.AutoPatcherCombatExtended
                 if (vp.verbClass == typeof(Verb_Shoot))
                 {
                     newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE);
-
+                    /*
                     //these are done just in case. weapon should not ever use defaultProjectile.
                     newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
                     newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+                    */
                 }
                 else if (vp.verbClass == typeof(Verb_LaunchProjectile) || (vp.verbClass == typeof(Verb_ShootOneUse)))
                 {
                     newVPCE.verbClass = typeof(Verb_ShootCEOneUse);
-
+                    /*
                     newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.ProjectileCE_Explosive);
                     newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+                    */
                 }
                 else
                 {
                     if (APCESettings.patchCustomVerbs)
                     {
                         newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE);
-
+                        /*
                         newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
                         newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+                        */
                     }
                     else
                     {

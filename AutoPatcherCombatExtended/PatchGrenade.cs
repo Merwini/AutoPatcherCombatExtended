@@ -57,7 +57,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static void AddCompProperties_ExplosiveCE(ThingDef weapon)
         {
-            //TODO
             CompProperties_ExplosiveCE compEx = new CompProperties_ExplosiveCE();
             compEx.damageAmountBase = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
             compEx.explosiveDamageType = weapon.Verbs[0].defaultProjectile.projectile.damageDef;
@@ -121,7 +120,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static void AddCompProperties_Fragments(ThingDef weapon)
         {
-            //TODO
             CompProperties_Fragments compFrag = new CompProperties_Fragments();
             compFrag.fragments = new List<ThingDefCountClass>() { new ThingDefCountClass(APCEDefOf.Fragment_Small, 40)}; //TODO maybe change 40 to something like damage * 0.8?
             weapon.comps.Add(compFrag);
