@@ -1,3 +1,2 @@
 ﻿TODO maybe try to filter out mods that are already CE patched? Not sure yet how to do this.
-TODO explosive and advanced turrets
 TODO test adding/removing mid-save

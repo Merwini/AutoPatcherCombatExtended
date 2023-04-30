@@ -89,17 +89,14 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 case APCEConstants.gunKinds.Turret:
                     {
-                        Log.Warning($"Debug: {weapon.defName} default projectile has thingClass: {weapon.Verbs[0].defaultProjectile.thingClass}");
                         if ((weapon.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_ExplosiveCE>() != null) 
                             || (weapon.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_Explosive>() != null)
                             || (weapon.Verbs[0].defaultProjectile.thingClass == typeof(Projectile_Explosive)))
                         {
-                            Log.Warning($"Debug: {weapon.defName} is a explosion turret");
                             GenerateAmmoExplosiveLauncher(weapon, newAmmoCat, newAmmos, newProjectiles);
                         }
                         else
                         {
-                            Log.Warning($"Debug: {weapon.defName} is a gun turret");
                             GenerateAmmoIndustrial(weapon, newAmmoCat, newAmmoSet, newAmmos, newProjectiles, gunTechMult);
                         }
                         break;
