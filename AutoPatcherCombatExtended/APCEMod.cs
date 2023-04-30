@@ -23,7 +23,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override string SettingsCategory()
         {
-            return "Autopatcher for CE";
+            return "Nuff's Autopatcher for CE";
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
