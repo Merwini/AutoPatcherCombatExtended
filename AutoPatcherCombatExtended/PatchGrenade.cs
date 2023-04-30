@@ -37,7 +37,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static void PatchGrenadePP(ThingDef grenade)
         {
-            ProjectilePropertiesCE grenadePPCE = grenade.Verbs[0].defaultProjectile.projectile as ProjectilePropertiesCE;
+            ProjectilePropertiesCE grenadePPCE = new ProjectilePropertiesCE();//grenade.Verbs[0].defaultProjectile.projectile as ProjectilePropertiesCE;
+            ProjectileProperties grenadePP = grenade.Verbs[0].defaultProjectile.projectile;
+            CopyFields(grenadePP, grenadePPCE);
             grenadePPCE.dropsCasings = true;
             grenadePPCE.casingMoteDefname = "Mote_GrenadePin";
             grenadePPCE.casingFilthDefname = "Filth_GrenadeAmmoCasings";
@@ -47,8 +49,8 @@ namespace nuff.AutoPatcherCombatExtended
             grenadePPCE.airborneSuppressionFactor = 0.25f;
             SetForcedMiss(grenade.Verbs[0], 1.9f);
             
-            int damageHolder = grenade.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
-            if (grenade.Verbs[0].defaultProjectile.projectile.damageDef == DamageDefOf.Bomb && damageHolder == 635)
+            int damageHolder = grenadePP.GetDamageAmount(1);
+            if (grenadePP.damageDef == DamageDefOf.Bomb && damageHolder == 635)
             {//CE Changes the defaultDamage of the Bomb DamageDef to 635. Any weapon relying on the default will do too much damage
                 damageHolder = 50;
             }
