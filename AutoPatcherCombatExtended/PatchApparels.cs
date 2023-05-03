@@ -116,9 +116,13 @@ namespace nuff.AutoPatcherCombatExtended
                 if ((APCESettings.patchHeadgearLayers) && (isHeadgear))
                 {
                     def.apparel.layers.Add(CE_ApparelLayerDefOf.OnHead);
-                    if (def.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear))
+
+                    if (def.thingCategories != null)
                     {
-                        def.apparel.layers.Add(CE_ApparelLayerDefOf.StrappedHead);
+                        if (def.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear))
+                        {
+                            def.apparel.layers.Add(CE_ApparelLayerDefOf.StrappedHead);
+                        }
                     }
                 }
                 StatModifier statModBulk = new StatModifier();
