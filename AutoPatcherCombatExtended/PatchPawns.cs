@@ -63,6 +63,12 @@ namespace nuff.AutoPatcherCombatExtended
 
                 CompProperties cpg = new CompProperties { compClass = typeof(CompPawnGizmo) };
                 def.comps.Add(cpg);
+
+                if (def.race.intelligence != Intelligence.Animal)
+                {
+                    CompProperties_Inventory cp_i = new CompProperties_Inventory();
+                    def.comps.Add(cp_i);
+                }
                 #endregion
 
                 #region ModExtensions

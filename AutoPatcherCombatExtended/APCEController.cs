@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using RimWorld;
+using Verse.AI;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -47,7 +48,7 @@ namespace nuff.AutoPatcherCombatExtended
             log.BeginPatch();
             foreach (Def def in mod.AllDefs)
             {
-                if (typeof(ThingDef).IsAssignableFrom(def.GetType()))
+                if (def is ThingDef)
                 {
                     ThingDef td = def as ThingDef;
                     if (td.IsApparel)
@@ -62,12 +63,14 @@ namespace nuff.AutoPatcherCombatExtended
                     {
                         if (APCESettings.patchWeapons)
                         {
-                            if (td.IsRangedWeapon)
+                            if (td.IsRangedWeapon 
+                                && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
+                                && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
                             {
                                 PatchRangedWeapon(td, log);
                                 continue;
                             }
-                            else if (td.IsMeleeWeapon)
+                            else //if (td.IsMeleeWeapon)
                             {
                                 PatchMeleeWeapon(td, log);
                                 continue;
@@ -92,13 +95,21 @@ namespace nuff.AutoPatcherCombatExtended
                         PatchMortarShell(td, log);
                     }
                 }
-                else if (typeof(HediffDef).IsAssignableFrom(def.GetType()))
+                else if (def is HediffDef)
                 {
                     HediffDef hd = def as HediffDef;
                     if (APCESettings.patchHediffs)
                     {
                         PatchHediff(hd, log);
                         continue;
+                    }
+                }
+                else if (def is PawnKindDef)
+                {
+                    if (APCESettings.patchPawnKinds)
+                    {
+                        PawnKindDef pkd = def as PawnKindDef;
+                        PatchPawnKind(pkd, log);
                     }
                 }
             }

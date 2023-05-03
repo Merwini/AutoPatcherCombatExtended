@@ -14,6 +14,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal static bool patchCustomVerbs = false;
         internal static bool patchApparels = true;
         internal static bool patchPawns = true;
+        internal static bool patchPawnKinds = true;
         internal static bool patchHediffs = true;
         internal static bool patchHeadgearLayers = true;
         internal static bool printLogs = false;
@@ -92,6 +93,11 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float pawnToolSharpPenetration = 10f; internal static string pawnToolSharpPenetrationBuffer = "10";
         internal static float pawnToolBluntPenetration = 40f; internal static string pawnToolBluntPenetrationBuffer = "40";
 
+        internal static float pawnKindMinMags = 2f; internal static string pawnKindMinMagsBuffer = "2";
+        internal static float pawnKindMaxMags = 5f; internal static string pawnKindMaxMagsBuffer = "5";
+
+        internal static bool patchBackpacks = true;
+
         //hediff settings
         internal static float hediffSharpMult = 10; internal static string hediffSharpMultBuffer = "10";
         internal static float hediffBluntMult = 40; internal static string hediffBluntMultBuffer = "40";
@@ -106,6 +112,7 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref patchApparels, "patchApparels");
             Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers");
             Scribe_Values.Look(ref patchPawns, "patchPawns");
+            Scribe_Values.Look(ref patchPawnKinds, "patchPawnKinds");
             Scribe_Values.Look(ref patchHediffs, "patchHediffs");
 
             //Modlist Settings
@@ -134,6 +141,11 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolPowerMult"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolPowerMultBuffer");
             Scribe_Values.Look(ref pawnToolSharpPenetration, "pawnToolSharpPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolSharpPenetrationBuffer");
             Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolBluntPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolBluntPenetrationBuffer");
+
+            Scribe_Values.Look(ref pawnKindMinMags, "pawnKindMinMags"); Scribe_Values.Look(ref pawnKindMinMagsBuffer, "pawnKindMinMagsBuffer");
+            Scribe_Values.Look(ref pawnKindMaxMags, "pawnKindMaxMags"); Scribe_Values.Look(ref pawnKindMaxMagsBuffer, "pawnKindMaxMagsBuffer");
+
+            Scribe_Values.Look(ref patchBackpacks, "patchBackpacks");
 
             //weapon
             Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult"); Scribe_Values.Look(ref gunSharpPenMultBuffer, "gunSharpPenMultBuffer");

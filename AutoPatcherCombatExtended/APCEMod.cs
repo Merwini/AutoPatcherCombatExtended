@@ -42,14 +42,15 @@ namespace nuff.AutoPatcherCombatExtended
 
                 if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.General_Settings)
                 {
-                    list.CheckboxLabeled("Patch weapons from selected mods", ref APCESettings.patchWeapons);
-                    list.CheckboxLabeled("Try to patch custom verbs on guns (safety not guaranteed)", ref APCESettings.patchCustomVerbs);
-                    list.CheckboxLabeled("Patch apparels from selected mods", ref APCESettings.patchApparels);
-                    list.CheckboxLabeled("Patch headgear layers", ref APCESettings.patchHeadgearLayers);
-                    list.CheckboxLabeled("Patch pawns from selected mods", ref APCESettings.patchPawns);
-                    list.CheckboxLabeled("Patch hediffs from selected mods", ref APCESettings.patchHediffs);
-                    list.CheckboxLabeled("Show patch logs", ref APCESettings.printLogs);
-                    list.CheckboxLabeled("Enable Debug Mode (print errors)", ref APCESettings.printPatchErrors);
+                    list.CheckboxLabeled("Patch weapons from selected mods: ", ref APCESettings.patchWeapons);
+                    list.CheckboxLabeled("Try to patch custom verbs on guns (safety not guaranteed): ", ref APCESettings.patchCustomVerbs);
+                    list.CheckboxLabeled("Patch apparels from selected mods: ", ref APCESettings.patchApparels);
+                    list.CheckboxLabeled("Patch headgear layers: ", ref APCESettings.patchHeadgearLayers);
+                    list.CheckboxLabeled("Patch pawns from selected mods: ", ref APCESettings.patchPawns);
+                    list.CheckboxLabeled("Patch PawnKinds from selected mods: ", ref APCESettings.patchPawnKinds);
+                    list.CheckboxLabeled("Patch hediffs from selected mods: ", ref APCESettings.patchHediffs);
+                    list.CheckboxLabeled("Show patch logs: ", ref APCESettings.printLogs);
+                    list.CheckboxLabeled("Enable Debug Mode (print errors): ", ref APCESettings.printPatchErrors);
                 }
 
                 else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Modlist)
@@ -131,6 +132,14 @@ namespace nuff.AutoPatcherCombatExtended
                         list.TextFieldNumericLabeled("Pawn tool power (damage) multiplier (default: 1)", ref APCESettings.pawnToolPowerMult, ref APCESettings.pawnToolPowerMultBuffer);
                         list.TextFieldNumericLabeled("Pawn tool sharp penetration multiplier (default: 10)", ref APCESettings.pawnToolSharpPenetration, ref APCESettings.pawnToolSharpPenetrationBuffer);
                         list.TextFieldNumericLabeled("Pawn tool blunt penetration multiplier (default: 40)", ref APCESettings.pawnToolBluntPenetration, ref APCESettings.pawnToolBluntPenetrationBuffer);
+
+                        list.Gap();
+                        Text.Font = GameFont.Medium;
+                        list.Label("Pawn Kind settings");
+                        Text.Font = GameFont.Small;
+                        list.CheckboxLabeled("Patch PawnKinds with weapons to be allowed backpacks: ", ref APCESettings.patchBackpacks);
+                        list.TextFieldNumericLabeled("Pawn kind minimum ammo magazines when spawned (default: 2)", ref APCESettings.pawnKindMinMags, ref APCESettings.pawnKindMinMagsBuffer);
+                        list.TextFieldNumericLabeled("Pawn kind maximum ammo magazines when spawned (default: 5)", ref APCESettings.pawnKindMaxMags, ref APCESettings.pawnKindMaxMagsBuffer);
                     }
                     if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Hediffs)
                     {
