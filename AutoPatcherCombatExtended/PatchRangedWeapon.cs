@@ -23,22 +23,28 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     Log.Message($"APCE thinks that {def.label} is a gun of kind: {gunKind}");
                 }
-
                 if (!(gunKind == APCEConstants.gunKinds.Mortar))
                 {
+
+                    def.statBases = PatchStatBases(def, gunKind);
+
                     PatchAllTools(def);
-                    List<StatModifier> newStatBases = PatchStatBases(def, gunKind);
+
+                    //ShootBeams can end here, no comps or verb patching needed
+                    if (gunKind == APCEConstants.gunKinds.BeamGun)
+                    {
+                        return;
+                    }
 
                     PatchAllVerbs(def);
 
-                    def.statBases = newStatBases;
                     if (!(gunKind == APCEConstants.gunKinds.Grenade))
                     {
                         AddCompProperties_AmmoUser(def, gunKind);
                         AddCompProperties_FireModes(def, gunKind);
 
                         VerbPropertiesCE vpce = def.Verbs[0] as VerbPropertiesCE;
-                        vpce.recoilAmount = newStatBases.GetStatValueFromList(CE_StatDefOf.Recoil, 1.25f);
+                        vpce.recoilAmount = def.statBases.GetStatValueFromList(CE_StatDefOf.Recoil, 1.25f);
 
                         
                         if (!(gunKind == APCEConstants.gunKinds.Turret) && !(gunKind == APCEConstants.gunKinds.MachineGun))

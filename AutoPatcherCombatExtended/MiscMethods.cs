@@ -225,7 +225,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             try
             {
-                if ((vp.verbClass == typeof(Verb_ShootCE)) || (vp.verbClass == typeof(Verb_ShootCEOneUse)))
+                if ((vp.verbClass == typeof(Verb_ShootCE)) || (vp.verbClass == typeof(Verb_ShootCEOneUse)) || vp.verbClass == typeof(Verb_ShootBeam))
                 {
                     return vp as VerbPropertiesCE;
                 }

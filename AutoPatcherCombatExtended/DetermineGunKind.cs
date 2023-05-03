@@ -24,10 +24,12 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 weapon.weaponTags = new List<string>();
             }
-            
+
             //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             if (weapon.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))
                 return APCEConstants.gunKinds.Mortar;
+            else if (weapon.Verbs[0].verbClass == typeof(Verb_ShootBeam))
+                return APCEConstants.gunKinds.BeamGun;
             else if (weapon.weaponTags.Any(str => str.IndexOf("TurretGun", StringComparison.OrdinalIgnoreCase) >= 0))
                 return APCEConstants.gunKinds.Turret;
             //a bow is a pre-industrial ranged weapon with a burst count of 1. Can't find a good way to discern high-tech bows
