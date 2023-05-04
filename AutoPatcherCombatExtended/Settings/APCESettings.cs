@@ -105,15 +105,15 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             //General Settings
-            Scribe_Values.Look(ref printLogs, "printDebug");
-            Scribe_Values.Look(ref printPatchErrors, "printPatchErrors");
-            Scribe_Values.Look(ref patchWeapons, "patchWeapons");
-            Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs");
-            Scribe_Values.Look(ref patchApparels, "patchApparels");
-            Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers");
-            Scribe_Values.Look(ref patchPawns, "patchPawns");
-            Scribe_Values.Look(ref patchPawnKinds, "patchPawnKinds");
-            Scribe_Values.Look(ref patchHediffs, "patchHediffs");
+            Scribe_Values.Look(ref printLogs, "printDebug", false);
+            Scribe_Values.Look(ref printPatchErrors, "printPatchErrors", false);
+            Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);
+            Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
+            Scribe_Values.Look(ref patchApparels, "patchApparels", true);
+            Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers", true);
+            Scribe_Values.Look(ref patchPawns, "patchPawns", true);
+            Scribe_Values.Look(ref patchPawnKinds, "patchPawnKinds", true);
+            Scribe_Values.Look(ref patchHediffs, "patchHediffs", true);
 
             //Modlist Settings
             Scribe_Collections.Look(ref modsByPackageId, "modsByPackageId", LookMode.Value);
@@ -121,35 +121,35 @@ namespace nuff.AutoPatcherCombatExtended
 
             //Balance Control Settings
             //armor
-            Scribe_Values.Look(ref apparelSharpMult, "apparelSharpMult");   Scribe_Values.Look(ref apparelSharpMultBuffer, "apparelSharpMultBuffer");
-            Scribe_Values.Look(ref apparelBluntMult, "apparelBluntMult");   Scribe_Values.Look(ref apparelBluntMultBuffer, "apparelBluntMultBuffer");
-            Scribe_Values.Look(ref armorTechMultAnimal, "armorTechMultAnimal"); Scribe_Values.Look(ref armorTechMultAnimalBuffer, "armorTechMultAnimalBuffer");
-            Scribe_Values.Look(ref armorTechMultNeolithic, "armorTechMultNeolithic"); Scribe_Values.Look(ref armorTechMultNeolithicBuffer, "armorTechMultNeolithicBuffer");
-            Scribe_Values.Look(ref armorTechMultMedieval, "armorTechMultMedieval"); Scribe_Values.Look(ref armorTechMultMedievalBuffer, "armorTechMultMedievalBuffer");
-            Scribe_Values.Look(ref armorTechMultIndustrial, "armorTechMultIndustrial"); Scribe_Values.Look(ref armorTechMultIndustrialBuffer, "armorTechMultIndustrialBuffer");
-            Scribe_Values.Look(ref armorTechMultSpacer, "armorTechMultSpacer"); Scribe_Values.Look(ref armorTechMultSpacerBuffer, "armorTechMultSpacerBuffer");
-            Scribe_Values.Look(ref armorTechMultUltratech, "armorTechMultUltratech"); Scribe_Values.Look(ref armorTechMultUltratechBuffer, "armorTechMultUltratechBuffer");
-            Scribe_Values.Look(ref armorTechMultArchotech, "armorTechMultArchotech"); Scribe_Values.Look(ref armorTechMultArchotechBuffer, "armorTechMultArchotechBuffer");
+            Scribe_Values.Look(ref apparelSharpMult, "apparelSharpMult", 10);   Scribe_Values.Look(ref apparelSharpMultBuffer, "apparelSharpMultBuffer", "10");
+            Scribe_Values.Look(ref apparelBluntMult, "apparelBluntMult", 40);   Scribe_Values.Look(ref apparelBluntMultBuffer, "apparelBluntMultBuffer", "40");
+            Scribe_Values.Look(ref armorTechMultAnimal, "armorTechMultAnimal", 0.25f); Scribe_Values.Look(ref armorTechMultAnimalBuffer, "armorTechMultAnimalBuffer", "0.25");
+            Scribe_Values.Look(ref armorTechMultNeolithic, "armorTechMultNeolithic", 0.5f); Scribe_Values.Look(ref armorTechMultNeolithicBuffer, "armorTechMultNeolithicBuffer", "0.5");
+            Scribe_Values.Look(ref armorTechMultMedieval, "armorTechMultMedieval", 0.75f); Scribe_Values.Look(ref armorTechMultMedievalBuffer, "armorTechMultMedievalBuffer", "0.75");
+            Scribe_Values.Look(ref armorTechMultIndustrial, "armorTechMultIndustrial", 1f); Scribe_Values.Look(ref armorTechMultIndustrialBuffer, "armorTechMultIndustrialBuffer", "1");
+            Scribe_Values.Look(ref armorTechMultSpacer, "armorTechMultSpacer", 2f); Scribe_Values.Look(ref armorTechMultSpacerBuffer, "armorTechMultSpacerBuffer", "2");
+            Scribe_Values.Look(ref armorTechMultUltratech, "armorTechMultUltratech", 3f); Scribe_Values.Look(ref armorTechMultUltratechBuffer, "armorTechMultUltratechBuffer", "3");
+            Scribe_Values.Look(ref armorTechMultArchotech, "armorTechMultArchotech", 4f); Scribe_Values.Look(ref armorTechMultArchotechBuffer, "armorTechMultArchotechBuffer", "4");
 
             //hediff
-            Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult"); Scribe_Values.Look(ref hediffSharpMultBuffer, "hediffSharpMultBuffer");
-            Scribe_Values.Look(ref hediffBluntMult, "hediffBluntMult"); Scribe_Values.Look(ref hediffBluntMultBuffer, "hediffBluntMultBuffer");
+            Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult", 10); Scribe_Values.Look(ref hediffSharpMultBuffer, "hediffSharpMultBuffer", "10");
+            Scribe_Values.Look(ref hediffBluntMult, "hediffBluntMult", 40); Scribe_Values.Look(ref hediffBluntMultBuffer, "hediffBluntMultBuffer", "40");
 
             //pawn
-            Scribe_Values.Look(ref pawnArmorSharpMult, "pawnArmorSharpMult"); Scribe_Values.Look(ref pawnArmorSharpMultBuffer, "pawnArmorSharpMultBuffer");
-            Scribe_Values.Look(ref pawnArmorBluntMult, "pawnArmorBluntMult"); Scribe_Values.Look(ref pawnArmorBluntMultBuffer, "pawnArmorBluntMultBuffer");
-            Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolPowerMult"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolPowerMultBuffer");
-            Scribe_Values.Look(ref pawnToolSharpPenetration, "pawnToolSharpPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolSharpPenetrationBuffer");
-            Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolBluntPenetration"); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolBluntPenetrationBuffer");
+            Scribe_Values.Look(ref pawnArmorSharpMult, "pawnArmorSharpMult", 10); Scribe_Values.Look(ref pawnArmorSharpMultBuffer, "pawnArmorSharpMultBuffer", "10");
+            Scribe_Values.Look(ref pawnArmorBluntMult, "pawnArmorBluntMult", 40); Scribe_Values.Look(ref pawnArmorBluntMultBuffer, "pawnArmorBluntMultBuffer", "40");
+            Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolPowerMult", 1); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolPowerMultBuffer", "1");
+            Scribe_Values.Look(ref pawnToolSharpPenetration, "pawnToolSharpPenetration", 10); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolSharpPenetrationBuffer", "10");
+            Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolBluntPenetration", 40); Scribe_Values.Look(ref pawnToolPowerMultBuffer, "pawnToolBluntPenetrationBuffer", "40");
 
-            Scribe_Values.Look(ref pawnKindMinMags, "pawnKindMinMags"); Scribe_Values.Look(ref pawnKindMinMagsBuffer, "pawnKindMinMagsBuffer");
-            Scribe_Values.Look(ref pawnKindMaxMags, "pawnKindMaxMags"); Scribe_Values.Look(ref pawnKindMaxMagsBuffer, "pawnKindMaxMagsBuffer");
+            Scribe_Values.Look(ref pawnKindMinMags, "pawnKindMinMags", 2); Scribe_Values.Look(ref pawnKindMinMagsBuffer, "pawnKindMinMagsBuffer", "2");
+            Scribe_Values.Look(ref pawnKindMaxMags, "pawnKindMaxMags", 5); Scribe_Values.Look(ref pawnKindMaxMagsBuffer, "pawnKindMaxMagsBuffer", "5");
 
-            Scribe_Values.Look(ref patchBackpacks, "patchBackpacks");
+            Scribe_Values.Look(ref patchBackpacks, "patchBackpacks", true);
 
             //weapon
-            Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult"); Scribe_Values.Look(ref gunSharpPenMultBuffer, "gunSharpPenMultBuffer");
-            Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult"); Scribe_Values.Look(ref gunBluntPenMultBuffer, "gunBluntPenMultBuffer");
+            Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult", 10); Scribe_Values.Look(ref gunSharpPenMultBuffer, "gunSharpPenMultBuffer", "10");
+            Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult", 40); Scribe_Values.Look(ref gunBluntPenMultBuffer, "gunBluntPenMultBuffer", "40");
 
             base.ExposeData();
         }
