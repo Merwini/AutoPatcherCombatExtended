@@ -18,6 +18,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Thing replacementThing = ThingMaker.MakeThing(Props.thingToSpawn);
                 IntVec3 position = parent.Position;
                 Map map = parent.Map;
+                replacementThing.stackCount = parent.stackCount;
                 this.parent.Destroy(DestroyMode.Vanish);
                 GenSpawn.Spawn(replacementThing, position, map);
             }
