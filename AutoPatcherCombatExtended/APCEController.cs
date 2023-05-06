@@ -38,7 +38,7 @@ namespace nuff.AutoPatcherCombatExtended
             if (APCESettings.printLogs)
             {
                 APCEPatchLogger.stopwatchMaster.Stop();
-                Log.Message($"Autopatcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
+                Log.Message($"Auto-patcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
             }
         }
 
