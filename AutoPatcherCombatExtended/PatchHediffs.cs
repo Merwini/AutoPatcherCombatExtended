@@ -36,6 +36,14 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                     }
                 }
+                
+                HediffCompProperties_VerbGiver hcp_vg = def.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
+
+                if (hcp_vg != null)
+                {
+                    PatchAllTools(ref hcp_vg.tools, false);
+                }
+
                 log.PatchSucceeded();
             }
             catch (Exception ex)

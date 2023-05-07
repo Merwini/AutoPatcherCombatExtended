@@ -85,7 +85,7 @@ namespace nuff.AutoPatcherCombatExtended
                 #endregion
 
                 #region Tools
-                PatchAllTools(def);
+                PatchAllTools(ref def.tools, true);
                 #endregion
 
                 log.PatchSucceeded();

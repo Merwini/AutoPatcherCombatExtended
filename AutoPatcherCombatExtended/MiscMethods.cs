@@ -144,17 +144,17 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static void PatchAllTools(ThingDef def)
+        internal static void PatchAllTools(ref List<Tool> tools, bool isPawn)
         {
-            if (def.tools == null)
-                return;
+            if ((tools == null) || (tools.Count == 0))
+                    return;
 
             List<Tool> newToolsCE = new List<Tool>();
-            foreach (Tool tool in def.tools)
+            foreach (Tool tool in tools)
             {
-                newToolsCE.Add(PatchTool(tool, !def.IsWeapon));
+                newToolsCE.Add(PatchTool(tool, isPawn));
             }
-            def.tools = newToolsCE;
+            tools = newToolsCE;
         }
 
         internal static ToolCE PatchTool(Tool tool, bool isPawn)
@@ -165,8 +165,8 @@ namespace nuff.AutoPatcherCombatExtended
             newToolCE.id = "APCE_Tool_" + tool.id;
             if (tool.armorPenetration <= 0) //CE is far more punishing if you have no armor penetration than vanilla is, so it is essential to have some
             {
-                newToolCE.armorPenetrationSharp = tool.power * 0.01f;
-                newToolCE.armorPenetrationBlunt = tool.power * 0.01f;
+                newToolCE.armorPenetrationSharp = tool.power * 0.1f;
+                newToolCE.armorPenetrationBlunt = tool.power * 0.1f;
             }
             else
             {

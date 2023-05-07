@@ -28,7 +28,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                     def.statBases = PatchStatBases(def, gunKind);
 
-                    PatchAllTools(def);
+                    PatchAllTools(ref def.tools, false);
 
                     //ShootBeams can end here, no comps or verb patching needed
                     if (gunKind == APCEConstants.gunKinds.BeamGun)

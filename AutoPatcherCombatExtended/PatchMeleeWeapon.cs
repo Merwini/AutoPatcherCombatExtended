@@ -15,7 +15,7 @@ namespace nuff.AutoPatcherCombatExtended
     {
         internal static void PatchMeleeWeapon(ThingDef def, APCEPatchLogger log)
         {
-            PatchAllTools(def);
+            PatchAllTools(ref def.tools, false);
 
             AddMeleeWeaponStats(def);
         }
