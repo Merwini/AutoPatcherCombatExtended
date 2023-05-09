@@ -1,0 +1,76 @@
+<Defs>
+
+  <ThingDef ParentName="BaseWeaponNeolithic">
+    <defName>APCE_Bow_Generic</defName>
+    <label>generic bow</label>
+    <description>A generic bow that fires generic arrows.</description>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/BowRecurve</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <soundInteract>Bow_Recurve</soundInteract>
+	<tradeability>None</tradeability>
+	<generateCommonality>0</generateCommonality>
+	<generateAllowChance>0</generateAllowChance>
+    <costList>
+      <WoodLog>25</WoodLog>
+    </costList>
+    <thingSetMakerTags><li>RewardStandardQualitySuper</li></thingSetMakerTags>
+    <statBases>
+      <Mass>1.3</Mass>
+      <SightsEfficiency>0.6</SightsEfficiency>
+      <ShotSpread>1</ShotSpread>
+      <SwayFactor>2</SwayFactor>
+      <Bulk>4.00</Bulk>
+      <RangedWeapon_Cooldown>1</RangedWeapon_Cooldown>
+      <WorkToMake>5000</WorkToMake>
+    </statBases>
+    <weaponTags>
+      <li>NeolithicRangedDecent</li>
+    </weaponTags>
+    <weaponClasses>
+      <li>Ranged</li>
+      <li>RangedLight</li>
+    </weaponClasses>
+    <recipeMaker>
+      <recipeUsers>
+        <li>CraftingSpot</li>
+      </recipeUsers>
+      <researchPrerequisite>RecurveBow</researchPrerequisite>
+      <skillRequirements>
+        <Crafting>5</Crafting>
+      </skillRequirements>
+      <displayPriority>520</displayPriority>
+    </recipeMaker>
+    <verbs>
+      <li Class="CombatExtended.VerbPropertiesCE">
+        <verbClass>CombatExtended.Verb_ShootCE</verbClass>
+		<hasStandardCommand>true</hasStandardCommand>
+		<defaultProjectile>Projectile_StreamlinedArrow_Stone</defaultProjectile>
+		<warmupTime>1.2</warmupTime>
+		<range>22</range>
+		<soundCast>Bow_Recurve</soundCast>
+      </li>
+    </verbs>
+    <tools>
+      <li Class="CombatExtended.ToolCE">
+			<label>limb</label>
+          	<capacities>
+            	<li>Blunt</li>
+          	</capacities>
+          	<power>7</power>
+          	<cooldownTime>1.6</cooldownTime>
+          	<armorPenetrationBlunt>0.65</armorPenetrationBlunt>
+        </li>
+    </tools>
+    <rotateInShelves>false</rotateInShelves>
+	<comps>
+      <li Class="CombatExtended.CompProperties_AmmoUser">
+        <ammoSet>AmmoSet_Arrow</ammoSet>
+      </li>
+      <li Class="CombatExtended.CompProperties_FireModes">
+      </li>
+    </comps>
+  </ThingDef>
+  
+</Defs>

@@ -1,0 +1,405 @@
+<Defs>
+
+	<ThingDef ParentName="BaseHumanMakeableGun">
+		<defName>APCE_Shotgun_Generic</defName>
+		<label>generic shotgun</label>
+		<description>A generic shotgun that uses generic ammo.</description>
+		<possessionCount>1</possessionCount>
+		<graphicData>
+		  <texPath>Things/Item/Equipment/WeaponRanged/Shotgun</texPath>
+		  <graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<soundInteract>Interact_Shotgun</soundInteract>
+		<tradeability>None</tradeability>
+		<generateCommonality>0</generateCommonality>
+		<generateAllowChance>0</generateAllowChance>
+		<weaponClasses>
+		  <li>ShortShots</li>
+		</weaponClasses>
+		<weaponTags>
+		  <li>ShortShots</li>
+		</weaponTags>
+		<statBases>
+		  <Mass>3.00</Mass>
+		  <RangedWeapon_Cooldown>1.0</RangedWeapon_Cooldown>
+		  <ShotSpread>0.14</ShotSpread>
+		  <SwayFactor>1.20</SwayFactor>
+		  <Bulk>9.0</Bulk>
+		  <SightsEfficiency>1</SightsEfficiency>
+		  <WorkToMake>9500</WorkToMake>
+		</statBases>
+		<costList>
+		  <Steel>45</Steel>
+		  <WoodLog>10</WoodLog>
+		  <ComponentIndustrial>1</ComponentIndustrial>
+		</costList>
+		<recipeMaker>
+		  <skillRequirements>
+			<Crafting>5</Crafting>
+		  </skillRequirements>
+		  <displayPriority>430</displayPriority>
+		</recipeMaker>
+		<verbs>
+		  <li Class="CombatExtended.VerbPropertiesCE">
+			<recoilAmount>2.75</recoilAmount>
+			<verbClass>CombatExtended.Verb_ShootCE</verbClass>
+			<hasStandardCommand>true</hasStandardCommand>
+			<defaultProjectile>Bullet_APCEGeneric_Buck</defaultProjectile>
+			<warmupTime>0.6</warmupTime>
+			<range>16</range>
+			<soundCast>Shot_Shotgun</soundCast>
+			<soundCastTail>GunTail_Heavy</soundCastTail>
+			<muzzleFlashScale>9</muzzleFlashScale>
+		  </li>
+		</verbs>
+		<tools>
+			<li Class="CombatExtended.ToolCE">
+			  <label>stock</label>
+			  <capacities>
+				<li>Blunt</li>
+			  </capacities>
+			  <power>8</power>
+			  <cooldownTime>1.55</cooldownTime>
+			  <chanceFactor>1.5</chanceFactor>
+			  <armorPenetrationBlunt>2.755</armorPenetrationBlunt>
+			  <linkedBodyPartsGroup>Stock</linkedBodyPartsGroup>
+			</li>
+			<li Class="CombatExtended.ToolCE">
+			  <label>barrel</label>
+			  <capacities>
+				<li>Blunt</li>
+			  </capacities>
+			  <power>5</power>
+			  <cooldownTime>2.02</cooldownTime>
+			  <armorPenetrationBlunt>1.630</armorPenetrationBlunt>
+			  <linkedBodyPartsGroup>Barrel</linkedBodyPartsGroup>
+			</li>
+			<li Class="CombatExtended.ToolCE">
+			  <label>muzzle</label>
+			  <capacities>
+				<li>Poke</li>
+			  </capacities>
+			  <power>8</power>
+			  <cooldownTime>1.55</cooldownTime>
+			  <armorPenetrationBlunt>2.755</armorPenetrationBlunt>
+			  <linkedBodyPartsGroup>Muzzle</linkedBodyPartsGroup>
+			</li>
+		  </tools>
+		  <comps>
+		  <li Class="CombatExtended.CompProperties_AmmoUser">
+			<magazineSize>5</magazineSize>
+			<reloadOneAtATime>true</reloadOneAtATime>
+			<reloadTime>0.85</reloadTime>
+			<ammoSet>AmmoSet_APCEGenericShotgun</ammoSet>
+		  </li>
+		  <li Class="CombatExtended.CompProperties_FireModes">
+			<aiAimMode>Snapshot</aiAimMode>
+		  </li>
+		</comps>
+	</ThingDef>
+
+<!-- ==================== Category ========================== -->
+
+	<ThingCategoryDef>
+		<defName>AmmoAPCEGenericShotgun</defName>
+		<label>generic shells</label>
+		<parent>AmmoShotguns</parent>
+		<iconPath>UI/Icons/ThingCategories/CaliberShotgun</iconPath>
+	</ThingCategoryDef>
+	
+<!--  ==================== AmmoSet ==========================  -->
+
+	<CombatExtended.AmmoSetDef>
+		<defName>AmmoSet_APCEGenericShotgun</defName>
+		<label>generic shotgun ammo</label>
+		<ammoTypes>
+			<Ammo_APCEGeneric_Buck>Bullet_APCEGeneric_Buck</Ammo_APCEGeneric_Buck>
+			<Ammo_APCEGeneric_Slug>Bullet_APCEGeneric_Slug</Ammo_APCEGeneric_Slug>
+			<Ammo_APCEGeneric_Beanbag>Bullet_APCEGeneric_Beanbag</Ammo_APCEGeneric_Beanbag>
+			<Ammo_APCEGeneric_ElectroSlug>Bullet_APCEGeneric_ElectroSlug</Ammo_APCEGeneric_ElectroSlug>
+		</ammoTypes>
+		<similarTo>AmmoSet_Shotgun</similarTo>
+	</CombatExtended.AmmoSetDef>
+	
+<!-- ==================== Ammo ========================== -->
+
+	<ThingDef Class="CombatExtended.AmmoDef" Name="APCEShotgunBase" ParentName="AmmoBase" Abstract="True">
+		<description>Generic ammo for use in shotguns lacking a CE patch.</description>
+		<statBases>
+		  <Mass>0.051</Mass>
+		  <Bulk>0.06</Bulk>
+		</statBases>
+		<tradeTags>
+		  <li>CE_AutoEnableTrade</li>
+		  <li>CE_AutoEnableCrafting</li>
+		</tradeTags>
+		<thingCategories>
+		  <li>AmmoAPCEGenericShotgun</li>
+		</thingCategories>
+		<stackLimit>5000</stackLimit>
+	</ThingDef>
+	
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEShotgunBase">
+		<defName>Ammo_APCEGeneric_Buck</defName>
+		<label>generic shell (Buck)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Shotgun/Shot</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>0.22</MarketValue>
+		</statBases>
+		<ammoClass>BuckShot</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_Buck</cookOffProjectile>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEShotgunBase">
+		<defName>Ammo_APCEGeneric_Slug</defName>
+		<label>generic shell (Slug)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Shotgun/Slug</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<Mass>0.048</Mass>
+			<MarketValue>0.2</MarketValue>
+		</statBases>
+		<ammoClass>Slug</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_Slug</cookOffProjectile>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEShotgunBase">
+		<defName>Ammo_APCEGeneric_Beanbag</defName>
+		<label>generic shell (Bean)</label>
+		<generateAllowChance>0</generateAllowChance>
+		<graphicData>
+			<texPath>Things/Ammo/Shotgun/Beanbag</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<Mass>0.059</Mass>
+			<MarketValue>0.32</MarketValue>
+		</statBases>
+		<ammoClass>Beanbag</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_Beanbag</cookOffProjectile>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEShotgunBase">
+		<defName>Ammo_APCEGeneric_ElectroSlug</defName>
+		<label>generic shell (EMP)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Shotgun/EMP</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<Mass>0.054</Mass>
+			<MarketValue>0.87</MarketValue>
+		</statBases>
+		<ammoClass>ElectroSlug</ammoClass>
+		<generateAllowChance>0.5</generateAllowChance>
+		<cookOffProjectile>Bullet_APCEGeneric_ElectroSlug</cookOffProjectile>
+	</ThingDef>
+  
+  <!-- ================== Projectiles ================== -->
+
+	<ThingDef Name="BaseAPCEGenericPellet" ParentName="BaseBulletCE" Abstract="true">
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+			<damageDef>Bullet</damageDef>
+			<speed>72</speed>
+			<dropsCasings>true</dropsCasings>
+			<casingMoteDefname>Mote_ShotgunShell</casingMoteDefname>
+			<casingFilthDefname>Filth_ShotgunAmmoCasings</casingFilthDefname>
+		</projectile>
+	</ThingDef>
+
+	<ThingDef ParentName="BaseAPCEGenericPellet">
+		<defName>Bullet_APCEGeneric_Buck</defName>
+		<label>buckshot pellet</label>
+		<graphicData>
+			<texPath>Things/Projectile/Shotgun_Pellet</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+		  <damageAmountBase>0</damageAmountBase>
+		  <pelletCount>9</pelletCount>
+		  <armorPenetrationSharp>0</armorPenetrationSharp>
+		  <armorPenetrationBlunt>0</armorPenetrationBlunt>
+		  <spreadMult>8.9</spreadMult>
+		</projectile>
+	</ThingDef>
+
+	<ThingDef ParentName="BaseAPCEGenericPellet">
+		<defName>Bullet_APCEGeneric_Slug</defName>
+		<label>shotgun slug</label>
+		<graphicData>
+		  <texPath>Things/Projectile/Bullet_big</texPath>
+		  <graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+		  <speed>110</speed>
+		  <damageAmountBase>0</damageAmountBase>
+		  <armorPenetrationSharp>0</armorPenetrationSharp>
+		  <armorPenetrationBlunt>0</armorPenetrationBlunt>
+		</projectile>
+	</ThingDef>
+
+	<ThingDef ParentName="BaseAPCEGenericPellet">
+		<defName>Bullet_APCEGeneric_Beanbag</defName>
+		<label>beanbag</label>
+		<graphicData>
+		  <texPath>Things/Projectile/Bullet_big</texPath>
+		  <graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+		  <speed>22</speed>
+		  <damageDef>Beanbag</damageDef>
+		  <damageAmountBase>0</damageAmountBase>
+		  <armorPenetrationSharp>0</armorPenetrationSharp>
+		  <armorPenetrationBlunt>0</armorPenetrationBlunt>
+		  <spreadMult>2</spreadMult>
+		</projectile>
+	</ThingDef>
+
+	<ThingDef ParentName="BaseAPCEGenericPellet">
+		<defName>Bullet_APCEGeneric_ElectroSlug</defName>
+		<label>EMP slug</label>
+		<graphicData>
+		  <texPath>Things/Projectile/Bullet_big</texPath>
+		  <graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+		  <speed>30</speed>
+		  <damageDef>EMP</damageDef>
+		  <damageAmountBase>0</damageAmountBase>
+		  <armorPenetrationSharp>0</armorPenetrationSharp>
+		  <armorPenetrationBlunt>0</armorPenetrationBlunt>
+		  <empShieldBreakChance>0.2</empShieldBreakChance>
+		</projectile>
+	</ThingDef>
+
+	  <!-- ==================== Recipes ========================== -->
+
+	<RecipeDef ParentName="AmmoRecipeBase">
+		<defName>MakeAmmo_APCEGeneric_Buck</defName>
+		<label>make APCE Generic (Buck) shell x200</label>
+		<description>Craft 200 APCE Generic (Buck) shells.</description>
+		<jobString>Making APCE Generic (Buck) shells.</jobString>
+		<ingredients>
+		  <li>
+			<filter>
+			  <thingDefs>
+				<li>Steel</li>
+			  </thingDefs>
+			</filter>
+			<count>22</count>
+		  </li>
+		</ingredients>
+		<fixedIngredientFilter>
+		  <thingDefs>
+			<li>Steel</li>
+		  </thingDefs>
+		</fixedIngredientFilter>
+		<products>
+		  <Ammo_APCEGeneric_Buck>200</Ammo_APCEGeneric_Buck>
+		</products>
+		<workAmount>2200</workAmount>
+	</RecipeDef>
+
+	<RecipeDef ParentName="AmmoRecipeBase">
+		<defName>MakeAmmo_APCEGeneric_Slug</defName>
+		<label>make APCE Generic (Slug) shell x200</label>
+		<description>Craft 200 APCE Generic (Slug) shells.</description>
+		<jobString>Making APCE Generic (Slug) shells.</jobString>
+		<ingredients>
+		  <li>
+			<filter>
+			  <thingDefs>
+				<li>Steel</li>
+			  </thingDefs>
+			</filter>
+			<count>20</count>
+		  </li>
+		</ingredients>
+		<fixedIngredientFilter>
+		  <thingDefs>
+			<li>Steel</li>
+		  </thingDefs>
+		</fixedIngredientFilter>
+		<products>
+		  <Ammo_APCEGeneric_Slug>200</Ammo_APCEGeneric_Slug>
+		</products>
+		<workAmount>2000</workAmount>
+	</RecipeDef>
+
+	<RecipeDef ParentName="AmmoRecipeBase">
+		<defName>MakeAmmo_APCEGeneric_Beanbag</defName>
+		<label>make APCE Generic (Beanbag) shell x200</label>
+		<description>Craft 200 APCE Generic (Beanbag) shells.</description>
+		<jobString>Making APCE Generic (Beanbag) shells.</jobString>
+		<ingredients>
+		  <li>
+			<filter>
+			  <thingDefs>
+				<li>Steel</li>
+			  </thingDefs>
+			</filter>
+			<count>24</count>
+		  </li>
+		  <li>
+			<filter>
+			  <thingDefs>
+				<li>Cloth</li>
+			  </thingDefs>
+			</filter>
+			<count>10</count>
+		  </li>
+		</ingredients>
+		<fixedIngredientFilter>
+		  <thingDefs>
+			<li>Steel</li>
+			<li>Cloth</li>
+		  </thingDefs>
+		</fixedIngredientFilter>
+		<products>
+		  <Ammo_APCEGeneric_Beanbag>200</Ammo_APCEGeneric_Beanbag>
+		</products>
+		<workAmount>3400</workAmount>
+	</RecipeDef>
+
+	<RecipeDef ParentName="AmmoRecipeBase">
+		<defName>MakeAmmo_APCEGeneric_ElectroSlug</defName>
+		<label>make APCE Generic (EMP) shell x200</label>
+		<description>Craft 200 APCE Generic (EMP) shells.</description>
+		<jobString>Making APCE Generic (EMP) shells.</jobString>
+		<researchPrerequisite>MicroelectronicsBasics</researchPrerequisite>
+		<ingredients>
+		  <li>
+			<filter>
+			  <thingDefs>
+				<li>Steel</li>
+			  </thingDefs>
+			</filter>
+			<count>22</count>
+		  </li>
+		  <li>
+			<filter>
+			  <thingDefs>
+				<li>ComponentIndustrial</li>
+			  </thingDefs>
+			</filter>
+			<count>4</count>
+		  </li>
+		</ingredients>
+		<fixedIngredientFilter>
+		  <thingDefs>
+			<li>Steel</li>
+			<li>ComponentIndustrial</li>
+		  </thingDefs>
+		</fixedIngredientFilter>
+		<products>
+		  <Ammo_APCEGeneric_ElectroSlug>200</Ammo_APCEGeneric_ElectroSlug>
+		</products>
+		<workAmount>4600</workAmount>
+	</RecipeDef>  
+  
+</Defs>
