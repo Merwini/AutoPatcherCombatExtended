@@ -73,32 +73,55 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APCEDefOf.cs" />
-    <Compile Include="APCEController.cs" />
-    <Compile Include="Comps\CompProperties_ReplaceMe.cs" />
-    <Compile Include="Comps\CompReplaceMe.cs" />
-    <Compile Include="GenerateAmmo.cs" />
-    <Compile Include="InjectedDefHasher.cs" />
-    <Compile Include="PatchGrenade.cs" />
-    <Compile Include="PatchMeleeWeapon.cs" />
-    <Compile Include="PatchMortar.cs" />
-    <Compile Include="PatchPawnKinds.cs" />
-    <Compile Include="Settings\APCEConstants.cs" />
-    <Compile Include="Settings\Listing_StandardExtensions.cs" />
-    <Compile Include="Settings\APCESettings.cs" />
-    <Compile Include="DetermineGunKind.cs" />
-    <Compile Include="MiscMethods.cs" />
-    <Compile Include="PatchApparels.cs" />
-    <Compile Include="PatchHediffs.cs" />
-    <Compile Include="PatchPawns.cs" />
-    <Compile Include="PatchTurretBase.cs" />
-    <Compile Include="PatchRangedWeapon.cs" />
-    <Compile Include="APCEMod.cs" />
-    <Compile Include="PatchLogger.cs" />
+    <Compile Include="Source\APCEDefOf.cs" />
+    <Compile Include="Source\APCEController.cs" />
+    <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />
+    <Compile Include="Source\Comps\CompReplaceMe.cs" />
+    <Compile Include="Source\GenerateAmmo.cs" />
+    <Compile Include="Source\InjectedDefHasher.cs" />
+    <Compile Include="Source\obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
+    <Compile Include="Source\PatchGrenade.cs" />
+    <Compile Include="Source\PatchMeleeWeapon.cs" />
+    <Compile Include="Source\PatchMortar.cs" />
+    <Compile Include="Source\PatchPawnKinds.cs" />
+    <Compile Include="Source\Settings\APCEConstants.cs" />
+    <Compile Include="Source\Settings\Listing_StandardExtensions.cs" />
+    <Compile Include="Source\Settings\APCESettings.cs" />
+    <Compile Include="Source\DetermineGunKind.cs" />
+    <Compile Include="Source\MiscMethods.cs" />
+    <Compile Include="Source\PatchApparels.cs" />
+    <Compile Include="Source\PatchHediffs.cs" />
+    <Compile Include="Source\PatchPawns.cs" />
+    <Compile Include="Source\PatchTurretBase.cs" />
+    <Compile Include="Source\PatchRangedWeapon.cs" />
+    <Compile Include="Source\APCEMod.cs" />
+    <Compile Include="Source\PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Todo list.txt" />
+    <Content Include="About\About.xml" />
+    <Content Include="About\preview.png" />
+    <Content Include="About\PublishedFileId.txt" />
+    <Content Include="Defs\APCE_Generics_Bow.xml" />
+    <Content Include="Defs\APCE_Generics_ExplosiveLauncher.xml" />
+    <Content Include="Defs\APCE_Generics_Grenade.xml" />
+    <Content Include="Defs\APCE_Generics_IndGun.xml" />
+    <Content Include="Defs\APCE_Generics_IndShotgun.xml" />
+    <Content Include="Defs\APCE_Generics_SpacerGun.xml" />
+    <Content Include="Source\AutoPatcherCombatExtended.csproj.user" />
+    <Content Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\NuGetUpgradeLog.html" />
+    <Content Include="Source\Todo list.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\obj\Debug\AutoPatcherCombatExtended.csproj.AssemblyReference.cache" />
+    <None Include="Source\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\AutoPatcherCombatExtended.csproj" />
+    <None Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\bin\Debug\" />
+    <Folder Include="Source\bin\Release\" />
+    <Folder Include="Source\obj\Debug\TempPE\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

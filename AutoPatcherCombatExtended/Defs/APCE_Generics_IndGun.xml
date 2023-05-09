@@ -1,0 +1,506 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+<ThingDef ParentName="BaseHumanMakeableGun">
+    <defName>APCE_Gun_Generic</defName>
+    <label>generic gun</label>
+    <description>A generic gun that uses generic ammo.</description>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/AssaultRifle</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <soundInteract>Interact_Rifle</soundInteract>
+	<tradeability>None</tradeability>
+	<generateCommonality>0</generateCommonality>
+	<generateAllowChance>0</generateAllowChance>
+    <statBases>
+      <WorkToMake>69420</WorkToMake>
+      <SightsEfficiency>1</SightsEfficiency>
+      <ShotSpread>0.05</ShotSpread>
+      <SwayFactor>1.0</SwayFactor>
+      <Bulk>6.90</Bulk>
+      <Mass>4.20</Mass>
+      <RangedWeapon_Cooldown>0.69</RangedWeapon_Cooldown>
+    </statBases>
+    <costList>
+      <Steel>420</Steel>
+      <ComponentIndustrial>5</ComponentIndustrial>
+      <WoodLog>69</WoodLog>
+    </costList>
+    <verbs>
+      <li Class="CombatExtended.VerbPropertiesCE">
+        <recoilAmount>1.82</recoilAmount>
+        <verbClass>CombatExtended.Verb_ShootCE</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_762x39mmSoviet_FMJ</defaultProjectile>
+        <burstShotCount>6</burstShotCount>
+        <ticksBetweenBurstShots>6</ticksBetweenBurstShots>
+        <warmupTime>1.1</warmupTime>
+        <range>44</range>
+        <soundCast>Shot_AssaultRifle</soundCast>
+        <soundCastTail>GunTail_Medium</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+      </li>
+    </verbs>
+    <comps>
+      <li Class="CombatExtended.CompProperties_AmmoUser">
+        <magazineSize>30</magazineSize>
+        <reloadTime>4</reloadTime>
+        <ammoSet>AmmoSet_APCEGenericGun</ammoSet>
+      </li>
+      <li Class="CombatExtended.CompProperties_FireModes">
+        <aiUseBurstMode>TRUE</aiUseBurstMode>
+        <aiAimMode>AimedShot</aiAimMode>
+        <aimedBurstShotCount>3</aimedBurstShotCount>
+      </li>
+    </comps>
+    <recipeMaker>
+      <researchPrerequisite>PrecisionRifling</researchPrerequisite>
+    </recipeMaker>
+    <tools>
+      <li Class="CombatExtended.ToolCE">
+        <label>stock</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>8</power>
+        <cooldownTime>1.55</cooldownTime>
+        <chanceFactor>1.5</chanceFactor>
+        <armorPenetrationBlunt>2.755</armorPenetrationBlunt>
+        <linkedBodyPartsGroup>Stock</linkedBodyPartsGroup>
+      </li>
+      <li Class="CombatExtended.ToolCE">
+        <label>barrel</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>5</power>
+        <cooldownTime>2.02</cooldownTime>
+        <armorPenetrationBlunt>1.630</armorPenetrationBlunt>
+        <linkedBodyPartsGroup>Barrel</linkedBodyPartsGroup>
+      </li>
+      <li Class="CombatExtended.ToolCE">
+        <label>muzzle</label>
+        <capacities>
+          <li>Poke</li>
+        </capacities>
+        <power>8</power>
+        <cooldownTime>1.55</cooldownTime>
+        <armorPenetrationBlunt>2.755</armorPenetrationBlunt>
+        <linkedBodyPartsGroup>Muzzle</linkedBodyPartsGroup>
+      </li>
+    </tools>
+    <modExtensions>
+      <li Class="CombatExtended.GunDrawExtension">
+        <DrawSize>1.0,1.05</DrawSize>
+        <DrawOffset>0.05,-0.10</DrawOffset>
+      </li>
+    </modExtensions>
+  </ThingDef>
+
+<!-- ==================== Category ========================== -->
+	<ThingCategoryDef>
+		<defName>AmmoAPCEGenericGun</defName>
+		<label>generic ammo</label>
+		<parent>AmmoRifles</parent>
+		<iconPath>UI/Icons/ThingCategories/CaliberRifle</iconPath>
+	</ThingCategoryDef>
+
+<!-- ==================== AmmoSet ========================== -->
+	<CombatExtended.AmmoSetDef>
+		<defName>AmmoSet_APCEGenericGun</defName>
+		<label>generic gun ammo</label>
+		<ammoTypes>
+			<Ammo_APCEGeneric_FMJ>Bullet_APCEGeneric_FMJ</Ammo_APCEGeneric_FMJ>
+			<Ammo_APCEGeneric_AP>Bullet_APCEGeneric_AP</Ammo_APCEGeneric_AP>
+			<Ammo_APCEGeneric_HP>Bullet_APCEGeneric_HP</Ammo_APCEGeneric_HP>
+		    <Ammo_APCEGeneric_Incendiary>Bullet_APCEGeneric_Incendiary</Ammo_APCEGeneric_Incendiary>
+			<Ammo_APCEGeneric_HE>Bullet_APCEGeneric_HE</Ammo_APCEGeneric_HE>
+			<Ammo_APCEGeneric_Sabot>Bullet_APCEGeneric_Sabot</Ammo_APCEGeneric_Sabot>				
+		</ammoTypes>
+		<similarTo>AmmoSet_RifleIntermediate</similarTo>
+	</CombatExtended.AmmoSetDef>
+
+	<!-- ==================== Ammo ========================== -->
+	<ThingDef Class="CombatExtended.AmmoDef" Name="APCEGenericGunBase" ParentName="SmallAmmoBase" Abstract="True">
+		<description>Generic ammo for use in guns lacking a CE patch.</description>
+		<statBases>
+			<Mass>0.013</Mass>
+			<Bulk>0.02</Bulk>
+		</statBases>
+		<tradeTags>
+			<li>CE_AutoEnableTrade</li>
+			<li>CE_AutoEnableCrafting</li>
+		</tradeTags>
+		<thingCategories>
+			<li>AmmoAPCEGenericGun</li>
+		</thingCategories>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericGunBase">
+		<defName>Ammo_APCEGeneric_FMJ</defName>
+		<label>generic cartridge (FMJ)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Rifle/FMJ</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>0.06</MarketValue>
+		</statBases>
+		<ammoClass>FullMetalJacket</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_FMJ</cookOffProjectile>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericGunBase">
+		<defName>Ammo_APCEGeneric_AP</defName>
+		<label>generic cartridge (AP)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Rifle/AP</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>0.06</MarketValue>
+		</statBases>
+		<ammoClass>ArmorPiercing</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_AP</cookOffProjectile>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericGunBase">
+		<defName>Ammo_APCEGeneric_HP</defName>
+		<label>generic cartridge (HP)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Rifle/HP</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>0.09</MarketValue>
+		</statBases>
+		<ammoClass>HollowPoint</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_HP</cookOffProjectile>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericGunBase">
+		<defName>Ammo_APCEGeneric_Incendiary</defName>
+		<label>generic cartridge (AP-I)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Rifle/Incendiary</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>0.14</MarketValue>
+		</statBases>
+		<ammoClass>IncendiaryAP</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_Incendiary</cookOffProjectile>
+	</ThingDef>
+
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericGunBase">
+		<defName>Ammo_APCEGeneric_HE</defName>
+		<label>generic cartridge (HE)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Rifle/HE</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>0.07</MarketValue>
+		</statBases>
+		<ammoClass>ExplosiveAP</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_HE</cookOffProjectile>
+	</ThingDef>
+	
+	<ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericGunBase">
+		<defName>Ammo_APCEGeneric_Sabot</defName>
+		<label>generic cartridge (Sabot)</label>
+		<graphicData>
+			<texPath>Things/Ammo/Rifle/Sabot</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<statBases>
+			<MarketValue>0.07</MarketValue>
+			<Mass>0.011</Mass>
+		</statBases>
+		<ammoClass>Sabot</ammoClass>
+		<cookOffProjectile>Bullet_APCEGeneric_Sabot</cookOffProjectile>
+	</ThingDef>
+	
+	<!-- ================== Projectiles ================== -->
+
+	<ThingDef Name="BaseAPCEGenericBullet" ParentName="BaseBulletCE" Abstract="true">
+		<graphicData>
+			<texPath>Things/Projectile/Bullet_Small</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+			<damageDef>Bullet</damageDef>
+			<speed>185</speed>
+			<dropsCasings>true</dropsCasings>
+		</projectile>
+	</ThingDef>
+
+	<ThingDef ParentName="BaseAPCEGenericBullet">
+		<defName>Bullet_APCEGeneric_FMJ</defName>
+		<label>APCE Generic Bullet (FMJ)</label>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+			<damageAmountBase>0</damageAmountBase>
+			<armorPenetrationSharp>0</armorPenetrationSharp>
+			<armorPenetrationBlunt>0</armorPenetrationBlunt>
+		</projectile>
+	</ThingDef>
+
+	<ThingDef ParentName="BaseAPCEGenericBullet">
+		<defName>Bullet_APCEGeneric_AP</defName>
+		<label>APCE Generic Bullet (AP)</label>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+			<damageAmountBase>0</damageAmountBase>
+			<armorPenetrationSharp>0</armorPenetrationSharp>
+			<armorPenetrationBlunt>0</armorPenetrationBlunt>
+		</projectile>
+	</ThingDef>
+
+	<ThingDef ParentName="BaseAPCEGenericBullet">
+		<defName>Bullet_APCEGeneric_HP</defName>
+		<label>APCE Generic Bullet (HP)</label>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+			<damageAmountBase>0</damageAmountBase>
+			<armorPenetrationSharp>0</armorPenetrationSharp>
+			<armorPenetrationBlunt>0</armorPenetrationBlunt>
+		</projectile>
+	</ThingDef>
+
+	  <ThingDef ParentName="BaseAPCEGenericBullet">
+		<defName>Bullet_APCEGeneric_Incendiary</defName>
+		<label>APCE Generic Bullet (AP-I)</label>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+		  <damageAmountBase>0</damageAmountBase>
+		  <armorPenetrationSharp>0</armorPenetrationSharp>
+		  <armorPenetrationBlunt>0</armorPenetrationBlunt>
+		  <secondaryDamage>
+			<li>
+			  <def>Flame_Secondary</def>
+			  <amount>1</amount>
+			</li>
+		  </secondaryDamage>
+		</projectile>
+	  </ThingDef>
+	  
+	  <ThingDef ParentName="BaseAPCEGenericBullet">
+		<defName>Bullet_APCEGeneric_HE</defName>
+		<label>APCE Generic Bullet (HE)</label>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+		  <damageAmountBase>0</damageAmountBase>
+		  <armorPenetrationSharp>0</armorPenetrationSharp>
+		  <armorPenetrationBlunt>0</armorPenetrationBlunt>
+		  <secondaryDamage>
+				<li>
+			  	<def>Bomb_Secondary</def>
+			  	<amount>1</amount>
+				</li>
+		  </secondaryDamage>
+		</projectile>
+	  </ThingDef>
+
+	  <ThingDef ParentName="BaseAPCEGenericBullet">
+		<defName>Bullet_APCEGeneric_Sabot</defName>
+		<label>APCE Generic Bullet (Sabot)</label>
+		<projectile Class="CombatExtended.ProjectilePropertiesCE">
+		  <damageAmountBase>0</damageAmountBase>
+		  <armorPenetrationSharp>0</armorPenetrationSharp>
+		  <armorPenetrationBlunt>0</armorPenetrationBlunt>
+		  <speed>277</speed>
+		</projectile>
+	  </ThingDef>
+
+	<!-- ==================== Recipes ========================== -->
+
+	<RecipeDef ParentName="AmmoRecipeBase">
+		<defName>MakeAmmo_APCEGeneric_FMJ</defName>
+		<label>make APCE Generic (FMJ) cartridge x500</label>
+		<description>Craft 500 APCE Generic (FMJ) cartridges.</description>
+		<jobString>Making APCE Generic (FMJ) cartridges.</jobString>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>14</count>
+			</li>
+		</ingredients>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<products>
+			<Ammo_APCEGeneric_FMJ>500</Ammo_APCEGeneric_FMJ>
+		</products>
+		<workAmount>1400</workAmount>
+	</RecipeDef>
+
+	<RecipeDef ParentName="AmmoRecipeBase">
+		<defName>MakeAmmo_APCEGeneric_AP</defName>
+		<label>make APCE Generic (AP) cartridge x500</label>
+		<description>Craft 500 APCE Generic (AP) cartridges.</description>
+		<jobString>Making APCE Generic (AP) cartridges.</jobString>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>14</count>
+			</li>
+		</ingredients>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<products>
+			<Ammo_APCEGeneric_AP>500</Ammo_APCEGeneric_AP>
+		</products>
+		<workAmount>1400</workAmount>
+	</RecipeDef>
+
+	<RecipeDef ParentName="AmmoRecipeBase">
+		<defName>MakeAmmo_APCEGeneric_HP</defName>
+		<label>make APCE Generic (HP) cartridge x500</label>
+		<description>Craft 500 APCE Generic (HP) cartridges.</description>
+		<jobString>Making APCE Generic (HP) cartridges.</jobString>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>14</count>
+			</li>
+		</ingredients>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<products>
+			<Ammo_APCEGeneric_HP>500</Ammo_APCEGeneric_HP>
+		</products>
+		<workAmount>1400</workAmount>
+	</RecipeDef>
+
+  <RecipeDef ParentName="AdvancedAmmoRecipeBase">
+    <defName>MakeAmmo_APCEGeneric_Incendiary</defName>
+    <label>make APCE Generic (AP-I) cartridge x500</label>
+    <description>Craft 500 APCE Generic (AP-I) cartridges.</description>
+    <jobString>Making APCE Generic (AP-I) cartridges.</jobString>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>14</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Prometheum</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Steel</li>
+        <li>Prometheum</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <Ammo_APCEGeneric_Incendiary>500</Ammo_APCEGeneric_Incendiary>
+    </products>
+    <workAmount>2200</workAmount>
+  </RecipeDef>
+  
+  <RecipeDef ParentName="AdvancedAmmoRecipeBase">
+    <defName>MakeAmmo_APCEGeneric_HE</defName>
+    <label>make APCE Generic (HE) cartridge x500</label>
+    <description>Craft 500 APCE Generic (HE) cartridges.</description>
+    <jobString>Making APCE Generic (HE) cartridges.</jobString>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>14</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>FSX</li>
+          </thingDefs>
+        </filter>
+        <count>4</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Steel</li>
+        <li>FSX</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <Ammo_APCEGeneric_HE>500</Ammo_APCEGeneric_HE>
+    </products>
+    <workAmount>3000</workAmount>
+  </RecipeDef>
+  
+  <RecipeDef ParentName="AdvancedAmmoRecipeBase">
+    <defName>MakeAmmo_APCEGeneric_Sabot</defName>
+    <label>make APCE Generic (Sabot) cartridge x500</label>
+    <description>Craft 500 APCE Generic (Sabot) cartridges.</description>
+    <jobString>Making APCE Generic (Sabot) cartridges.</jobString>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>8</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Uranium</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>		  
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Steel</li>
+        <li>Uranium</li>
+        <li>Chemfuel</li>		
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <Ammo_APCEGeneric_Sabot>500</Ammo_APCEGeneric_Sabot>
+    </products>
+    <workAmount>2000</workAmount>
+  </RecipeDef>
+
+</Defs>

@@ -1,0 +1,62 @@
+<Defs>
+
+  <ThingDef Class="CombatExtended.AmmoDef" ParentName="BaseGrenadeEquipment">
+    <defName>APCE_GrenadeGeneric</defName>
+    <equipmentType>Primary</equipmentType>
+    <label>concussion grenade</label>
+    <description>A generic grenade.</description>
+    <graphicData>
+      <texPath>Things/Ammo/HandGrenades/Concussion</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Interact_Grenade</soundInteract>
+    <techLevel>Industrial</techLevel>
+    <stackLimit>50</stackLimit>
+	<tradeability>None</tradeability>
+	<generateCommonality>0</generateCommonality>
+	<generateAllowChance>0</generateAllowChance>
+    <statBases>
+      <Mass>0.436</Mass>
+      <Bulk>1.55</Bulk>
+      <MarketValue>13.65</MarketValue>
+      <SightsEfficiency>0.65</SightsEfficiency>
+      <RangedWeapon_Cooldown>1</RangedWeapon_Cooldown>
+    </statBases>
+    <weaponTags>
+      <li>CE_AI_AOE</li>
+      <li>GrenadeDestructive</li>
+    </weaponTags>
+    <thingCategories>
+      <li>Grenades</li>
+    </thingCategories>
+    <verbs>
+      <li Class="CombatExtended.VerbPropertiesCE">
+        <label>throw generic grenade</label>
+        <verbClass>CombatExtended.Verb_ShootCEOneUse</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <range>10.0</range>
+        <minRange>2.9</minRange>
+        <warmupTime>0.8</warmupTime>
+        <noiseRadius>4</noiseRadius>
+        <ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+        <soundCast>ThrowGrenade</soundCast>
+        <targetParams>
+          <canTargetLocations>true</canTargetLocations>
+        </targetParams>
+        <defaultProjectile>Proj_GrenadeConcussion</defaultProjectile>
+        <onlyManualCast>true</onlyManualCast>
+        <ignorePartialLoSBlocker>true</ignorePartialLoSBlocker>
+        <ai_AvoidFriendlyFireRadius>6</ai_AvoidFriendlyFireRadius>
+      </li>
+    </verbs>
+    <detonateProjectile>Proj_GrenadeConcussion</detonateProjectile>
+	<comps>
+		<li Class="CompProperties_Explosive">
+			<explosiveRadius>2.66</explosiveRadius>
+			<explosiveDamageType>Bomb</explosiveDamageType>
+			<requiredDamageTypeToExplode>Flame</requiredDamageTypeToExplode>
+		</li>
+	</comps>
+  </ThingDef>
+
+</Defs>
