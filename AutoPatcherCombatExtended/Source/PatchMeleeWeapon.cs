@@ -56,11 +56,16 @@ namespace nuff.AutoPatcherCombatExtended
             meleeCritChance.stat = CE_StatDefOf.MeleeCritChance;
             meleeCritChance.value = valueLog * (1 - massFactor);
 
-            weapon.equippedStatOffsets.Add(meleeCounterParryBonus);
+            weapon.AddOrChangeStat(meleeCounterParryBonus);
+            weapon.AddOrChangeStat(bulk);
 
-            weapon.statBases.Add(meleeDodgeChance);
-            weapon.statBases.Add(meleeCritChance);
-            weapon.statBases.Add(meleeParryChance);
+            weapon.equippedStatOffsets.Add(meleeDodgeChance);
+            weapon.equippedStatOffsets.Add(meleeCritChance);
+            weapon.equippedStatOffsets.Add(meleeParryChance);
+
+            //weapon.statBases.Add(meleeDodgeChance);
+            //weapon.statBases.Add(meleeCritChance);
+            //weapon.statBases.Add(meleeParryChance);
         }
     }
 

@@ -73,13 +73,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompatibilityPatches.cs" />
     <Compile Include="Source\APCEDefOf.cs" />
     <Compile Include="Source\APCEController.cs" />
     <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />
     <Compile Include="Source\Comps\CompReplaceMe.cs" />
     <Compile Include="Source\GenerateAmmo.cs" />
     <Compile Include="Source\InjectedDefHasher.cs" />
-    <Compile Include="Source\obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Source\PatchGrenade.cs" />
     <Compile Include="Source\PatchMeleeWeapon.cs" />
     <Compile Include="Source\PatchMortar.cs" />
@@ -113,15 +113,12 @@
     <Content Include="Source\Todo list.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\obj\Debug\AutoPatcherCombatExtended.csproj.AssemblyReference.cache" />
-    <None Include="Source\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\AutoPatcherCombatExtended.csproj" />
     <None Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Source\bin\Debug\" />
     <Folder Include="Source\bin\Release\" />
-    <Folder Include="Source\obj\Debug\TempPE\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

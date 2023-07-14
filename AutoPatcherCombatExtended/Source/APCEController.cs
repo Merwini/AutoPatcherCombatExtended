@@ -12,11 +12,14 @@ namespace nuff.AutoPatcherCombatExtended
     [StaticConstructorOnStartup]
     public partial class APCEController
     {
+        static CompatibilityPatches compat = new CompatibilityPatches();
+
         static APCEController()
         {
             Log.Message("APCE Controller constructed");
             APCESettings.activeMods = GetActiveModsList();
             APCESettings.modsToPatch = RebuildModsToPatch();
+            compat.PatchMods();
             APCEPatchController();
         }
 

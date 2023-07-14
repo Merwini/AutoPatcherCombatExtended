@@ -17,5 +17,7 @@
    </modDependencies>
   <loadAfter>
     	<li>CETeam.CombatExtended</li>
+		<li>StatistNo1.personabond</li>
+		<li>Daria40K.MightyPersonaBondForgePatch</li>
   </loadAfter>
 </ModMetaData>
