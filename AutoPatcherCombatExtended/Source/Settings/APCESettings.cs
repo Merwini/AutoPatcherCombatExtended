@@ -151,6 +151,10 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult", 10); Scribe_Values.Look(ref gunSharpPenMultBuffer, "gunSharpPenMultBuffer", "10");
             Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult", 40); Scribe_Values.Look(ref gunBluntPenMultBuffer, "gunBluntPenMultBuffer", "40");
 
+            Scribe_Values.Look(ref weaponToolPowerMult, "weaponToolPowerMult", 1); Scribe_Values.Look(ref weaponToolPowerMultBuffer, "weaponToolPowerMultBuffer", "1");
+            Scribe_Values.Look(ref weaponToolSharpPenetration, "weaponToolSharpPenetration", 10); Scribe_Values.Look(ref weaponToolSharpPenetrationBuffer, "weaponToolSharpPenetrationBuffer", "10");
+            Scribe_Values.Look(ref weaponToolBluntPenetration, "weaponToolBluntPenetration", 40); Scribe_Values.Look(ref weaponToolBluntPenetrationBuffer, "weaponToolBluntPenetrationBuffer", "40");
+
             base.ExposeData();
         }
     }
