@@ -8,6 +8,7 @@ namespace nuff.AutoPatcherCombatExtended
     {
         internal static APCEConstants.SettingsTabs settingsTabs = APCEConstants.SettingsTabs.General_Settings;
         internal static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
+        internal static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;
 
         //General Settings
         internal static bool patchWeapons = true;
@@ -75,14 +76,21 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float gunTechMultAnimal = 0.5f; internal static string gunTechMultAnimalBuffer = "0.5";
         internal static float gunTechMultNeolithic = 1f; internal static string gunTechMultNeolithicBuffer = "1.0";
         internal static float gunTechMultMedieval = 2f; internal static string gunTechMultMedievalBuffer = "2.0";
-        internal static float gunTechMultIndustrial = 4; internal static string gunTechMultIndustrialBuffer = "4";
-        internal static float gunTechMultSpacer = 5; internal static string gunTechMultSpacerBuffer = "5";
-        internal static float gunTechMultUltratech = 6; internal static string gunTechMultUltratechBuffer = "6";
-        internal static float gunTechMultArchotech = 8; internal static string gunTechMultArchotechBuffer = "8";
+        internal static float gunTechMultIndustrial = 4; internal static string gunTechMultIndustrialBuffer = "4.0";
+        internal static float gunTechMultSpacer = 5; internal static string gunTechMultSpacerBuffer = "5.0";
+        internal static float gunTechMultUltratech = 6; internal static string gunTechMultUltratechBuffer = "6.0";
+        internal static float gunTechMultArchotech = 8; internal static string gunTechMultArchotechBuffer = "8.0";
 
-        internal static float weaponToolPowerMult = 1f; internal static string weaponToolPowerMultBuffer = "1";
-        internal static float weaponToolSharpPenetration = 10f; internal static string weaponToolSharpPenetrationBuffer = "10";
-        internal static float weaponToolBluntPenetration = 40f; internal static string weaponToolBluntPenetrationBuffer = "40";
+        internal static float weaponToolPowerMult = 1f; internal static string weaponToolPowerMultBuffer = "1.0";
+        internal static float weaponToolSharpPenetration = 1f; internal static string weaponToolSharpPenetrationBuffer = "1.0";
+        internal static float weaponToolBluntPenetration = 4f; internal static string weaponToolBluntPenetrationBuffer = "4.0";
+        internal static float weaponToolTechMultAnimal = 1f; internal static string weaponToolTechMultAnimalBuffer = "1.0";
+        internal static float weaponToolTechMultNeolithic = 1f; internal static string weaponToolTechMultNeolithicBuffer = "1.0";
+        internal static float weaponToolTechMultMedieval = 1f; internal static string weaponToolTechMultMedievalBuffer = "1.0";
+        internal static float weaponToolTechMultIndustrial = 2f; internal static string weaponToolTechMultIndustrialBuffer = "2.0";
+        internal static float weaponToolTechMultSpacer = 3f; internal static string weaponToolTechMultSpacerBuffer = "3.0";
+        internal static float weaponToolTechMultUltratech = 4f; internal static string weaponToolTechMultUltratechBuffer = "4.0";
+        internal static float weaponToolTechMultArchotech = 6f; internal static string weaponToolTechMultArchotechBuffer = "6.0";
 
 
         //pawn settings
@@ -97,6 +105,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float pawnKindMaxMags = 5f; internal static string pawnKindMaxMagsBuffer = "5";
 
         internal static bool patchBackpacks = true;
+        internal static bool patchCarryBulk = true;
 
         //hediff settings
         internal static float hediffSharpMult = 10; internal static string hediffSharpMultBuffer = "10";
@@ -126,10 +135,10 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref armorTechMultAnimal, "armorTechMultAnimal", 0.25f); Scribe_Values.Look(ref armorTechMultAnimalBuffer, "armorTechMultAnimalBuffer", "0.25");
             Scribe_Values.Look(ref armorTechMultNeolithic, "armorTechMultNeolithic", 0.5f); Scribe_Values.Look(ref armorTechMultNeolithicBuffer, "armorTechMultNeolithicBuffer", "0.5");
             Scribe_Values.Look(ref armorTechMultMedieval, "armorTechMultMedieval", 0.75f); Scribe_Values.Look(ref armorTechMultMedievalBuffer, "armorTechMultMedievalBuffer", "0.75");
-            Scribe_Values.Look(ref armorTechMultIndustrial, "armorTechMultIndustrial", 1f); Scribe_Values.Look(ref armorTechMultIndustrialBuffer, "armorTechMultIndustrialBuffer", "1");
-            Scribe_Values.Look(ref armorTechMultSpacer, "armorTechMultSpacer", 2f); Scribe_Values.Look(ref armorTechMultSpacerBuffer, "armorTechMultSpacerBuffer", "2");
-            Scribe_Values.Look(ref armorTechMultUltratech, "armorTechMultUltratech", 3f); Scribe_Values.Look(ref armorTechMultUltratechBuffer, "armorTechMultUltratechBuffer", "3");
-            Scribe_Values.Look(ref armorTechMultArchotech, "armorTechMultArchotech", 4f); Scribe_Values.Look(ref armorTechMultArchotechBuffer, "armorTechMultArchotechBuffer", "4");
+            Scribe_Values.Look(ref armorTechMultIndustrial, "armorTechMultIndustrial", 1f); Scribe_Values.Look(ref armorTechMultIndustrialBuffer, "armorTechMultIndustrialBuffer", "1.0");
+            Scribe_Values.Look(ref armorTechMultSpacer, "armorTechMultSpacer", 2f); Scribe_Values.Look(ref armorTechMultSpacerBuffer, "armorTechMultSpacerBuffer", "2.0");
+            Scribe_Values.Look(ref armorTechMultUltratech, "armorTechMultUltratech", 3f); Scribe_Values.Look(ref armorTechMultUltratechBuffer, "armorTechMultUltratechBuffer", "3.0");
+            Scribe_Values.Look(ref armorTechMultArchotech, "armorTechMultArchotech", 4f); Scribe_Values.Look(ref armorTechMultArchotechBuffer, "armorTechMultArchotechBuffer", "4.0");
 
             //hediff
             Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult", 10); Scribe_Values.Look(ref hediffSharpMultBuffer, "hediffSharpMultBuffer", "10");
@@ -150,10 +159,24 @@ namespace nuff.AutoPatcherCombatExtended
             //weapon
             Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult", 10); Scribe_Values.Look(ref gunSharpPenMultBuffer, "gunSharpPenMultBuffer", "10");
             Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult", 40); Scribe_Values.Look(ref gunBluntPenMultBuffer, "gunBluntPenMultBuffer", "40");
+            Scribe_Values.Look(ref gunTechMultAnimal, "gunTechMultAnimal", 0.5f); Scribe_Values.Look(ref gunTechMultAnimalBuffer, "gunTechMultAnimalBuffer", "0.5");
+            Scribe_Values.Look(ref gunTechMultNeolithic, "gunTechMultNeolithic", 1f); Scribe_Values.Look(ref gunTechMultNeolithicBuffer, "gunTechMultNeolithicBuffer", "1.0");
+            Scribe_Values.Look(ref gunTechMultMedieval, "gunTechMultMedieval", 2f); Scribe_Values.Look(ref gunTechMultMedievalBuffer, "gunTechMultMedievalBuffer", "2.0");
+            Scribe_Values.Look(ref gunTechMultIndustrial, "gunTechMultIndustrial", 4f); Scribe_Values.Look(ref gunTechMultIndustrialBuffer, "gunTechMultIndustrialBuffer", "4.0");
+            Scribe_Values.Look(ref gunTechMultSpacer, "gunTechMultSpacer", 5f); Scribe_Values.Look(ref gunTechMultSpacerBuffer, "gunTechMultSpacerBuffer", "5.0");
+            Scribe_Values.Look(ref gunTechMultUltratech, "gunTechMultUltratech", 6f); Scribe_Values.Look(ref gunTechMultUltratechBuffer, "gunTechMultUltratechBuffer", "6.0");
+            Scribe_Values.Look(ref gunTechMultArchotech, "gunTechMultArchotech", 8f); Scribe_Values.Look(ref gunTechMultArchotechBuffer, "gunTechMultArchotechBuffer", "8.0");
 
             Scribe_Values.Look(ref weaponToolPowerMult, "weaponToolPowerMult", 1); Scribe_Values.Look(ref weaponToolPowerMultBuffer, "weaponToolPowerMultBuffer", "1");
-            Scribe_Values.Look(ref weaponToolSharpPenetration, "weaponToolSharpPenetration", 10); Scribe_Values.Look(ref weaponToolSharpPenetrationBuffer, "weaponToolSharpPenetrationBuffer", "10");
-            Scribe_Values.Look(ref weaponToolBluntPenetration, "weaponToolBluntPenetration", 40); Scribe_Values.Look(ref weaponToolBluntPenetrationBuffer, "weaponToolBluntPenetrationBuffer", "40");
+            Scribe_Values.Look(ref weaponToolSharpPenetration, "weaponToolSharpPenetration", 1); Scribe_Values.Look(ref weaponToolSharpPenetrationBuffer, "weaponToolSharpPenetrationBuffer", "1");
+            Scribe_Values.Look(ref weaponToolBluntPenetration, "weaponToolBluntPenetration", 4); Scribe_Values.Look(ref weaponToolBluntPenetrationBuffer, "weaponToolBluntPenetrationBuffer", "4");
+            Scribe_Values.Look(ref weaponToolTechMultAnimal, "weaponToolTechMultAnimal", 1f); Scribe_Values.Look(ref weaponToolTechMultAnimalBuffer, "weaponToolTechMultAnimalBuffer", "1.0");
+            Scribe_Values.Look(ref weaponToolTechMultNeolithic, "weaponToolTechMultNeolithic", 1f); Scribe_Values.Look(ref weaponToolTechMultNeolithicBuffer, "weaponToolTechMultNeolithicBuffer", "1.0");
+            Scribe_Values.Look(ref weaponToolTechMultMedieval, "weaponToolTechMultMedieval", 1f); Scribe_Values.Look(ref weaponToolTechMultMedievalBuffer, "weaponToolTechMultMedievalBuffer", "1.0");
+            Scribe_Values.Look(ref weaponToolTechMultIndustrial, "weaponToolTechMultIndustrial", 2f);  Scribe_Values.Look(ref weaponToolTechMultIndustrialBuffer, "weaponToolTechMultIndustrialBuffer", "2.0");
+            Scribe_Values.Look(ref weaponToolTechMultSpacer, "weaponToolTechMultSpacer", 3f); Scribe_Values.Look(ref weaponToolTechMultSpacerBuffer, "weaponToolTechMultSpacerBuffer", "3.0");
+            Scribe_Values.Look(ref weaponToolTechMultUltratech, "weaponToolTechMultUltratech", 4f); Scribe_Values.Look(ref weaponToolTechMultUltratechBuffer, "weaponToolTechMultUltratechBuffer", "4.0");
+            Scribe_Values.Look(ref weaponToolTechMultArchotech, "weaponToolTechMultArchotech", 6f); Scribe_Values.Look(ref weaponToolTechMultArchotechBuffer, "weaponToolTechMultArchotechBuffer", "6.0");
 
             base.ExposeData();
         }

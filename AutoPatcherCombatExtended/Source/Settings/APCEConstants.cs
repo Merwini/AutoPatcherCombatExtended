@@ -26,6 +26,11 @@ namespace nuff.AutoPatcherCombatExtended
             Pawns,
             Hediffs,
         }
+        public enum BalanceWeaponTabs
+        {
+            Ranged,
+            Melee
+        }
         public enum gunKinds
         {
             Bow,

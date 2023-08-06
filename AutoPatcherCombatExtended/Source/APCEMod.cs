@@ -91,30 +91,44 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Weapons)
                     {
-                        list.Gap();
-                        Text.Font = GameFont.Medium;
-                        list.Label("Ranged weapon armor penetration settings");
-                        Text.Font = GameFont.Small;
-                        list.TextFieldNumericLabeled("Ranged weapon sharp penetration multiplier (default: 10)", ref APCESettings.gunSharpPenMult, ref APCESettings.gunSharpPenMultBuffer);
-                        list.TextFieldNumericLabeled("Ranged weapon blunt penetration multiplier (default: 40)", ref APCESettings.gunBluntPenMult, ref APCESettings.gunBluntPenMultBuffer);
+                        list.EnumSelector(ref APCESettings.balanceWeaponTabs, "", "", "select weapon category");
+                        if (APCESettings.balanceWeaponTabs == APCEConstants.BalanceWeaponTabs.Ranged)
+                        {
+                            list.Gap();
+                            Text.Font = GameFont.Medium;
+                            list.Label("Ranged weapon armor penetration settings");
+                            Text.Font = GameFont.Small;
+                            list.TextFieldNumericLabeled("Ranged weapon sharp penetration multiplier (default: 10)", ref APCESettings.gunSharpPenMult, ref APCESettings.gunSharpPenMultBuffer);
+                            list.TextFieldNumericLabeled("Ranged weapon blunt penetration multiplier (default: 40)", ref APCESettings.gunBluntPenMult, ref APCESettings.gunBluntPenMultBuffer);
 
-                        list.Gap();
-                        list.TextFieldNumericLabeled("Tech level 'Animal' ammo penetration multiplier (default: 0.5)", ref APCESettings.gunTechMultAnimal, ref APCESettings.gunTechMultAnimalBuffer);
-                        list.TextFieldNumericLabeled("Tech level 'Neolithic' ammo penetration multiplier (default: 1.0)", ref APCESettings.gunTechMultNeolithic, ref APCESettings.gunTechMultNeolithicBuffer);
-                        list.TextFieldNumericLabeled("Tech level 'Medieval' ammo penetration multiplier (default: 2.0)", ref APCESettings.gunTechMultMedieval, ref APCESettings.gunTechMultMedievalBuffer);
-                        list.TextFieldNumericLabeled("Tech level 'Industrial' ammo penetration multiplier (default: 4.0)", ref APCESettings.gunTechMultIndustrial, ref APCESettings.gunTechMultIndustrialBuffer);
-                        list.TextFieldNumericLabeled("Tech level 'Spacer' ammo penetration multiplier (default: 5.0)", ref APCESettings.gunTechMultSpacer, ref APCESettings.gunTechMultSpacerBuffer);
-                        list.TextFieldNumericLabeled("Tech level 'Ultratech' ammo penetration multiplier (default: 6.0)", ref APCESettings.gunTechMultUltratech, ref APCESettings.gunTechMultUltratechBuffer);
-                        list.TextFieldNumericLabeled("Tech level 'Archotech' ammo penetration multiplier (default: 8.0)", ref APCESettings.gunTechMultArchotech, ref APCESettings.gunTechMultArchotechBuffer);
+                            list.Gap();
+                            list.TextFieldNumericLabeled("Tech level 'Animal' ammo penetration multiplier (default: 0.5)", ref APCESettings.gunTechMultAnimal, ref APCESettings.gunTechMultAnimalBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Neolithic' ammo penetration multiplier (default: 1.0)", ref APCESettings.gunTechMultNeolithic, ref APCESettings.gunTechMultNeolithicBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Medieval' ammo penetration multiplier (default: 2.0)", ref APCESettings.gunTechMultMedieval, ref APCESettings.gunTechMultMedievalBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Industrial' ammo penetration multiplier (default: 4.0)", ref APCESettings.gunTechMultIndustrial, ref APCESettings.gunTechMultIndustrialBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Spacer' ammo penetration multiplier (default: 5.0)", ref APCESettings.gunTechMultSpacer, ref APCESettings.gunTechMultSpacerBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Ultratech' ammo penetration multiplier (default: 6.0)", ref APCESettings.gunTechMultUltratech, ref APCESettings.gunTechMultUltratechBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Archotech' ammo penetration multiplier (default: 8.0)", ref APCESettings.gunTechMultArchotech, ref APCESettings.gunTechMultArchotechBuffer);
+                        }
+                        if (APCESettings.balanceWeaponTabs == APCEConstants.BalanceWeaponTabs.Melee)
+                        {
+                            list.Gap();
+                            Text.Font = GameFont.Medium;
+                            list.Label("Weapon tool (melee attacks) settings");
+                            Text.Font = GameFont.Small;
+                            list.TextFieldNumericLabeled("Weapon tool power (damage) multiplier (default: 1)", ref APCESettings.weaponToolPowerMult, ref APCESettings.weaponToolPowerMultBuffer);
+                            list.TextFieldNumericLabeled("Weapon tool sharp penetration multiplier (default: 1)", ref APCESettings.weaponToolSharpPenetration, ref APCESettings.weaponToolSharpPenetrationBuffer);
+                            list.TextFieldNumericLabeled("Weapon tool blunt penetration multiplier (default: 4)", ref APCESettings.weaponToolBluntPenetration, ref APCESettings.weaponToolBluntPenetrationBuffer);
 
-                        list.Gap();
-                        Text.Font = GameFont.Medium;
-                        list.Label("Weapon tool (melee attacks) settings");
-                        Text.Font = GameFont.Small;
-                        list.TextFieldNumericLabeled("Weapon tool power (damage) multiplier (default: 1)", ref APCESettings.weaponToolPowerMult, ref APCESettings.weaponToolPowerMultBuffer);
-                        list.TextFieldNumericLabeled("Weapon tool sharp penetration multiplier (default: 10)", ref APCESettings.weaponToolSharpPenetration, ref APCESettings.weaponToolSharpPenetrationBuffer);
-                        list.TextFieldNumericLabeled("Weapon tool blunt penetration multiplier (default: 40)", ref APCESettings.weaponToolBluntPenetration, ref APCESettings.weaponToolBluntPenetrationBuffer);
-
+                            list.Gap();
+                            list.TextFieldNumericLabeled("Tech level 'Animal' tool penetration multiplier (default: 1.0)", ref APCESettings.weaponToolTechMultAnimal, ref APCESettings.weaponToolTechMultAnimalBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Neolithic' tool penetration multiplier (default: 1.0)", ref APCESettings.weaponToolTechMultNeolithic, ref APCESettings.weaponToolTechMultNeolithicBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Medieval' tool penetration multiplier (default: 1.0)", ref APCESettings.weaponToolTechMultMedieval, ref APCESettings.weaponToolTechMultMedievalBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Industrial' tool penetration multiplier (default: 2.0)", ref APCESettings.weaponToolTechMultIndustrial, ref APCESettings.weaponToolTechMultIndustrialBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Spacer' tool penetration multiplier (default: 3.0)", ref APCESettings.weaponToolTechMultSpacer, ref APCESettings.weaponToolTechMultSpacerBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Ultratech' tool penetration multiplier (default: 4.0)", ref APCESettings.weaponToolTechMultUltratech, ref APCESettings.weaponToolTechMultUltratechBuffer);
+                            list.TextFieldNumericLabeled("Tech level 'Archotech' tool penetration multiplier (default: 6.0)", ref APCESettings.weaponToolTechMultArchotech, ref APCESettings.weaponToolTechMultArchotechBuffer);
+                        }
                     }
                     if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Pawns)
                     {

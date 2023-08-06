@@ -144,7 +144,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static void PatchAllTools(ref List<Tool> tools, bool isPawn)
+        internal static void PatchAllTools(ref List<Tool> tools, bool isPawn, TechLevel techLevel = TechLevel.Undefined)
         {
             if ((tools == null) || (tools.Count == 0))
                     return;
@@ -152,17 +152,46 @@ namespace nuff.AutoPatcherCombatExtended
             List<Tool> newToolsCE = new List<Tool>();
             foreach (Tool tool in tools)
             {
-                newToolsCE.Add(PatchTool(tool, isPawn));
+                newToolsCE.Add(PatchTool(tool, isPawn, techLevel));
             }
             tools = newToolsCE;
         }
 
-        internal static ToolCE PatchTool(Tool tool, bool isPawn)
+        internal static ToolCE PatchTool(Tool tool, bool isPawn, TechLevel techLevel = TechLevel.Undefined)
         {
             ToolCE newToolCE = new ToolCE();
 
             CopyFields(tool, newToolCE);
             newToolCE.id = "APCE_Tool_" + tool.id;
+
+            float toolTechMult = 1f;
+            switch (techLevel)
+            {
+                case TechLevel.Animal:
+                    toolTechMult *= APCESettings.weaponToolTechMultAnimal;
+                    break;
+                case TechLevel.Neolithic:
+                    toolTechMult *= APCESettings.weaponToolTechMultNeolithic;
+                    break;
+                case TechLevel.Medieval:
+                    toolTechMult *= APCESettings.weaponToolTechMultMedieval;
+                    break;
+                case TechLevel.Industrial:
+                    toolTechMult *= APCESettings.weaponToolTechMultIndustrial;
+                    break;
+                case TechLevel.Spacer:
+                    toolTechMult *= APCESettings.weaponToolTechMultSpacer;
+                    break;
+                case TechLevel.Ultra:
+                    toolTechMult *= APCESettings.weaponToolTechMultUltratech;
+                    break;
+                case TechLevel.Archotech:
+                    toolTechMult *= APCESettings.weaponToolTechMultArchotech;
+                    break;
+                default:
+                    break;
+            }
+
             if (tool.armorPenetration <= 0) //CE is far more punishing if you have no armor penetration than vanilla is, so it is essential to have some
             {
                 newToolCE.armorPenetrationSharp = tool.power * 0.1f;
@@ -182,8 +211,8 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else
             {
-                newToolCE.armorPenetrationSharp *= APCESettings.weaponToolSharpPenetration;
-                newToolCE.armorPenetrationBlunt *= APCESettings.weaponToolBluntPenetration;
+                newToolCE.armorPenetrationSharp *= APCESettings.weaponToolSharpPenetration * toolTechMult;
+                newToolCE.armorPenetrationBlunt *= APCESettings.weaponToolBluntPenetration * toolTechMult;
                 newToolCE.power = tool.power * APCESettings.weaponToolPowerMult;
             }
             /*
