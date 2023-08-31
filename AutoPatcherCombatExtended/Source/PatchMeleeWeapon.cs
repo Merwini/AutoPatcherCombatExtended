@@ -21,6 +21,7 @@ namespace nuff.AutoPatcherCombatExtended
         }
         internal static void AddMeleeWeaponStats(ThingDef weapon)
         {
+            LimitWeaponMass(weapon);
             float mass = weapon.statBases.GetStatValueFromList(StatDefOf.Mass, 1);
             float massFactor = Mathf.Clamp((mass * 0.2f), 0.1f, 0.9f);
             float value = weapon.BaseMarketValue;

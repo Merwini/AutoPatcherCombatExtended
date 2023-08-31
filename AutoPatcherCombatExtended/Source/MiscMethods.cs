@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Verse;
+using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -458,6 +459,7 @@ namespace nuff.AutoPatcherCombatExtended
             //float ssAccuracyMod = 0.1f;
             float seDefault = 1f + gunTechModFlat;
             float recoilTechMod = (1 - (((float)def.techLevel - 3) * 0.2f));
+            LimitWeaponMass(def);
             float gunMass = def.statBases.GetStatValueFromList(StatDefOf.Mass, 1);
             float forcedMissRadius = def.Verbs[0].ForcedMissRadius;
 
@@ -575,7 +577,7 @@ namespace nuff.AutoPatcherCombatExtended
             else if (gunKind == APCEConstants.gunKinds.MachineGun)
             {
                 newAUComp.magazineSize = weapon.Verbs[0].burstShotCount * 10;
-                newAUComp.reloadTime = newAUComp.magazineSize * 0.09f;
+                newAUComp.reloadTime = Mathf.Clamp(newAUComp.magazineSize * 0.09f, 0.1f, 12f);
                 newAUComp.throwMote = true;
             }
             else if (gunKind == APCEConstants.gunKinds.Bow)
@@ -724,5 +726,23 @@ namespace nuff.AutoPatcherCombatExtended
 
             return genericAmmos;
         }
+        internal static void LimitWeaponMass(ThingDef td)
+        {
+            Log.Warning("LimitWeaponMass called on: " + td.defName);
+            if (APCESettings.limitWeaponMass)
+            {
+                StatModifier mass = td.statBases.FirstOrDefault(x => x.stat == StatDefOf.Mass);
+                if (mass != null)
+                {
+                    Log.Warning(td.defName + " mass: " + mass.value);
+                    if (mass.value > APCESettings.maximumWeaponMass)
+                    {
+                        Log.Warning("Mass too high. Limiting to max.");
+                        mass.value = APCESettings.maximumWeaponMass;
+                    }
+                }
+            }
+        }
     }
+
 }

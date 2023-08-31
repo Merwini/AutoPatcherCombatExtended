@@ -13,6 +13,7 @@ namespace nuff.AutoPatcherCombatExtended
         //General Settings
         internal static bool patchWeapons = true;
         internal static bool patchCustomVerbs = false;
+        internal static bool limitWeaponMass = false;
         internal static bool patchApparels = true;
         internal static bool patchPawns = true;
         internal static bool patchPawnKinds = true;
@@ -92,6 +93,8 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float weaponToolTechMultUltratech = 4f; internal static string weaponToolTechMultUltratechBuffer = "4.0";
         internal static float weaponToolTechMultArchotech = 6f; internal static string weaponToolTechMultArchotechBuffer = "6.0";
 
+        internal static float maximumWeaponMass = 20f; internal static string maximumWeaponMassBuffer = "20.0";
+
 
         //pawn settings
         internal static float pawnArmorSharpMult = 10; internal static string pawnArmorSharpMultBuffer = "10";
@@ -118,6 +121,7 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref printPatchErrors, "printPatchErrors", false);
             Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);
             Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
+            Scribe_Values.Look(ref limitWeaponMass, "limitWeaponMass", false);
             Scribe_Values.Look(ref patchApparels, "patchApparels", true);
             Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers", true);
             Scribe_Values.Look(ref patchPawns, "patchPawns", true);
@@ -177,6 +181,7 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref weaponToolTechMultSpacer, "weaponToolTechMultSpacer", 3f); Scribe_Values.Look(ref weaponToolTechMultSpacerBuffer, "weaponToolTechMultSpacerBuffer", "3.0");
             Scribe_Values.Look(ref weaponToolTechMultUltratech, "weaponToolTechMultUltratech", 4f); Scribe_Values.Look(ref weaponToolTechMultUltratechBuffer, "weaponToolTechMultUltratechBuffer", "4.0");
             Scribe_Values.Look(ref weaponToolTechMultArchotech, "weaponToolTechMultArchotech", 6f); Scribe_Values.Look(ref weaponToolTechMultArchotechBuffer, "weaponToolTechMultArchotechBuffer", "6.0");
+            Scribe_Values.Look(ref maximumWeaponMass, "maximumWeaponMass", 20f); Scribe_Values.Look(ref maximumWeaponMassBuffer, "maximumWeaponMassBuffer", "20.0");
 
             base.ExposeData();
         }

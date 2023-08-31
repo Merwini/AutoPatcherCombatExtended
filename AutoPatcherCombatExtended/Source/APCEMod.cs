@@ -42,10 +42,17 @@ namespace nuff.AutoPatcherCombatExtended
 
                 if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.General_Settings)
                 {
+                    list.Gap();
+                    list.Label("Weapon Stuff:");
                     list.CheckboxLabeled("Patch weapons from selected mods: ", ref APCESettings.patchWeapons);
+                    list.CheckboxLabeled("Limit Weapon Mass: ", ref APCESettings.limitWeaponMass);
                     list.CheckboxLabeled("Try to patch custom verbs on guns (safety not guaranteed): ", ref APCESettings.patchCustomVerbs);
+                    list.Gap();
+                    list.Label("Apparel Stuff:");
                     list.CheckboxLabeled("Patch apparels from selected mods: ", ref APCESettings.patchApparels);
                     list.CheckboxLabeled("Patch headgear layers: ", ref APCESettings.patchHeadgearLayers);
+                    list.Gap();
+                    list.Label("Other Stuff:");
                     list.CheckboxLabeled("Patch pawns from selected mods: ", ref APCESettings.patchPawns);
                     list.CheckboxLabeled("Patch PawnKinds from selected mods: ", ref APCESettings.patchPawnKinds);
                     list.CheckboxLabeled("Patch hediffs from selected mods: ", ref APCESettings.patchHediffs);
@@ -109,6 +116,9 @@ namespace nuff.AutoPatcherCombatExtended
                             list.TextFieldNumericLabeled("Tech level 'Spacer' ammo penetration multiplier (default: 5.0)", ref APCESettings.gunTechMultSpacer, ref APCESettings.gunTechMultSpacerBuffer);
                             list.TextFieldNumericLabeled("Tech level 'Ultratech' ammo penetration multiplier (default: 6.0)", ref APCESettings.gunTechMultUltratech, ref APCESettings.gunTechMultUltratechBuffer);
                             list.TextFieldNumericLabeled("Tech level 'Archotech' ammo penetration multiplier (default: 8.0)", ref APCESettings.gunTechMultArchotech, ref APCESettings.gunTechMultArchotechBuffer);
+
+                            list.Gap();
+                            list.TextFieldNumericLabeled("Maximum weapon mass (default 20.0)", ref APCESettings.maximumWeaponMass, ref APCESettings.maximumWeaponMassBuffer);
                         }
                         if (APCESettings.balanceWeaponTabs == APCEConstants.BalanceWeaponTabs.Melee)
                         {
