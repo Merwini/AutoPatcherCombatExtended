@@ -728,16 +728,13 @@ namespace nuff.AutoPatcherCombatExtended
         }
         internal static void LimitWeaponMass(ThingDef td)
         {
-            Log.Warning("LimitWeaponMass called on: " + td.defName);
             if (APCESettings.limitWeaponMass)
             {
                 StatModifier mass = td.statBases.FirstOrDefault(x => x.stat == StatDefOf.Mass);
                 if (mass != null)
                 {
-                    Log.Warning(td.defName + " mass: " + mass.value);
                     if (mass.value > APCESettings.maximumWeaponMass)
                     {
-                        Log.Warning("Mass too high. Limiting to max.");
                         mass.value = APCESettings.maximumWeaponMass;
                     }
                 }
