@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using Verse.AI;
+using Vehicles;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -13,12 +14,17 @@ namespace nuff.AutoPatcherCombatExtended
     public partial class APCEController
     {
         static CompatibilityPatches compat = new CompatibilityPatches();
+        static bool vehiclesInstalled = false;
 
         static APCEController()
         {
             Log.Message("APCE Controller constructed");
             APCESettings.activeMods = GetActiveModsList();
             APCESettings.modsToPatch = RebuildModsToPatch();
+            if (ModLister.HasActiveModWithName("Vehicle Framework"))
+            {
+                vehiclesInstalled = true;
+            }
             compat.PatchMods();
             APCEPatchController();
         }
@@ -51,9 +57,8 @@ namespace nuff.AutoPatcherCombatExtended
             log.BeginPatch();
             foreach (Def def in mod.AllDefs)
             {
-                if (def is ThingDef)
+                if (def is ThingDef td)
                 {
-                    ThingDef td = def as ThingDef;
                     if (td.IsApparel)
                     {
                         if (APCESettings.patchApparels)
@@ -66,7 +71,7 @@ namespace nuff.AutoPatcherCombatExtended
                     {
                         if (APCESettings.patchWeapons)
                         {
-                            if (td.IsRangedWeapon 
+                            if (td.IsRangedWeapon
                                 && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
                                 && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
                             {
@@ -98,22 +103,30 @@ namespace nuff.AutoPatcherCombatExtended
                         PatchMortarShell(td, log);
                     }
                 }
-                else if (def is HediffDef)
+                else if (def is HediffDef hd
+                    && APCESettings.patchHediffs)
                 {
-                    HediffDef hd = def as HediffDef;
-                    if (APCESettings.patchHediffs)
-                    {
-                        PatchHediff(hd, log);
-                        continue;
-                    }
+                    PatchHediff(hd, log);
+                    continue;
                 }
-                else if (def is PawnKindDef)
+                else if (def is PawnKindDef pkd
+                    && APCESettings.patchPawnKinds)
                 {
-                    if (APCESettings.patchPawnKinds)
-                    {
-                        PawnKindDef pkd = def as PawnKindDef;
-                        PatchPawnKind(pkd, log);
-                    }
+                    PatchPawnKind(pkd, log);
+                    continue;
+                }
+                else if (ModLister.BiotechInstalled
+                    && def is GeneDef gene
+                    && APCESettings.patchGenes)
+                {
+                    PatchGene(gene, log);
+                    continue;
+                }
+                else if (vehiclesInstalled
+                    && def is VehicleDef vd)
+                {
+                    PatchVehicle(vd, log);
+                    continue;
                 }
             }
             log.EndPatch();
