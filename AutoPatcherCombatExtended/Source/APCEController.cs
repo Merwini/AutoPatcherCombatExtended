@@ -11,21 +11,17 @@ using Vehicles;
 namespace nuff.AutoPatcherCombatExtended
 {
     [StaticConstructorOnStartup]
-    public partial class APCEController
+    public static partial class APCEController
     {
         static CompatibilityPatches compat = new CompatibilityPatches();
-        static bool vehiclesInstalled = false;
 
         static APCEController()
         {
             Log.Message("APCE Controller constructed");
             APCESettings.activeMods = GetActiveModsList();
             APCESettings.modsToPatch = RebuildModsToPatch();
-            if (ModLister.HasActiveModWithName("Vehicle Framework"))
-            {
-                vehiclesInstalled = true;
-            }
             compat.PatchMods();
+            APCEHarmonyPatches harmony = new APCEHarmonyPatches();
             APCEPatchController();
         }
 
@@ -37,6 +33,10 @@ namespace nuff.AutoPatcherCombatExtended
             }
             //CleanModList(APCESettings.modsToPatch);
             InjectedDefHasher.PrepareReflection();
+            if (!APCESettings.patchWeapons)
+            {
+                DisableGenericAmmos();
+            }
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
                 if (APCESettings.modsAlreadyPatched.Add(mod))
@@ -57,81 +57,74 @@ namespace nuff.AutoPatcherCombatExtended
             log.BeginPatch();
             foreach (Def def in mod.AllDefs)
             {
-                if (def is ThingDef td)
-                {
-                    if (td.IsApparel)
-                    {
-                        if (APCESettings.patchApparels)
-                        {
-                            PatchApparel(td, log);
-                            continue;
-                        }
-                    }
-                    else if (td.IsWeapon)
-                    {
-                        if (APCESettings.patchWeapons)
-                        {
-                            if (td.IsRangedWeapon
-                                && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
-                                && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
-                            {
-                                PatchRangedWeapon(td, log);
-                                continue;
-                            }
-                            else //if (td.IsMeleeWeapon)
-                            {
-                                PatchMeleeWeapon(td, log);
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            DisableGenericAmmos();
-                        }
-                    }
-                    else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
-                    {
-                        PatchPawn(td, log);
-                        continue;
-                    }
-                    else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
-                    {
-                        PatchTurretBase(td, log);
-                    }
-                    else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
-                    {
-                        PatchMortarShell(td, log);
-                    }
-                }
-                else if (def is HediffDef hd
-                    && APCESettings.patchHediffs)
-                {
-                    PatchHediff(hd, log);
-                    continue;
-                }
-                else if (def is PawnKindDef pkd
-                    && APCESettings.patchPawnKinds)
-                {
-                    PatchPawnKind(pkd, log);
-                    continue;
-                }
-                else if (ModLister.BiotechInstalled
-                    && def is GeneDef gene
-                    && APCESettings.patchGenes)
-                {
-                    PatchGene(gene, log);
-                    continue;
-                }
-                else if (vehiclesInstalled
-                    && def is VehicleDef vd)
-                {
-                    PatchVehicle(vd, log);
-                    continue;
-                }
+                DetermineDefType(def, log);
             }
             log.EndPatch();
         }
+
+        public static void DetermineDefType(Def def, APCEPatchLogger log)
+        {
+            if (def is ThingDef td)
+            {
+                if (td.IsApparel
+                    && APCESettings.patchApparels)
+                {
+                    PatchApparel(td, log);
+                    return;
+                }
+                else if (td.IsWeapon
+                    && APCESettings.patchWeapons)
+                {
+                    if (td.IsRangedWeapon
+                        && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
+                        && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
+                    {
+                        PatchRangedWeapon(td, log);
+                        return;
+                    }
+                    else //if (td.IsMeleeWeapon)
+                    {
+                        PatchMeleeWeapon(td, log);
+                        return;
+                    }
+                }
+                else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
+                {
+                    PatchPawn(td, log);
+                    return;
+                }
+                else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
+                {
+                    PatchTurretBase(td, log);
+                }
+                else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
+                {
+                    PatchMortarShell(td, log);
+                }
+            }
+            else if (def is HediffDef hd
+                && APCESettings.patchHediffs)
+            {
+                PatchHediff(hd, log);
+                return;
+            }
+            else if (def is PawnKindDef pkd
+                && APCESettings.patchPawnKinds)
+            {
+                PatchPawnKind(pkd, log);
+                return;
+            }
+            else if (ModLister.BiotechInstalled
+                && def is GeneDef gene
+                && APCESettings.patchGenes)
+            {
+                PatchGene(gene, log);
+                return;
+            }
+            else
+            {
+                HandleUnknownDef(def, log);
+            }
+        }
     }
-
-
 }

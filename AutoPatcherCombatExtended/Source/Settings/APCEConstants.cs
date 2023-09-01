@@ -24,7 +24,7 @@ namespace nuff.AutoPatcherCombatExtended
             Apparel,
             Weapons,
             Pawns,
-            Hediffs,
+            Other,
         }
         public enum BalanceWeaponTabs
         {

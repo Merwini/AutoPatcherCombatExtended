@@ -13,7 +13,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal void BasicException(Exception ex)
+        internal static void BasicException(Exception ex)
         {
             Log.Error(ex.ToString());
         }
@@ -739,6 +739,12 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
             }
+        }
+
+        internal static void HandleUnknownDef(Def def, APCEPatchLogger log)
+        {
+            //log.PatchFailed(def.defName, new Exception("Unrecognized def type"));
+            return;
         }
     }
 

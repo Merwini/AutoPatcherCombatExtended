@@ -1,3 +1,2 @@
 ﻿TODO maybe try to filter out mods that are already CE patched? Not sure yet how to do this.
-TODO figure out a solution to mods that put overly heavy weapons on non-human pawns, thus preventing ammo from spawning
 TODO buttons to reset numbers to defaults

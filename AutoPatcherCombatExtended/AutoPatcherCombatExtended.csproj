@@ -71,9 +71,15 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Vehicles">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\3014915404\1.4\Assemblies\Vehicles.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompatibilityPatches.cs" />
+    <Compile Include="Source\APCEHarmonyPatches.cs" />
+    <Compile Include="Source\PatchGenes.cs" />
+    <Compile Include="Source\PatchVehicle.cs" />
     <Compile Include="Source\APCEDefOf.cs" />
     <Compile Include="Source\APCEController.cs" />
     <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />

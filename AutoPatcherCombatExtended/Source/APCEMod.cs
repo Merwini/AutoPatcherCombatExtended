@@ -55,7 +55,10 @@ namespace nuff.AutoPatcherCombatExtended
                     list.Label("Other Stuff:");
                     list.CheckboxLabeled("Patch pawns from selected mods: ", ref APCESettings.patchPawns);
                     list.CheckboxLabeled("Patch PawnKinds from selected mods: ", ref APCESettings.patchPawnKinds);
+                    list.CheckboxLabeled("Patch Genes from selected mods: ", ref APCESettings.patchGenes);
                     list.CheckboxLabeled("Patch hediffs from selected mods: ", ref APCESettings.patchHediffs);
+                    list.CheckboxLabeled("Patch vehicles from selected mods: ", ref APCESettings.patchVehicles);
+                    list.Gap();
                     list.CheckboxLabeled("Show patch logs: ", ref APCESettings.printLogs);
                     list.CheckboxLabeled("Enable Debug Mode (print errors): ", ref APCESettings.printPatchErrors);
                 }
@@ -164,23 +167,38 @@ namespace nuff.AutoPatcherCombatExtended
                         list.CheckboxLabeled("Patch PawnKinds with weapons to be allowed backpacks: ", ref APCESettings.patchBackpacks);
                         list.TextFieldNumericLabeled("Pawn kind minimum ammo magazines when spawned (default: 2)", ref APCESettings.pawnKindMinMags, ref APCESettings.pawnKindMinMagsBuffer);
                         list.TextFieldNumericLabeled("Pawn kind maximum ammo magazines when spawned (default: 5)", ref APCESettings.pawnKindMaxMags, ref APCESettings.pawnKindMaxMagsBuffer);
-                    }
-                    if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Hediffs)
-                    {
+
                         list.Gap();
                         Text.Font = GameFont.Medium;
                         list.Label("Hediff settings");
                         Text.Font = GameFont.Small;
-
-                        list.Gap();
                         list.TextFieldNumericLabeled("Hediff sharp armor multiplier (default: 10)", ref APCESettings.hediffSharpMult, ref APCESettings.hediffSharpMultBuffer);
                         list.TextFieldNumericLabeled("Hediff blunt armor multiplier (default: 40)", ref APCESettings.hediffBluntMult, ref APCESettings.hediffBluntMultBuffer);
+
+                        list.Gap();
+                        Text.Font = GameFont.Medium;
+                        list.Label("Gene settings");
+                        Text.Font = GameFont.Small;
+                        list.TextFieldNumericLabeled("Gene sharp armor multiplier (default: 10)", ref APCESettings.geneArmorSharpMult, ref APCESettings.geneArmorSharpMultBuffer);
+                        list.TextFieldNumericLabeled("Gene blunt armor multiplier (default: 10)", ref APCESettings.geneArmorBluntMult, ref APCESettings.geneArmorBluntMultBuffer);
+                    }
+                    if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Other)
+                    {
+                        list.Gap();
+                        Text.Font = GameFont.Medium;
+                        list.Label("Vehicle settings");
+                        Text.Font = GameFont.Small;
+
+                        list.Gap();
+                        list.TextFieldNumericLabeled("Vehicle sharp armor multiplier (default: 15)", ref APCESettings.vehicleSharpMult, ref APCESettings.vehicleSharpMultBuffer);
+                        list.TextFieldNumericLabeled("Vehicle blunt armor multiplier (default: 15)", ref APCESettings.vehicleBluntMult, ref APCESettings.vehicleBluntMultBuffer);
+                        list.TextFieldNumericLabeled("Vehicle health multiplier (default: 3.0)", ref APCESettings.vehicleHealthMult, ref APCESettings.vehicleHealthMultBuffer);
                     }
                 }
 
                 else
                 {
-                    throw new Exception("The legendary FOURTH TAB of the settings window has been found.");
+                    throw new Exception("The legendary FIFTH TAB of the settings window has been found.");
                 }
 
                 list.End();

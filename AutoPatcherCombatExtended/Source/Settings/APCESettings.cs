@@ -17,8 +17,10 @@ namespace nuff.AutoPatcherCombatExtended
         internal static bool patchApparels = true;
         internal static bool patchPawns = true;
         internal static bool patchPawnKinds = true;
+        internal static bool patchGenes = true;
         internal static bool patchHediffs = true;
         internal static bool patchHeadgearLayers = true;
+        internal static bool patchVehicles = true;
         internal static bool printLogs = false;
         internal static bool printPatchErrors = false;
 
@@ -110,9 +112,17 @@ namespace nuff.AutoPatcherCombatExtended
         internal static bool patchBackpacks = true;
         internal static bool patchCarryBulk = true;
 
+        internal static float geneArmorSharpMult = 10; internal static string geneArmorSharpMultBuffer = "10";
+        internal static float geneArmorBluntMult = 10; internal static string geneArmorBluntMultBuffer = "10";
+
         //hediff settings
         internal static float hediffSharpMult = 10; internal static string hediffSharpMultBuffer = "10";
         internal static float hediffBluntMult = 40; internal static string hediffBluntMultBuffer = "40";
+
+        //other
+        internal static float vehicleSharpMult = 15; internal static string vehicleSharpMultBuffer = "15";
+        internal static float vehicleBluntMult = 15; internal static string vehicleBluntMultBuffer = "15";
+        internal static float vehicleHealthMult = 3; internal static string vehicleHealthMultBuffer = "3.0";
 
         public override void ExposeData()
         {
@@ -126,7 +136,9 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers", true);
             Scribe_Values.Look(ref patchPawns, "patchPawns", true);
             Scribe_Values.Look(ref patchPawnKinds, "patchPawnKinds", true);
+            Scribe_Values.Look(ref patchGenes, "patchGenes", true);
             Scribe_Values.Look(ref patchHediffs, "patchHediffs", true);
+            Scribe_Values.Look(ref patchVehicles, "patchVehicles", true);
 
             //Modlist Settings
             Scribe_Collections.Look(ref modsByPackageId, "modsByPackageId", LookMode.Value);
@@ -160,6 +172,9 @@ namespace nuff.AutoPatcherCombatExtended
 
             Scribe_Values.Look(ref patchBackpacks, "patchBackpacks", true);
 
+            Scribe_Values.Look(ref geneArmorSharpMult, "geneArmorSharpMult", 10); Scribe_Values.Look(ref geneArmorSharpMultBuffer, "geneArmorSharpMultBuffer", "10");
+            Scribe_Values.Look(ref geneArmorBluntMult, "geneArmorBluntMult", 40); Scribe_Values.Look(ref geneArmorBluntMultBuffer, "geneArmorBluntMultBuffer", "40");
+
             //weapon
             Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult", 10); Scribe_Values.Look(ref gunSharpPenMultBuffer, "gunSharpPenMultBuffer", "10");
             Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult", 40); Scribe_Values.Look(ref gunBluntPenMultBuffer, "gunBluntPenMultBuffer", "40");
@@ -182,6 +197,11 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref weaponToolTechMultUltratech, "weaponToolTechMultUltratech", 4f); Scribe_Values.Look(ref weaponToolTechMultUltratechBuffer, "weaponToolTechMultUltratechBuffer", "4.0");
             Scribe_Values.Look(ref weaponToolTechMultArchotech, "weaponToolTechMultArchotech", 6f); Scribe_Values.Look(ref weaponToolTechMultArchotechBuffer, "weaponToolTechMultArchotechBuffer", "6.0");
             Scribe_Values.Look(ref maximumWeaponMass, "maximumWeaponMass", 20f); Scribe_Values.Look(ref maximumWeaponMassBuffer, "maximumWeaponMassBuffer", "20.0");
+
+            //other
+            Scribe_Values.Look(ref vehicleSharpMult, "vehicleSharpMult", 15f);  Scribe_Values.Look(ref vehicleSharpMultBuffer, "vehicleSharpMultBuffer", "15.0");
+            Scribe_Values.Look(ref vehicleBluntMult, "vehicleBluntMult", 15f); Scribe_Values.Look(ref vehicleBluntMultBuffer, "vehicleBluntMultBuffer", "15.0");
+            Scribe_Values.Look(ref vehicleHealthMult, "vehicleHealthMult", 3f); Scribe_Values.Look(ref vehicleHealthMultBuffer, "vehicleHealthMultBuffer", "3.0");
 
             base.ExposeData();
         }

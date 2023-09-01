@@ -100,5 +100,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         //StatDefs
 
+        //misc ThingDefs
+        public static ThingDef Wood;
+        public static ThingDef Steel;
     }
 }

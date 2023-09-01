@@ -40,7 +40,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                     if (!(gunKind == APCEConstants.gunKinds.Grenade))
                     {
-                        AddCompProperties_AmmoUser(def, gunKind);
+                        AddCompProperties_AmmoUser(def, gunKind); //ammo and projectiles get assigned here
                         AddCompProperties_FireModes(def, gunKind);
 
                         VerbPropertiesCE vpce = def.Verbs[0] as VerbPropertiesCE;
