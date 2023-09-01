@@ -135,7 +135,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newAmmoSet;
         }
 
-        private static void GenerateAmmoBow(ThingDef weapon, ThingCategoryDef newAmmoCat, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
+        internal static void GenerateAmmoBow(ThingDef weapon, ThingCategoryDef newAmmoCat, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
         {
             newAmmoCat.parent = APCEDefOf.AmmoArrows;
             for (int i = 0; i < 5; i++)
@@ -229,7 +229,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        private static void GenerateAmmoShotgun(ThingDef weapon, ThingCategoryDef newAmmoCat, AmmoSetDef newAmmoSet, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
+        internal static void GenerateAmmoShotgun(ThingDef weapon, ThingCategoryDef newAmmoCat, AmmoSetDef newAmmoSet, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
         {
             newAmmoCat.parent = APCEDefOf.Ammo;
             newAmmoSet.similarTo = APCEDefOf.AmmoSet_Shotgun;
@@ -311,7 +311,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        private static void GenerateAmmoExplosiveLauncher(ThingDef weapon, ThingCategoryDef newAmmoCat, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles)
+        internal static void GenerateAmmoExplosiveLauncher(ThingDef weapon, ThingCategoryDef newAmmoCat, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles)
         {
             newAmmoCat.parent = APCEDefOf.Ammo;
 
@@ -386,7 +386,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        private static void GenerateAmmoIndustrial(ThingDef weapon, ThingCategoryDef newAmmoCat, AmmoSetDef newAmmoSet, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
+        internal static void GenerateAmmoIndustrial(ThingDef weapon, ThingCategoryDef newAmmoCat, AmmoSetDef newAmmoSet, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
         {
             newAmmoCat.parent = APCEDefOf.Ammo;
             newAmmoSet.similarTo = APCEDefOf.AmmoSet_RifleIntermediate;
@@ -483,7 +483,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        private static void GenerateAmmoSpacer(ThingDef weapon, ThingCategoryDef newAmmoCat, AmmoSetDef newAmmoSet, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
+        internal static void GenerateAmmoSpacer(ThingDef weapon, ThingCategoryDef newAmmoCat, AmmoSetDef newAmmoSet, List<AmmoDef> newAmmos, List<ThingDef> newProjectiles, float gunTechMult)
         {
             newAmmoCat.parent = APCEDefOf.AmmoAdvanced;
             newAmmoSet.similarTo = APCEDefOf.AmmoSet_ChargedRifle;
