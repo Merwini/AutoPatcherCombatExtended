@@ -78,6 +78,16 @@
   <ItemGroup>
     <Compile Include="CompatibilityPatches.cs" />
     <Compile Include="Source\APCEHarmonyPatches.cs" />
+    <Compile Include="Source\DataHolders\DataHolder.cs" />
+    <Compile Include="Source\DataHolders\DataHolderBuilding_TurretGun.cs" />
+    <Compile Include="Source\DataHolders\DataHolderGene.cs" />
+    <Compile Include="Source\DataHolders\DataHolderHediffDef.cs" />
+    <Compile Include="Source\DataHolders\DataHolderMeleeWeapon.cs" />
+    <Compile Include="Source\DataHolders\DataHolderPawn.cs" />
+    <Compile Include="Source\DataHolders\DataHolderRangedWeapon.cs" />
+    <Compile Include="Source\DataHolders\DataHolderUtil.cs" />
+    <Compile Include="Source\DataHolders\DataHolderVehicleDef.cs" />
+    <Compile Include="Source\DataHolders\DataHolderVehicleTurretDef.cs" />
     <Compile Include="Source\PatchGenes.cs" />
     <Compile Include="Source\PatchVehicle.cs" />
     <Compile Include="Source\APCEDefOf.cs" />
