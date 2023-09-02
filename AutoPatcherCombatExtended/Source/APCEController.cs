@@ -13,13 +13,13 @@ namespace nuff.AutoPatcherCombatExtended
     [StaticConstructorOnStartup]
     public static partial class APCEController
     {
-        static CompatibilityPatches compat = new CompatibilityPatches();
-
         static APCEController()
         {
             Log.Message("APCE Controller constructed");
             APCESettings.activeMods = GetActiveModsList();
             APCESettings.modsToPatch = RebuildModsToPatch();
+            InjectedDefHasher.PrepareReflection();
+            CompatibilityPatches compat = new CompatibilityPatches();
             compat.PatchMods();
             APCEHarmonyPatches harmony = new APCEHarmonyPatches();
             APCEPatchController();
@@ -32,7 +32,6 @@ namespace nuff.AutoPatcherCombatExtended
                 APCEPatchLogger.stopwatchMaster.Start();
             }
             //CleanModList(APCESettings.modsToPatch);
-            InjectedDefHasher.PrepareReflection();
             if (!APCESettings.patchWeapons)
             {
                 DisableGenericAmmos();
