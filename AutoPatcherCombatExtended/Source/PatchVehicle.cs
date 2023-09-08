@@ -82,7 +82,7 @@ namespace nuff.AutoPatcherCombatExtended
                 dme.sway = 0.82f;
 
                 //categorize the weapon. can't really re-use DetermineGunKind without a major rewrite.
-                if (def.ammunition.Allows(APCEDefOf.Wood))
+                if (def.ammunition.Allows(APCEDefOf.WoodLog))
                 {
                     //pre-industrial stuff
                     gunKind = APCEConstants.gunKinds.Bow;
