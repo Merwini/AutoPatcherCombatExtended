@@ -81,6 +81,7 @@ namespace nuff.AutoPatcherCombatExtended
             AmmoDef newAmmo = new AmmoDef();
             CopyFields(def, newAmmo);
             newAmmo.defName = "APCE_Shell_" + def.defName;
+            newAmmo.thingClass = typeof(CombatExtended.AmmoThing);
             newAmmo.shortHash = 0;
             newAmmo.modContentPack = APCESettings.thisMod;
 
