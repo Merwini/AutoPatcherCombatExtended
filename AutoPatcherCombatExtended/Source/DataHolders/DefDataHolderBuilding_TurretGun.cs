@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DataHolderBuilding_TurretGun : DataHolder
+    class DefDataHolderBuilding_TurretGun : DefDataHolder
     {
         //TODO
+        public override void Reset()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

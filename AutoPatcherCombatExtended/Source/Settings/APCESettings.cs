@@ -10,21 +10,6 @@ namespace nuff.AutoPatcherCombatExtended
         internal static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
         internal static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;
 
-        //General Settings
-        internal static bool patchWeapons = true;
-        internal static bool patchCustomVerbs = false;
-        internal static bool limitWeaponMass = false;
-        internal static bool patchApparels = true;
-        internal static bool patchPawns = true;
-        internal static bool patchPawnKinds = true;
-        internal static bool patchGenes = true;
-        internal static bool patchHediffs = true;
-        internal static bool patchHeadgearLayers = true;
-        internal static bool patchVehicles = true;
-        internal static bool printLogs = false;
-        internal static bool printPatchErrors = false;
-
-
         //Modlist Settings
         internal static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
         internal static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
@@ -38,6 +23,22 @@ namespace nuff.AutoPatcherCombatExtended
         internal ModContentPack leftSelectedObject = null;
         internal ModContentPack rightSelectedObject = null;
 
+        internal static Dictionary<string, ModDataHolder> modDataDict; //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
+        internal static Dictionary<string, DefDataHolder> defDataDict; //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+
+        //General Settings
+        internal static bool patchWeapons = true;
+        internal static bool patchCustomVerbs = false;
+        internal static bool limitWeaponMass = false;
+        internal static bool patchApparels = true;
+        internal static bool patchPawns = true;
+        internal static bool patchPawnKinds = true;
+        internal static bool patchGenes = true;
+        internal static bool patchHediffs = true;
+        internal static bool patchHeadgearLayers = true;
+        internal static bool patchVehicles = true;
+        internal static bool printLogs = false;
+        internal static bool printPatchErrors = false;
 
         //Balance Control Settings
 

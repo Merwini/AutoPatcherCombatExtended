@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DataHolderUtil
+    class DefDataHolderUtil
     {
         //TODO
     }

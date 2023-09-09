@@ -22,6 +22,9 @@ namespace nuff.AutoPatcherCombatExtended
             CompatibilityPatches compat = new CompatibilityPatches();
             compat.PatchMods();
             APCEHarmonyPatches harmony = new APCEHarmonyPatches();
+
+            
+
             APCEPatchController();
         }
 

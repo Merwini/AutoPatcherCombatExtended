@@ -18,6 +18,11 @@ namespace nuff.AutoPatcherCombatExtended
             Log.Error(ex.ToString());
         }
 
+        internal static void DataHolderTypeException(Exception ex)
+        {
+            //TODO
+        }
+
         internal static List<ModContentPack> GetActiveModsList()
         {
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod
@@ -27,77 +32,6 @@ namespace nuff.AutoPatcherCombatExtended
                                                                                                               ).OrderBy(mod => mod.Name).ToList());
             return activeMods;
         }
-
-        /*
-         * first attempt
-        public static List<ModContentPack> RebuildModsToPatch()
-        {
-            List<ModContentPack> modsToPatch = new List<ModContentPack>();
-            foreach (ModContentPack mod in APCESettings.activeMods)
-            {
-                if (APCESettings.modsByPackageId.Contains(mod.PackageId))
-                {
-                    modsToPatch.Add(mod);
-                }                    
-            }
-            foreach (string str in APCESettings.modsByPackageId)
-            {
-                bool isActive = false;
-                foreach (ModContentPack mod in APCESettings.activeMods)
-                {
-                    if (mod.PackageId.Equals(str))
-                    {
-                        isActive = true;
-                    }
-                }
-                if (!isActive)
-                {
-                    APCESettings.modsByPackageId.Remove(str);
-                }
-            }
-            return modsToPatch;
-        }
-        */
-
-        /*
-         * ChatGPT made this one
-        public static List<ModContentPack> RebuildModsToPatch()
-        {
-            List<ModContentPack> modsToPatch = new List<ModContentPack>();
-            HashSet<string> activePackageIds = new HashSet<string>();
-
-            foreach (ModContentPack mod in APCESettings.activeMods)
-            {
-                activePackageIds.Add(mod.PackageId);
-            }
-
-            foreach (string packageId in APCESettings.modsByPackageId)
-            {
-                if (activePackageIds.Contains(packageId))
-                {
-                    modsToPatch.Add(GetModByPackageId(packageId));
-                }
-                else
-                {
-                    APCESettings.modsByPackageId.Remove(packageId);
-                }
-            }
-
-            return modsToPatch;
-        }
-
-        public static ModContentPack GetModByPackageId(string packageId)
-        {
-            foreach (ModContentPack mod in APCESettings.activeMods)
-            {
-                if (mod.PackageId.Equals(packageId))
-                {
-                    return mod;
-                }
-            }
-            return null;
-        }
-        */
 
         internal static List<ModContentPack> RebuildModsToPatch()
         {
@@ -144,6 +78,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
         }
+
 
         internal static void PatchAllTools(ref List<Tool> tools, bool isPawn, TechLevel techLevel = TechLevel.Undefined)
         {
@@ -746,6 +681,8 @@ namespace nuff.AutoPatcherCombatExtended
             //log.PatchFailed(def.defName, new Exception("Unrecognized def type"));
             return;
         }
+
+
     }
 
 }

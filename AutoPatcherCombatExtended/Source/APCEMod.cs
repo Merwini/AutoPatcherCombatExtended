@@ -203,8 +203,6 @@ namespace nuff.AutoPatcherCombatExtended
 
                 list.End();
             }
-
-            
         }
 
         public override void WriteSettings()
