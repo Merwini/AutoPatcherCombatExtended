@@ -23,7 +23,10 @@ namespace nuff.AutoPatcherCombatExtended
             compat.PatchMods();
             APCEHarmonyPatches harmony = new APCEHarmonyPatches();
 
-            
+            //defaults should be rebuilt on startup
+            ModDataHolder apceDefaults = new ModDataHolder();
+            apceDefaults.packageId = "nuff.apcedefaults";
+            APCESettings.modDataDict.Add(apceDefaults.packageId, apceDefaults);
 
             APCEPatchController();
         }

@@ -114,6 +114,7 @@
     <Compile Include="Source\APCEMod.cs" />
     <Compile Include="Source\Patchers\PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeMod.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="About\About.xml" />

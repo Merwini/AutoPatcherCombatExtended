@@ -10,9 +10,10 @@ namespace nuff.AutoPatcherCombatExtended
 {
     class ModDataHolder : IExposable
     {
+        internal ModContentPack mod;
 
         internal string packageId;
-        internal bool isCustomized;
+        internal bool isCustomized = false;
 
         //toggles
         internal bool patchWeapons = true;
@@ -101,7 +102,7 @@ namespace nuff.AutoPatcherCombatExtended
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
                 Scribe_Values.Look(ref packageId, "packageId");
-                Scribe_Values.Look(ref isCustomized, "customized");
+                Scribe_Values.Look(ref isCustomized, "isCustomized");
 
                 //toggles
                 Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);
@@ -182,6 +183,7 @@ namespace nuff.AutoPatcherCombatExtended
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 APCESettings.modDataDict.Add(packageId, this);
+                mod = LoadedModManager.RunningMods.First(m => m.PackageId == packageId);
             }
         }
     }

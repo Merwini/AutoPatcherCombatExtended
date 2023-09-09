@@ -217,7 +217,7 @@ namespace nuff.AutoPatcherCombatExtended
 			GUI.BeginGroup(position: rightRect, style: GUI.skin.box);
 			num = 6f;
 			Widgets.BeginScrollView(outRect: rightRect.AtZero(), scrollPosition: ref rightScrollPosition,
-									viewRect: new Rect(x: 0f, y: 0f, width: rightRect.width / 5 * 4, height: rightList.Count * 32f));
+									viewRect: new Rect(x: 0f, y: 0f, width: rightRect.width / 10 * 9, height: rightList.Count * 32f));
 			if (!rightList.NullOrEmpty())
 			{
 				foreach (ModContentPack mcp in rightList.Where(predicate: mcp => (mcp.Name.Contains(value: tempString))))
@@ -265,8 +265,9 @@ namespace nuff.AutoPatcherCombatExtended
 				APCESettings.modsByPackageId.Remove(leftSelectedObject.PackageId);
 				rightSelectedObject = null;
 			}
-
 			#endregion
+
+
 			listingStandard.EndSection(listingStandard);
 		}
 

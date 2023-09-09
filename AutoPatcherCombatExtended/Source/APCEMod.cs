@@ -65,8 +65,21 @@ namespace nuff.AutoPatcherCombatExtended
 
                 else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Modlist)
                 {
-                    list.ListControl(inRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
-                        ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 0.85f);
+                    Rect listRect = new Rect(0, 0, inRect.width, inRect.height * 0.85f);
+                    list.ListControl(listRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
+                        ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 1f);
+
+
+                    //Rect customizeButtonRect = new Rect(inRect.xMax + 10f, inRect.yMax - 40f, 100f, 30f);
+                    // Customize Mod button
+                    if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).TopPart(0.5f).RightPart(0.5f).LeftPart(0.3f), "Customize"))
+                    {
+                        if (Settings.rightSelectedObject != null)
+                        {
+                            Window_CustomizeMod window = new Window_CustomizeMod(Settings.rightSelectedObject);
+                            Find.WindowStack.Add(window);
+                        }
+                    }
                 }
 
                 else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Balance_Control)
@@ -93,11 +106,6 @@ namespace nuff.AutoPatcherCombatExtended
                         list.TextFieldNumericLabeled("Tech level 'Spacer' armor multiplier (default: 2.0)", ref APCESettings.armorTechMultSpacer, ref APCESettings.armorTechMultSpacerBuffer);
                         list.TextFieldNumericLabeled("Tech level 'Ultratech' armor multiplier (default: 3.0)", ref APCESettings.armorTechMultUltratech, ref APCESettings.armorTechMultUltratechBuffer);
                         list.TextFieldNumericLabeled("Tech level 'Archotech' armor multiplier (default: 4.0)", ref APCESettings.armorTechMultArchotech, ref APCESettings.armorTechMultArchotechBuffer);
-
-                        list.NewColumn();
-                        Text.Font = GameFont.Medium;
-                        //list.Label("Bulk value settings");
-                        Text.Font = GameFont.Small;
                     }
                     if (APCESettings.balanceTabs == APCEConstants.BalanceTabs.Weapons)
                     {

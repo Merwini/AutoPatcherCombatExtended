@@ -55,7 +55,7 @@ namespace nuff.AutoPatcherCombatExtended
                     APCESettings.modsByPackageId.RemoveAt(i);
                 }
             }
-            APCESettings.thisMod = modDict.TryGetValue("Nuff.CEAutoPatcher");
+            APCESettings.thisMod = modDict.TryGetValue("nuff.ceautopatcher");
             
             return modsToPatch;
         }

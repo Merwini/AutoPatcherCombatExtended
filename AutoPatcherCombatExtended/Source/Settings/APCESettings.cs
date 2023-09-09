@@ -23,8 +23,8 @@ namespace nuff.AutoPatcherCombatExtended
         internal ModContentPack leftSelectedObject = null;
         internal ModContentPack rightSelectedObject = null;
 
-        internal static Dictionary<string, ModDataHolder> modDataDict; //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
-        internal static Dictionary<string, DefDataHolder> defDataDict; //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+        internal static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
+        internal static Dictionary<string, DefDataHolder> defDataDict = new Dictionary<string, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
 
         //General Settings
         internal static bool patchWeapons = true;
@@ -71,8 +71,6 @@ namespace nuff.AutoPatcherCombatExtended
         internal static float advancedArmorCarryWeight = 80f;
         internal static float advancedArmorCarryBulk = 10f;
         internal static float advancedArmorShootingAccuracy = 0.2f; 
-
-        internal static int testInt = 5;
 
         //weapon settings
         internal static float gunSharpPenMult = 10f; internal static string gunSharpPenMultBuffer = "10";
