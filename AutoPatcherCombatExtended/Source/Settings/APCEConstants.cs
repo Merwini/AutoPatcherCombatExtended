@@ -16,9 +16,17 @@ namespace nuff.AutoPatcherCombatExtended
         public enum SettingsTabs
         {
             General_Settings,
-            Modlist,
             Balance_Control,
+            Modlist,
         }
+
+        public enum ModSettingsTabs
+        {
+            General_Settings,
+            Balance_Control,
+            Deflist,
+        }
+
         public enum BalanceTabs
         {
             Apparel,

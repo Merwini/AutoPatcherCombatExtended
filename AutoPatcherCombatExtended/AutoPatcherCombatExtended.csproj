@@ -73,12 +73,14 @@
     </Reference>
     <Reference Include="Vehicles">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\3014915404\1.4\Assemblies\Vehicles.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompatibilityPatches.cs" />
     <Compile Include="Source\APCEHarmonyPatches.cs" />
     <Compile Include="Source\DataHolders\DefDataHolder.cs" />
+    <Compile Include="Source\DataHolders\DefDataHolderApparel.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderBuilding_TurretGun.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderGene.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderHediffDef.cs" />

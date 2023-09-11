@@ -38,14 +38,16 @@ namespace nuff.AutoPatcherCombatExtended
                     turretBase.building.turretBurstCooldownTime *= 0.5f; //TODO seems to generally be lowered, refine formula
                 }
 
-                if (!(turretBase.statBases == null))
+                if (turretBase.statBases == null)
                 {
-                    StatModifier aimingAccuracy = new StatModifier();
-                    aimingAccuracy.stat = CE_StatDefOf.AimingAccuracy;
-                    aimingAccuracy.value = 1f; //TODO formula
-
-                    turretBase.statBases.Add(aimingAccuracy);
+                    turretBase.statBases = new List<StatModifier>();
                 }
+
+                StatModifier aimingAccuracy = new StatModifier();
+                aimingAccuracy.stat = CE_StatDefOf.AimingAccuracy;
+                aimingAccuracy.value = 1f; //TODO formula
+
+                turretBase.statBases.Add(aimingAccuracy);
 
                 log.PatchSucceeded();
             }

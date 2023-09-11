@@ -12,6 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
     class Window_CustomizeMod : Window
     {
         ModContentPack mod;
+        ModDataHolder modData;
 
         public Window_CustomizeMod(ModContentPack mod)
         {
@@ -35,9 +36,30 @@ namespace nuff.AutoPatcherCombatExtended
             list.Gap(45);
             Text.Font = GameFont.Small;
 
-            list.Label("test");
+            list.Label("COMING SOON! (hit escape to exit I haven't made a button yet)");
+
+            list.EnumSelector(ref APCESettings.modSettingsTabs, "", "", "select settings page");
+
+            if (APCESettings.modSettingsTabs == APCEConstants.ModSettingsTabs.General_Settings)
+            {
+
+            }
+            else if (APCESettings.modSettingsTabs == APCEConstants.ModSettingsTabs.Balance_Control)
+            {
+
+            }
+            else if (APCESettings.modSettingsTabs == APCEConstants.ModSettingsTabs.Deflist)
+            {
+
+            }
 
             list.End();
+        }
+
+        public override void PreOpen()
+        {
+            base.PreOpen();
+            modData = APCESettings.modDataDict.TryGetValue(mod.PackageId);
         }
     }
 }

@@ -206,7 +206,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                 else
                 {
-                    throw new Exception("The legendary FIFTH TAB of the settings window has been found.");
+                    throw new Exception("The legendary FOURTH TAB of the settings window has been found.");
                 }
 
                 list.End();

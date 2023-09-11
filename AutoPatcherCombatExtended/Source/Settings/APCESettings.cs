@@ -10,6 +10,8 @@ namespace nuff.AutoPatcherCombatExtended
         internal static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
         internal static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;
 
+        internal static APCEConstants.ModSettingsTabs modSettingsTabs = APCEConstants.ModSettingsTabs.General_Settings;
+
         //Modlist Settings
         internal static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
         internal static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
