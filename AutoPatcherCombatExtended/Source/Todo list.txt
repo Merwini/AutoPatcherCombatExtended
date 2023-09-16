@@ -1,2 +1,3 @@
 ﻿TODO maybe try to filter out mods that are already CE patched? Not sure yet how to do this.
 TODO buttons to reset numbers to defaults
+TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases

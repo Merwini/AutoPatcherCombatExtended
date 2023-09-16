@@ -232,6 +232,8 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 newVPCE.defaultProjectile = vp.defaultProjectile;
                 */
+
+                //if warmupTime is too low, some weapons will get stuck in a nonfiring state since they are only able to fire when a certain counter ticks down to 0, and low numbers get divided and rounded down to 0
                 if (newVPCE.warmupTime < 0.07)
                 {
                     newVPCE.warmupTime = 0.1f;
@@ -674,6 +676,11 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
             }
+        }
+
+        internal static float GetOrSetStat()
+        {
+
         }
 
         internal static void HandleUnknownDef(Def def, APCEPatchLogger log)
