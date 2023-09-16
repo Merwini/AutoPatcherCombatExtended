@@ -17,7 +17,7 @@ namespace nuff.AutoPatcherCombatExtended
         List<ToolCE> tools;
 
         //TODO
-        public override void Reset()
+        public override void Patch()
         {
             throw new NotImplementedException();
         }

@@ -9,7 +9,7 @@ namespace nuff.AutoPatcherCombatExtended
     class DefDataHolderRangedWeapon : DefDataHolder
     {
         //TODO
-        public override void Reset()
+        public override void Patch()
         {
             throw new NotImplementedException();
         }

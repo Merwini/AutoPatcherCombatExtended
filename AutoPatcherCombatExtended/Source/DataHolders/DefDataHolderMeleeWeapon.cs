@@ -9,7 +9,7 @@ namespace nuff.AutoPatcherCombatExtended
     class DefDataHolderMeleeWeapon : DefDataHolder
     {
         //TODO
-        public override void Reset()
+        public override void Patch()
         {
             throw new NotImplementedException();
         }

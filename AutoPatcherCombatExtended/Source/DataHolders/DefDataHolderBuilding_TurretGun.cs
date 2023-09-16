@@ -9,7 +9,7 @@ namespace nuff.AutoPatcherCombatExtended
     class DefDataHolderBuilding_TurretGun : DefDataHolder
     {
         //TODO
-        public override void Reset()
+        public override void Patch()
         {
             throw new NotImplementedException();
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using RimWorld;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -12,8 +13,11 @@ namespace nuff.AutoPatcherCombatExtended
         internal bool isCustomized;
         internal string defName;
         internal string parentModPackageId;
-        public bool IsCustomized => isCustomized;
 
+        internal ModDataHolder modData;
+
+        public bool IsCustomized => isCustomized;
+         
         public virtual void ExposeData()
         {
             if (Scribe.mode == LoadSaveMode.LoadingVars
@@ -31,6 +35,19 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public abstract void Reset();
+        //will get relevant values from the def and fill the original_ fields
+        public abstract void GetOriginalData();
+        
+        //will use modData and original_ fields to autocalculate modified_ fields
+        public abstract void AutoCalculate();
+
+        //will use the modified_ fields to edit the def
+        public abstract void Patch();
+
+        //will use the modified_ fields to generate an xml patch for the def. Need to change the return type so it can be used for exporting single patches or as part of patching the whole mod
+        public abstract void PrepExport();
+
+        //will call PrepExport and allow the user to save the resulting xml patch for just the current def
+        public abstract void Export();
     }
 }
