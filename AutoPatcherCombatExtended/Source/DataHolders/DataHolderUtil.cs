@@ -9,7 +9,7 @@ using CombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    public static class DefDataHolderUtil
+    public static class DataHolderUtil
     {
         //Made my own so I can use it to change equippedStatOffSets, too
         public static void AddOrChangeStat(List<StatModifier> list, StatDef stat, float value)
@@ -24,6 +24,16 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 list.Add(new StatModifier() { stat = stat, value = value });
             }
+        }
+
+        public static ModDataHolder ReturnModDataOrDefault(Def def)
+        {
+            ModDataHolder modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId);
+            if (modData == null)
+            {
+                modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
+            }
+            return modData;
         }
     }
 }
