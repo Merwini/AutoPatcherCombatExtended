@@ -678,10 +678,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static float GetOrSetStat()
-        {
 
-        }
 
         internal static void HandleUnknownDef(Def def, APCEPatchLogger log)
         {
