@@ -17,16 +17,10 @@ namespace nuff.AutoPatcherCombatExtended
             this.def = def;
             defName = def.defName;
             parentModPackageId = def.modContentPack.PackageId;
-            modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId);
-            if (modData == null)
-            {
-                modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
-            }
-            GetOriginalData();
-            CalculateTechMult();
-            CheckWhatCovers();
+            modData = DataHolderUtil.ReturnModDataOrDefault(def);
 
-            //if !isCustomized autocalc
+            GetOriginalData();
+            AutoCalculate();
         }
 
         internal ThingDef def;
@@ -93,6 +87,9 @@ namespace nuff.AutoPatcherCombatExtended
             original_MaxHitPoints = def.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
             original_CarryWeight = def.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
             original_ShootingAccuracyPawn = def.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
+
+            CalculateTechMult();
+            CheckWhatCovers();
         }
 
         public override void AutoCalculate()
@@ -105,19 +102,23 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void Patch()
         {
-            DefDataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-            DefDataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-            DefDataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
-            DefDataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.Mass, modified_Mass);
-            DefDataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
-            DefDataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
+            //check for null def in case this object was loaded without the def present e.g. from the mod source not being active
+            if (def != null)
+            {
+                DataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+                DataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+                DataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+                DataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.Mass, modified_Mass);
+                DataHolderUtil.AddOrChangeStat(def.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
+                DataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
 
-            DefDataHolderUtil.AddOrChangeStat(def.statBases, CE_StatDefOf.Bulk, modified_Bulk);
-            DefDataHolderUtil.AddOrChangeStat(def.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
-            DefDataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-            DefDataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
-            DefDataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-            DefDataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+                DataHolderUtil.AddOrChangeStat(def.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+                DataHolderUtil.AddOrChangeStat(def.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
+                DataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
+                DataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+                DataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
+                DataHolderUtil.AddOrChangeStat(def.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+            }
         }
 
         public override StringBuilder PrepExport()
@@ -134,6 +135,14 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             base.ExposeData();
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                def = DefDatabase<ThingDef>.GetNamed(defName, false);
+                if (def != null)
+                {
+                    GetOriginalData();
+                }
+            }
             Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0);
             Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
             Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
