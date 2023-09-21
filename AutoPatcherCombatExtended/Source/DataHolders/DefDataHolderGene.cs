@@ -38,14 +38,16 @@ namespace nuff.AutoPatcherCombatExtended
         {
             //TODO
         }
+        public override StringBuilder PrepExport()
+        {
+            //TODO
+            return null;
+        }
 
         public override void Export()
         {
             //TODO
         }
-
-
-
 
     }
 }
