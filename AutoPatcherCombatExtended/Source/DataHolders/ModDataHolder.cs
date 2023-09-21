@@ -8,7 +8,7 @@ using RimWorld;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class ModDataHolder : IExposable
+    public class ModDataHolder : IExposable
     {
         internal ModContentPack mod;
 

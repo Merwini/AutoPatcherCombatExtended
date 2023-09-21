@@ -10,7 +10,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public abstract class DefDataHolder : IExposable
     {
-        internal bool isCustomized;
+        internal bool isCustomized = false; //this will be changed by the customization window if the user changes any values
         internal string defName;
         internal string parentModPackageId;
 
