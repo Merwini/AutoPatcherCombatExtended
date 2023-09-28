@@ -32,7 +32,12 @@ namespace nuff.AutoPatcherCombatExtended
             thingDef = def as ThingDef;
 
             original_Tools = thingDef.tools;
+            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+        }
 
+        public override void AutoCalculate()
+        {
+            throw new NotImplementedException();
         }
 
         public override void Patch()

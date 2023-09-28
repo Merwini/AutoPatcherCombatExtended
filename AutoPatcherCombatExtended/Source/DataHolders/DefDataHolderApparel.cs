@@ -122,7 +122,7 @@ namespace nuff.AutoPatcherCombatExtended
             return null;
         }
 
-        public override void Export()
+        public override void ExportXML()
         {
             //todo
         }

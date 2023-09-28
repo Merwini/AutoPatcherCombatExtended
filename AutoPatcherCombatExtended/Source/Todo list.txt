@@ -5,6 +5,7 @@ TODO verbs on apparel
 TODO headgear layers
 TODO force disable CE autopatchers, but can disable this via mod option
 TODO detect mods that need patching and are not on the list. Pop up a window suggesting to add them
+TODO ThingDef tags
 
 TODO basic:
 	Apparel

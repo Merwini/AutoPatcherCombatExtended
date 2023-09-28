@@ -95,7 +95,7 @@ namespace nuff.AutoPatcherCombatExtended
         public abstract StringBuilder PrepExport();
 
         //will call PrepExport and allow the user to save the resulting xml patch for just the current def
-        public abstract void Export();
+        public abstract void ExportXML();
 
         public void ClearToolSerializedLists()
         {
