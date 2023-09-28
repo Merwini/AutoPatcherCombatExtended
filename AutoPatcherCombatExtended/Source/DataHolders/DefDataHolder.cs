@@ -27,6 +27,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal List<float> toolArmorPenetrationSharps = new List<float>();
         internal List<float> toolArmorPenetrationBlunts = new List<float>();
         internal List<float> toolPowers = new List<float>();
+        internal List<float> toolChanceFactors = new List<float>();
         internal List<ToolCE> modified_Tools = new List<ToolCE>();
 
         public bool IsCustomized => isCustomized;
@@ -36,7 +37,7 @@ namespace nuff.AutoPatcherCombatExtended
             this.def = def;
             defName = def.defName;
             parentModPackageId = def.modContentPack.PackageId;
-            modData = DataHolderUtil.ReturnModDataOrDefault(def);
+            modData = DataHolderUtils.ReturnModDataOrDefault(def);
             GetOriginalData();
             AutoCalculate();
         }
@@ -105,6 +106,7 @@ namespace nuff.AutoPatcherCombatExtended
             toolArmorPenetrationSharps.Clear();
             toolArmorPenetrationBlunts.Clear();
             toolPowers.Clear();
+            toolChanceFactors.Clear();
         }
 
         public void SerializeTools()
@@ -125,6 +127,7 @@ namespace nuff.AutoPatcherCombatExtended
                     toolArmorPenetrationSharps[i] = modified_Tools[i].armorPenetrationSharp;
                     toolArmorPenetrationBlunts[i] = modified_Tools[i].armorPenetrationBlunt;
                     toolPowers[i] = modified_Tools[i].power;
+                    toolChanceFactors[i] = modified_Tools[i].chanceFactor;
                 }
             }
         }
@@ -150,6 +153,7 @@ namespace nuff.AutoPatcherCombatExtended
                     tool.armorPenetrationSharp = toolArmorPenetrationSharps[i];
                     tool.armorPenetrationBlunt = toolArmorPenetrationBlunts[i];
                     tool.power = toolPowers[i];
+                    tool.chanceFactor = toolChanceFactors[i];
 
                     modified_Tools.Add(tool);
                 }

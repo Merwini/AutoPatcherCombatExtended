@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    public static class DataHolderUtil
+    public static class DataHolderUtils
     {
         //Made my own so I can use it to change equippedStatOffSets, too
         public static void AddOrChangeStat(List<StatModifier> list, StatDef stat, float value)

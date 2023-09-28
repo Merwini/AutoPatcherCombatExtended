@@ -87,7 +87,8 @@
     <Compile Include="Source\DataHolders\DefDataHolderMeleeWeapon.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderPawn.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderRangedWeapon.cs" />
-    <Compile Include="Source\DataHolders\DataHolderUtil.cs" />
+    <Compile Include="Source\DataHolders\DataHolderUtils.cs" />
+    <Compile Include="Source\DataHolders\DefDataHolderStuff.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderVehicleDef.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderVehicleTurretDef.cs" />
     <Compile Include="Source\DataHolders\ModDataHolder.cs" />

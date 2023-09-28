@@ -100,19 +100,19 @@ namespace nuff.AutoPatcherCombatExtended
             //check for null def in case this object was loaded without the def present e.g. from the mod source not being active
             if (def != null)
             {
-                DataHolderUtil.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-                DataHolderUtil.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-                DataHolderUtil.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
-                DataHolderUtil.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
-                DataHolderUtil.AddOrChangeStat(thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
-                DataHolderUtil.AddOrChangeStat(thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
 
-                DataHolderUtil.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
-                DataHolderUtil.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
-                DataHolderUtil.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-                DataHolderUtil.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
-                DataHolderUtil.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-                DataHolderUtil.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
             }
         }
 

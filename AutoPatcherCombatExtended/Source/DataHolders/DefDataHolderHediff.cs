@@ -33,6 +33,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
+            hediffDef = def as HediffDef;
+
             verbGiver = hediffDef.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
             if (verbGiver != null && verbGiver.tools != null)
             {
@@ -84,9 +86,9 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 for (int i = 0; i < hediffDef.stages.Count; i++)
                 {
-                    DataHolderUtil.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
-                    DataHolderUtil.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
-                    DataHolderUtil.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
+                    DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
+                    DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
+                    DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
                 }
             }
             if (verbGiver != null && original_Tools != null)
@@ -112,7 +114,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public ToolCE MakeToolHediff(Tool tool)
         {
-            ToolCE newToolCE = DataHolderUtil.MakeToolBase(tool);
+            ToolCE newToolCE = DataHolderUtils.MakeToolBase(tool);
             newToolCE.power *= modData.pawnToolPowerMult;
             newToolCE.armorPenetrationSharp *= modData.pawnToolSharpPenetration;
             newToolCE.armorPenetrationBlunt *= modData.pawnToolBluntPenetration;
