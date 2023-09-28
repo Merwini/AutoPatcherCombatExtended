@@ -83,7 +83,7 @@ namespace nuff.AutoPatcherCombatExtended
             original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
             original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
 
-            CalculateTechMult();
+            CalculateApparelTechMult();
             CheckWhatCovers();
         }
 
@@ -148,7 +148,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void CalculateTechMult()
+        public void CalculateApparelTechMult()
         {
             float techMult = 1f;
             switch (thingDef.techLevel)
