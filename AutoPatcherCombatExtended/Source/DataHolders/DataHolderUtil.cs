@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using CombatExtended;
+using System.Reflection;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -34,6 +35,50 @@ namespace nuff.AutoPatcherCombatExtended
                 modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
             }
             return modData;
+        }
+
+        internal static void CopyFields(object source, object destination)
+        {
+            if (source == null || destination == null)
+            {
+                return;
+            }
+            Type sourceType = source.GetType();
+            Type destType = destination.GetType();
+
+            foreach (FieldInfo sourceField in sourceType.GetFields(BindingFlags.Public | BindingFlags.Instance))
+            {
+                FieldInfo destField = destType.GetField(sourceField.Name, BindingFlags.Public | BindingFlags.Instance);
+                if (destField != null && destField.FieldType == sourceField.FieldType)
+                {
+                    object value = sourceField.GetValue(source);
+                    if (destField != null)
+                    {
+                        destField.SetValue(destination, value);
+                    }
+                }
+            }
+        }
+
+        public static ToolCE MakeToolBase(Tool tool)
+        {
+            ToolCE newToolCE = new ToolCE();
+            CopyFields(tool, newToolCE);
+            newToolCE.id = "APCE_Tool_" + tool.id;
+
+            //CE is far more punishing if you have no armor penetration than vanilla is, so it is essential to have some
+            if (tool.armorPenetration <= 0)
+            {
+                newToolCE.armorPenetrationSharp = tool.power * 0.1f;
+                newToolCE.armorPenetrationBlunt = tool.power * 0.1f;
+            }
+            else
+            {
+                newToolCE.armorPenetrationSharp = tool.armorPenetration;
+                newToolCE.armorPenetrationBlunt = tool.armorPenetration;
+            }
+
+            return newToolCE;
         }
     }
 }

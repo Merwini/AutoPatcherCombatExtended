@@ -151,23 +151,6 @@ namespace nuff.AutoPatcherCombatExtended
                 newToolCE.armorPenetrationBlunt *= APCESettings.weaponToolBluntPenetration * toolTechMult;
                 newToolCE.power = tool.power * APCESettings.weaponToolPowerMult;
             }
-            /*
-            newToolCE.ensureLinkedBodyPartsGroupAlwaysUsable = tool.ensureLinkedBodyPartsGroupAlwaysUsable;
-            newToolCE.linkedBodyPartsGroup = tool.linkedBodyPartsGroup;
-            newToolCE.soundMeleeMiss = tool.soundMeleeMiss;
-            newToolCE.extraMeleeDamages = tool.extraMeleeDamages;
-            newToolCE.alwaysTreatAsWeapon = tool.alwaysTreatAsWeapon;
-            newToolCE.chanceFactor = tool.chanceFactor;
-            newToolCE.hediff = tool.hediff;
-            newToolCE.soundMeleeHit = tool.soundMeleeHit;
-            newToolCE.cooldownTime = tool.cooldownTime;
-            
-            newToolCE.capacities = tool.capacities;
-            newToolCE.labelUsedInLogging = tool.labelUsedInLogging;
-            newToolCE.untranslatedLabel = tool.untranslatedLabel;
-            newToolCE.label = tool.label;
-            newToolCE.surpriseAttack = tool.surpriseAttack;
-            */
 
             return newToolCE;
         }
