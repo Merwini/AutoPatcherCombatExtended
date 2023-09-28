@@ -20,21 +20,21 @@ namespace nuff.AutoPatcherCombatExtended
         List<float> original_ArmorRatingSharp = new List<float>();
         List<float> original_ArmorRatingBlunt = new List<float>();
         List<float> original_ArmorRatingHeat = new List<float>();
-        List<Tool> original_Tools;
+        List<Tool> original_Tools = new List<Tool>();
         HediffCompProperties_VerbGiver verbGiver;
 
         List<float> modified_ArmorRatingSharp = new List<float>();
         List<float> modified_ArmorRatingBlunt = new List<float>();
         List<float> modified_ArmorRatingHeat = new List<float>();
-        List<Tool> modified_Tools = new List<Tool>();
+        List<ToolCE> modified_Tools = new List<ToolCE>();
 
-        List<string> toolIds;
-        List<List<string>> toolCapacities;
-        List<string> toolLinkedBPG;
-        List<float> toolCooldownTimes;
-        List<float> toolArmorPenetrationSharps;
-        List<float> toolArmorPenetrationBlunts;
-        List<float> toolPowers;
+        List<string> toolIds = new List<string>();
+        List<List<string>> toolCapacities = new List<List<string>>();
+        List<string> toolLinkedBPG = new List<string>();
+        List<float> toolCooldownTimes = new List<float>();
+        List<float> toolArmorPenetrationSharps = new List<float>();
+        List<float> toolArmorPenetrationBlunts = new List<float>();
+        List<float> toolPowers = new List<float>();
 
 
 
@@ -100,7 +100,11 @@ namespace nuff.AutoPatcherCombatExtended
             }
             if (verbGiver != null && original_Tools != null)
             {
-                verbGiver.tools = modified_Tools;
+                verbGiver.tools.Clear();
+                for (int i = 0; i < modified_Tools.Count; i++)
+                {
+                    verbGiver.tools.Add(modified_Tools[i]);
+                }
             }
         }
 
@@ -129,6 +133,14 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             base.ExposeData();
+
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                //convert tools into lists before saving those lists
+                ClearToolSerializedLists();
+                SerializeTools();
+            }
+
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
@@ -143,6 +155,73 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Collections.Look(ref toolArmorPenetrationSharps, "toolArmorPenetrationSharps", LookMode.Value);
                 Scribe_Collections.Look(ref toolArmorPenetrationBlunts, "toolArmorPenetrationBlunts", LookMode.Value);
                 Scribe_Collections.Look(ref toolPowers, "toolPowers", LookMode.Value);
+            }
+
+            else if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                //convert lists into toolsCE after loading the lists
+                DeserializeTools();
+            }
+
+        }
+
+        public void ClearToolSerializedLists()
+        {
+            toolIds.Clear();
+            toolCapacities.Clear();
+            toolLinkedBPG.Clear();
+            toolCooldownTimes.Clear();
+            toolArmorPenetrationSharps.Clear();
+            toolArmorPenetrationBlunts.Clear();
+            toolPowers.Clear();
+        }
+
+        public void SerializeTools()
+        {
+            if (!modified_Tools.NullOrEmpty())
+            {
+                for (int i = 0; i < modified_Tools.Count; i++)
+                {
+                    toolIds[i] = modified_Tools[i].id;
+
+                    for (int j = 0; j < modified_Tools[i].capacities.Count; j++)
+                    {
+                        toolCapacities[i][j] = modified_Tools[i].capacities[j].ToString();
+                    }
+
+                    toolLinkedBPG[i] = modified_Tools[i].linkedBodyPartsGroup.ToString();
+                    toolCooldownTimes[i] = modified_Tools[i].cooldownTime;
+                    toolArmorPenetrationSharps[i] = modified_Tools[i].armorPenetrationSharp;
+                    toolArmorPenetrationBlunts[i] = modified_Tools[i].armorPenetrationBlunt;
+                    toolPowers[i] = modified_Tools[i].power;
+                }
+            }
+        }
+
+        public void DeserializeTools()
+        {
+            modified_Tools.Clear();
+            if (!toolIds.NullOrEmpty())
+            {
+                for (int i = 0; i < toolIds.Count; i++)
+                {
+                    ToolCE tool = new ToolCE();
+                    tool.id = toolIds[i];
+
+                    //tool.capacities is instantiated as an empty list by default
+                    for (int j = 0; j < toolCapacities.Count; j++)
+                    {
+                        tool.capacities.Add(DefDatabase<ToolCapacityDef>.GetNamed(toolCapacities[i][j]));
+                    }
+
+                    tool.linkedBodyPartsGroup = DefDatabase<BodyPartGroupDef>.GetNamed(toolLinkedBPG[i]);
+                    tool.cooldownTime = toolCooldownTimes[i];
+                    tool.armorPenetrationSharp = toolArmorPenetrationSharps[i];
+                    tool.armorPenetrationBlunt = toolArmorPenetrationBlunts[i];
+                    tool.power = toolPowers[i];
+
+                    modified_Tools.Add(tool);
+                }
             }
         }
     }
