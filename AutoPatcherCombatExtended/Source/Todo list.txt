@@ -2,3 +2,34 @@
 TODO buttons to reset numbers to defaults
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases
 TODO verbs on apparel
+TODO headgear layers
+TODO force disable CE autopatchers, but can disable this via mod option
+TODO detect mods that need patching and are not on the list. Pop up a window suggesting to add them
+
+TODO basic:
+	Apparel
+	Genes
+	Hediff
+Melee weapon
+Ranged Weapon
+Turret
+Pawn
+Vehicle
+Vehicle Turret
+
+TODO export: 
+Apparel
+Genes
+Hediff
+Melee weapon
+Ranged Weapon
+Turret
+Pawn
+Vehicle
+Vehicle Turret
+
+DataHolder flow:
+Load saved DataHolders
+If DataHolder def field != null (would be null if mod source is not currently active) register the DataHolder in the dict
+Generate DataHolders for selected mods, unless one already exists in dict
+Run patches on all DataHolders in the dict

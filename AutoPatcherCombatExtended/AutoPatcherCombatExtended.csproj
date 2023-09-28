@@ -83,7 +83,7 @@
     <Compile Include="Source\DataHolders\DefDataHolderApparel.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderBuilding_TurretGun.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderGene.cs" />
-    <Compile Include="Source\DataHolders\DefDataHolderHediffDef.cs" />
+    <Compile Include="Source\DataHolders\DefDataHolderHediff.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderMeleeWeapon.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderPawn.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderRangedWeapon.cs" />
