@@ -14,10 +14,22 @@ namespace nuff.AutoPatcherCombatExtended
         internal string defName;
         internal string parentModPackageId;
 
+        internal Def def;
+
         internal ModDataHolder modData;
 
         public bool IsCustomized => isCustomized;
          
+        public DefDataHolder(Def def)
+        {
+            this.def = def;
+            defName = def.defName;
+            parentModPackageId = def.modContentPack.PackageId;
+            modData = DataHolderUtil.ReturnModDataOrDefault(def);
+            GetOriginalData();
+            AutoCalculate();
+        }
+
         public virtual void ExposeData()
         {
             if (Scribe.mode == LoadSaveMode.LoadingVars
@@ -28,10 +40,15 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
             }
 
-                if (Scribe.mode == LoadSaveMode.LoadingVars
-                && !defName.NullOrEmpty())
+            if (Scribe.mode == LoadSaveMode.LoadingVars
+                && defName != null)
             {
-                APCESettings.defDataDict.Add(defName, this);
+                def = DefDatabase<Def>.GetNamed(defName, false);
+                if (def != null)
+                {
+                    GetOriginalData();
+                    APCESettings.defDataDict.Add(def.defName, this);
+                }
             }
         }
 

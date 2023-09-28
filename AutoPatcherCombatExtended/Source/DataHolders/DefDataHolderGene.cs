@@ -12,17 +12,11 @@ namespace nuff.AutoPatcherCombatExtended
     class DefDataHolderGene : DefDataHolder
     {
         //TODO can genes add verbs? Need to look into whether they would need patching.
-        public DefDataHolderGene(GeneDef def)
+        public DefDataHolderGene(GeneDef def) : base(def)
         {
-            this.def = def;
-            defName = def.defName;
-            parentModPackageId = def.modContentPack.PackageId;
-            modData = DataHolderUtil.ReturnModDataOrDefault(def);
-
-            GetOriginalData();
         }
 
-        internal GeneDef def;
+        internal GeneDef geneDef;
 
         float original_ArmorRatingSharp;
         float original_ArmorRatingBlunt;
@@ -34,9 +28,11 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            original_ArmorRatingSharp = def.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            original_ArmorRatingBlunt = def.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-            original_ArmorRatingHeat = def.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            geneDef = def as GeneDef;
+
+            original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+            original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+            original_ArmorRatingHeat = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
         }
 
         public override void AutoCalculate()
@@ -47,9 +43,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void Patch()
         {
-            DataHolderUtil.AddOrChangeStat(def.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-            DataHolderUtil.AddOrChangeStat(def.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-            DataHolderUtil.AddOrChangeStat(def.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+            DataHolderUtil.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+            DataHolderUtil.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+            DataHolderUtil.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
         }
         public override StringBuilder PrepExport()
         {
@@ -65,17 +61,14 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             base.ExposeData();
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars
+                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
-                def = DefDatabase<GeneDef>.GetNamed(defName, false);
-                if (def != null)
-                {
-                    GetOriginalData();
-                }
+                Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0f);
+                Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
+                Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
             }
-            Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0);
-            Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
-            Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
         }
     }
 }

@@ -11,17 +11,11 @@ namespace nuff.AutoPatcherCombatExtended
 {
     class DefDataHolderHediff : DefDataHolder
     {
-        public DefDataHolderHediff(HediffDef def)
+        public DefDataHolderHediff(HediffDef def) : base(def)
         {
-            this.def = def;
-            defName = def.defName;
-            parentModPackageId = def.modContentPack.PackageId;
-            modData = DataHolderUtil.ReturnModDataOrDefault(def);
-
-            GetOriginalData();
         }
 
-        HediffDef def;
+        HediffDef hediffDef;
 
         List<float> original_ArmorRatingSharp = new List<float>();
         List<float> original_ArmorRatingBlunt = new List<float>();
@@ -34,29 +28,39 @@ namespace nuff.AutoPatcherCombatExtended
         List<float> modified_ArmorRatingHeat = new List<float>();
         List<Tool> modified_Tools = new List<Tool>();
 
+        List<string> toolIds;
+        List<List<string>> toolCapacities;
+        List<string> toolLinkedBPG;
+        List<float> toolCooldownTimes;
+        List<float> toolArmorPenetrationSharps;
+        List<float> toolArmorPenetrationBlunts;
+        List<float> toolPowers;
+
+
+
         //TODO use more basic data structures so it can be serialized
 
         public override void GetOriginalData()
         {
-            verbGiver = def.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
+            verbGiver = hediffDef.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
             if (verbGiver != null && verbGiver.tools != null)
             {
                 original_Tools = verbGiver.tools;
             }
 
-            if (def.stages == null)
+            if (hediffDef.stages == null)
                 return;
-            for (int i = 0; i < def.stages.Count; i++)
+            for (int i = 0; i < hediffDef.stages.Count; i++)
             {
                 float armorRatingSharp = 0f;
                 float armorRatingBlunt = 0f;
                 float armorRatingHeat = 0f;
 
-                if (def.stages[i].statOffsets != null)
+                if (hediffDef.stages[i].statOffsets != null)
                 {
-                    armorRatingSharp = def.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-                    armorRatingBlunt = def.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-                    armorRatingHeat = def.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+                    armorRatingSharp = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+                    armorRatingBlunt = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+                    armorRatingHeat = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
                 }
 
                 original_ArmorRatingSharp.Add(armorRatingSharp);
@@ -74,9 +78,9 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_Tools.Add(MakeToolHediff(original_Tools[i]));
                 }
             }
-            if (!def.stages.NullOrEmpty())
+            if (!hediffDef.stages.NullOrEmpty())
             {
-                for (int i = 0; i < def.stages?.Count; i++)
+                for (int i = 0; i < hediffDef.stages?.Count; i++)
                 {
                     modified_ArmorRatingSharp.Add(original_ArmorRatingSharp[i] * modData.hediffSharpMult);
                     modified_ArmorRatingBlunt.Add(original_ArmorRatingBlunt[i] * modData.hediffBluntMult);
@@ -85,13 +89,13 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public override void Patch()
         {
-            if (!def.stages.NullOrEmpty())
+            if (!hediffDef.stages.NullOrEmpty())
             {
-                for (int i = 0; i < def.stages.Count; i++)
+                for (int i = 0; i < hediffDef.stages.Count; i++)
                 {
-                    DataHolderUtil.AddOrChangeStat(def.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
-                    DataHolderUtil.AddOrChangeStat(def.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
-                    DataHolderUtil.AddOrChangeStat(def.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
+                    DataHolderUtil.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
+                    DataHolderUtil.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
+                    DataHolderUtil.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
                 }
             }
             if (verbGiver != null && original_Tools != null)
@@ -122,7 +126,24 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
         //TODO
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            if (Scribe.mode == LoadSaveMode.LoadingVars
+                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+            {
+                Scribe_Collections.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", LookMode.Value);
+                Scribe_Collections.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", LookMode.Value);
+                Scribe_Collections.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", LookMode.Value);
 
-
+                Scribe_Collections.Look(ref toolIds, "toolIds", LookMode.Value);
+                Scribe_Collections.Look(ref toolCapacities, "toolCapacities", LookMode.Value);
+                Scribe_Collections.Look(ref toolLinkedBPG, "toolLinkedBPG", LookMode.Value);
+                Scribe_Collections.Look(ref toolCooldownTimes, "toolCooldownTimes", LookMode.Value);
+                Scribe_Collections.Look(ref toolArmorPenetrationSharps, "toolArmorPenetrationSharps", LookMode.Value);
+                Scribe_Collections.Look(ref toolArmorPenetrationBlunts, "toolArmorPenetrationBlunts", LookMode.Value);
+                Scribe_Collections.Look(ref toolPowers, "toolPowers", LookMode.Value);
+            }
+        }
     }
 }
