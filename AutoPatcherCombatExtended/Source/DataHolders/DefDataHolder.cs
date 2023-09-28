@@ -66,12 +66,6 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Collections.Look(ref toolPowers, "toolPowers", LookMode.Value);
             }
 
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                //convert lists into toolsCE after loading the lists
-                DeserializeTools();
-            }
-
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 && defName != null)
             {
@@ -80,6 +74,9 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     GetOriginalData();
                     APCESettings.defDataDict.Add(def.defName, this);
+
+                    //convert lists into toolsCE after loading the lists
+                    DeserializeTools();
                 }
             }
         }
