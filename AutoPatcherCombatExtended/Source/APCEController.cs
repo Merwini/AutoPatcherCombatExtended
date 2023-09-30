@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using Verse.AI;
-using Vehicles;
 
 namespace nuff.AutoPatcherCombatExtended
 {

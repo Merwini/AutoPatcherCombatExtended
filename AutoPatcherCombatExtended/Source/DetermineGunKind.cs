@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static APCEConstants.gunKinds DetermineGunKind(ThingDef weapon)
+        public static APCEConstants.gunKinds DetermineGunKind(ThingDef weapon)
         {
             if (weapon.statBases == null)
             {

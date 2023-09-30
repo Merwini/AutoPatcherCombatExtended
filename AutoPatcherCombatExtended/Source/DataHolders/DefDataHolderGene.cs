@@ -16,7 +16,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        internal GeneDef geneDef;
+        public GeneDef geneDef;
 
         float original_ArmorRatingSharp;
         float original_ArmorRatingBlunt;

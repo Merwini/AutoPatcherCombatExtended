@@ -13,12 +13,10 @@ namespace nuff.AutoPatcherCombatExtended
 {
     static class APCEPatchVehicle
     {
-        public static void PatchVehicle(ThingDef def, APCEPatchLogger log)
+        public static void PatchVehicle(VehicleDef def, APCEPatchLogger log)
         {
             try
             {
-                APCEVehiclesHarmony.VehicleDef vehicle = def as typeof(APCEVehiclesHarmony.VehicleDef);
-
                 int sharpIndex = def.statBases?.FindIndex(i => i.stat == StatDefOf.ArmorRating_Sharp) ?? -1;
                 int bluntIndex = def.statBases?.FindIndex(i => i.stat == StatDefOf.ArmorRating_Blunt) ?? -1;
                 if (sharpIndex >= 0)
@@ -30,8 +28,6 @@ namespace nuff.AutoPatcherCombatExtended
                     def.statBases[bluntIndex].value *= APCESettings.vehicleBluntMult;
                 }
 
-                FieldInfo componentsField = defType.GetField("components", BindingFlags.Instance | BindingFlags.NonPublic);
-                IEnumerable components = (IEnumerable)componentsField.GetValue(def);
                 for (int i = 0; i < def.components.Count; i++)
                 {
                     if (!def.components[i].armor.NullOrEmpty())
@@ -64,7 +60,7 @@ namespace nuff.AutoPatcherCombatExtended
             log.PatchSucceeded();
         }
 
-        public static void PatchVehicleTurret(ThingDef def, APCEPatchLogger log)
+        public static void PatchVehicleTurret(VehicleTurretDef def, APCEPatchLogger log)
         {
             try
             {

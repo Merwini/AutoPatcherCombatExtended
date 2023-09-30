@@ -29,7 +29,7 @@ namespace nuff.AutoPatcherCombatExtended
 		private delegate void GiveShortHash(Def def, Type defType);
 		private static GiveShortHash giveShortHashDelegate;
 
-		internal static void PrepareReflection()
+		public static void PrepareReflection()
 		{
 			try
 			{

@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void PatchRangedWeapon(ThingDef def, APCEPatchLogger log)
+        public static void PatchRangedWeapon(ThingDef def, APCEPatchLogger log)
         {
             try
             {

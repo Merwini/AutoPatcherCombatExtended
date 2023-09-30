@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void PatchHediff(HediffDef def, APCEPatchLogger log)
+        public static void PatchHediff(HediffDef def, APCEPatchLogger log)
         {
             try
             {

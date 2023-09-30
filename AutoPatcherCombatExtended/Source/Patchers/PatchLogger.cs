@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class APCEPatchLogger
     {
-        static internal Stopwatch stopwatchMaster = new Stopwatch();
+        static public Stopwatch stopwatchMaster = new Stopwatch();
         Stopwatch stopwatch = new Stopwatch();
 
         //used for logging
@@ -23,12 +23,12 @@ namespace nuff.AutoPatcherCombatExtended
         List<Exception> errorList = new List<Exception>();
         ModContentPack currentMod;
 
-        internal APCEPatchLogger(ModContentPack mod)
+        public APCEPatchLogger(ModContentPack mod)
         {
             currentMod = mod;
         }
         
-        internal void BeginPatch()
+        public void BeginPatch()
         {
             stopwatch.Start();
             if (APCESettings.printLogs)
@@ -37,13 +37,13 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal void PatchSucceeded()
+        public void PatchSucceeded()
         {
             defsTotal++;
             defsPatched++;
         }
 
-        internal void PatchFailed(string defName, Exception ex)
+        public void PatchFailed(string defName, Exception ex)
         {
             defsTotal++;
             defsFailed++;
@@ -51,7 +51,7 @@ namespace nuff.AutoPatcherCombatExtended
             errorList.Add(ex);
         }
 
-        internal void EndPatch()
+        public void EndPatch()
         {
             stopwatch.Stop();
             if (APCESettings.printLogs)
@@ -73,7 +73,7 @@ namespace nuff.AutoPatcherCombatExtended
             stopwatch.Reset();
         }
 
-        internal string EndPatchString()
+        public string EndPatchString()
         {
             return String.Format($"Patching finished on {currentMod.Name}. Successfully patched {defsPatched} out of {defsTotal} defs.");
         }

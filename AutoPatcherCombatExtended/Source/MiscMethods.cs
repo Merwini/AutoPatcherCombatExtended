@@ -13,17 +13,17 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void BasicException(Exception ex)
+        public static void BasicException(Exception ex)
         {
             Log.Error(ex.ToString());
         }
 
-        internal static void DataHolderTypeException(Exception ex)
+        public static void DataHolderTypeException(Exception ex)
         {
             //TODO
         }
 
-        internal static List<ModContentPack> GetActiveModsList()
+        public static List<ModContentPack> GetActiveModsList()
         {
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod
                                                                                                               && !(mod.AllDefs.Count() == 0)
@@ -33,7 +33,7 @@ namespace nuff.AutoPatcherCombatExtended
             return activeMods;
         }
 
-        internal static List<ModContentPack> RebuildModsToPatch()
+        public static List<ModContentPack> RebuildModsToPatch()
         {
             Dictionary<string, ModContentPack> modDict = new Dictionary<string, ModContentPack>();
             List<ModContentPack> modsToPatch = new List<ModContentPack>();
@@ -60,7 +60,7 @@ namespace nuff.AutoPatcherCombatExtended
             return modsToPatch;
         }
 
-        internal static void CleanModList(List<ModContentPack> modList)
+        public static void CleanModList(List<ModContentPack> modList)
         {
             foreach (ModContentPack mod in modList)
             {
@@ -80,7 +80,7 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
 
-        internal static void PatchAllTools(ref List<Tool> tools, bool isPawn, TechLevel techLevel = TechLevel.Undefined)
+        public static void PatchAllTools(ref List<Tool> tools, bool isPawn, TechLevel techLevel = TechLevel.Undefined)
         {
             if ((tools == null) || (tools.Count == 0))
                     return;
@@ -93,7 +93,7 @@ namespace nuff.AutoPatcherCombatExtended
             tools = newToolsCE;
         }
 
-        internal static ToolCE PatchTool(Tool tool, bool isPawn, TechLevel techLevel = TechLevel.Undefined)
+        public static ToolCE PatchTool(Tool tool, bool isPawn, TechLevel techLevel = TechLevel.Undefined)
         {
             ToolCE newToolCE = new ToolCE();
 
@@ -155,7 +155,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newToolCE;
         }
 
-        internal static void PatchAllVerbs(ThingDef def)
+        public static void PatchAllVerbs(ThingDef def)
         {
             List<VerbPropertiesCE> newVerbsCE = new List<VerbPropertiesCE>();
             foreach (VerbProperties vp in def.Verbs)
@@ -169,7 +169,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static VerbPropertiesCE PatchVerb(VerbProperties vp)
+        public static VerbPropertiesCE PatchVerb(VerbProperties vp)
         {
             try
             {
@@ -269,7 +269,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static ProjectilePropertiesCE ConvertPP(ProjectileProperties ppHolder)
+        public static ProjectilePropertiesCE ConvertPP(ProjectileProperties ppHolder)
         {
             ProjectilePropertiesCE ppceHolder = new ProjectilePropertiesCE();
             CopyFields(ppHolder, ppceHolder);
@@ -307,7 +307,7 @@ namespace nuff.AutoPatcherCombatExtended
             return ppceHolder;
         }
 
-        internal static List<SecondaryDamage> ExtraToSecondary(List<ExtraDamage> ed)
+        public static List<SecondaryDamage> ExtraToSecondary(List<ExtraDamage> ed)
         {
             List<SecondaryDamage> newSDList = new List<SecondaryDamage>();
             if (!(ed == null) && !(ed.Count == 0))
@@ -325,7 +325,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newSDList;
         }
 
-        internal static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
+        public static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
         {
             //experimental reflection attempt
             Type tpp = typeof(ProjectileProperties);
@@ -333,7 +333,7 @@ namespace nuff.AutoPatcherCombatExtended
             dab.SetValue(newPPCE, (int)damage);
         }
 
-        internal static List<StatModifier> PatchStatBases(ThingDef def, APCEConstants.gunKinds gunKind)
+        public static List<StatModifier> PatchStatBases(ThingDef def, APCEConstants.gunKinds gunKind)
         {
             List<StatModifier> newStatBases = new List<StatModifier>();
             foreach (string statMod in Enum.GetNames(typeof(APCEConstants.SharedStatBases)))
@@ -484,7 +484,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newStatBases;
         }
 
-        internal static void AddCompProperties_AmmoUser(ThingDef weapon, APCEConstants.gunKinds gunKind)
+        public static void AddCompProperties_AmmoUser(ThingDef weapon, APCEConstants.gunKinds gunKind)
         {
             CombatExtended.CompProperties_AmmoUser newAUComp = new CombatExtended.CompProperties_AmmoUser();
 
@@ -528,7 +528,7 @@ namespace nuff.AutoPatcherCombatExtended
             weapon.comps.Add(newAUComp);
         }
 
-        internal static void AddCompProperties_FireModes(ThingDef weapon, APCEConstants.gunKinds gunKind)
+        public static void AddCompProperties_FireModes(ThingDef weapon, APCEConstants.gunKinds gunKind)
         {
             CombatExtended.CompProperties_FireModes newFMComp = new CombatExtended.CompProperties_FireModes();
             if (weapon.Verbs[0].burstShotCount > 1)
@@ -557,7 +557,7 @@ namespace nuff.AutoPatcherCombatExtended
             weapon.comps.Add(newFMComp);
         }
 
-        internal static void PatchBaseBullet(ThingDef bullet)
+        public static void PatchBaseBullet(ThingDef bullet)
         {
             bullet.category = ThingCategory.Projectile;
             bullet.tickerType = TickerType.Normal;
@@ -573,7 +573,7 @@ namespace nuff.AutoPatcherCombatExtended
             
         }
 
-        internal static void CopyFields(object source, object destination)
+        public static void CopyFields(object source, object destination)
         {
             if (source == null || destination == null)
             {
@@ -596,7 +596,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static void RemoveListDuplicates(List<string> list)
+        public static void RemoveListDuplicates(List<string> list)
         {
             HashSet<string> uniqueItems = new HashSet<string>();
             for (int i = list.Count - 1; i >= 0; i--)
@@ -608,7 +608,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static void DisableGenericAmmos()
+        public static void DisableGenericAmmos()
         {
             List<AmmoDef> genericAmmos = MakeGenericAmmoList();
             foreach (AmmoDef ammo in genericAmmos)
@@ -619,7 +619,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static List<AmmoDef> MakeGenericAmmoList()
+        public static List<AmmoDef> MakeGenericAmmoList()
         {
             List<AmmoDef> genericAmmos = new List<AmmoDef>
             {
@@ -646,7 +646,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             return genericAmmos;
         }
-        internal static void LimitWeaponMass(ThingDef td)
+        public static void LimitWeaponMass(ThingDef td)
         {
             if (APCESettings.limitWeaponMass)
             {
@@ -663,7 +663,7 @@ namespace nuff.AutoPatcherCombatExtended
 
 
 
-        internal static void HandleUnknownDef(Def def, APCEPatchLogger log)
+        public static void HandleUnknownDef(Def def, APCEPatchLogger log)
         {
             //log.PatchFailed(def.defName, new Exception("Unrecognized def type"));
             return;

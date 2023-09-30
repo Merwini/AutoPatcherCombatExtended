@@ -13,13 +13,13 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        internal void PatchMods()
+        public void PatchMods()
         {
             PatchPBF();
             PatchMPBF();
         }
 
-        internal void PatchPBF()
+        public void PatchPBF()
         {
             if (ModsConfig.IsActive("statistno1.personabond"))
             {
@@ -44,7 +44,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
         }
-        internal void PatchMPBF()
+        public void PatchMPBF()
         {
             if (ModsConfig.IsActive("daria40K.mightypersonabondforgepatch"))
             {

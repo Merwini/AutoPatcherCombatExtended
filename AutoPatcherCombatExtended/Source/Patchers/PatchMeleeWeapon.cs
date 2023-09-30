@@ -13,13 +13,13 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void PatchMeleeWeapon(ThingDef def, APCEPatchLogger log)
+        public static void PatchMeleeWeapon(ThingDef def, APCEPatchLogger log)
         {
             PatchAllTools(ref def.tools, false, def.techLevel);
 
             AddMeleeWeaponStats(def);
         }
-        internal static void AddMeleeWeaponStats(ThingDef weapon)
+        public static void AddMeleeWeaponStats(ThingDef weapon)
         {
             LimitWeaponMass(weapon);
             float mass = weapon.statBases.GetStatValueFromList(StatDefOf.Mass, 1);

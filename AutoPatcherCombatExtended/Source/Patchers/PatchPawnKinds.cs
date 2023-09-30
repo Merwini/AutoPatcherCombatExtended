@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public partial class APCEController
     {
-        internal static void PatchPawnKind(PawnKindDef def, APCEPatchLogger log)
+        public static void PatchPawnKind(PawnKindDef def, APCEPatchLogger log)
         {
             if (def.race != null)
             {

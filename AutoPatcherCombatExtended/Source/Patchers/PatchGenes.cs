@@ -10,7 +10,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void PatchGene(GeneDef gene, APCEPatchLogger log)
+        public static void PatchGene(GeneDef gene, APCEPatchLogger log)
         {
             try
             {

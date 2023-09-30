@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void PatchTurretBase(ThingDef turretBase, APCEPatchLogger log)
+        public static void PatchTurretBase(ThingDef turretBase, APCEPatchLogger log)
         {
             try
             {

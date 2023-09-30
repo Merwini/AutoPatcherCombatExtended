@@ -16,7 +16,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        internal ThingDef thingDef;
+        public ThingDef thingDef;
 
         //should I make this a list or dictionary or something?
         //unsaved values taken from unpatched def

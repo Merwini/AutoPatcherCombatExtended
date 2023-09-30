@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void PatchGrenade(ThingDef grenade)
+        public static void PatchGrenade(ThingDef grenade)
         {
             grenade.thingClass = typeof(CombatExtended.AmmoThing);
             grenade.stackLimit = 75;
@@ -35,7 +35,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static void PatchGrenadePP(ThingDef grenade)
+        public static void PatchGrenadePP(ThingDef grenade)
         {
             ProjectilePropertiesCE grenadePPCE = new ProjectilePropertiesCE();//grenade.Verbs[0].defaultProjectile.projectile as ProjectilePropertiesCE;
             ProjectileProperties grenadePP = grenade.Verbs[0].defaultProjectile.projectile;
@@ -57,7 +57,7 @@ namespace nuff.AutoPatcherCombatExtended
             SetDamage(grenadePPCE, damageHolder);
         }
 
-        internal static void AddCompProperties_ExplosiveCE(ThingDef weapon)
+        public static void AddCompProperties_ExplosiveCE(ThingDef weapon)
         {
             CompProperties_ExplosiveCE compEx = new CompProperties_ExplosiveCE();
             compEx.damageAmountBase = weapon.Verbs[0].defaultProjectile.projectile.GetDamageAmount(1);
@@ -66,7 +66,7 @@ namespace nuff.AutoPatcherCombatExtended
             weapon.comps.Add(compEx);
         }
 
-        internal static void ConvertCompProperties_Explosive(ThingDef weapon)
+        public static void ConvertCompProperties_Explosive(ThingDef weapon)
         {
             CompProperties_Explosive compEx = weapon.GetCompProperties<CompProperties_Explosive>();
             if (compEx != null)
@@ -120,14 +120,14 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        internal static void AddCompProperties_Fragments(ThingDef weapon)
+        public static void AddCompProperties_Fragments(ThingDef weapon)
         {
             CompProperties_Fragments compFrag = new CompProperties_Fragments();
             compFrag.fragments = new List<ThingDefCountClass>() { new ThingDefCountClass(APCEDefOf.Fragment_Small, 40)}; //TODO maybe change 40 to something like damage * 0.8?
             weapon.comps.Add(compFrag);
         }
 
-        internal static void SetForcedMiss(VerbProperties vp, float radius)
+        public static void SetForcedMiss(VerbProperties vp, float radius)
         {
             Type tvp = typeof(VerbProperties);
             FieldInfo fmr = tvp.GetField("forcedMissRadius", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);

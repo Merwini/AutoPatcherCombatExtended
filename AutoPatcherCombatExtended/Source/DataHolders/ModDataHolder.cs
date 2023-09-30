@@ -10,86 +10,86 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class ModDataHolder : IExposable
     {
-        internal ModContentPack mod;
+        public ModContentPack mod;
 
-        internal string packageId;
-        internal bool isCustomized = false;
+        public string packageId;
+        public bool isCustomized = false;
 
         //toggles
-        internal bool patchWeapons = true;
-        internal bool patchCustomVerbs = false;
-        internal bool limitWeaponMass = false;
-        internal bool patchApparels = true;
-        internal bool patchPawns = true;
-        internal bool patchPawnKinds = true;
-        internal bool patchGenes = true;
-        internal bool patchHediffs = true;
-        internal bool patchHeadgearLayers = true;
-        internal bool patchVehicles = true;
+        public bool patchWeapons = true;
+        public bool patchCustomVerbs = false;
+        public bool limitWeaponMass = false;
+        public bool patchApparels = true;
+        public bool patchPawns = true;
+        public bool patchPawnKinds = true;
+        public bool patchGenes = true;
+        public bool patchHediffs = true;
+        public bool patchHeadgearLayers = true;
+        public bool patchVehicles = true;
 
         //apparel values
-        internal float apparelSharpMult = 10f;
-        internal float apparelBluntMult = 40f;
-        internal float apparelTechMultAnimal = 0.25f;
-        internal float apparelTechMultNeolithic = 0.5f;
-        internal float apparelTechMultMedieval = 0.75f;
-        internal float apparelTechMultIndustrial = 1f;
-        internal float apparelTechMultSpacer = 2f;
-        internal float apparelTechMultUltratech = 3f;
-        internal float apparelTechMultArchotech = 4f; 
+        public float apparelSharpMult = 10f;
+        public float apparelBluntMult = 40f;
+        public float apparelTechMultAnimal = 0.25f;
+        public float apparelTechMultNeolithic = 0.5f;
+        public float apparelTechMultMedieval = 0.75f;
+        public float apparelTechMultIndustrial = 1f;
+        public float apparelTechMultSpacer = 2f;
+        public float apparelTechMultUltratech = 3f;
+        public float apparelTechMultArchotech = 4f; 
         
-        internal float advancedArmorCarryWeight = 80f;
-        internal float advancedArmorCarryBulk = 10f;
-        internal float advancedArmorShootingAccuracy = 0.2f;
+        public float advancedArmorCarryWeight = 80f;
+        public float advancedArmorCarryBulk = 10f;
+        public float advancedArmorShootingAccuracy = 0.2f;
 
         //weapon settings
-        internal float gunSharpPenMult = 10f;
-        internal float gunBluntPenMult = 40f;
-        internal float gunTechMultAnimal = 0.5f;
-        internal float gunTechMultNeolithic = 1f;
-        internal float gunTechMultMedieval = 2f;
-        internal float gunTechMultIndustrial = 4;
-        internal float gunTechMultSpacer = 5;
-        internal float gunTechMultUltratech = 6;
-        internal float gunTechMultArchotech = 8;
+        public float gunSharpPenMult = 10f;
+        public float gunBluntPenMult = 40f;
+        public float gunTechMultAnimal = 0.5f;
+        public float gunTechMultNeolithic = 1f;
+        public float gunTechMultMedieval = 2f;
+        public float gunTechMultIndustrial = 4;
+        public float gunTechMultSpacer = 5;
+        public float gunTechMultUltratech = 6;
+        public float gunTechMultArchotech = 8;
 
-        internal float weaponToolPowerMult = 1f;
-        internal float weaponToolSharpPenetration = 1f;
-        internal float weaponToolBluntPenetration = 4f;
-        internal float weaponToolTechMultAnimal = 1f;
-        internal float weaponToolTechMultNeolithic = 1f;
-        internal float weaponToolTechMultMedieval = 1f;
-        internal float weaponToolTechMultIndustrial = 2f;
-        internal float weaponToolTechMultSpacer = 3f;
-        internal float weaponToolTechMultUltratech = 4f;
-        internal float weaponToolTechMultArchotech = 6f;
+        public float weaponToolPowerMult = 1f;
+        public float weaponToolSharpPenetration = 1f;
+        public float weaponToolBluntPenetration = 4f;
+        public float weaponToolTechMultAnimal = 1f;
+        public float weaponToolTechMultNeolithic = 1f;
+        public float weaponToolTechMultMedieval = 1f;
+        public float weaponToolTechMultIndustrial = 2f;
+        public float weaponToolTechMultSpacer = 3f;
+        public float weaponToolTechMultUltratech = 4f;
+        public float weaponToolTechMultArchotech = 6f;
 
-        internal float maximumWeaponMass = 20f;
+        public float maximumWeaponMass = 20f;
 
         //pawn settings
-        internal float pawnArmorSharpMult = 10;
-        internal float pawnArmorBluntMult = 40;
+        public float pawnArmorSharpMult = 10;
+        public float pawnArmorBluntMult = 40;
 
-        internal float pawnToolPowerMult = 1f;
-        internal float pawnToolSharpPenetration = 10f;
-        internal float pawnToolBluntPenetration = 40f;
+        public float pawnToolPowerMult = 1f;
+        public float pawnToolSharpPenetration = 10f;
+        public float pawnToolBluntPenetration = 40f;
 
-        internal float pawnKindMinMags = 2f;
-        internal float pawnKindMaxMags = 5f;
+        public float pawnKindMinMags = 2f;
+        public float pawnKindMaxMags = 5f;
 
-        internal bool patchBackpacks = true;
+        public bool patchBackpacks = true;
 
-        internal float geneArmorSharpMult = 10;
-        internal float geneArmorBluntMult = 10;
+        public float geneArmorSharpMult = 10;
+        public float geneArmorBluntMult = 10;
 
         //hediff settings
-        internal float hediffSharpMult = 10;
-        internal float hediffBluntMult = 40;
+        public float hediffSharpMult = 10;
+        public float hediffBluntMult = 40;
 
         //other
-        internal float vehicleSharpMult = 15;
-        internal float vehicleBluntMult = 15;
-        internal float vehicleHealthMult = 3;
+        public float vehicleSharpMult = 15;
+        public float vehicleBluntMult = 15;
+        public float vehicleHealthMult = 3;
         public void Reset()
         {
             //TODO reset values to those of nuff.ceautopatcher

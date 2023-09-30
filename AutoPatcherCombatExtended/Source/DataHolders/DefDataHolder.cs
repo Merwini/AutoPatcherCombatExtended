@@ -11,24 +11,24 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public abstract class DefDataHolder : IExposable
     {
-        internal bool isCustomized = false; //this will be changed by the customization window if the user changes any values
-        internal string defName;
-        internal string parentModPackageId;
+        public bool isCustomized = false; //this will be changed by the customization window if the user changes any values
+        public string defName;
+        public string parentModPackageId;
 
-        internal Def def;
+        public Def def;
 
-        internal ModDataHolder modData;
+        public ModDataHolder modData;
 
-        internal List<Tool> original_Tools = new List<Tool>();
-        internal List<string> toolIds = new List<string>();
-        internal List<List<string>> toolCapacities = new List<List<string>>();
-        internal List<string> toolLinkedBPG = new List<string>();
-        internal List<float> toolCooldownTimes = new List<float>();
-        internal List<float> toolArmorPenetrationSharps = new List<float>();
-        internal List<float> toolArmorPenetrationBlunts = new List<float>();
-        internal List<float> toolPowers = new List<float>();
-        internal List<float> toolChanceFactors = new List<float>();
-        internal List<ToolCE> modified_Tools = new List<ToolCE>();
+        public List<Tool> original_Tools = new List<Tool>();
+        public List<string> toolIds = new List<string>();
+        public List<List<string>> toolCapacities = new List<List<string>>();
+        public List<string> toolLinkedBPG = new List<string>();
+        public List<float> toolCooldownTimes = new List<float>();
+        public List<float> toolArmorPenetrationSharps = new List<float>();
+        public List<float> toolArmorPenetrationBlunts = new List<float>();
+        public List<float> toolPowers = new List<float>();
+        public List<float> toolChanceFactors = new List<float>();
+        public List<ToolCE> modified_Tools = new List<ToolCE>();
 
         public bool IsCustomized => isCustomized;
          

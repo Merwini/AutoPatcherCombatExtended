@@ -12,7 +12,7 @@ TODO basic:
 	Apparel
 	Genes
 	Hediff
-Melee weapon
+	Melee weapon
 Ranged Weapon
 Turret
 Pawn

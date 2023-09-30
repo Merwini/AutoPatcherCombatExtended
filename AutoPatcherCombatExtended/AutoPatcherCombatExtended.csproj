@@ -80,6 +80,7 @@
     <Compile Include="CompatibilityPatches.cs" />
     <Compile Include="Source\APCEHarmonyPatches.cs" />
     <Compile Include="Source\DataHolders\DefDataHolder.cs" />
+    <Compile Include="Source\DataHolders\DefDataHolderAmmoSet.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderApparel.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderBuilding_TurretGun.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderGene.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="Source\DataHolders\DefDataHolderVehicleTurretDef.cs" />
     <Compile Include="Source\DataHolders\ModDataHolder.cs" />
     <Compile Include="Source\Patchers\PatchGenes.cs" />
-    <Compile Include="Source\Patchers\PatchVehicle.cs" />
     <Compile Include="Source\APCEDefOf.cs" />
     <Compile Include="Source\APCEController.cs" />
     <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />

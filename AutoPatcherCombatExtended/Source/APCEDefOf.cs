@@ -10,7 +10,7 @@ using CombatExtended;
 namespace nuff.AutoPatcherCombatExtended
 {
     [DefOf]
-    class APCEDefOf
+    public class APCEDefOf
     {
         #pragma warning disable CS0649
 

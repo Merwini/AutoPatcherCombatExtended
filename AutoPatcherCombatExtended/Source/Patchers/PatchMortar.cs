@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     partial class APCEController
     {
-        internal static void PatchMortar(ThingDef mortar)
+        public static void PatchMortar(ThingDef mortar)
         {
             AddMortarStats(mortar);
             AddCompProperties_AmmoUser(mortar, APCEConstants.gunKinds.Mortar);
@@ -21,7 +21,7 @@ namespace nuff.AutoPatcherCombatExtended
             PatchVerbMortar(mortar);
         }
 
-        internal static void AddMortarStats(ThingDef mortar)
+        public static void AddMortarStats(ThingDef mortar)
         {
             StatModifier sightsEfficiency = new StatModifier();
             sightsEfficiency.stat = CE_StatDefOf.SightsEfficiency;
@@ -29,14 +29,14 @@ namespace nuff.AutoPatcherCombatExtended
             mortar.statBases.Add(sightsEfficiency);
         }
 
-        internal static void AddCompProperties_Charges(ThingDef mortar)
+        public static void AddCompProperties_Charges(ThingDef mortar)
         {
             CompProperties_Charges compProp_Ch = new CompProperties_Charges();
             compProp_Ch.chargeSpeeds = new List<int> { 30, 50, 70, 90 };
             mortar.comps.Add(compProp_Ch);
         }
 
-        internal static void PatchVerbMortar(ThingDef mortar)
+        public static void PatchVerbMortar(ThingDef mortar)
         {
             VerbProperties oldVerb = mortar.Verbs[0];
             VerbPropertiesCE newVerb = new VerbPropertiesCE();
@@ -60,7 +60,7 @@ namespace nuff.AutoPatcherCombatExtended
             mortar.Verbs.Add(newVerb);
         }
 
-        internal static void PatchMortarShell(ThingDef mortarShell, APCEPatchLogger log)
+        public static void PatchMortarShell(ThingDef mortarShell, APCEPatchLogger log)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace nuff.AutoPatcherCombatExtended
             log.PatchSucceeded();
         }
 
-        internal static AmmoDef MakeNewMortarAmmo(ThingDef def)
+        public static AmmoDef MakeNewMortarAmmo(ThingDef def)
         {
             AmmoDef newAmmo = new AmmoDef();
             CopyFields(def, newAmmo);
@@ -118,7 +118,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newAmmo;
         }
 
-        internal static AmmoCategoryDef MakeMortarAmmoCategoryDef(ThingDef mortarShell)
+        public static AmmoCategoryDef MakeMortarAmmoCategoryDef(ThingDef mortarShell)
         {
             AmmoCategoryDef newAmmoCat = new AmmoCategoryDef();
             newAmmoCat.defName = "APCE_AmmoCatDef_ " + mortarShell.defName;
@@ -131,7 +131,7 @@ namespace nuff.AutoPatcherCombatExtended
             return newAmmoCat;
         }
 
-        internal static ThingDef MakeNewMortarProjectile(ThingDef oldProjectile)
+        public static ThingDef MakeNewMortarProjectile(ThingDef oldProjectile)
         {//WIP
             ThingDef newProjectile = new ThingDef();
             newProjectile.defName = ("APCE_Bullet_Shell_ " + oldProjectile.defName);
@@ -146,14 +146,14 @@ namespace nuff.AutoPatcherCombatExtended
             return newProjectile;
         }
 
-        internal static void MakeMortarAmmoLink(AmmoDef ammoDef)
+        public static void MakeMortarAmmoLink(AmmoDef ammoDef)
         {
             AmmoLink ammoDefLink = new AmmoLink(ammoDef, ammoDef.projectileWhenLoaded);
             AmmoSetDef ammoSet81mm = APCEDefOf.AmmoSet_81mmMortarShell;
             ammoSet81mm.ammoTypes.Add(ammoDefLink);
         }
 
-        internal static void MarkForReplacement(ThingDef def, AmmoDef newAmmo)
+        public static void MarkForReplacement(ThingDef def, AmmoDef newAmmo)
         {
             CompProperties_ReplaceMe cp_rm = new CompProperties_ReplaceMe();
             cp_rm.thingToSpawn = newAmmo;

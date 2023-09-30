@@ -16,7 +16,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        internal ThingDef thingDef;
+        public ThingDef thingDef;
 
         float original_Mass;
         float meleeToolTechMult;
@@ -42,6 +42,7 @@ namespace nuff.AutoPatcherCombatExtended
             modified_Mass = original_Mass;
             modified_Bulk = modified_Mass * 2f;
             CalculateStatMods();
+            CalculateWeaponTechMult();
 
             for (int i = 0; i < original_Tools.Count; i++)
             {

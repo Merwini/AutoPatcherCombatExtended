@@ -6,124 +6,124 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class APCESettings : ModSettings
     {
-        internal static APCEConstants.SettingsTabs settingsTabs = APCEConstants.SettingsTabs.General_Settings;
-        internal static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
-        internal static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;
+        public static APCEConstants.SettingsTabs settingsTabs = APCEConstants.SettingsTabs.General_Settings;
+        public static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
+        public static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;
 
-        internal static APCEConstants.ModSettingsTabs modSettingsTabs = APCEConstants.ModSettingsTabs.General_Settings;
+        public static APCEConstants.ModSettingsTabs modSettingsTabs = APCEConstants.ModSettingsTabs.General_Settings;
 
         //Modlist Settings
-        internal static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
-        internal static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
-        internal static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
-        internal static ModContentPack thisMod;
-        internal static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
+        public static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
+        public static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
+        public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
+        public static ModContentPack thisMod;
+        public static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
 
-        internal string searchTerm = "";
-        internal Vector2 leftScrollPosition = new Vector2();
-        internal Vector2 rightScrollPosition = new Vector2();
-        internal ModContentPack leftSelectedObject = null;
-        internal ModContentPack rightSelectedObject = null;
+        public string searchTerm = "";
+        public Vector2 leftScrollPosition = new Vector2();
+        public Vector2 rightScrollPosition = new Vector2();
+        public ModContentPack leftSelectedObject = null;
+        public ModContentPack rightSelectedObject = null;
 
-        internal static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
-        internal static Dictionary<string, DefDataHolder> defDataDict = new Dictionary<string, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+        public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
+        public static Dictionary<string, DefDataHolder> defDataDict = new Dictionary<string, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
 
         //General Settings
-        internal static bool patchWeapons = true;
-        internal static bool patchCustomVerbs = false;
-        internal static bool limitWeaponMass = false;
-        internal static bool patchApparels = true;
-        internal static bool patchPawns = true;
-        internal static bool patchPawnKinds = true;
-        internal static bool patchGenes = true;
-        internal static bool patchHediffs = true;
-        internal static bool patchHeadgearLayers = true;
-        internal static bool patchVehicles = true;
-        internal static bool printLogs = false;
-        internal static bool printPatchErrors = false;
+        public static bool patchWeapons = true;
+        public static bool patchCustomVerbs = false;
+        public static bool limitWeaponMass = false;
+        public static bool patchApparels = true;
+        public static bool patchPawns = true;
+        public static bool patchPawnKinds = true;
+        public static bool patchGenes = true;
+        public static bool patchHediffs = true;
+        public static bool patchHeadgearLayers = true;
+        public static bool patchVehicles = true;
+        public static bool printLogs = false;
+        public static bool printPatchErrors = false;
 
         //Balance Control Settings
 
         //armor settings
-        internal static float apparelSharpMult = 10;    internal static string apparelSharpMultBuffer = "10";
-        internal static float apparelBluntMult = 40;    internal static string apparelBluntMultBuffer = "40";
-        internal static float armorTechMultAnimal = 0.25f;  internal static string armorTechMultAnimalBuffer = "0.25";
-        internal static float armorTechMultNeolithic = 0.5f;    internal static string armorTechMultNeolithicBuffer = "0.5";
-        internal static float armorTechMultMedieval = 0.75f;    internal static string armorTechMultMedievalBuffer = "0.75";
-        internal static float armorTechMultIndustrial = 1;  internal static string armorTechMultIndustrialBuffer = "1";
-        internal static float armorTechMultSpacer = 2;  internal static string armorTechMultSpacerBuffer = "2";
-        internal static float armorTechMultUltratech = 3;   internal static string armorTechMultUltratechBuffer = "3";
-        internal static float armorTechMultArchotech = 4;   internal static string armorTechMultArchotechBuffer = "4";
+        public static float apparelSharpMult = 10;    public static string apparelSharpMultBuffer = "10";
+        public static float apparelBluntMult = 40;    public static string apparelBluntMultBuffer = "40";
+        public static float armorTechMultAnimal = 0.25f;  public static string armorTechMultAnimalBuffer = "0.25";
+        public static float armorTechMultNeolithic = 0.5f;    public static string armorTechMultNeolithicBuffer = "0.5";
+        public static float armorTechMultMedieval = 0.75f;    public static string armorTechMultMedievalBuffer = "0.75";
+        public static float armorTechMultIndustrial = 1;  public static string armorTechMultIndustrialBuffer = "1";
+        public static float armorTechMultSpacer = 2;  public static string armorTechMultSpacerBuffer = "2";
+        public static float armorTechMultUltratech = 3;   public static string armorTechMultUltratechBuffer = "3";
+        public static float armorTechMultArchotech = 4;   public static string armorTechMultArchotechBuffer = "4";
 
-        internal static float skinBulkAdd = 1f;
-        internal static float skinWulkAdd = 0.5f;
-        internal static float slinBulkMult = 1f;
-        internal static float skinWulkMult = 1f;
+        public static float skinBulkAdd = 1f;
+        public static float skinWulkAdd = 0.5f;
+        public static float slinBulkMult = 1f;
+        public static float skinWulkMult = 1f;
 
-        internal static float midBulkAdd = 5f;
-        internal static float midWulkAdd = 3f;
-        internal static float midBulkMult = 1f;
-        internal static float midWulkMult = 1f;
+        public static float midBulkAdd = 5f;
+        public static float midWulkAdd = 3f;
+        public static float midBulkMult = 1f;
+        public static float midWulkMult = 1f;
 
-        internal static float shellBulkAdd = 7.5f;
-        internal static float shellWulkAdd = 2.5f;
-        internal static float shellBulkMult = 20f;
-        internal static float shellWulkMult = 5f;
+        public static float shellBulkAdd = 7.5f;
+        public static float shellWulkAdd = 2.5f;
+        public static float shellBulkMult = 20f;
+        public static float shellWulkMult = 5f;
 
-        internal static float advancedArmorCarryWeight = 80f;
-        internal static float advancedArmorCarryBulk = 10f;
-        internal static float advancedArmorShootingAccuracy = 0.2f; 
+        public static float advancedArmorCarryWeight = 80f;
+        public static float advancedArmorCarryBulk = 10f;
+        public static float advancedArmorShootingAccuracy = 0.2f; 
 
         //weapon settings
-        internal static float gunSharpPenMult = 10f; internal static string gunSharpPenMultBuffer = "10";
-        internal static float gunBluntPenMult = 40f; internal static string gunBluntPenMultBuffer = "40";
-        internal static float gunTechMultAnimal = 0.5f; internal static string gunTechMultAnimalBuffer = "0.5";
-        internal static float gunTechMultNeolithic = 1f; internal static string gunTechMultNeolithicBuffer = "1.0";
-        internal static float gunTechMultMedieval = 2f; internal static string gunTechMultMedievalBuffer = "2.0";
-        internal static float gunTechMultIndustrial = 4; internal static string gunTechMultIndustrialBuffer = "4.0";
-        internal static float gunTechMultSpacer = 5; internal static string gunTechMultSpacerBuffer = "5.0";
-        internal static float gunTechMultUltratech = 6; internal static string gunTechMultUltratechBuffer = "6.0";
-        internal static float gunTechMultArchotech = 8; internal static string gunTechMultArchotechBuffer = "8.0";
+        public static float gunSharpPenMult = 10f; public static string gunSharpPenMultBuffer = "10";
+        public static float gunBluntPenMult = 40f; public static string gunBluntPenMultBuffer = "40";
+        public static float gunTechMultAnimal = 0.5f; public static string gunTechMultAnimalBuffer = "0.5";
+        public static float gunTechMultNeolithic = 1f; public static string gunTechMultNeolithicBuffer = "1.0";
+        public static float gunTechMultMedieval = 2f; public static string gunTechMultMedievalBuffer = "2.0";
+        public static float gunTechMultIndustrial = 4; public static string gunTechMultIndustrialBuffer = "4.0";
+        public static float gunTechMultSpacer = 5; public static string gunTechMultSpacerBuffer = "5.0";
+        public static float gunTechMultUltratech = 6; public static string gunTechMultUltratechBuffer = "6.0";
+        public static float gunTechMultArchotech = 8; public static string gunTechMultArchotechBuffer = "8.0";
 
-        internal static float weaponToolPowerMult = 1f; internal static string weaponToolPowerMultBuffer = "1.0";
-        internal static float weaponToolSharpPenetration = 1f; internal static string weaponToolSharpPenetrationBuffer = "1.0";
-        internal static float weaponToolBluntPenetration = 4f; internal static string weaponToolBluntPenetrationBuffer = "4.0";
-        internal static float weaponToolTechMultAnimal = 1f; internal static string weaponToolTechMultAnimalBuffer = "1.0";
-        internal static float weaponToolTechMultNeolithic = 1f; internal static string weaponToolTechMultNeolithicBuffer = "1.0";
-        internal static float weaponToolTechMultMedieval = 1f; internal static string weaponToolTechMultMedievalBuffer = "1.0";
-        internal static float weaponToolTechMultIndustrial = 2f; internal static string weaponToolTechMultIndustrialBuffer = "2.0";
-        internal static float weaponToolTechMultSpacer = 3f; internal static string weaponToolTechMultSpacerBuffer = "3.0";
-        internal static float weaponToolTechMultUltratech = 4f; internal static string weaponToolTechMultUltratechBuffer = "4.0";
-        internal static float weaponToolTechMultArchotech = 6f; internal static string weaponToolTechMultArchotechBuffer = "6.0";
+        public static float weaponToolPowerMult = 1f; public static string weaponToolPowerMultBuffer = "1.0";
+        public static float weaponToolSharpPenetration = 1f; public static string weaponToolSharpPenetrationBuffer = "1.0";
+        public static float weaponToolBluntPenetration = 4f; public static string weaponToolBluntPenetrationBuffer = "4.0";
+        public static float weaponToolTechMultAnimal = 1f; public static string weaponToolTechMultAnimalBuffer = "1.0";
+        public static float weaponToolTechMultNeolithic = 1f; public static string weaponToolTechMultNeolithicBuffer = "1.0";
+        public static float weaponToolTechMultMedieval = 1f; public static string weaponToolTechMultMedievalBuffer = "1.0";
+        public static float weaponToolTechMultIndustrial = 2f; public static string weaponToolTechMultIndustrialBuffer = "2.0";
+        public static float weaponToolTechMultSpacer = 3f; public static string weaponToolTechMultSpacerBuffer = "3.0";
+        public static float weaponToolTechMultUltratech = 4f; public static string weaponToolTechMultUltratechBuffer = "4.0";
+        public static float weaponToolTechMultArchotech = 6f; public static string weaponToolTechMultArchotechBuffer = "6.0";
 
-        internal static float maximumWeaponMass = 20f; internal static string maximumWeaponMassBuffer = "20.0";
+        public static float maximumWeaponMass = 20f; public static string maximumWeaponMassBuffer = "20.0";
 
 
         //pawn settings
-        internal static float pawnArmorSharpMult = 10; internal static string pawnArmorSharpMultBuffer = "10";
-        internal static float pawnArmorBluntMult = 40; internal static string pawnArmorBluntMultBuffer = "40";
+        public static float pawnArmorSharpMult = 10; public static string pawnArmorSharpMultBuffer = "10";
+        public static float pawnArmorBluntMult = 40; public static string pawnArmorBluntMultBuffer = "40";
 
-        internal static float pawnToolPowerMult = 1f; internal static string pawnToolPowerMultBuffer = "1";
-        internal static float pawnToolSharpPenetration = 10f; internal static string pawnToolSharpPenetrationBuffer = "10";
-        internal static float pawnToolBluntPenetration = 40f; internal static string pawnToolBluntPenetrationBuffer = "40";
+        public static float pawnToolPowerMult = 1f; public static string pawnToolPowerMultBuffer = "1";
+        public static float pawnToolSharpPenetration = 10f; public static string pawnToolSharpPenetrationBuffer = "10";
+        public static float pawnToolBluntPenetration = 40f; public static string pawnToolBluntPenetrationBuffer = "40";
 
-        internal static float pawnKindMinMags = 2f; internal static string pawnKindMinMagsBuffer = "2";
-        internal static float pawnKindMaxMags = 5f; internal static string pawnKindMaxMagsBuffer = "5";
+        public static float pawnKindMinMags = 2f; public static string pawnKindMinMagsBuffer = "2";
+        public static float pawnKindMaxMags = 5f; public static string pawnKindMaxMagsBuffer = "5";
 
-        internal static bool patchBackpacks = true;
-        internal static bool patchCarryBulk = true;
+        public static bool patchBackpacks = true;
+        public static bool patchCarryBulk = true;
 
-        internal static float geneArmorSharpMult = 10; internal static string geneArmorSharpMultBuffer = "10";
-        internal static float geneArmorBluntMult = 10; internal static string geneArmorBluntMultBuffer = "10";
+        public static float geneArmorSharpMult = 10; public static string geneArmorSharpMultBuffer = "10";
+        public static float geneArmorBluntMult = 10; public static string geneArmorBluntMultBuffer = "10";
 
         //hediff settings
-        internal static float hediffSharpMult = 10; internal static string hediffSharpMultBuffer = "10";
-        internal static float hediffBluntMult = 40; internal static string hediffBluntMultBuffer = "40";
+        public static float hediffSharpMult = 10; public static string hediffSharpMultBuffer = "10";
+        public static float hediffBluntMult = 40; public static string hediffBluntMultBuffer = "40";
 
         //other
-        internal static float vehicleSharpMult = 15; internal static string vehicleSharpMultBuffer = "15";
-        internal static float vehicleBluntMult = 15; internal static string vehicleBluntMultBuffer = "15";
-        internal static float vehicleHealthMult = 3; internal static string vehicleHealthMultBuffer = "3.0";
+        public static float vehicleSharpMult = 15; public static string vehicleSharpMultBuffer = "15";
+        public static float vehicleBluntMult = 15; public static string vehicleBluntMultBuffer = "15";
+        public static float vehicleHealthMult = 3; public static string vehicleHealthMultBuffer = "3.0";
 
         public override void ExposeData()
         {
