@@ -141,8 +141,6 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO
         }
 
-        
-
         public void CalculateStatBaseValues()
         {
             //recoil is calculated here since I don't want to make another switch in the other method
