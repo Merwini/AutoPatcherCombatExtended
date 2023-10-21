@@ -86,5 +86,14 @@ namespace nuff.AutoPatcherCombatExtended
             RangedWeapon_Cooldown,
             WorkToMake
         }
+
+        public enum ThingClasses
+        {
+            BulletCE,
+            ProjectileCE_Explosive,
+            ProjectileCE,
+            //ProjectileCE_Bursting,
+            //ProjectileCE_BunkerBuster
+        }
     }
 }
