@@ -67,7 +67,7 @@ namespace nuff.AutoPatcherCombatExtended
         List<int> modified_pelletCounts = new List<int>();
         List<float> modified_spreadMults = new List<float>();
         List<float> modified_empShieldBreakChance = new List<float>();
-        List<float> modified_suppressionFactor = new List<float>();
+        List<float> modified_suppressionFactors = new List<float>();
         List<float> modified_dangerFactors = new List<float>();
         List<bool> modified_ai_IsIncendiary = new List<bool>();
         List<bool> modified_applyDamageToExplosionCellsNeighbors = new List<bool>();
@@ -188,7 +188,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_spreadMults.Add(1);
                 modified_empShieldBreakChance.Add(1);
                 modified_explosionRadii.Add(0);
-                modified_suppressionFactor.Add(1);
+                modified_suppressionFactors.Add(1);
                 modified_dangerFactors.Add(1);
                 modified_applyDamageToExplosionCellsNeighbors.Add(false);
 
@@ -276,7 +276,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                 modified_thingClasses.Add(APCEConstants.ThingClasses.BulletCE);
                 modified_explosionRadii.Add(0);
-                modified_suppressionFactor.Add(1);
+                modified_suppressionFactors.Add(1);
                 modified_dangerFactors.Add(1);
                 modified_ai_IsIncendiary.Add(false);
                 modified_applyDamageToExplosionCellsNeighbors.Add(false);
@@ -373,7 +373,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_damages.Add((int)(original_damage * 0.66f + 0.5f));
                         modified_damageDefs.Add(APCEDefOf.PrometheumFlame);
                         modified_explosionRadii.Add(original_explosionRadius * 4f);
-                        modified_suppressionFactor.Add(1);
+                        modified_suppressionFactors.Add(1);
                         modified_dangerFactors.Add(1);
                         modified_ai_IsIncendiary.Add(true);
                         modified_applyDamageToExplosionCellsNeighbors.Add(false);
@@ -386,7 +386,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_damages.Add((int)(original_damage * 5f + 0.5f));
                         modified_damageDefs.Add(APCEDefOf.Thermobaric);
                         modified_explosionRadii.Add(original_explosionRadius * 2f);
-                        modified_suppressionFactor.Add(1);
+                        modified_suppressionFactors.Add(1);
                         modified_dangerFactors.Add(1);
                         modified_ai_IsIncendiary.Add(true);
                         modified_applyDamageToExplosionCellsNeighbors.Add(true);
@@ -399,7 +399,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_damages.Add(99999);
                         modified_damageDefs.Add(DamageDefOf.Extinguish);
                         modified_explosionRadii.Add(original_explosionRadius * 3f);
-                        modified_suppressionFactor.Add(0);
+                        modified_suppressionFactors.Add(0);
                         modified_dangerFactors.Add(0);
                         modified_ai_IsIncendiary.Add(false);
                         modified_applyDamageToExplosionCellsNeighbors.Add(false);
@@ -422,11 +422,12 @@ namespace nuff.AutoPatcherCombatExtended
                 ExtraDamageToSecondary(ref secondaryDamageDefs, ref secondaryDamageAmounts, ref secondaryDamageChances);
 
                 modified_thingClasses.Add(APCEConstants.ThingClasses.BulletCE);
+                modified_damageDefs.Add(original_damageDef);
                 modified_explosionRadii.Add(0);
                 modified_pelletCounts.Add(1);
                 modified_spreadMults.Add(1);
                 modified_empShieldBreakChance.Add(1);
-                modified_suppressionFactor.Add(1);
+                modified_suppressionFactors.Add(1);
                 modified_dangerFactors.Add(1);
                 modified_ai_IsIncendiary.Add(false);
                 modified_applyDamageToExplosionCellsNeighbors.Add(false);
@@ -437,7 +438,6 @@ namespace nuff.AutoPatcherCombatExtended
                         //FMJ
                         modified_projectileNames.Add("APCE_FMJ_Bullet_" + weaponDef.defName);
                         modified_projectileLabels.Add(weaponDef.label + " FMJ bullet");
-                        modified_damageDefs.Add(original_damageDef);
                         modified_damages.Add(original_damage);
                         modified_armorPenetrationSharps.Add(armorPenSharpModded);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
@@ -447,7 +447,6 @@ namespace nuff.AutoPatcherCombatExtended
                         //AP
                         modified_projectileNames.Add("APCE_AP_Bullet_" + weaponDef.defName);
                         modified_projectileLabels.Add(weaponDef.label + " AP bullet");
-                        modified_damageDefs.Add(original_damageDef);
                         modified_damages.Add((int)(original_damage * 0.66f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 2f);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
@@ -457,7 +456,6 @@ namespace nuff.AutoPatcherCombatExtended
                         //HP
                         modified_projectileNames.Add("APCE_HP_Bullet_" + weaponDef.defName);
                         modified_projectileLabels.Add(weaponDef.label + " HP bullet");
-                        modified_damageDefs.Add(original_damageDef);
                         modified_damages.Add((int)(original_damage * 1.33f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 0.5f);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
@@ -467,7 +465,6 @@ namespace nuff.AutoPatcherCombatExtended
                         //AP-I
                         modified_projectileNames.Add("APCE_API_Bullet_" + weaponDef.defName);
                         modified_projectileLabels.Add(weaponDef.label + " AP-I bullet");
-                        modified_damageDefs.Add(original_damageDef);
                         modified_damages.Add((int)(original_damage * 0.66f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 2f);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
@@ -480,7 +477,6 @@ namespace nuff.AutoPatcherCombatExtended
                         //HE
                         modified_projectileNames.Add("APCE_HE_Bullet_" + weaponDef.defName);
                         modified_projectileLabels.Add(weaponDef.label + " HE bullet");
-                        modified_damageDefs.Add(original_damageDef);
                         modified_damages.Add(original_damage);
                         modified_armorPenetrationSharps.Add(armorPenSharpModded);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
@@ -493,19 +489,77 @@ namespace nuff.AutoPatcherCombatExtended
                         //Sabot
                         modified_projectileNames.Add("APCE_Sabot_Bullet_" + weaponDef.defName);
                         modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
-                        modified_damageDefs.Add(original_damageDef);
                         modified_damages.Add((int)(original_damage * 0.5f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 3.5f);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded * 1.5f);
                         modified_speeds.Add(227);
                         break;
                 }
+
+                modified_secondaryDamageDefs.Add(secondaryDamageDefs);
+                modified_secondaryDamageAmounts.Add(secondaryDamageAmounts);
+                modified_secondaryDamageChances.Add(secondaryDamageChances);
             }
         }
 
         public void GenerateAmmoSpacer()
         {
+            for (int i = 0; i < 4; i++)
+            {
+                List<DamageDef> secondaryDamageDefs = new List<DamageDef>();
+                List<int> secondaryDamageAmounts = new List<int>();
+                List<float> secondaryDamageChances = new List<float>();
+                ExtraDamageToSecondary(ref secondaryDamageDefs, ref secondaryDamageAmounts, ref secondaryDamageChances);
 
+                modified_thingClasses.Add(APCEConstants.ThingClasses.BulletCE);
+                modified_damageDefs.Add(original_damageDef);
+                modified_speeds.Add(151);
+                modified_explosionRadii.Add(0);
+                modified_pelletCounts.Add(1);
+                modified_spreadMults.Add(1);
+                modified_suppressionFactors.Add(1);
+                modified_dangerFactors.Add(1);
+                modified_ai_IsIncendiary.Add(false);
+                modified_applyDamageToExplosionCellsNeighbors.Add(false);
+
+                switch (i)
+                {
+                    case 0:
+                        //charged
+                        modified_projectileNames.Add("APCE_Charged_Bullet_" + weaponDef.defName);
+                        modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
+                        modified_damages.Add((int)(original_damage));
+                        modified_armorPenetrationSharps.Add(armorPenSharpModded);
+                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_empShieldBreakChance.Add(1);
+                        break;
+                    case 1:
+                        //conc
+                        modified_projectileNames.Add("APCE_Conc_Bullet_" + weaponDef.defName);
+                        modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
+                        modified_damages.Add((int)(original_damage * 0.75f + 0.5f));
+                        modified_armorPenetrationSharps.Add(armorPenSharpModded * 2f);
+                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_empShieldBreakChance.Add(1);
+                        break;
+                    case 2:
+                        //ion
+                        modified_projectileNames.Add("APCE_Ion_Bullet_" + weaponDef.defName);
+                        modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
+                        modified_damages.Add((int)(original_damage * 0.75f + 0.5f));
+                        modified_armorPenetrationSharps.Add(armorPenSharpModded * 1.5f);
+                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_empShieldBreakChance.Add(0.2f);
+                        secondaryDamageDefs.Add(DamageDefOf.EMP);
+                        secondaryDamageAmounts.Add((int)(original_damage * 0.5f + 0.5f));
+                        secondaryDamageChances.Add(1);
+                        break;
+                }
+
+                modified_secondaryDamageDefs.Add(secondaryDamageDefs);
+                modified_secondaryDamageAmounts.Add(secondaryDamageAmounts);
+                modified_secondaryDamageChances.Add(secondaryDamageChances);
+            }
         }
 
         public void SetBasePenetrations()
