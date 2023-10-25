@@ -10,12 +10,8 @@
     </graphicData>
     <soundInteract>Bow_Recurve</soundInteract>
 	<tradeability>None</tradeability>
-	<generateCommonality>0</generateCommonality>
-	<generateAllowChance>0</generateAllowChance>
-    <costList>
-      <WoodLog>25</WoodLog>
-    </costList>
-    <thingSetMakerTags><li>RewardStandardQualitySuper</li></thingSetMakerTags>
+	<generateCommonality>1</generateCommonality>
+	<generateAllowChance>1</generateAllowChance>
     <statBases>
       <Mass>1.3</Mass>
       <SightsEfficiency>0.6</SightsEfficiency>
@@ -23,7 +19,6 @@
       <SwayFactor>2</SwayFactor>
       <Bulk>4.00</Bulk>
       <RangedWeapon_Cooldown>1</RangedWeapon_Cooldown>
-      <WorkToMake>5000</WorkToMake>
     </statBases>
     <weaponTags>
       <li>NeolithicRangedDecent</li>
@@ -32,16 +27,6 @@
       <li>Ranged</li>
       <li>RangedLight</li>
     </weaponClasses>
-    <recipeMaker>
-      <recipeUsers>
-        <li>CraftingSpot</li>
-      </recipeUsers>
-      <researchPrerequisite>RecurveBow</researchPrerequisite>
-      <skillRequirements>
-        <Crafting>5</Crafting>
-      </skillRequirements>
-      <displayPriority>520</displayPriority>
-    </recipeMaker>
     <verbs>
       <li Class="CombatExtended.VerbPropertiesCE">
         <verbClass>CombatExtended.Verb_ShootCE</verbClass>

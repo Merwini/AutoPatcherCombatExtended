@@ -13,8 +13,8 @@
     <techLevel>Industrial</techLevel>
     <stackLimit>50</stackLimit>
 	<tradeability>None</tradeability>
-	<generateCommonality>0</generateCommonality>
-	<generateAllowChance>0</generateAllowChance>
+	<generateCommonality>1</generateCommonality>
+	<generateAllowChance>1</generateAllowChance>
     <statBases>
       <Mass>0.436</Mass>
       <Bulk>1.55</Bulk>

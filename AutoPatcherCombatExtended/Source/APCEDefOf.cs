@@ -38,30 +38,30 @@ namespace nuff.AutoPatcherCombatExtended
         //industrial gun
         public static ThingDef APCE_Gun_Generic;
 
-        public static AmmoSetDef AmmoSet_APCEGenericGun;
-        public static AmmoDef Ammo_APCEGeneric_FMJ;
-        public static AmmoDef Ammo_APCEGeneric_AP;
-        public static AmmoDef Ammo_APCEGeneric_HP;
-        public static AmmoDef Ammo_APCEGeneric_Incendiary;
-        public static AmmoDef Ammo_APCEGeneric_HE;
-        public static AmmoDef Ammo_APCEGeneric_Sabot;
+        public static AmmoSetDef AmmoSet_RifleIntermediate;
+        public static AmmoDef Ammo_RifleIntermediate_FMJ;
+        public static AmmoDef Ammo_RifleIntermediate_AP;
+        public static AmmoDef Ammo_RifleIntermediate_HP;
+        public static AmmoDef Ammo_RifleIntermediate_Incendiary;
+        public static AmmoDef Ammo_RifleIntermediate_HE;
+        public static AmmoDef Ammo_RifleIntermediate_Sabot;
 
         //shotgun
         public static ThingDef APCE_Shotgun_Generic;
 
-        public static AmmoSetDef AmmoSet_APCEGenericShotgun;
-        public static AmmoDef Ammo_APCEGeneric_Buck;
-        public static AmmoDef Ammo_APCEGeneric_Slug;
-        public static AmmoDef Ammo_APCEGeneric_Beanbag;
-        public static AmmoDef Ammo_APCEGeneric_ElectroSlug;
+        public static AmmoSetDef AmmoSet_Shotgun;
+        public static AmmoDef Ammo_Shotgun_Buck;
+        public static AmmoDef Ammo_Shotgun_Slug;
+        public static AmmoDef Ammo_Shotgun_Beanbag;
+        public static AmmoDef Ammo_Shotgun_ElectroSlug;
 
         //spacer gun
         public static ThingDef APCE_SpacerGun_Generic;
 
-        public static AmmoSetDef AmmoSet_APCEGenericSpacerGun;
-        public static AmmoDef Ammo_APCEGeneric_Charged;
-        public static AmmoDef Ammo_APCEGeneric_ChargedAP;
-        public static AmmoDef Ammo_APCEGeneric_ChargedIon;
+        public static AmmoSetDef AmmoSet_ChargedRifle;
+        public static AmmoDef Ammo_RifleCharged;
+        public static AmmoDef Ammo_RifleCharged_AP;
+        public static AmmoDef Ammo_RifleCharged_Ion;
 
         //spacer shotgun
         //might not be needed
@@ -69,10 +69,11 @@ namespace nuff.AutoPatcherCombatExtended
         //explosive launcher
         public static ThingDef APCE_ExplosiveLauncher_Generic;
 
-        public static AmmoSetDef AmmoSet_APCEGenericExplosiveLauncher;
-        public static AmmoDef Ammo_APCELauncher_Incendiary;
-        public static AmmoDef Ammo_APCELauncher_Thermobaric;
-        public static AmmoDef Ammo_APCELauncher_Foam;
+        public static AmmoSetDef AmmoSet_LauncherGrenade;
+        public static AmmoDef Ammo_LauncherGrenade_HE;
+        public static AmmoDef Ammo_LauncherGrenade_HEDP;
+        public static AmmoDef Ammo_LauncherGrenade_EMP;
+        public static AmmoDef Ammo_LauncherGrenade_Smoke;
 
         //bow
         public static ThingDef APCE_Bow_Generic;
@@ -92,11 +93,6 @@ namespace nuff.AutoPatcherCombatExtended
         public static ThingCategoryDef Ammo81mmMortarShells;
         public static AmmoSetDef AmmoSet_81mmMortarShell;
         public static ThingDef Bullet_81mmMortarShell_HE;
-
-        //CE similarTo ammosets
-        public static AmmoSetDef AmmoSet_RifleIntermediate;
-        public static AmmoSetDef AmmoSet_ChargedRifle;
-        public static AmmoSetDef AmmoSet_Shotgun;
 
         //StatDefs
 

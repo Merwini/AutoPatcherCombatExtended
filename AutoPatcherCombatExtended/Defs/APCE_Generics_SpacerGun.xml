@@ -11,8 +11,8 @@
 		</graphicData>
 		<soundInteract>Interact_ChargeRifle</soundInteract>
 		<tradeability>None</tradeability>
-		<generateCommonality>0</generateCommonality>
-		<generateAllowChance>0</generateAllowChance>
+		<generateCommonality>1</generateCommonality>
+		<generateAllowChance>1</generateAllowChance>
 		<statBases>
 			<Mass>3.0</Mass>
 			<RangedWeapon_Cooldown>0.36</RangedWeapon_Cooldown>
@@ -20,24 +20,7 @@
 			<ShotSpread>0.08</ShotSpread>
 			<SwayFactor>1.20</SwayFactor>
 			<Bulk>7.00</Bulk>
-			<WorkToMake>50500</WorkToMake>
 		</statBases>
-		<recipeMaker>
-		  <researchPrerequisite>ChargedShot</researchPrerequisite>
-		  <skillRequirements>
-			<Crafting>7</Crafting>
-		  </skillRequirements>
-		  <recipeUsers Inherit="False">
-			<li>FabricationBench</li>
-		  </recipeUsers>
-		  <displayPriority>200</displayPriority>
-		</recipeMaker>
-		<costList>
-			<Steel>45</Steel>
-			<Plasteel>25</Plasteel>
-			<ComponentIndustrial>10</ComponentIndustrial>
-			<Chemfuel>10</Chemfuel>
-		</costList>
 		<thingSetMakerTags>
 		  <li>RewardStandardQualitySuper</li>
 		</thingSetMakerTags>
@@ -55,7 +38,7 @@
 			<recoilAmount>1.46</recoilAmount>
 			<verbClass>CombatExtended.Verb_ShootCE</verbClass>
 			<hasStandardCommand>true</hasStandardCommand>
-			<defaultProjectile>Bullet_GenericCharged</defaultProjectile>
+			<defaultProjectile>Bullet_6x24mmCharged</defaultProjectile>
 			<warmupTime>1.0</warmupTime>
 			<range>55</range>
 			<ticksBetweenBurstShots>5</ticksBetweenBurstShots>
@@ -102,7 +85,7 @@
 		<li Class="CombatExtended.CompProperties_AmmoUser">
 			<magazineSize>30</magazineSize>
 			<reloadTime>4</reloadTime>
-			<ammoSet>AmmoSet_APCEGenericSpacerGun</ammoSet>
+			<ammoSet>AmmoSet_ChargedRifle</ammoSet>
 		</li>
 		<li Class="CombatExtended.CompProperties_FireModes">
 			<aimedBurstShotCount>3</aimedBurstShotCount>
@@ -111,281 +94,5 @@
 		</li>
 	  </comps>
 	</ThingDef>
-	 
-<!-- ==================== Category ========================== -->
 
-	<ThingCategoryDef>
-		<defName>AmmoAPCEGenericSpacerGun</defName>
-		<label>generic spacer ammo</label>
-		<parent>AmmoAdvanced</parent>
-		<iconPath>UI/Icons/ThingCategories/CaliberCharge</iconPath>
-	</ThingCategoryDef>
-
-<!-- ==================== AmmoSet ========================== -->
-
-	<CombatExtended.AmmoSetDef>
-		<defName>AmmoSet_APCEGenericSpacerGun</defName>
-		<label>generic spacer gun ammo</label>
-		<ammoTypes>
-			<Ammo_APCEGeneric_Charged>Bullet_GenericCharged</Ammo_APCEGeneric_Charged>
-			<Ammo_APCEGeneric_ChargedAP>Bullet_GenericCharged_AP</Ammo_APCEGeneric_ChargedAP>
-			<Ammo_APCEGeneric_ChargedIon>Bullet_GenericCharged_Ion</Ammo_APCEGeneric_ChargedIon>
-		</ammoTypes>
-		<similarTo>AmmoSet_ChargedRifle</similarTo>
-	</CombatExtended.AmmoSetDef>
-	
-<!-- ==================== Ammo ========================== -->
-
-  <ThingDef Class="CombatExtended.AmmoDef" Name="APCEGenericSpacerGunBase" ParentName="SpacerSmallAmmoBase" Abstract="True">
-    <description>Generic ammo for use in spacer guns lacking a CE patch.</description>
-    <statBases>
-      <Mass>0.01</Mass>
-      <Bulk>0.01</Bulk>
-    </statBases>
-    <tradeTags>
-      <li>CE_AutoEnableTrade</li>
-      <li>CE_AutoEnableCrafting_FabricationBench</li>
-    </tradeTags>
-    <thingCategories>
-      <li>AmmoAPCEGenericSpacerGun</li>
-    </thingCategories>
-    <stackLimit>5000</stackLimit>		
-  </ThingDef>
-
-  <ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericSpacerGunBase">
-    <defName>Ammo_APCEGeneric_Charged</defName>
-    <label>generic charged cartridge</label>
-    <graphicData>
-      <texPath>Things/Ammo/Charged/MediumRegular</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <statBases>
-      <MarketValue>0.7</MarketValue>
-    </statBases>
-    <ammoClass>Charged</ammoClass>
-  </ThingDef>
-
-  <ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericSpacerGunBase">
-    <defName>Ammo_APCEGeneric_ChargedAP</defName>
-    <label>generic charged cartridge (Conc.)</label>
-    <graphicData>
-      <texPath>Things/Ammo/Charged/MediumConc</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <statBases>
-      <MarketValue>0.7</MarketValue>
-    </statBases>
-    <ammoClass>ChargedAP</ammoClass>
-  </ThingDef>
-
-  <ThingDef Class="CombatExtended.AmmoDef" ParentName="APCEGenericSpacerGunBase">
-    <defName>Ammo_APCEGeneric_ChargedIon</defName>
-    <label>generic charged cartridge (Ion)</label>
-    <graphicData>
-      <texPath>Things/Ammo/Charged/MediumIon</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <statBases>
-      <MarketValue>0.7</MarketValue>
-    </statBases>
-    <ammoClass>Ionized</ammoClass>
-    <generateAllowChance>0.5</generateAllowChance>
-  </ThingDef>
-
-  <!-- ================== Projectiles ================== -->
-
-  <ThingDef Name="BaseGenericChargedBullet" ParentName="BaseBulletCE" Abstract="true">
-    <graphicData>
-      <texPath>Things/Projectile/Charged/ChargeShot</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <projectile Class="CombatExtended.ProjectilePropertiesCE">
-      <damageDef>Bullet</damageDef>
-      <speed>160</speed>
-    </projectile>
-  </ThingDef>
-
-  <ThingDef ParentName="BaseGenericChargedBullet">
-    <defName>Bullet_GenericCharged</defName>
-    <label>generic charged bullet</label>
-    <projectile Class="CombatExtended.ProjectilePropertiesCE">
-      <damageAmountBase>0</damageAmountBase>
-      <secondaryDamage>
-        <li>
-          <def>Bomb_Secondary</def>
-          <amount>0</amount>
-        </li>
-      </secondaryDamage>
-      <armorPenetrationSharp>15</armorPenetrationSharp>
-      <armorPenetrationBlunt>25.6</armorPenetrationBlunt>
-    </projectile>
-  </ThingDef>
-
-  <ThingDef ParentName="BaseGenericChargedBullet">
-    <defName>Bullet_GenericCharged_AP</defName>
-    <label>generic charged bullet (Conc.)</label>
-    <projectile Class="CombatExtended.ProjectilePropertiesCE">
-      <damageAmountBase>0</damageAmountBase>
-      <secondaryDamage>
-        <li>
-          <def>Bomb_Secondary</def>
-          <amount>0</amount>
-        </li>
-      </secondaryDamage>
-      <armorPenetrationSharp>30</armorPenetrationSharp>
-      <armorPenetrationBlunt>25.6</armorPenetrationBlunt>
-    </projectile>
-  </ThingDef>
-
-  <ThingDef ParentName="BaseGenericChargedBullet">
-    <defName>Bullet_GenericCharged_Ion</defName>
-    <label>generic charged bullet (Ion)</label>
-    <projectile Class="CombatExtended.ProjectilePropertiesCE">
-      <damageAmountBase>0</damageAmountBase>
-      <secondaryDamage>
-        <li>
-          <def>EMP</def>
-          <amount>0</amount>
-        </li>
-      </secondaryDamage>
-      <armorPenetrationSharp>22.5</armorPenetrationSharp>
-      <armorPenetrationBlunt>25.6</armorPenetrationBlunt>
-      <empShieldBreakChance>0.2</empShieldBreakChance>
-    </projectile>
-  </ThingDef>
-
-  <!-- ==================== Recipes ========================== -->
-
-  <RecipeDef ParentName="ChargeAmmoRecipeBase">
-    <defName>MakeAmmo_APCEGeneric_Charged</defName>
-    <label>make generic charged cartridge x500</label>
-    <description>Craft 500 Generic Charged cartridges.</description>
-    <jobString>Making Generic Charged cartridges.</jobString>
-    <ingredients>
-      <li>
-        <filter>
-          <thingDefs>
-            <li>Plasteel</li>
-          </thingDefs>
-        </filter>
-        <count>8</count>
-      </li>
-      <li>
-        <filter>
-          <thingDefs>
-            <li>Steel</li>
-          </thingDefs>
-        </filter>
-        <count>6</count>
-      </li>	  
-      <li>
-        <filter>
-          <thingDefs>
-            <li>ComponentIndustrial</li>
-          </thingDefs>
-        </filter>
-        <count>8</count>
-      </li>
-    </ingredients>
-    <fixedIngredientFilter>
-      <thingDefs>
-        <li>Plasteel</li>
-        <li>Steel</li>		
-        <li>ComponentIndustrial</li>
-      </thingDefs>
-    </fixedIngredientFilter>
-    <products>
-      <Ammo_6x24mmCharged>500</Ammo_6x24mmCharged>
-    </products>
-    <workAmount>8600</workAmount>		
-  </RecipeDef>
-
-  <RecipeDef ParentName="ChargeAmmoRecipeBase">
-    <defName>MakeAmmo_APCEGeneric_ChargedAP</defName>
-    <label>make generic charged (Conc.) cartridge x500</label>
-    <description>Craft 500 Generic Charged (Conc.) cartridges.</description>
-    <jobString>Making Generic Charged (Conc.) cartridges.</jobString>
-    <ingredients>
-      <li>
-        <filter>
-          <thingDefs>
-            <li>Plasteel</li>
-          </thingDefs>
-        </filter>
-        <count>8</count>
-      </li>
-      <li>
-        <filter>
-          <thingDefs>
-            <li>Steel</li>
-          </thingDefs>
-        </filter>
-        <count>6</count>
-      </li>	  
-      <li>
-        <filter>
-          <thingDefs>
-            <li>ComponentIndustrial</li>
-          </thingDefs>
-        </filter>
-        <count>8</count>
-      </li>
-    </ingredients>
-    <fixedIngredientFilter>
-      <thingDefs>
-        <li>Plasteel</li>
-        <li>Steel</li>		
-        <li>ComponentIndustrial</li>
-      </thingDefs>
-    </fixedIngredientFilter>
-    <products>
-      <Ammo_APCEGeneric_ChargedAP>500</Ammo_APCEGeneric_ChargedAP>
-    </products>
-    <workAmount>8600</workAmount>		
-  </RecipeDef>
-
-  <RecipeDef ParentName="ChargeAmmoRecipeBase">
-    <defName>MakeAmmo_APCEGeneric_ChargedIon</defName>
-    <label>make generic charged (Ion) cartridge x500</label>
-    <description>Craft 500 Generic Charged (Ion) cartridges.</description>
-    <jobString>Making Generic Charged (Ion) cartridges.</jobString>
-    <ingredients>
-      <li>
-        <filter>
-          <thingDefs>
-            <li>Plasteel</li>
-          </thingDefs>
-        </filter>
-        <count>8</count>
-      </li>
-      <li>
-        <filter>
-          <thingDefs>
-            <li>Steel</li>
-          </thingDefs>
-        </filter>
-        <count>6</count>
-      </li>	  
-      <li>
-        <filter>
-          <thingDefs>
-            <li>ComponentIndustrial</li>
-          </thingDefs>
-        </filter>
-        <count>8</count>
-      </li>
-    </ingredients>
-    <fixedIngredientFilter>
-      <thingDefs>
-        <li>Plasteel</li>
-        <li>Steel</li>		
-        <li>ComponentIndustrial</li>
-      </thingDefs>
-    </fixedIngredientFilter>
-    <products>
-      <Ammo_APCEGeneric_ChargedIon>500</Ammo_APCEGeneric_ChargedIon>
-    </products>
-    <workAmount>8600</workAmount>	
-  </RecipeDef>
-	
 </Defs>

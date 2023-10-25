@@ -3,7 +3,9 @@ TODO buttons to reset numbers to defaults
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases
 TODO verbs on apparel
 TODO headgear layers
-TODO force disable CE autopatchers, but can disable this via mod option
+TODO force disable CE autopatchers
+TODO redo explosive launcher to use ammo types from generic LauncherGrenade - HE, HEDP, EMP, Smoke
+Change Generic weapons to use CE's generic ammos, to get them past the AmmoInjector. Disable unused ones myself. Remember to remove the weapon recipes this time
 TODO detect mods that need patching and are not on the list. Pop up a window suggesting to add them
 TODO ThingDef tags
 TODO add logic to GetOriginalData to allow re-patching of already compatible defs
