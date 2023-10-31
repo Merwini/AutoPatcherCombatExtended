@@ -358,14 +358,69 @@ namespace nuff.AutoPatcherCombatExtended
 
                 modified_thingClasses.Add(APCEConstants.ThingClasses.ProjectileCE_Explosive);
                 modified_speeds.Add(40);
-                modified_armorPenetrationSharps.Add(0);
-                modified_armorPenetrationBlunts.Add(0);
                 modified_pelletCounts.Add(1);
                 modified_spreadMults.Add(1);
                 modified_empShieldBreakChance.Add(1);
 
                 switch (i)
                 {
+                    case 0:
+                        //HE
+                        modified_projectileNames.Add("APCE_HE_Bullet_" + weaponDef.defName);
+                        modified_projectileLabels.Add(weaponDef.label + " HE bullet");
+                        modified_damages.Add((int)(original_damage * 0.5f + 0.5f));
+                        modified_armorPenetrationBlunts.Add(0);
+                        modified_armorPenetrationSharps.Add(0);
+                        modified_damageDefs.Add(original_damageDef);
+                        modified_explosionRadii.Add(original_explosionRadius);
+                        modified_suppressionFactors.Add(1);
+                        modified_dangerFactors.Add(1);
+                        modified_ai_IsIncendiary.Add(true);
+                        modified_applyDamageToExplosionCellsNeighbors.Add(true);
+                        break;
+                    case 1:
+                        //HEDP
+                        modified_projectileNames.Add("APCE_HEDP_Bullet_" + weaponDef.defName);
+                        modified_projectileLabels.Add(weaponDef.label + " HEDP bullet");
+                        modified_damages.Add((int)(original_damage * 0.75f + 0.5f));
+                        modified_armorPenetrationBlunts.Add(5.942f);
+                        modified_armorPenetrationSharps.Add(63f);
+                        modified_damageDefs.Add(original_damageDef);
+                        modified_explosionRadii.Add(original_explosionRadius * 0.5f);
+                        modified_suppressionFactors.Add(1);
+                        modified_dangerFactors.Add(1);
+                        modified_ai_IsIncendiary.Add(true);
+                        modified_applyDamageToExplosionCellsNeighbors.Add(true);
+                        break;
+                    case 2:
+                        //EMP
+                        modified_projectileNames.Add("APCE_EMP_Bullet_" + weaponDef.defName);
+                        modified_projectileLabels.Add(weaponDef.label + " EMP bullet");
+                        modified_damages.Add((int)(original_damage * 0.5f + 0.5f));
+                        modified_armorPenetrationBlunts.Add(0);
+                        modified_armorPenetrationSharps.Add(0);
+                        modified_damageDefs.Add(DamageDefOf.EMP);
+                        modified_explosionRadii.Add(original_explosionRadius * 1.5f);
+                        modified_suppressionFactors.Add(1);
+                        modified_dangerFactors.Add(1);
+                        modified_ai_IsIncendiary.Add(true);
+                        modified_applyDamageToExplosionCellsNeighbors.Add(false);
+                        break;
+                    case 3:
+                        //Smoke
+                        modified_projectileNames.Add("APCE_Smoke_Bullet_" + weaponDef.defName);
+                        modified_projectileLabels.Add(weaponDef.label + " smoke bullet");
+                        modified_damages.Add((int)(0));
+                        modified_armorPenetrationBlunts.Add(0);
+                        modified_armorPenetrationSharps.Add(0);
+                        modified_damageDefs.Add(DamageDefOf.Smoke);
+                        modified_explosionRadii.Add(original_explosionRadius * 2f);
+                        modified_suppressionFactors.Add(0);
+                        modified_dangerFactors.Add(0);
+                        modified_ai_IsIncendiary.Add(false);
+                        modified_applyDamageToExplosionCellsNeighbors.Add(false);
+                        break;
+                    /*
                     case 0:
                         //incendiary
                         modified_projectileNames.Add("APCE_Incendiary_Bullet_" + weaponDef.defName);
@@ -404,6 +459,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_ai_IsIncendiary.Add(false);
                         modified_applyDamageToExplosionCellsNeighbors.Add(false);
                         break;
+                    */
                 }
 
                 modified_secondaryDamageDefs.Add(secondaryDamageDefs);
@@ -414,7 +470,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void GenerateAmmoIndustrial()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 6; i++)
             {
                 List<DamageDef> secondaryDamageDefs = new List<DamageDef>();
                 List<int> secondaryDamageAmounts = new List<int>();
@@ -504,7 +560,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void GenerateAmmoSpacer()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 3; i++)
             {
                 List<DamageDef> secondaryDamageDefs = new List<DamageDef>();
                 List<int> secondaryDamageAmounts = new List<int>();
