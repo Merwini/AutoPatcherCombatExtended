@@ -99,7 +99,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
-                    modified_Tools.Add(MakeToolGun(original_Tools[i]));
+                    ModToolAtIndex(i);
                 }
             }
             CalculateStatBaseValues();
@@ -349,14 +349,12 @@ namespace nuff.AutoPatcherCombatExtended
             rangedToolTechMult = techMult;
         }
 
-        public ToolCE MakeToolGun(Tool tool)
+        public override void ModToolAtIndex(int i)
         {
-            ToolCE newToolCE = DataHolderUtils.MakeToolBase(tool);
-            newToolCE.power *= modData.weaponToolPowerMult;
-            newToolCE.armorPenetrationSharp *= modData.weaponToolSharpPenetration;
-            newToolCE.armorPenetrationBlunt *= modData.weaponToolBluntPenetration;
-
-            return newToolCE;
+            base.ModToolAtIndex(i);
+            modified_toolPowers[i] *= modData.weaponToolPowerMult;
+            modified_toolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult?
+            modified_toolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration;
         }
 
         public void PatchMortar()

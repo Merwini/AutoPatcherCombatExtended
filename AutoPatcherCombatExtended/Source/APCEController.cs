@@ -27,6 +27,9 @@ namespace nuff.AutoPatcherCombatExtended
             apceDefaults.packageId = "nuff.apcedefaults";
             APCESettings.modDataDict.Add(apceDefaults.packageId, apceDefaults);
 
+            //Search for mods that need patching
+            //
+
             APCEPatchController();
         }
 
@@ -61,13 +64,14 @@ namespace nuff.AutoPatcherCombatExtended
             log.BeginPatch();
             foreach (Def def in mod.AllDefs)
             {
-                DetermineDefType(def, log);
+                SortAndPatchDef(def, log);
             }
             log.EndPatch();
         }
 
-        public static void DetermineDefType(Def def, APCEPatchLogger log)
+        public static void SortAndPatchDef(Def def, APCEPatchLogger log)
         {
+            //vehicles checked by a Harmony prefix applied by APCEVF PatchVehicle
             if (def is ThingDef td)
             {
                 if (td.IsApparel
@@ -129,6 +133,49 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 HandleUnknownDef(def, log);
             }
+        }
+
+        public static void FindModsNeedingPatched()
+        {
+            List<ModContentPack> modsNeedingPatched = new List<ModContentPack>();
+            for (int i = 0; i < APCESettings.activeMods.Count; i++)
+            {
+                if (!APCESettings.modsToPatch.Contains(APCESettings.activeMods[i])
+                    && APCESettings.activeMods[i].AllDefs.Count() != 0
+                    && CheckIfModNeedsPatched(APCESettings.activeMods[i]))
+                {
+                    modsNeedingPatched.Add(APCESettings.activeMods[i]);
+                }
+            }
+        }
+
+        public static bool CheckIfModNeedsPatched(ModContentPack mod)
+        { 
+            foreach (Def def in mod.AllDefs)
+            {
+                if (CheckIfDefNeedsPatched(def))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool CheckIfDefNeedsPatched(Def def)
+        {
+            //TODO check for vehicle defs is added by Harmony prefix
+
+            if (def is ThingDef thingDef)
+            {
+                //check if is apparel
+                    //check if apparel has no bulk / wornbulk
+                //check if is weapon
+                    //check if is ranged and has compammouser
+                    //check if is melee and has melee statBases - check for all of them
+
+            }
+
+            return false;
         }
     }
 }

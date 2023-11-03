@@ -68,7 +68,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
-                    modified_Tools.Add(MakeToolHediff(original_Tools[i]));
+                    ModToolAtIndex(i);
                 }
             }
             if (!hediffDef.stages.NullOrEmpty())
@@ -112,14 +112,12 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO
         }
 
-        public ToolCE MakeToolHediff(Tool tool)
+        public override void ModToolAtIndex(int i)
         {
-            ToolCE newToolCE = DataHolderUtils.MakeToolBase(tool);
-            newToolCE.power *= modData.pawnToolPowerMult;
-            newToolCE.armorPenetrationSharp *= modData.pawnToolSharpPenetration;
-            newToolCE.armorPenetrationBlunt *= modData.pawnToolBluntPenetration;
-
-            return newToolCE;
+            base.ModToolAtIndex(i);
+            modified_toolPowers[i] *= modData.pawnToolPowerMult;
+            modified_toolArmorPenetrationSharps[i] *= modData.pawnToolSharpPenetration;
+            modified_toolArmorPenetrationSharps[i] *= modData.pawnToolBluntPenetration;
         }
 
         //TODO

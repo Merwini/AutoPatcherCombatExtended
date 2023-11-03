@@ -15,10 +15,15 @@ namespace nuff.AutoPatcherCombatExtended
     public class AutoPatcherCombatExtended : Mod
     {
         APCESettings Settings;
+        Mod CEMod;
+        CombatExtended.Settings CESettings;
 
         public AutoPatcherCombatExtended(ModContentPack content) : base(content)
         {
             this.Settings = GetSettings<APCESettings>();
+            Mod CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Loader.Loader));
+            Settings CESettings = CEMod.GetSettings<Settings>();
+            AdjustCESettings();
         }
 
         public override string SettingsCategory()
@@ -210,6 +215,30 @@ namespace nuff.AutoPatcherCombatExtended
                 }
 
                 list.End();
+            }
+        }
+
+        public void AdjustCESettings()
+        {
+            if (CESettings == null)
+                return;
+
+            string[] autopatcherFieldNames = {
+            "enableApparelAutopatcher",
+            "enableWeaponAutopatcher",
+            "enableRaceAutopatcher",
+            "enablePawnKindAutopatcher"
+            };
+
+            Type settingsType = typeof(Settings);
+
+            foreach (string fieldName in autopatcherFieldNames)
+            {
+                FieldInfo field = settingsType.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+                if (field != null && field.FieldType == typeof(bool))
+                {
+                    field.SetValue(CESettings, false);
+                }
             }
         }
 

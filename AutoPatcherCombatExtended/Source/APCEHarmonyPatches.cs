@@ -40,7 +40,7 @@ namespace nuff.AutoPatcherCombatExtended
                 PatchVehicle = APCEPatchVehicle.GetMethod("PatchVehicle");
                 PatchVehicleTurret = APCEPatchVehicle.GetMethod("PatchVehicleTurret");
 
-                MethodInfo original = typeof(APCEController).GetMethod(nameof(APCEController.DetermineDefType));
+                MethodInfo original = typeof(APCEController).GetMethod(nameof(APCEController.SortAndPatchDef));
                 MethodInfo vPrefix = typeof(APCEVehiclePatch).GetMethod(nameof(APCEVehiclePatch.Prefix));
                 harmony.Patch(original, prefix: new HarmonyMethod(vPrefix));
             }

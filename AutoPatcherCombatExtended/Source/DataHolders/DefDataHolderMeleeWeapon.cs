@@ -19,7 +19,6 @@ namespace nuff.AutoPatcherCombatExtended
         public ThingDef thingDef;
 
         float original_Mass;
-        float meleeToolTechMult;
 
         float modified_Mass;
         float modified_Bulk;
@@ -46,7 +45,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             for (int i = 0; i < original_Tools.Count; i++)
             {
-                modified_Tools.Add(MakeToolMelee(original_Tools[i]));
+                ModToolAtIndex(i);
             }
         }
 
@@ -88,6 +87,12 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO
         }
 
+        public override void ExposeData()
+        {
+            base.ExposeData();
+
+        }
+
         private void CalculateStatMods()
         {
             float value = thingDef.BaseMarketValue;
@@ -101,14 +106,12 @@ namespace nuff.AutoPatcherCombatExtended
             modified_MeleeCritChance = valueLog * (1 - massFactor);
         }
 
-        private ToolCE MakeToolMelee(Tool tool)
+        public override void ModToolAtIndex(int i)
         {
-            ToolCE newToolCE = DataHolderUtils.MakeToolBase(tool);
-            newToolCE.power *= modData.weaponToolPowerMult;
-            newToolCE.armorPenetrationSharp *= modData.weaponToolSharpPenetration * meleeToolTechMult;
-            newToolCE.armorPenetrationBlunt *= modData.weaponToolBluntPenetration * meleeToolTechMult;
-
-            return newToolCE;
+            base.ModToolAtIndex(i);
+            modified_toolPowers[i] *= modData.weaponToolPowerMult;
+            modified_toolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration * techMult;
+            modified_toolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration * techMult;
         }
 
         public void CalculateWeaponTechMult()
@@ -141,7 +144,7 @@ namespace nuff.AutoPatcherCombatExtended
                     break;
             }
 
-            meleeToolTechMult = techMult;
+            this.techMult = techMult;
         }
     }
 }
