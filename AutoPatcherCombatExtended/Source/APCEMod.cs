@@ -16,13 +16,13 @@ namespace nuff.AutoPatcherCombatExtended
     {
         APCESettings Settings;
         Mod CEMod;
-        CombatExtended.Settings CESettings;
+        Settings CESettings;
 
         public AutoPatcherCombatExtended(ModContentPack content) : base(content)
         {
             this.Settings = GetSettings<APCESettings>();
-            Mod CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Loader.Loader));
-            Settings CESettings = CEMod.GetSettings<Settings>();
+            CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Loader.Loader));
+            CESettings = CEMod.GetSettings<Settings>();
             AdjustCESettings();
         }
 

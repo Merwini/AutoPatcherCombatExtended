@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using Verse.AI;
+using CombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -27,8 +28,7 @@ namespace nuff.AutoPatcherCombatExtended
             apceDefaults.packageId = "nuff.apcedefaults";
             APCESettings.modDataDict.Add(apceDefaults.packageId, apceDefaults);
 
-            //Search for mods that need patching
-            //
+            FindModsNeedingPatched();
 
             APCEPatchController();
         }
@@ -147,6 +147,7 @@ namespace nuff.AutoPatcherCombatExtended
                     modsNeedingPatched.Add(APCESettings.activeMods[i]);
                 }
             }
+            APCESettings.modToRecommend.AddRange(modsNeedingPatched);
         }
 
         public static bool CheckIfModNeedsPatched(ModContentPack mod)
@@ -167,12 +168,48 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (def is ThingDef thingDef)
             {
-                //check if is apparel
-                    //check if apparel has no bulk / wornbulk
-                //check if is weapon
-                    //check if is ranged and has compammouser
-                    //check if is melee and has melee statBases - check for all of them
-
+                if (thingDef.IsApparel
+                    && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk)
+                    && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.WornBulk))
+                {
+                    return true;
+                }
+                else if (thingDef.IsWeapon)
+                {
+                    if (thingDef.IsRangedWeapon
+                        && !thingDef.Verbs[0].verbClass.ToString().Contains("CE")
+                        //&& !thingDef.comps.Any(comp => comp is CompProperties_AmmoUser)
+                        && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk))
+                    {
+                        return true;
+                    }
+                    else if (thingDef.IsMeleeWeapon
+                        && !thingDef.tools.Any(tool => tool is ToolCE))
+                    {
+                        return true;
+                    }
+                }
+                else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass)
+                    && !thingDef.tools.Any(tool => tool is ToolCE))
+                {
+                    return true;
+                }
+            }
+            else if (def is HediffDef hd
+                && (!hd.comps.NullOrEmpty() && hd.comps.Any(comp => comp is HediffCompProperties_VerbGiver hcp_vg && !hcp_vg.tools.Any(tool => tool is ToolCE))))
+            {
+                return true;
+            }
+            /*
+            else if (ModLister.BiotechInstalled && def is GeneDef gene)
+            {
+                //TODO not a great way to see if a gene mod needs to be patched other than really low armor values?
+            }
+            */
+            else if (def is PawnKindDef pkd
+                && (pkd.race.race.intelligence != Intelligence.Animal && !pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension)))
+            {
+                return true;
             }
 
             return false;

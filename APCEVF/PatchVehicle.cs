@@ -16,9 +16,9 @@ namespace nuff.AutoPatcherCombatExtended.VF
     {
         static APCEPatchVehicle()
         {
-            Log.Warning("ASSEMBLY IS ACTIVE");
-            Log.Warning((typeof(APCEPatchVehicle)).ToString());
+
         }
+
         public static void PatchVehicle(Def def, APCEPatchLogger log)
         {
             VehicleDef vehicle = def as VehicleDef;
