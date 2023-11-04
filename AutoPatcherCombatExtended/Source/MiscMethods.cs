@@ -515,7 +515,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (!(gunKind == APCEConstants.gunKinds.Mortar))
             {
-                newAUComp.ammoSet = GenerateAmmoSet(weapon, gunKind);
+                //newAUComp.ammoSet = GenerateAmmoSet(weapon, gunKind);
             }
             else
             {
@@ -621,30 +621,31 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static List<AmmoDef> MakeGenericAmmoList()
         {
-            List<AmmoDef> genericAmmos = new List<AmmoDef>
-            {
-                APCEDefOf.Ammo_APCEGeneric_FMJ,
-                APCEDefOf.Ammo_APCEGeneric_AP,
-                APCEDefOf.Ammo_APCEGeneric_HP,
-                APCEDefOf.Ammo_APCEGeneric_Incendiary,
-                APCEDefOf.Ammo_APCEGeneric_HE,
-                APCEDefOf.Ammo_APCEGeneric_Sabot,
+            //List<AmmoDef> genericAmmos = new List<AmmoDef>
+            //{
+            //    APCEDefOf.Ammo_APCEGeneric_FMJ,
+            //    APCEDefOf.Ammo_APCEGeneric_AP,
+            //    APCEDefOf.Ammo_APCEGeneric_HP,
+            //    APCEDefOf.Ammo_APCEGeneric_Incendiary,
+            //    APCEDefOf.Ammo_APCEGeneric_HE,
+            //    APCEDefOf.Ammo_APCEGeneric_Sabot,
 
-                APCEDefOf.Ammo_APCEGeneric_Buck,
-                APCEDefOf.Ammo_APCEGeneric_Slug,
-                APCEDefOf.Ammo_APCEGeneric_Beanbag,
-                APCEDefOf.Ammo_APCEGeneric_ElectroSlug,
+            //    APCEDefOf.Ammo_APCEGeneric_Buck,
+            //    APCEDefOf.Ammo_APCEGeneric_Slug,
+            //    APCEDefOf.Ammo_APCEGeneric_Beanbag,
+            //    APCEDefOf.Ammo_APCEGeneric_ElectroSlug,
 
-                APCEDefOf.Ammo_APCEGeneric_Charged,
-                APCEDefOf.Ammo_APCEGeneric_ChargedAP,
-                APCEDefOf.Ammo_APCEGeneric_ChargedIon,
+            //    APCEDefOf.Ammo_APCEGeneric_Charged,
+            //    APCEDefOf.Ammo_APCEGeneric_ChargedAP,
+            //    APCEDefOf.Ammo_APCEGeneric_ChargedIon,
 
-                APCEDefOf.Ammo_APCELauncher_Incendiary,
-                APCEDefOf.Ammo_APCELauncher_Thermobaric,
-                APCEDefOf.Ammo_APCELauncher_Foam
-            };
+            //    APCEDefOf.Ammo_APCELauncher_Incendiary,
+            //    APCEDefOf.Ammo_APCELauncher_Thermobaric,
+            //    APCEDefOf.Ammo_APCELauncher_Foam
+            //};
 
-            return genericAmmos;
+            //return genericAmmos;
+            return null;
         }
         public static void LimitWeaponMass(ThingDef td)
         {

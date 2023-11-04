@@ -63,9 +63,12 @@ namespace nuff.AutoPatcherCombatExtended
     {
         public static void Postfix()
         {
-            if (Current.ProgramState == ProgramState.Entry)
+            if (Current.ProgramState == ProgramState.Entry 
+                && !APCESettings.suggestionWindowOpened
+                && !APCESettings.modsToRecommend.NullOrEmpty())
             {
                 Find.WindowStack.Add(new Window_SuggestPatchMods());
+                APCESettings.suggestionWindowOpened = true;
             }
         }
     }

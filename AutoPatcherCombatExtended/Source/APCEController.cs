@@ -71,68 +71,68 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static void SortAndPatchDef(Def def, APCEPatchLogger log)
         {
-            //vehicles checked by a Harmony prefix applied by APCEVF PatchVehicle
-            if (def is ThingDef td)
-            {
-                if (td.IsApparel
-                    && APCESettings.patchApparels)
-                {
-                    PatchApparel(td, log);
-                    return;
-                }
-                else if (td.IsWeapon
-                    && APCESettings.patchWeapons)
-                {
-                    if (td.IsRangedWeapon
-                        && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
-                        && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
-                    {
-                        PatchRangedWeapon(td, log);
-                        return;
-                    }
-                    else //if (td.IsMeleeWeapon)
-                    {
-                        PatchMeleeWeapon(td, log);
-                        return;
-                    }
-                }
-                else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
-                {
-                    PatchPawn(td, log);
-                    return;
-                }
-                else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
-                {
-                    PatchTurretBase(td, log);
-                }
-                else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
-                {
-                    PatchMortarShell(td, log);
-                }
-            }
-            else if (def is HediffDef hd
-                && APCESettings.patchHediffs)
-            {
-                PatchHediff(hd, log);
-                return;
-            }
-            else if (def is PawnKindDef pkd
-                && APCESettings.patchPawnKinds)
-            {
-                PatchPawnKind(pkd, log);
-                return;
-            }
-            else if (ModLister.BiotechInstalled
-                && def is GeneDef gene
-                && APCESettings.patchGenes)
-            {
-                PatchGene(gene, log);
-                return;
-            }
-            else
-            {
-                HandleUnknownDef(def, log);
-            }
+            ////vehicles checked by a Harmony prefix applied by APCEVF PatchVehicle
+            //if (def is ThingDef td)
+            //{
+            //    if (td.IsApparel
+            //        && APCESettings.patchApparels)
+            //    {
+            //        PatchApparel(td, log);
+            //        return;
+            //    }
+            //    else if (td.IsWeapon
+            //        && APCESettings.patchWeapons)
+            //    {
+            //        if (td.IsRangedWeapon
+            //            && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
+            //            && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
+            //        {
+            //            PatchRangedWeapon(td, log);
+            //            return;
+            //        }
+            //        else //if (td.IsMeleeWeapon)
+            //        {
+            //            PatchMeleeWeapon(td, log);
+            //            return;
+            //        }
+            //    }
+            //    else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
+            //    {
+            //        PatchPawn(td, log);
+            //        return;
+            //    }
+            //    else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
+            //    {
+            //        PatchTurretBase(td, log);
+            //    }
+            //    else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
+            //    {
+            //        PatchMortarShell(td, log);
+            //    }
+            //}
+            //else if (def is HediffDef hd
+            //    && APCESettings.patchHediffs)
+            //{
+            //    PatchHediff(hd, log);
+            //    return;
+            //}
+            //else if (def is PawnKindDef pkd
+            //    && APCESettings.patchPawnKinds)
+            //{
+            //    PatchPawnKind(pkd, log);
+            //    return;
+            //}
+            //else if (ModLister.BiotechInstalled
+            //    && def is GeneDef gene
+            //    && APCESettings.patchGenes)
+            //{
+            //    PatchGene(gene, log);
+            //    return;
+            //}
+            //else
+            //{
+            //    HandleUnknownDef(def, log);
+            //}
         }
 
         public static void FindModsNeedingPatched()
@@ -147,7 +147,7 @@ namespace nuff.AutoPatcherCombatExtended
                     modsNeedingPatched.Add(APCESettings.activeMods[i]);
                 }
             }
-            APCESettings.modToRecommend.AddRange(modsNeedingPatched);
+            APCESettings.modsToRecommend = modsNeedingPatched;
         }
 
         public static bool CheckIfModNeedsPatched(ModContentPack mod)
@@ -207,7 +207,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
             */
             else if (def is PawnKindDef pkd
-                && (pkd.race.race.intelligence != Intelligence.Animal && !pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension)))
+                && (pkd.race.race.intelligence != Intelligence.Animal && !pkd.modExtensions.NullOrEmpty() && !pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension)))
             {
                 return true;
             }
