@@ -246,12 +246,7 @@ namespace nuff.AutoPatcherCombatExtended
 			{
 				rightList.Add(item: leftSelectedObject);
 				APCESettings.modsByPackageId.Add(leftSelectedObject.PackageId);
-				/* this is from my original implementation of this
-				if (antiList.Contains(leftSelectedObject))
-				{
-					antiList.Remove(leftSelectedObject);
-				}
-				*/
+
 				rightList = rightList.OrderBy(keySelector: mcp => mcp.Name).ToList();
 				rightSelectedObject = leftSelectedObject;
 				leftSelectedObject = null;
