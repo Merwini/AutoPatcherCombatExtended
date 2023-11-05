@@ -664,7 +664,7 @@ namespace nuff.AutoPatcherCombatExtended
 
 
 
-        public static void HandleUnknownDef(Def def, APCEPatchLogger log)
+        public static void HandleUnknownDef(Def def)
         {
             //log.PatchFailed(def.defName, new Exception("Unrecognized def type"));
             return;
