@@ -9,7 +9,7 @@ using CombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DefDataHolderGene : DefDataHolder
+    public class DefDataHolderGene : DefDataHolder
     {
         //TODO can genes add verbs? Need to look into whether they would need patching.
         public DefDataHolderGene(GeneDef def) : base(def)

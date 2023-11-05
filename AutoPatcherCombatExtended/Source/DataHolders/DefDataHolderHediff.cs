@@ -9,7 +9,7 @@ using CombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DefDataHolderHediff : DefDataHolder
+    public class DefDataHolderHediff : DefDataHolder
     {
         public DefDataHolderHediff(HediffDef def) : base(def)
         {

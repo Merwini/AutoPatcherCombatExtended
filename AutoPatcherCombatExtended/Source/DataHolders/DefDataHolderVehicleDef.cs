@@ -7,7 +7,7 @@ using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DefDataHolderVehicleDef : DefDataHolder
+    public class DefDataHolderVehicleDef : DefDataHolder
     {
         public DefDataHolderVehicleDef(ThingDef def) : base(def)
         {

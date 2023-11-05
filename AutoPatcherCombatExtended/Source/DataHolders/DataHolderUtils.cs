@@ -127,5 +127,42 @@ namespace nuff.AutoPatcherCombatExtended
             else
                 return APCEConstants.gunKinds.Other;
         }
+
+        public static void GenerateDefDataHolder(Def def, APCEConstants.DefTypes defType)
+        {
+            DefDataHolder ddh;
+            switch (defType)
+            {
+                case APCEConstants.DefTypes.Apparel:
+                    ddh = new DefDataHolderApparel(def as ThingDef);
+                    break;
+                case APCEConstants.DefTypes.Building_TurretGun:
+                    ddh = new DefDataHolderBuilding_TurretGun(def as ThingDef);
+                    break;
+                case APCEConstants.DefTypes.Gene:
+                    ddh = new DefDataHolderGene(def as GeneDef);
+                    break;
+                case APCEConstants.DefTypes.Hediff:
+                    ddh = new DefDataHolderHediff(def as HediffDef);
+                    break;
+                case APCEConstants.DefTypes.MeleeWeapon:
+                    ddh = new DefDataHolderMeleeWeapon(def as ThingDef);
+                    break;
+                case APCEConstants.DefTypes.Pawn:
+                    ddh = new DefDataHolderPawn(def as ThingDef);
+                    break;
+                case APCEConstants.DefTypes.RangedWeapon:
+                    ddh = new DefDataHolderRangedWeapon(def as ThingDef);
+                    break;
+                case APCEConstants.DefTypes.Stuff: //TODO Stuff is not a def, figure out a way to work with them
+                    break;
+                case APCEConstants.DefTypes.Vehicle: //TODO these will need to be prefixed in by the compat
+                    break;
+                case APCEConstants.DefTypes.VehicleTurret:
+                    break;
+
+
+            }
+        }
     }
 }

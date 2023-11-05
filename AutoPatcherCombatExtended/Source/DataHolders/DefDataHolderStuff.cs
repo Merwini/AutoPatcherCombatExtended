@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DefDataHolderStuff
+    public class DefDataHolderStuff
     { 
         //TODO not really a def, but needs patching
     }

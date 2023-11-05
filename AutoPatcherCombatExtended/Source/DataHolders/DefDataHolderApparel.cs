@@ -9,10 +9,10 @@ using CombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DefDataHolderApparel : DefDataHolder
+    public class DefDataHolderApparel : DefDataHolder
     {
         //TODO: headgear layers
-        DefDataHolderApparel(ThingDef def) : base(def)
+        public DefDataHolderApparel(ThingDef def) : base(def)
         {
         }
 

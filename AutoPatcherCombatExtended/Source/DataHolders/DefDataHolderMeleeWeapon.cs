@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DefDataHolderMeleeWeapon : DefDataHolder
+    public class DefDataHolderMeleeWeapon : DefDataHolder
     {
         public DefDataHolderMeleeWeapon(ThingDef def) : base(def)
         {

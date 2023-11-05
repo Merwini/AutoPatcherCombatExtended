@@ -95,5 +95,19 @@ namespace nuff.AutoPatcherCombatExtended
             //ProjectileCE_Bursting,
             //ProjectileCE_BunkerBuster
         }
+
+        public enum DefTypes
+        {
+            Apparel,
+            Building_TurretGun,
+            Gene,
+            Hediff,
+            MeleeWeapon,
+            Pawn,
+            RangedWeapon,
+            Stuff,
+            Vehicle,
+            VehicleTurret
+        }
     }
 }

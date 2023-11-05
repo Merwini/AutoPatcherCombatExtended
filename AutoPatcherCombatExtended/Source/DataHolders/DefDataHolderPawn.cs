@@ -8,7 +8,7 @@ using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class DefDataHolderPawn : DefDataHolder
+    public class DefDataHolderPawn : DefDataHolder
     {
         public DefDataHolderPawn(ThingDef def) : base(def)
         {

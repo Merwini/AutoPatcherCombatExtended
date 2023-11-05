@@ -40,6 +40,7 @@ namespace nuff.AutoPatcherCombatExtended
             defName = def.defName;
             parentModPackageId = def.modContentPack.PackageId;
             modData = DataHolderUtils.ReturnModDataOrDefault(def);
+            RegisterSelfInDict();
             GetOriginalData();
             AutoCalculate();
         }
@@ -47,10 +48,7 @@ namespace nuff.AutoPatcherCombatExtended
         public virtual void ExposeData()
         {
             if (Scribe.mode == LoadSaveMode.Saving)
-            {//TODO remove this
-                //convert tools into lists before saving those lists
-                ClearToolSerializedLists();
-                SerializeTools();
+            {
             }
 
             if (Scribe.mode == LoadSaveMode.LoadingVars
@@ -76,13 +74,10 @@ namespace nuff.AutoPatcherCombatExtended
                 && defName != null)
             {
                 def = DefDatabase<Def>.GetNamed(defName, false);
-                if (def != null)
+                if (def != null) //TODO exception for AmmoSet, since they will not exist in DefDatabase until Patch is run
                 {
                     GetOriginalData();
-                    APCESettings.defDataDict.Add(def.defName, this);
-
-                    //convert lists into toolsCE after loading the lists
-                    DeserializeTools();
+                    RegisterSelfInDict();
                 }
             }
         }
@@ -187,6 +182,11 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_Tools.Add(tool);
                 }
             }
+        }
+
+        public void RegisterSelfInDict()
+        {
+            APCESettings.defDataDict.Add(this.defName, this);
         }
     }
 }

@@ -61,15 +61,15 @@ namespace nuff.AutoPatcherCombatExtended
         public static void PatchMod(ModContentPack mod)
         {
             APCEPatchLogger log = new APCEPatchLogger(mod);
-            log.BeginPatch();
+            //log.BeginPatch(); //TODO redo logging
             foreach (Def def in mod.AllDefs)
             {
-                SortAndPatchDef(def, log);
+                SortAndPatchDef(def);
             }
-            log.EndPatch();
+            //log.EndPatch();
         }
 
-        public static void SortAndPatchDef(Def def, APCEPatchLogger log)
+        public static void SortAndPatchDef(Def def)
         {
             ////vehicles checked by a Harmony prefix applied by APCEVF PatchVehicle
             //if (def is ThingDef td)
