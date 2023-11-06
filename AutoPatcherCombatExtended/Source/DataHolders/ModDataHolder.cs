@@ -15,7 +15,7 @@ namespace nuff.AutoPatcherCombatExtended
         public string packageId;
         public bool isCustomized = false;
 
-        //toggles
+        //toggles //todo remove
         public bool patchWeapons = true;
         public bool patchCustomVerbs = false;
         public bool limitWeaponMass = false;
