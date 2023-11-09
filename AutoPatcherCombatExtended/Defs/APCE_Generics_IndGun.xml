@@ -21,6 +21,11 @@
       <Mass>4.20</Mass>
       <RangedWeapon_Cooldown>0.69</RangedWeapon_Cooldown>
     </statBases>
+	<costList>
+		<Steel>420</Steel>
+		<ComponentIndustrial>5</ComponentIndustrial>
+		<WoodLog>69</WoodLog>
+	</costList>
     <verbs>
       <li Class="CombatExtended.VerbPropertiesCE">
         <recoilAmount>1.82</recoilAmount>

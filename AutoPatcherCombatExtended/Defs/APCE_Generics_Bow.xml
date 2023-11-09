@@ -20,6 +20,9 @@
       <Bulk>4.00</Bulk>
       <RangedWeapon_Cooldown>1</RangedWeapon_Cooldown>
     </statBases>
+	<costList>
+		<WoodLog>25</WoodLog>
+	</costList>
     <weaponTags>
       <li>NeolithicRangedDecent</li>
     </weaponTags>
