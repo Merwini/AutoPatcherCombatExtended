@@ -48,6 +48,7 @@ namespace nuff.AutoPatcherCombatExtended
                     PatchMod(mod);
                 }
             }
+            DisableGenericGuns();
             if (APCESettings.printLogs)
             {
                 APCEPatchLogger.stopwatchMaster.Stop();
@@ -129,6 +130,18 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 HandleUnknownDef(def, log);
             }
+        }
+
+        public static void DisableGenericGuns()
+        {
+            APCEDefOf.APCE_Gun_Generic.generateAllowChance = 0;
+            APCEDefOf.APCE_Gun_Generic.generateCommonality = 0;
+            APCEDefOf.APCE_SpacerGun_Generic.generateAllowChance = 0;
+            APCEDefOf.APCE_SpacerGun_Generic.generateCommonality = 0;
+            APCEDefOf.APCE_Shotgun_Generic.generateAllowChance = 0;
+            APCEDefOf.APCE_Shotgun_Generic.generateCommonality = 0;
+            APCEDefOf.APCE_ExplosiveLauncher_Generic.generateAllowChance = 0;
+            APCEDefOf.APCE_ExplosiveLauncher_Generic.generateCommonality = 0;
         }
     }
 }
