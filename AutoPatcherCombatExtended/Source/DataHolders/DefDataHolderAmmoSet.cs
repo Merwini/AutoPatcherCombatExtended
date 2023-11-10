@@ -678,7 +678,14 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void Patch()
         {
-            throw new NotImplementedException();
+            //construct secondaryDamages
+            //construct projectiles
+            //construct AmmoLinks
+            //construct AmmoCat
+            //construct AmmoSet
+
+            BuildSecondaryDamages();
+
             /*public static void PatchBaseBullet(ThingDef bullet)
         {
             bullet.category = ThingCategory.Projectile;
@@ -709,6 +716,32 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ExposeData();
             //TODO
+            //note - unlike other defs, should run Patch when loaded, so that it exists before ranged weapons are patched
+        }
+
+        public void BuildSecondaryDamages()
+        {
+            //make sure things don't get duplicated if player re-patches
+            modified_secondaryDamages.Clear();
+
+            for (int i = 0; i < modified_secondaryDamageDefs.Count; i++)
+            {
+                modified_secondaryDamages.Add(new List<SecondaryDamage>());
+                if (modified_secondaryDamageDefs[i].NullOrEmpty())
+                {
+                    continue;
+                }
+                for (int j = 0; j < modified_secondaryDamageDefs[i].Count; j++)
+                {
+                    SecondaryDamage newSecDam = new SecondaryDamage
+                    {
+                        def = modified_secondaryDamageDefs[i][j],
+                        amount = modified_secondaryDamageAmounts[i][j],
+                        chance = modified_secondaryDamageChances[i][j]
+                    };
+                    modified_secondaryDamages[i].Add(newSecDam);
+                }
+            }
         }
     }
 }
