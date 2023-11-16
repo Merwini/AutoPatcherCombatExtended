@@ -164,5 +164,12 @@ namespace nuff.AutoPatcherCombatExtended
 
             }
         }
+        public static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
+        {
+            //experimental reflection attempt
+            Type tpp = typeof(ProjectileProperties);
+            FieldInfo dab = tpp.GetField("damageAmountBase", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            dab.SetValue(newPPCE, (int)damage);
+        }
     }
 }

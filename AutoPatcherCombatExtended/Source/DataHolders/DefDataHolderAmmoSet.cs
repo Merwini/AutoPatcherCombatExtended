@@ -54,7 +54,6 @@ namespace nuff.AutoPatcherCombatExtended
         List<string> modified_projectileNames = new List<string>();
         List<string> modified_projectileLabels = new List<string>();
         List<APCEConstants.ThingClasses> modified_thingClasses = new List<APCEConstants.ThingClasses>();
-        //List<Type> modified_thingClasses = new List<Type>(); //TODO cache references to usable thingClasses as startup?
 
         //projectile stuff
         List<DamageDef> modified_damageDefs = new List<DamageDef>();
@@ -66,7 +65,7 @@ namespace nuff.AutoPatcherCombatExtended
         List<float> modified_explosionRadii = new List<float>();
         List<int> modified_pelletCounts = new List<int>();
         List<float> modified_spreadMults = new List<float>();
-        List<float> modified_empShieldBreakChance = new List<float>();
+        List<float> modified_empShieldBreakChances = new List<float>();
         List<float> modified_suppressionFactors = new List<float>();
         List<float> modified_dangerFactors = new List<float>();
         List<bool> modified_ai_IsIncendiary = new List<bool>();
@@ -186,7 +185,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                 modified_pelletCounts.Add(1);
                 modified_spreadMults.Add(1);
-                modified_empShieldBreakChance.Add(1);
+                modified_empShieldBreakChances.Add(1);
                 modified_explosionRadii.Add(0);
                 modified_suppressionFactors.Add(1);
                 modified_dangerFactors.Add(1);
@@ -294,7 +293,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_armorPenetrationBlunts.Add(armorPenBluntModded * 0.25f);
                         modified_pelletCounts.Add(9);
                         modified_spreadMults.Add(8.9f);
-                        modified_empShieldBreakChance.Add(1);
+                        modified_empShieldBreakChances.Add(1);
                         break;
 
                     case 1:
@@ -308,7 +307,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_armorPenetrationBlunts.Add(armorPenBluntModded * 5f);
                         modified_pelletCounts.Add(1);
                         modified_spreadMults.Add(1);
-                        modified_empShieldBreakChance.Add(1);
+                        modified_empShieldBreakChances.Add(1);
                         break;
 
                     case 2:
@@ -322,7 +321,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_armorPenetrationBlunts.Add(armorPenBluntModded * 0.2f);
                         modified_pelletCounts.Add(1);
                         modified_spreadMults.Add(2);
-                        modified_empShieldBreakChance.Add(1);
+                        modified_empShieldBreakChances.Add(1);
 
                         break;
 
@@ -337,7 +336,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_armorPenetrationBlunts.Add(0);
                         modified_pelletCounts.Add(1);
                         modified_spreadMults.Add(1);
-                        modified_empShieldBreakChance.Add(0.2f);
+                        modified_empShieldBreakChances.Add(0.2f);
                         break;
                 }
 
@@ -360,7 +359,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_speeds.Add(40);
                 modified_pelletCounts.Add(1);
                 modified_spreadMults.Add(1);
-                modified_empShieldBreakChance.Add(1);
+                modified_empShieldBreakChances.Add(1);
 
                 switch (i)
                 {
@@ -482,7 +481,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_explosionRadii.Add(0);
                 modified_pelletCounts.Add(1);
                 modified_spreadMults.Add(1);
-                modified_empShieldBreakChance.Add(1);
+                modified_empShieldBreakChances.Add(1);
                 modified_suppressionFactors.Add(1);
                 modified_dangerFactors.Add(1);
                 modified_ai_IsIncendiary.Add(false);
@@ -587,7 +586,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_damages.Add((int)(original_damage));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
-                        modified_empShieldBreakChance.Add(1);
+                        modified_empShieldBreakChances.Add(1);
                         break;
                     case 1:
                         //conc
@@ -596,7 +595,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_damages.Add((int)(original_damage * 0.75f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 2f);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
-                        modified_empShieldBreakChance.Add(1);
+                        modified_empShieldBreakChances.Add(1);
                         break;
                     case 2:
                         //ion
@@ -605,7 +604,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_damages.Add((int)(original_damage * 0.75f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 1.5f);
                         modified_armorPenetrationSharps.Add(armorPenBluntModded);
-                        modified_empShieldBreakChance.Add(0.2f);
+                        modified_empShieldBreakChances.Add(0.2f);
                         secondaryDamageDefs.Add(DamageDefOf.EMP);
                         secondaryDamageAmounts.Add((int)(original_damage * 0.5f + 0.5f));
                         secondaryDamageChances.Add(1);
@@ -686,6 +685,8 @@ namespace nuff.AutoPatcherCombatExtended
 
             BuildSecondaryDamages();
 
+            BuildProjectiles();
+
             /*public static void PatchBaseBullet(ThingDef bullet)
         {
             bullet.category = ThingCategory.Projectile;
@@ -716,6 +717,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ExposeData();
             //TODO
+            //reminder - damageDefs are stared as Defs, need to convert to/from string during exposedata
             //note - unlike other defs, should run Patch when loaded, so that it exists before ranged weapons are patched
         }
 
@@ -741,6 +743,56 @@ namespace nuff.AutoPatcherCombatExtended
                     };
                     modified_secondaryDamages[i].Add(newSecDam);
                 }
+            }
+        }
+
+        public void BuildProjectiles()
+        {
+            modified_projectiles.Clear();
+
+            for (int i = 0; i < modified_projectileNames.Count; i++)
+            {
+                ProjectilePropertiesCE newProjProps = new ProjectilePropertiesCE()
+                {
+                    damageDef = modified_damageDefs[i],
+                    armorPenetrationSharp = modified_armorPenetrationSharps[i],
+                    armorPenetrationBlunt = modified_armorPenetrationBlunts[i],
+                    speed = modified_speeds[i],
+                    explosionRadius = modified_explosionRadii[i],
+                    pelletCount = modified_pelletCounts[i],
+                    spreadMult = modified_spreadMults[i],
+                    empShieldBreakChance = modified_empShieldBreakChances[i],
+                    suppressionFactor = modified_suppressionFactors[i],
+                    dangerFactor = modified_dangerFactors[i],
+                    ai_IsIncendiary = modified_ai_IsIncendiary[i],
+                    applyDamageToExplosionCellsNeighbors = modified_applyDamageToExplosionCellsNeighbors[i],
+
+                    secondaryDamage = modified_secondaryDamages[i] //this should have been populated already
+                };
+                DataHolderUtils.SetDamage(newProjProps, modified_damages[i]);
+
+                ThingDef newProj = new ThingDef()
+                {
+                    defName = modified_projectileNames[i],
+                    label = modified_projectileLabels[i],
+                    thingClass = GetProjectileThingClass(i)
+                };
+            }
+        }
+
+        public Type GetProjectileThingClass(int i)
+        {
+            APCEConstants.ThingClasses thingClass = modified_thingClasses[i];
+            switch (thingClass)
+            {
+                case APCEConstants.ThingClasses.BulletCE:
+                    return typeof(BulletCE);
+                case APCEConstants.ThingClasses.ProjectileCE_Explosive:
+                    return typeof(ProjectileCE_Explosive);
+                case APCEConstants.ThingClasses.ProjectileCE:
+                    return typeof(ProjectileCE);
+                default:
+                    return typeof(ProjectileCE);
             }
         }
     }
