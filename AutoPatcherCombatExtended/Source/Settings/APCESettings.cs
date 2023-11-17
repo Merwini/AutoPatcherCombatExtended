@@ -30,6 +30,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
         public static Dictionary<string, DefDataHolder> defDataDict = new Dictionary<string, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+        public static Dictionary<string, ThingCategoryDef> modAmmoThingCategoryDict = new Dictionary<string, ThingCategoryDef>(); //not saved, populated if/when ammos are made for that mod
 
         //General Settings
         public static bool patchWeapons = true;

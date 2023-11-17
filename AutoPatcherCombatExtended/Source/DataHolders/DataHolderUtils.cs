@@ -171,5 +171,14 @@ namespace nuff.AutoPatcherCombatExtended
             FieldInfo dab = tpp.GetField("damageAmountBase", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             dab.SetValue(newPPCE, (int)damage);
         }
+
+        /*
+        public static string ReturnModLabelNoSpaces(string packageID)
+        {
+            ModContentPack mod = LoadedModManager.RunningModsListForReading.First(mcp => mcp.PackageId == packageID);
+            string labelNoSpaces = mod.Name.Replace(" ", "");
+            return labelNoSpaces;
+        }
+        */
     }
 }
