@@ -26,11 +26,6 @@ namespace nuff.AutoPatcherCombatExtended
         List<float> modified_ArmorRatingBlunt = new List<float>();
         List<float> modified_ArmorRatingHeat = new List<float>();
 
-
-
-
-        //TODO use more basic data structures so it can be serialized
-
         public override void GetOriginalData()
         {
             hediffDef = def as HediffDef;
@@ -94,6 +89,7 @@ namespace nuff.AutoPatcherCombatExtended
             if (verbGiver != null && original_Tools != null)
             {
                 verbGiver.tools.Clear();
+                BuildTools();
                 for (int i = 0; i < modified_Tools.Count; i++)
                 {
                     verbGiver.tools.Add(modified_Tools[i]);
@@ -115,9 +111,9 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_toolPowers[i] *= modData.pawnToolPowerMult;
-            modified_toolArmorPenetrationSharps[i] *= modData.pawnToolSharpPenetration;
-            modified_toolArmorPenetrationSharps[i] *= modData.pawnToolBluntPenetration;
+            modified_ToolPowers[i] *= modData.pawnToolPowerMult;
+            modified_ToolArmorPenetrationSharps[i] *= modData.pawnToolSharpPenetration;
+            modified_ToolArmorPenetrationSharps[i] *= modData.pawnToolBluntPenetration;
         }
 
         //TODO

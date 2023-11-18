@@ -69,11 +69,11 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
 
             thingDef.tools.Clear();
+            BuildTools();
             for (int i = 0; i < modified_Tools.Count; i++)
             {
                 thingDef.tools.Add(modified_Tools[i]);
             }
-            //TODO this is where I left off
         }
 
         public override StringBuilder PrepExport()
@@ -90,7 +90,16 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             base.ExposeData();
-
+            if (Scribe.mode == LoadSaveMode.LoadingVars
+                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+            {
+                Scribe_Values.Look(ref modified_Mass, "modified_Mass", 0f);
+                Scribe_Values.Look(ref modified_Bulk, "modified_Bulk", 0f);
+                Scribe_Values.Look(ref modified_MeleeCounterParryBonus, "modified_MeleeCounterParryBonus", 0f);
+                Scribe_Values.Look(ref modified_MeleeDodgeChance, "modified_MeleeDodgeChance", 0f);
+                Scribe_Values.Look(ref modified_MeleeParryChance, "modified_MeleeParryChance", 0f);
+                Scribe_Values.Look(ref modified_MeleeCritChance, "modified_MeleeCritChance", 0f);
+            }
         }
 
         private void CalculateStatMods()
@@ -109,9 +118,9 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_toolPowers[i] *= modData.weaponToolPowerMult;
-            modified_toolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration * techMult;
-            modified_toolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration * techMult;
+            modified_ToolPowers[i] *= modData.weaponToolPowerMult;
+            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration * techMult;
+            modified_ToolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration * techMult;
         }
 
         public void CalculateWeaponTechMult()
