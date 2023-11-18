@@ -49,6 +49,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         // List of ammos and their serializable data
         List<AmmoDef> modified_ammoDefs = new List<AmmoDef>();
+        List<string> modified_ammoDefStrings = new List<string>(); //used for saving/loading
 
         // List of projectiles and their serializable data
         //ThingDef stuff
@@ -59,7 +60,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         //projectile stuff
         List<DamageDef> modified_damageDefs = new List<DamageDef>();
-        List<string> modified_damageDefNames = new List<string>(); //used for saving/loading
+        List<string> modified_damageDefStrings = new List<string>(); //used for saving/loading
         List<int> modified_damages = new List<int>();
         List<float> modified_armorPenetrationSharps = new List<float>();
         List<float> modified_armorPenetrationBlunts = new List<float>();
@@ -93,8 +94,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         //sounds?
         //TODO
-
-        string modified_defName;
 
         public override void GetOriginalData()
         {
@@ -750,10 +749,58 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             base.ExposeData();
-            //TODO
-            //reminder - damageDefs are stared as Defs, need to convert to/from string during exposedata
-            //note - unlike other defs, should run Patch when loaded, so that it exists before ranged weapons are patched
-        }
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars
+                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+            {
+                if (Scribe.mode == LoadSaveMode.Saving)
+                {
+                    Stringify();
+                }
+                // Strings related to AmmoSetDef
+                Scribe_Values.Look(ref modified_ammoSetDefName, "modified_ammoSetDefName");
+                Scribe_Values.Look(ref modified_ammoSetLabel, "modified_ammoSetLabel");
+                Scribe_Values.Look(ref modified_ammoSetDescription, "modified_ammoSetDescription");
+
+                //AmmoDefs
+                Scribe_Collections.Look(ref modified_ammoDefs, "modified_ammoDefs");
+
+                //Projectile things
+                Scribe_Collections.Look(ref modified_projectileNames, "modified_projectileNames");
+                Scribe_Collections.Look(ref modified_projectileLabels, "modified_projectileLabels");
+                Scribe_Collections.Look(ref modified_thingClasses, "modified_thingClasses");
+
+                //Projectile Properties
+                Scribe_Collections.Look(ref modified_damageDefStrings, "modified_damageDefNames");
+                Scribe_Collections.Look(ref modified_damages, "modified_damages");
+                Scribe_Collections.Look(ref modified_armorPenetrationSharps, "modified_armorPenetrationSharps");
+                Scribe_Collections.Look(ref modified_armorPenetrationBlunts, "modified_armorPenetrationBlunts");
+                Scribe_Collections.Look(ref modified_speeds, "modified_speeds");
+                Scribe_Collections.Look(ref modified_explosionRadii, "modified_explosionRadii");
+                Scribe_Collections.Look(ref modified_pelletCounts, "modified_pelletCounts");
+                Scribe_Collections.Look(ref modified_spreadMults, "modified_spreadMults");
+                Scribe_Collections.Look(ref modified_empShieldBreakChances, "modified_empShieldBreakChances");
+                Scribe_Collections.Look(ref modified_suppressionFactors, "modified_suppressionFactors");
+                Scribe_Collections.Look(ref modified_dangerFactors, "modified_dangerFactors");
+                Scribe_Collections.Look(ref modified_ai_IsIncendiary, "modified_ai_IsIncendiary");
+                Scribe_Collections.Look(ref modified_applyDamageToExplosionCellsNeighbors, "modified_applyDamageToExplosionCellsNeighbors");
+                //Secondary Damages
+                Scribe_Collections.Look(ref modified_secondaryDamageDefStrings, "modified_secondaryDamageDefStrings");
+                Scribe_Collections.Look(ref modified_secondaryDamageAmounts, "modified_secondaryDamageAmounts");
+                Scribe_Collections.Look(ref modified_secondaryDamageChances, "modified_secondaryDamageChances");
+
+                if (Scribe.mode == LoadSaveMode.LoadingVars)
+                {
+                    Destringify();
+                    Patch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
+                }
+            }
+
+
+                //TODO
+                //reminder - damageDefs are stared as Defs, need to convert to/from string during exposedata
+                //note - unlike other defs, should run Patch when loaded, so that it exists before ranged weapons are patched
+            }
 
         public void BuildSecondaryDamages()
         {
@@ -882,6 +929,80 @@ namespace nuff.AutoPatcherCombatExtended
             DefGenerator.AddImpliedDef<AmmoSetDef>(ammoSet);
 
             modified_ammoSetDef = ammoSet;
+        }
+
+        public void Stringify()
+        {
+            //ammodefs
+            modified_ammoDefStrings.Clear();
+            for (int i = 0; i < modified_ammoDefs.Count; i++)
+            {
+                modified_ammoDefStrings.Add(modified_ammoDefs[i].ToString());
+            }
+
+            //projectile damageDef
+            modified_damageDefStrings.Clear();
+            for (int i = 0; i < modified_damageDefs.Count; i++)
+            {
+                modified_damageDefStrings.Add(modified_damageDefs[i].ToString());
+            }
+
+            //secondary damageDefs
+            modified_secondaryDamageDefStrings.Clear();
+            for (int i = 0; i < modified_secondaryDamageDefs.Count; i++)
+            {
+                modified_secondaryDamageDefStrings.Add(new List<string>());
+                if (modified_secondaryDamageDefs[i].NullOrEmpty())
+                    continue;
+                for (int j = 0; j < modified_secondaryDamageDefs[i].Count; j++)
+                {
+                    modified_secondaryDamageDefStrings[i].Add(modified_secondaryDamageDefs[i][j].ToString());
+                }
+            }
+        }
+
+        public void Destringify()
+        {
+            //ammodefs
+            modified_ammoDefs.Clear();
+            for (int i = 0; i < modified_ammoDefStrings.Count; i++)
+            {
+                AmmoDef ammo = DefDatabase<AmmoDef>.GetNamed(modified_ammoDefStrings[i]);
+                if (ammo == null)
+                {
+                    //todo handle failure -- default to some generic?
+                }
+                modified_ammoDefs.Add(ammo);
+            }
+
+            //projectile damageDef
+            modified_damageDefs.Clear();
+            for (int i = 0; i < modified_damageDefStrings.Count; i++)
+            {
+                DamageDef dam = DefDatabase<DamageDef>.GetNamed(modified_damageDefStrings[i]);
+                if (dam == null)
+                {
+                    //todo handle failure -- default to Bullet?
+                }
+                modified_damageDefs.Add(dam);
+            }
+
+            //secondary damageDefs
+            for (int i = 0; i < modified_secondaryDamageDefStrings.Count; i++)
+            {
+                modified_ToolCapacityDefs.Add(new List<ToolCapacityDef>());
+                if (modified_secondaryDamageDefStrings[i].NullOrEmpty())
+                    continue;
+                for (int j = 0; j < modified_secondaryDamageDefStrings[i].Count; j++)
+                {
+                    DamageDef dam2 = DefDatabase<DamageDef>.GetNamed(modified_secondaryDamageDefStrings[i][j]);
+                    if (dam2 == null)
+                    {
+                        //todo handle failure -- default to ???
+                    }
+                    modified_secondaryDamageDefs[i].Add(dam2);
+                }
+            }
         }
 
         //It is only after two hours of work that I realize that I don't need to make ThingCategoryDefs since I no longer generate new AmmoDefs, instead assigning generic Ammos.
