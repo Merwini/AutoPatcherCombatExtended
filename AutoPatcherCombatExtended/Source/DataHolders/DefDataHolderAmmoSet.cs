@@ -42,6 +42,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         //ammosetdef and its serializable data
         AmmoSetDef modified_ammoSetDef;
+        public AmmoSetDef GeneratedAmmoSetDef { get { return modified_ammoSetDef; }}
         List<AmmoLink> modified_ammoLinks = new List<AmmoLink>();
         string modified_ammoSetDefName;
         string modified_ammoSetLabel;

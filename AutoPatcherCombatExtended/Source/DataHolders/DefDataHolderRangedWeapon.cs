@@ -15,7 +15,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        public ThingDef thingDef;
+        public ThingDef weaponThingDef;
 
         float rangedToolTechMult;
 
@@ -57,6 +57,7 @@ namespace nuff.AutoPatcherCombatExtended
         bool modified_reloadOneAtATime;
         float modified_loadedAmmoBulkFactor;
         AmmoSetDef modified_AmmoSetDef;
+        string modified_AmmoSetDefString;
 
         int modified_aimedBurstShotCount;
         bool modified_aiUseBurstMode;
@@ -68,29 +69,29 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            thingDef = def as ThingDef;
+            weaponThingDef = def as ThingDef;
 
             //need to make sure these lists aren't null before starting DetermineGunKind
-            if (thingDef.statBases == null)
+            if (weaponThingDef.statBases == null)
             {
-                thingDef.statBases = new List<StatModifier>();
+                weaponThingDef.statBases = new List<StatModifier>();
             }
-            if (thingDef.weaponTags == null)
+            if (weaponThingDef.weaponTags == null)
             {
-                thingDef.weaponTags = new List<string>();
+                weaponThingDef.weaponTags = new List<string>();
             }
 
-            original_Tools = thingDef.tools;
-            original_VerbProperties = thingDef.Verbs[0]; // TODO eventually make compatible with MVCF
-            original_mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
-            original_rangedWeaponCooldown = thingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
-            original_workToMake = thingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
+            original_Tools = weaponThingDef.tools;
+            original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
+            original_mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+            original_rangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
+            original_workToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
         }
 
         public override void AutoCalculate()
         {
             //TODO may need to allow user to override gunKind for better recalculating
-            gunKind = DataHolderUtils.DetermineGunKind(thingDef);
+            gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
             CalculateWeaponTechMult();
 
             //todo mortar
@@ -108,6 +109,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 CalculateCompFireModesValues();
                 CalculateCompAmmoUserValues();
+                GenerateAmmoSet();
             }
             else
             {
@@ -144,10 +146,10 @@ namespace nuff.AutoPatcherCombatExtended
         public void CalculateStatBaseValues()
         {
             //recoil is calculated here since I don't want to make another switch in the other method
-            float ssAccuracyMod = (thingDef.statBases.GetStatValueFromList(StatDefOf.AccuracyLong, 0.5f) * 0.1f);
-            float gunTechModAdd = (thingDef.techLevel.CompareTo(TechLevel.Industrial) * 0.1f);
+            float ssAccuracyMod = (weaponThingDef.statBases.GetStatValueFromList(StatDefOf.AccuracyLong, 0.5f) * 0.1f);
+            float gunTechModAdd = (weaponThingDef.techLevel.CompareTo(TechLevel.Industrial) * 0.1f);
             float gunTechModMult = (1 - gunTechModAdd);
-            float recoilTechMod = (1 - (((float)thingDef.techLevel - 3) * 0.2f));
+            float recoilTechMod = (1 - (((float)weaponThingDef.techLevel - 3) * 0.2f));
             switch (gunKind)
             {
                 //calc new stat bases
@@ -197,7 +199,7 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_bulk = 2f * original_mass;
                     break;
                 case APCEConstants.gunKinds.ExplosiveLauncher:
-                    modified_shotSpread = 0.122f + (thingDef.Verbs[0].ForcedMissRadius * 0.02f);
+                    modified_shotSpread = 0.122f + (weaponThingDef.Verbs[0].ForcedMissRadius * 0.02f);
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.8f;
                     modified_bulk = 2f * original_mass;
@@ -258,7 +260,7 @@ namespace nuff.AutoPatcherCombatExtended
                 if (APCESettings.patchCustomVerbs)
                     modified_VerbClass = typeof(Verb_ShootCE);
                 else
-                    throw new Exception($"Unable to patch {thingDef.label} due to unrecognized and/or custom verbClass: {original_VerbProperties.verbClass}");
+                    throw new Exception($"Unable to patch {weaponThingDef.label} due to unrecognized and/or custom verbClass: {original_VerbProperties.verbClass}");
             }
         }
 
@@ -320,7 +322,7 @@ namespace nuff.AutoPatcherCombatExtended
         public void CalculateWeaponTechMult()
         {
             float techMult = 1f;
-            switch (thingDef.techLevel)
+            switch (weaponThingDef.techLevel)
             {
                 case TechLevel.Animal:
                     techMult *= modData.weaponToolTechMultAnimal;
@@ -352,9 +354,9 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_toolPowers[i] *= modData.weaponToolPowerMult;
-            modified_toolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult?
-            modified_toolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration;
+            modified_ToolPowers[i] *= modData.weaponToolPowerMult;
+            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult?
+            modified_ToolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration;
         }
 
         public void PatchMortar()
@@ -365,6 +367,14 @@ namespace nuff.AutoPatcherCombatExtended
         public void PatchGrenade()
         {
 
+        }
+
+        public void GenerateAmmoSet()
+        {
+            DefDataHolderAmmoSet newAmmoSet = new DefDataHolderAmmoSet(weaponThingDef);
+            //RegisterSelfInDict, GetOriginalData, and Autocalculate are called by constructor
+            newAmmoSet.Patch();
+            this.modified_AmmoSetDef = newAmmoSet.GeneratedAmmoSetDef;
         }
     }
 }
