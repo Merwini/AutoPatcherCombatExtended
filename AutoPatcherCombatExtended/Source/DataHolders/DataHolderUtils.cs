@@ -164,6 +164,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             }
         }
+
         public static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
         {
             //experimental reflection attempt

@@ -10,6 +10,8 @@ TODO headgear layers
 TODO ThingDef tags
 TODO add logic to GetOriginalData to allow re-patching of already compatible defs
 TODO remove settings to enable/disable patching of certain defTypes, is just bloat at this point
+TODO make stringify/destringify virtual methods in base DefDataHolder, with overrides in the various subclasses
+TODO alreadyGenerated bool, so that repatching grenades, mortars, ammosets does not keep generating new ones 
 
 TODO basic:
 	Apparel

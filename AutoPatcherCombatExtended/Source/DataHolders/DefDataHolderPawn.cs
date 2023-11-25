@@ -32,6 +32,8 @@ namespace nuff.AutoPatcherCombatExtended
         //TODO
         public override void Patch()
         {
+            //TODO Comp notes:
+                //All pawns get CompInventory and CompTacticalManager, as well as ITabInventory added to base. Humanlikes get CompAmmoGiver, CompSuppressable, and CompArmorDurability
             throw new NotImplementedException();
         }
 

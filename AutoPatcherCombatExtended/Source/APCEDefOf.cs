@@ -99,5 +99,11 @@ namespace nuff.AutoPatcherCombatExtended
         //misc ThingDefs
         public static ThingDef WoodLog;
         public static ThingDef Steel;
+
+        //misc other
+        public static ToolCapacityDef Poke;
+        public static ToolCapacityDef Blunt;
+
+        public static BodyPartGroupDef Base;
     }
 }
