@@ -34,7 +34,7 @@ namespace nuff.AutoPatcherCombatExtended
         //modified statbase stuff
         float modified_mass;
         float modified_bulk;
-        float modified_rangedWeaponCoolDown;
+        float modified_rangedWeaponCooldown;
         float modified_workToMake;
         float modified_sightsEfficiency;
         float modified_shotSpread;
@@ -66,6 +66,10 @@ namespace nuff.AutoPatcherCombatExtended
         AimMode modified_aiAimMode;
 
         //modified other stuff
+        AmmoDef modified_ammoDef; // for use in grenades
+        int modified_recipeCount; //also for grenades
+        int modified_stackLimit;
+
 
         public override void GetOriginalData()
         {
@@ -104,26 +108,32 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
             CalculateStatBaseValues();
-            CalculateCEVerbPropValues();
             if (gunKind != APCEConstants.gunKinds.Grenade)
             {
+                CalculateCEVerbPropValues();
                 CalculateCompFireModesValues();
                 CalculateCompAmmoUserValues();
-                GenerateAmmoSet();
             }
             else
             {
-                //todo grenade
+                CalculateGrenade();
             }
-            //generate values for comps
+            if (modified_AmmoSetDef == null)
+            {
+                GenerateAmmoSet();
+            }
         }
+
         public override void Patch()
         {
             //TODO
             //patch stat bases
+            PatchStatBases();
             //create and add comps
             //patch tools
             //patch verb - copy old verb + add recoil
+
+            //for grenades and mortars, look for recipes that produce the ThingDef, change to AmmoDef
         }
 
         public override StringBuilder PrepExport()
@@ -213,7 +223,9 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_recoil = 1f;
                     break;
                 case APCEConstants.gunKinds.Grenade:
-                    modified_sightsEfficiency = 0.65f;
+                    modified_sightsEfficiency = 1.00f;
+                    modified_bulk = 0.87f;
+                    modified_mass = 0.7f;
                     break;
                 default:
                     modified_shotSpread = modified_shotSpread = (0.15f - ssAccuracyMod) * gunTechModMult; //somewhere between an SMG and assault rifle
@@ -223,6 +235,18 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_recoil = 1f;
                     break;
             }
+        }
+
+        public void PatchStatBases()
+        {
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.Mass, modified_mass);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_bulk);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_rangedWeaponCooldown);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.WorkToMake, modified_workToMake);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_sightsEfficiency);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_shotSpread);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_swayFactor);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Recoil, modified_recoil);
         }
 
         public void CalculateCEVerbPropValues()
@@ -355,19 +379,75 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= modData.weaponToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult?
+            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult? Will weaken things with intended weapons like bayonets, but be better for most cases
             modified_ToolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration;
         }
 
-        public void PatchMortar()
+        public void CalculateMortar()
         {
 
         }
 
-        public void PatchGrenade()
+        public void CalculateGrenade()
         {
+            if (modified_ammoDef == null)
+            {
+                modified_ammoDef = GenerateGrenadeAmmoDef();
+            }
+            if (modified_toolIds.NullOrEmpty())
+            {
+                modified_toolIds.Add("APCE_Tool_" + weaponThingDef.defName);
+                modified_ToolCapacityDefs.Add(new List<ToolCapacityDef>() { APCEDefOf.Blunt });
+                modified_ToolLinkedBodyPartsGroupDefs.Add(APCEDefOf.Base);
+                modified_ToolCooldownTimes.Add(1.75f);
+                modified_ToolArmorPenetrationSharps.Add(0f);
+                modified_ToolArmorPenetrationBlunts.Add(1f);
+                modified_ToolPowers.Add(2);
+                modified_ToolChanceFactors.Add(1);
+            }
 
+            modified_stackLimit = 75;
+            modified_recipeCount = 10;
+            //Apply ReplaceMe comp to ThingDef, just in case
+            //CompProperties_ExplosiveCE (for if the Thing is damaged)
+            //CompProperties_Fragments 
+
+            //projectile
+            //thingClass CombatExtended.ProjectileCE_Explosive
+            //projectilepropsCE
+            //make sure comps aren't null, add Fragments comp if necessary -- TODO, explosive launcher needs fragments as well
         }
+
+        public AmmoDef GenerateGrenadeAmmoDef()
+        {
+            AmmoDef ammoGrenade = new AmmoDef();
+            DataHolderUtils.CopyFields(weaponThingDef, ammoGrenade);
+
+            //make new tag lists so I can .Clear() the ones on the ThingDef version
+            if (!weaponThingDef.tradeTags.NullOrEmpty())
+            {// this will remove the ThingDef version of the grenade from most traders' stock, unless the mod has a custom trader with the ThingDef explicitly added as stock -- TODO search/remove
+                List<string> newTradeTags = new List<string>(weaponThingDef.tradeTags);
+                ammoGrenade.tradeTags = newTradeTags;
+                weaponThingDef.tradeTags.Clear();
+            }
+            if (!weaponThingDef.weaponTags.NullOrEmpty())
+            {// this will hopefully prevent Pawns from spawning with the ThingDef version
+                List<string> newWeaponTags = new List<string>(weaponThingDef.weaponTags);
+                ammoGrenade.weaponTags = newWeaponTags;
+                weaponThingDef.weaponTags.Clear();
+            }
+            else
+            {
+                ammoGrenade.weaponTags = new List<string>();
+            }
+            ammoGrenade.weaponTags.Add("CE_AI_Grenade");
+            ammoGrenade.weaponTags.Add("CE_AI_AOE"); // TODO might need to make these conditional, if I end up re-using code for non-explosive thrown weapons
+            ammoGrenade.weaponTags.Add("CE_OneHandedWeapon");
+            weaponThingDef.generateAllowChance = 0;
+            weaponThingDef.generateCommonality = 0;
+
+            return ammoGrenade;
+        } 
 
         public void GenerateAmmoSet()
         {

@@ -49,7 +49,7 @@ namespace nuff.AutoPatcherCombatExtended
         string modified_ammoSetDescription;
 
         // List of ammos and their serializable data
-        List<AmmoDef> modified_ammoDefs = new List<AmmoDef>();
+        public List<AmmoDef> modified_ammoDefs = new List<AmmoDef>();
         List<string> modified_ammoDefStrings = new List<string>(); //used for saving/loading
 
         // List of projectiles and their serializable data
@@ -156,6 +156,11 @@ namespace nuff.AutoPatcherCombatExtended
                         {
                             GenerateAmmoIndustrial();
                         }
+                        break;
+                    }
+                case APCEConstants.gunKinds.Grenade:
+                    {
+                        GenerateAmmoGrenade();
                         break;
                     }
                 default:
@@ -661,6 +666,37 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        public void GenerateAmmoGrenade()
+        {
+            //TODO
+            List<DamageDef> secondaryDamageDefs = new List<DamageDef>();
+            List<int> secondaryDamageAmounts = new List<int>();
+            List<float> secondaryDamageChances = new List<float>();
+            ExtraDamageToSecondary(ref secondaryDamageDefs, ref secondaryDamageAmounts, ref secondaryDamageChances);
+
+            modified_projectileNames.Add("APCE_Grenade_" + weaponDef.defName);
+            modified_projectileLabels.Add(weaponDef.label + " projectile");
+            modified_damageDefs.Add(original_damageDef);
+            modified_damages.Add(original_damage);
+            modified_armorPenetrationSharps.Add(0);
+            modified_armorPenetrationBlunts.Add(0);
+            modified_speeds.Add(original_speed);
+            modified_explosionRadii.Add(original_explosionRadius);
+            modified_pelletCounts.Add(1);
+            modified_spreadMults.Add(1);
+            modified_empShieldBreakChances.Add(1);
+            modified_suppressionFactors.Add(1);
+            modified_dangerFactors.Add(1);
+            modified_ai_IsIncendiary.Add(original_ai_IsIncendiary);
+            modified_applyDamageToExplosionCellsNeighbors.Add(original_applyDamageToExplosionCellsNeighbors);
+
+            modified_secondaryDamageDefs.Add(secondaryDamageDefs);
+            modified_secondaryDamageAmounts.Add(secondaryDamageAmounts);
+            modified_secondaryDamageChances.Add(secondaryDamageChances);
+
+            modified_ammoDefs.Add(null);
+        }
+
         public void SetBasePenetrations()
         {
             //todo I think I moved this into autocalculate
@@ -700,7 +736,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void ExtraDamageToSecondary(ref List<DamageDef> secondaryDamageDefs, ref List<int> secondaryDamageAmounts, ref List<float> secondaryDamageChances)
         {
-
             //TODO should I flip the check and do an early return instead?
             if (!original_extraDamages.NullOrEmpty())
             {
@@ -733,8 +768,6 @@ namespace nuff.AutoPatcherCombatExtended
             BuildAmmoLinks();
 
             BuildAmmoSet();
-
-            
         }
 
         public override StringBuilder PrepExport()
@@ -796,12 +829,7 @@ namespace nuff.AutoPatcherCombatExtended
                     Patch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
                 }
             }
-
-
-                //TODO
-                //reminder - damageDefs are stared as Defs, need to convert to/from string during exposedata
-                //note - unlike other defs, should run Patch when loaded, so that it exists before ranged weapons are patched
-            }
+        }
 
         public void BuildSecondaryDamages()
         {
