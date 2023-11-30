@@ -674,6 +674,7 @@ namespace nuff.AutoPatcherCombatExtended
             List<float> secondaryDamageChances = new List<float>();
             ExtraDamageToSecondary(ref secondaryDamageDefs, ref secondaryDamageAmounts, ref secondaryDamageChances);
 
+            modified_thingClasses.Add(APCEConstants.ThingClasses.ProjectileCE_Explosive);
             modified_projectileNames.Add("APCE_Grenade_" + weaponDef.defName);
             modified_projectileLabels.Add(weaponDef.label + " projectile");
             modified_damageDefs.Add(original_damageDef);

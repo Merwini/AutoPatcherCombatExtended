@@ -58,6 +58,7 @@ namespace nuff.AutoPatcherCombatExtended
         float modified_loadedAmmoBulkFactor;
         AmmoSetDef modified_AmmoSetDef;
         string modified_AmmoSetDefString;
+        DefDataHolderAmmoSet ammoSetDataHolder;
 
         int modified_aimedBurstShotCount;
         bool modified_aiUseBurstMode;
@@ -249,6 +250,49 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Recoil, modified_recoil);
         }
 
+        public void PatchComps()
+        {
+            if (weaponThingDef.comps == null)
+            {
+                weaponThingDef.comps = new List<CompProperties>();
+            }
+
+            if (gunKind == APCEConstants.gunKinds.Grenade)
+            {
+                CompProperties_ExplosiveCE newComp_ExCE = new CompProperties_ExplosiveCE()
+                {
+                    damageAmountBase = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1),
+                    explosiveDamageType = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.damageDef,
+                    explosiveRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius
+                };
+                weaponThingDef.comps.Add(newComp_ExCE);
+            }
+
+            CompProperties_AmmoUser newComp_AmmoUser = new CompProperties_AmmoUser()
+            {
+                magazineSize = modified_magazineSize,
+                reloadTime = modified_reloadTime,
+                reloadOneAtATime = modified_reloadOneAtATime,
+                throwMote = modified_throwMote,
+                ammoSet = modified_AmmoSetDef,
+                //loadedAmmoBulkFactor = modified_loadedAmmoBulkFactor //TODO
+            };
+            weaponThingDef.comps.Add(newComp_AmmoUser);
+
+            if (gunKind == APCEConstants.gunKinds.Mortar)
+                return;
+
+            CompProperties_FireModes newComp_FireModes = new CompProperties_FireModes()
+            {
+                aimedBurstShotCount = modified_aimedBurstShotCount,
+                aiUseBurstMode = modified_aiUseBurstMode,
+                noSingleShot = modified_noSingleShot,
+                noSnapshot = modified_noSnapShot,
+                aiAimMode = modified_aiAimMode
+            };
+            weaponThingDef.comps.Add(newComp_FireModes);
+        }
+
         public void CalculateCEVerbPropValues()
         {
             //if verb doesn't need patching, early return
@@ -349,25 +393,25 @@ namespace nuff.AutoPatcherCombatExtended
             switch (weaponThingDef.techLevel)
             {
                 case TechLevel.Animal:
-                    techMult *= modData.weaponToolTechMultAnimal;
+                    techMult *= modData.gunTechMultAnimal;
                     break;
                 case TechLevel.Neolithic:
-                    techMult *= modData.weaponToolTechMultNeolithic;
+                    techMult *= modData.gunTechMultNeolithic;
                     break;
                 case TechLevel.Medieval:
-                    techMult *= modData.weaponToolTechMultMedieval;
+                    techMult *= modData.gunTechMultMedieval;
                     break;
                 case TechLevel.Industrial:
-                    techMult *= modData.weaponToolTechMultIndustrial;
+                    techMult *= modData.gunTechMultIndustrial;
                     break;
                 case TechLevel.Spacer:
-                    techMult *= modData.weaponToolTechMultSpacer;
+                    techMult *= modData.gunTechMultSpacer;
                     break;
                 case TechLevel.Ultra:
-                    techMult *= modData.weaponToolTechMultUltratech;
+                    techMult *= modData.gunTechMultUltratech;
                     break;
                 case TechLevel.Archotech:
-                    techMult *= modData.weaponToolTechMultArchotech;
+                    techMult *= modData.gunTechMultArchotech;
                     break;
                 default:
                     break;
@@ -411,7 +455,7 @@ namespace nuff.AutoPatcherCombatExtended
             //Apply ReplaceMe comp to ThingDef, just in case
             //CompProperties_ExplosiveCE (for if the Thing is damaged)
             //CompProperties_Fragments 
-
+            //todo
             //projectile
             //thingClass CombatExtended.ProjectileCE_Explosive
             //projectilepropsCE
@@ -422,6 +466,8 @@ namespace nuff.AutoPatcherCombatExtended
         {
             AmmoDef ammoGrenade = new AmmoDef();
             DataHolderUtils.CopyFields(weaponThingDef, ammoGrenade);
+
+            ammoGrenade.graphicData.graphicClass = typeof(Graphic_Multi);
 
             //make new tag lists so I can .Clear() the ones on the ThingDef version
             if (!weaponThingDef.tradeTags.NullOrEmpty())
@@ -451,10 +497,11 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void GenerateAmmoSet()
         {
-            DefDataHolderAmmoSet newAmmoSet = new DefDataHolderAmmoSet(weaponThingDef);
+            ammoSetDataHolder = new DefDataHolderAmmoSet(weaponThingDef);
             //RegisterSelfInDict, GetOriginalData, and Autocalculate are called by constructor
-            newAmmoSet.Patch();
-            this.modified_AmmoSetDef = newAmmoSet.GeneratedAmmoSetDef;
+            ammoSetDataHolder.Patch();
+            this.modified_AmmoSetDef = ammoSetDataHolder.GeneratedAmmoSetDef;
+            ammoSetDataHolder.isCustomized = true; //so it will save
         }
     }
 }
