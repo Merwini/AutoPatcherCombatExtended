@@ -39,7 +39,6 @@ namespace nuff.AutoPatcherCombatExtended
         float modified_sightsEfficiency;
         float modified_shotSpread;
         float modified_swayFactor;
-        float modified_recoil;
 
         //modified verbprops stuff
         Type modified_VerbClass;
@@ -47,6 +46,7 @@ namespace nuff.AutoPatcherCombatExtended
         int modified_ticksBetweenBurstShots;
         float modified_warmupTime;
         int modified_burstShotCount;
+        float modified_recoilAmount;
         RecoilPattern modified_recoilPattern;
 
         //modified comp stuff
@@ -128,13 +128,16 @@ namespace nuff.AutoPatcherCombatExtended
         public override void Patch()
         {
             //TODO
-            //patch stat bases
             PatchStatBases();
-            //create and add comps
-            //patch tools
-            //patch verb - copy old verb + add recoil
+            PatchComps();
+            BuildTools();
+            for (int i = 0; i < modified_Tools.Count; i++)
+            {
+                weaponThingDef.tools.Add(modified_Tools[i]);
+            }
+            PatchVerb();
 
-            //for grenades and mortars, look for recipes that produce the ThingDef, change to AmmoDef
+            //TODO for grenades and mortars, look for recipes that produce the ThingDef, change to AmmoDef
         }
 
         public override StringBuilder PrepExport()
@@ -164,12 +167,13 @@ namespace nuff.AutoPatcherCombatExtended
             switch (gunKind)
             {
                 //calc new stat bases
+                //recoilAmount is calculated here for simplicity, despite belonging to the VerbProps
                 case APCEConstants.gunKinds.Bow:
                     modified_sightsEfficiency = 0.6f;
                     modified_shotSpread = 1f;
                     modified_swayFactor = 2f;
                     modified_bulk = 2f * original_mass;
-                    modified_recoil = 2f * recoilTechMod;
+                    modified_recoilAmount = 2f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Handgun:
                     modified_shotSpread = (0.2f - ssAccuracyMod) * gunTechModMult;
@@ -194,14 +198,14 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.33f;
                     modified_bulk = 2f * original_mass;
-                    modified_recoil = 1.8f * recoilTechMod;
+                    modified_recoilAmount = 1.8f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.MachineGun:
                     modified_shotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.4f;
                     modified_bulk = 1.5f * original_mass;
-                    modified_recoil = 2.3f * recoilTechMod;
+                    modified_recoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.precisionRifle:
                     modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
@@ -214,14 +218,14 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.8f;
                     modified_bulk = 2f * original_mass;
-                    modified_recoil = 2.3f * recoilTechMod;
+                    modified_recoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Turret:
                     modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f;
                     modified_swayFactor = 1.5f;
                     modified_bulk = 2f * original_mass;
-                    modified_recoil = 1f;
+                    modified_recoilAmount = 1f;
                     break;
                 case APCEConstants.gunKinds.Grenade:
                     modified_sightsEfficiency = 1.00f;
@@ -233,7 +237,7 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 2.0f;
                     modified_bulk = 2f * original_mass;
-                    modified_recoil = 1f;
+                    modified_recoilAmount = 1f;
                     break;
             }
         }
@@ -247,7 +251,6 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_sightsEfficiency);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_shotSpread);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_swayFactor);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Recoil, modified_recoil);
         }
 
         public void PatchComps()
@@ -293,6 +296,21 @@ namespace nuff.AutoPatcherCombatExtended
             weaponThingDef.comps.Add(newComp_FireModes);
         }
 
+        public void PatchVerb()
+        {
+            VerbPropertiesCE newVerbPropsCE = new VerbPropertiesCE();
+            DataHolderUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
+
+            newVerbPropsCE.ticksBetweenBurstShots = modified_ticksBetweenBurstShots;
+            newVerbPropsCE.warmupTime = modified_warmupTime;
+            newVerbPropsCE.burstShotCount = modified_burstShotCount;
+            newVerbPropsCE.recoilPattern = modified_recoilPattern;
+            newVerbPropsCE.verbClass = modified_VerbClass;
+            //newVerbPropsCE.ejectsCasings //TODO
+            //newVerbPropsCE.indirectFirePenalty //TODO
+            newVerbPropsCE.defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
+        }
+
         public void CalculateCEVerbPropValues()
         {
             //if verb doesn't need patching, early return
@@ -303,7 +321,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             modified_ticksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
 
-            //if warmupTime is too low, some weapons will get stuck permanently unable to fire
+            //if warmupTime is too low, some weapons will get stuck permanently unable to fire, since it fires when the timer ticks from 1 to 0, not when it is AT 0
             modified_warmupTime = original_VerbProperties.warmupTime;
             if (modified_warmupTime < 0.07)
                 modified_warmupTime = 0.07f;
@@ -502,6 +520,12 @@ namespace nuff.AutoPatcherCombatExtended
             ammoSetDataHolder.Patch();
             this.modified_AmmoSetDef = ammoSetDataHolder.GeneratedAmmoSetDef;
             ammoSetDataHolder.isCustomized = true; //so it will save
+        }
+
+        //this returns a float instead of just setting the value, so that the customization window can suggest it if burst shot is changed from 1 to another number
+        public float CalculateRecoilAmount()
+        {
+            
         }
     }
 }
