@@ -173,6 +173,35 @@ namespace nuff.AutoPatcherCombatExtended
             dab.SetValue(newPPCE, (int)damage);
         }
 
+        public static bool ReplaceRecipes(ThingDef oldThingDef, ThingDef newThingDef, int newRecipeCount)
+        {
+            bool foundRecipe = false;
+            foreach (RecipeDef recipe in DefDatabase<RecipeDef>.AllDefs)
+            {
+                foreach (ThingDefCountClass products in recipe.products)
+                {
+                    if (products.thingDef == oldThingDef)
+                    {
+                        foundRecipe = true;
+                        products.thingDef = newThingDef;
+                        products.count = newRecipeCount;
+                    }
+                }
+            }
+            return foundRecipe;
+        }
+
+        public static bool AddCompReplaceMe(ThingDef oldThingDef, ThingDef newThingDef)
+        {
+            CompProperties_ReplaceMe newComp_ReplaceMe = new CompProperties_ReplaceMe()
+            {
+                thingToSpawn = newThingDef
+            };
+            if (oldThingDef.comps == null)
+                oldThingDef.comps = new List<CompProperties>();
+            oldThingDef.comps.Add(newComp_ReplaceMe);
+            return true;
+        }
         /*
         public static string ReturnModLabelNoSpaces(string packageID)
         {

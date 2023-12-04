@@ -44,10 +44,10 @@ namespace nuff.AutoPatcherCombatExtended
         Type modified_VerbClass;
         float modified_muzzleFlashScale;
         int modified_ticksBetweenBurstShots;
-        float modified_warmupTime;
-        int modified_burstShotCount;
+        float modified_warmupTime = 1;
+        int modified_burstShotCount = 1;
         float modified_recoilAmount;
-        RecoilPattern modified_recoilPattern;
+        RecoilPattern modified_recoilPattern = RecoilPattern.None;
 
         //modified comp stuff
         int modified_magazineSize;
@@ -99,7 +99,11 @@ namespace nuff.AutoPatcherCombatExtended
             gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
             CalculateWeaponTechMult();
 
-            //todo mortar
+            if (gunKind == APCEConstants.gunKinds.Mortar)
+            {
+                CalculateMortar();
+                return;
+            }
 
             if (original_Tools != null)
             {
@@ -136,8 +140,16 @@ namespace nuff.AutoPatcherCombatExtended
                 weaponThingDef.tools.Add(modified_Tools[i]);
             }
             PatchVerb();
-
-            //TODO for grenades and mortars, look for recipes that produce the ThingDef, change to AmmoDef
+            
+            if (gunKind == APCEConstants.gunKinds.Grenade)
+            {
+                DataHolderUtils.AddCompReplaceMe(weaponThingDef, modified_ammoDef);
+                bool hasRecipe = DataHolderUtils.ReplaceRecipes(weaponThingDef, modified_ammoDef, modified_recipeCount);
+                if (APCESettings.printLogs)
+                {
+                    Log.Message("ThingDef " + weaponThingDef.defName + " classified as a grenade, found a recipe to modify: " + hasRecipe.ToString());
+                }
+            }
         }
 
         public override StringBuilder PrepExport()
@@ -167,7 +179,6 @@ namespace nuff.AutoPatcherCombatExtended
             switch (gunKind)
             {
                 //calc new stat bases
-                //recoilAmount is calculated here for simplicity, despite belonging to the VerbProps
                 case APCEConstants.gunKinds.Bow:
                     modified_sightsEfficiency = 0.6f;
                     modified_shotSpread = 1f;
@@ -269,6 +280,21 @@ namespace nuff.AutoPatcherCombatExtended
                     explosiveRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius
                 };
                 weaponThingDef.comps.Add(newComp_ExCE);
+            }
+
+            //TODO customization
+            if (gunKind == APCEConstants.gunKinds.Mortar)
+            {
+                CompProperties_Charges newComp_Charges = new CompProperties_Charges()
+                {
+                    chargeSpeeds = new List<int>()
+                    {
+                        30,
+                        50,
+                        70,
+                        90
+                    }
+                };
             }
 
             CompProperties_AmmoUser newComp_AmmoUser = new CompProperties_AmmoUser()
@@ -447,7 +473,17 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void CalculateMortar()
         {
+            //statbases
+            modified_sightsEfficiency = 0.5f;
 
+            //comps
+            modified_magazineSize = 1;
+            modified_reloadTime = 5;
+            modified_AmmoSetDef = APCEDefOf.AmmoSet_81mmMortarShell;
+
+            //verb
+            modified_VerbClass = typeof(Verb_ShootMortarCE);
+            modified_warmupTime = original_VerbProperties.warmupTime;
         }
 
         public void CalculateGrenade()
@@ -486,6 +522,7 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.CopyFields(weaponThingDef, ammoGrenade);
 
             ammoGrenade.graphicData.graphicClass = typeof(Graphic_Multi);
+            ammoGrenade.graphicData.onGroundRandomRotateAngle = 0;
 
             //make new tag lists so I can .Clear() the ones on the ThingDef version
             if (!weaponThingDef.tradeTags.NullOrEmpty())
@@ -523,9 +560,9 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
         //this returns a float instead of just setting the value, so that the customization window can suggest it if burst shot is changed from 1 to another number
-        public float CalculateRecoilAmount()
-        {
+        //public float CalculateRecoilAmount()
+        //{
             
-        }
+        //}
     }
 }
