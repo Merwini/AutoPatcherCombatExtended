@@ -27,6 +27,25 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        public static void AddOrReplaceExtension(ThingDef def, DefModExtension extension)
+        {
+            if (def.modExtensions == null)
+            {
+                def.modExtensions = new List<DefModExtension>();
+            }
+
+            int index = def.modExtensions.FindIndex(ext => ext.GetType() == extension.GetType());
+
+            if (index != -1)
+            {
+                def.modExtensions[index] = extension;
+            }
+            else
+            {
+                def.modExtensions.Add(extension);
+            }
+        }
+
         public static ModDataHolder ReturnModDataOrDefault(Def def)
         {
             ModDataHolder modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId);
