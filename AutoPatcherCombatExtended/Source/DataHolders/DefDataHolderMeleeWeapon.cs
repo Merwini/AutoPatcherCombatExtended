@@ -93,8 +93,8 @@ namespace nuff.AutoPatcherCombatExtended
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
-                Scribe_Values.Look(ref modified_Mass, "modified_Mass", 0f);
-                Scribe_Values.Look(ref modified_Bulk, "modified_Bulk", 0f);
+                Scribe_Values.Look(ref modified_Mass, "modified_Mass", original_Mass);
+                Scribe_Values.Look(ref modified_Bulk, "modified_Bulk", 1f);
                 Scribe_Values.Look(ref modified_MeleeCounterParryBonus, "modified_MeleeCounterParryBonus", 0f);
                 Scribe_Values.Look(ref modified_MeleeDodgeChance, "modified_MeleeDodgeChance", 0f);
                 Scribe_Values.Look(ref modified_MeleeParryChance, "modified_MeleeParryChance", 0f);
