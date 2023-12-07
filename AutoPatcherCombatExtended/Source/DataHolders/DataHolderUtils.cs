@@ -27,6 +27,25 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        public static void AddOrReplaceCompProps(ThingDef def, CompProperties comp)
+        {
+            if (def.comps == null)
+            {
+                def.comps = new List<CompProperties>();
+            }
+
+            int index = def.comps.FindIndex(c => c.GetType() == comp.GetType());
+
+            if (index != -1)
+            {
+                def.comps[index] = comp;
+            }
+            else
+            {
+                def.comps.Add(comp);
+            }
+        }
+
         public static void AddOrReplaceExtension(ThingDef def, DefModExtension extension)
         {
             if (def.modExtensions == null)
