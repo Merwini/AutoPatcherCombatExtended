@@ -89,11 +89,23 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        //used for things like resolving references after all DataHolders have been loaded
+        public virtual void PostLoad()
+        {
+            return;
+        }
+
         //will get relevant values from the def and fill the original_ fields
         public abstract void GetOriginalData();
         
         //will use modData and original_ fields to autocalculate modified_ fields
         public abstract void AutoCalculate();
+
+        public virtual void PrePatch()
+        {
+            return;
+        }
+
 
         //will use the modified_ fields to edit the def
         public abstract void Patch();
