@@ -87,6 +87,7 @@
     <Compile Include="Source\DataHolders\DefDataHolderHediff.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderMeleeWeapon.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderPawn.cs" />
+    <Compile Include="Source\DataHolders\DefDataHolderPawnKind.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderRangedWeapon.cs" />
     <Compile Include="Source\DataHolders\DataHolderUtils.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderStuff.cs" />
