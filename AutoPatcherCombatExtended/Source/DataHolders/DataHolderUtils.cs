@@ -46,7 +46,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public static void AddOrReplaceExtension(ThingDef def, DefModExtension extension)
+        public static void AddOrReplaceExtension(Def def, DefModExtension extension)
         {
             if (def.modExtensions == null)
             {
