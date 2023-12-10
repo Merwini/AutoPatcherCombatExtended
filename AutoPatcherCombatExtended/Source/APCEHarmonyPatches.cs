@@ -65,7 +65,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             if (Current.ProgramState == ProgramState.Entry 
                 && !APCESettings.suggestionWindowOpened
-                && !APCESettings.modsToRecommend.NullOrEmpty())
+                && !APCESettings.modsToRecommendAdd.NullOrEmpty())
             {
                 Find.WindowStack.Add(new Window_SuggestPatchMods());
                 APCESettings.suggestionWindowOpened = true;

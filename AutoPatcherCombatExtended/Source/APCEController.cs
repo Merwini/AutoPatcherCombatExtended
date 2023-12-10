@@ -132,17 +132,36 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static void FindModsNeedingPatched()
         {
+            //make a list of all mods with defs detected as needing patching
             List<ModContentPack> modsNeedingPatched = new List<ModContentPack>();
             for (int i = 0; i < APCESettings.activeMods.Count; i++)
             {
-                if (!APCESettings.modsToPatch.Contains(APCESettings.activeMods[i])
-                    && APCESettings.activeMods[i].AllDefs.Count() != 0
+                if (APCESettings.activeMods[i].AllDefs.Count() != 0
                     && CheckIfModNeedsPatched(APCESettings.activeMods[i]))
                 {
                     modsNeedingPatched.Add(APCESettings.activeMods[i]);
                 }
             }
-            APCESettings.modsToRecommend = modsNeedingPatched;
+
+            //compare modsNeedingPatched list to mods currently selected to patch, add any missing to a list to recommend to the player
+            APCESettings.modsToRecommendAdd = new List<ModContentPack>();
+            foreach (ModContentPack mod in modsNeedingPatched)
+            {
+                if (!APCESettings.modsToPatch.Contains(mod))
+                {
+                    APCESettings.modsToRecommendAdd.Add(mod);
+                }
+            }
+
+            //compare modsToRecommendAdd to modsNeedingPatched, add any extras to a list to recommend removing, for cases where a patch comes out and the player still has the mod selected to patch
+            APCESettings.modsToRecommendRemove = new List<ModContentPack>();
+            foreach (ModContentPack mod in APCESettings.modsToPatch)
+            {
+                if (!modsNeedingPatched.Contains(mod))
+                {
+                    APCESettings.modsToRecommendRemove.Add(mod);
+                }
+            }
         }
 
         public static bool CheckIfModNeedsPatched(ModContentPack mod)

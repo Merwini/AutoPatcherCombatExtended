@@ -73,7 +73,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                 if (selectAll)
                 {
-                    foreach (var mod in APCESettings.modsToRecommend)
+                    foreach (var mod in APCESettings.modsToRecommendAdd)
                     {
                         APCESettings.modsToRecommendDict[mod] = true;
                         selectAll = false;
@@ -109,12 +109,12 @@ namespace nuff.AutoPatcherCombatExtended
         public override void PreOpen()
         {
             base.PreOpen();
-            if (!APCESettings.modsToRecommend.NullOrEmpty())
+            if (!APCESettings.modsToRecommendAdd.NullOrEmpty())
             {
                 noMods = false;
-                for (int i = 0; i < APCESettings.modsToRecommend.Count; i++)
+                for (int i = 0; i < APCESettings.modsToRecommendAdd.Count; i++)
                 {
-                    APCESettings.modsToRecommendDict.Add(APCESettings.modsToRecommend[i], false);
+                    APCESettings.modsToRecommendDict.Add(APCESettings.modsToRecommendAdd[i], false);
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     APCESettings.modsToPatch.Add(mod.Key);
                     APCESettings.modsByPackageId.Add(mod.Key.PackageId);
-                    APCESettings.modsToRecommend.Remove(mod.Key);
+                    APCESettings.modsToRecommendAdd.Remove(mod.Key);
                 }
             }
             //TODO call patches on them
