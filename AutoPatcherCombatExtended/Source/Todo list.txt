@@ -14,6 +14,8 @@ TODO make stringify/destringify virtual methods in base DefDataHolder, with over
 TODO alreadyGenerated bool, so that repatching grenades, mortars, ammosets does not keep generating new ones 
 TODO in customization page, if user changes a weapon from burst 1 to multi, suggest to add recoil
 TODO each DefDataHolder needs to set their def subclass reference at the end of loading (i.e. ThingDef td = def as ThingDef). Class base loads the def itself
+TODO redo Vehicle compat by sorting using a Type, Func dictionary that the compat code can just add to
+TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon Studios folder
 
 
 TODO basic:

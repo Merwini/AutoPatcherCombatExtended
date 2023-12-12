@@ -29,21 +29,14 @@ namespace nuff.AutoPatcherCombatExtended
             APCESettings.modDataDict.Add(apceDefaults.packageId, apceDefaults);
 
             FindModsNeedingPatched();
-
-            APCEPatchController();
         }
 
         public static void APCEPatchController()
         {
-            if (APCESettings.printLogs)
-            {
-                APCEPatchLogger.stopwatchMaster.Start();
-            }
-            //CleanModList(APCESettings.modsToPatch);
-            if (!APCESettings.patchWeapons)
-            {
-                DisableGenericAmmos();
-            }
+            //if (APCESettings.printLogs)
+            //{
+            //    APCEPatchLogger.stopwatchMaster.Start();
+            //}
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
                 if (APCESettings.modsAlreadyPatched.Add(mod))
@@ -51,11 +44,11 @@ namespace nuff.AutoPatcherCombatExtended
                     PatchMod(mod);
                 }
             }
-            if (APCESettings.printLogs)
-            {
-                APCEPatchLogger.stopwatchMaster.Stop();
-                Log.Message($"Auto-patcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
-            }
+            //if (APCESettings.printLogs)
+            //{
+            //    APCEPatchLogger.stopwatchMaster.Stop();
+            //    Log.Message($"Auto-patcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
+            //}
         }
 
         public static void PatchMod(ModContentPack mod)
@@ -64,12 +57,12 @@ namespace nuff.AutoPatcherCombatExtended
             //log.BeginPatch(); //TODO redo logging
             foreach (Def def in mod.AllDefs)
             {
-                SortAndPatchDef(def);
+                SortDefToPatch(def);
             }
             //log.EndPatch();
         }
 
-        public static void SortAndPatchDef(Def def)
+        public static void SortDefToPatch(Def def)
         {
             //vehicles checked by a Harmony prefix applied by APCEVF PatchVehicle
             if (def is ThingDef td)

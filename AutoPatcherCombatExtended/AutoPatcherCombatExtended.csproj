@@ -119,7 +119,7 @@
     <Compile Include="Source\Patchers\PatchLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Windows\Window_CustomizeMod.cs" />
-    <Compile Include="Source\Windows\Window_SuggestPatchMods.cs" />
+    <Compile Include="Source\Windows\Window_SuggestMods.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="About\About.xml" />

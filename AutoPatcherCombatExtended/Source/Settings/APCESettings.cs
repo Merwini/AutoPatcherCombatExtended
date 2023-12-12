@@ -17,7 +17,8 @@ namespace nuff.AutoPatcherCombatExtended
         public static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
         public static List<ModContentPack> modsToRecommendAdd = new List<ModContentPack>();
         public static List<ModContentPack> modsToRecommendRemove = new List<ModContentPack>();
-        public static Dictionary<ModContentPack, bool> modsToRecommendDict = new Dictionary<ModContentPack, bool>();
+        public static Dictionary<ModContentPack, bool> modsToRecommendAddDict = new Dictionary<ModContentPack, bool>();
+        public static Dictionary<ModContentPack, bool> modsToRecommendRemoveDict = new Dictionary<ModContentPack, bool>();
         public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
         public static ModContentPack thisMod;
         public static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
