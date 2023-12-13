@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended.VF
 {
     public class DefDataHolderVehicleTurretDef : DefDataHolder
     {

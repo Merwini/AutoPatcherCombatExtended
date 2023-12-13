@@ -118,7 +118,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public virtual void SelfDelete()
         {
-            APCESettings.defDataDict.Remove(this.defName);
+            APCESettings.defDataDict.Remove(def);
             //TODO
         }
 
@@ -216,7 +216,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void RegisterSelfInDict()
         {
-            APCESettings.defDataDict.Add(this.defName, this);
+            APCESettings.defDataDict.Add(def, this);
         }
     }
 }
