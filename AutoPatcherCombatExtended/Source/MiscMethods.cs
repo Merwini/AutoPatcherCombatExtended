@@ -666,9 +666,16 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static void HandleUnknownDef(Def def)
         {
-            if (APCESettings.typeHandlerDictionary.ContainsKey(def.GetType()))
-                //TODO pass the def to the value delegate
-            //log.PatchFailed(def.defName, new Exception("Unrecognized def type"));
+            Type defType = def.GetType();
+            if (APCESettings.typeHandlerDictionary.TryGetValue(defType, out var handler))
+            {
+                handler.DynamicInvoke(def);
+            }
+            else
+            {
+                //log.PatchFailed(def.defName, new Exception("Auto-patcher unable to patch def {def.defName} with unrecognized type {defType.ToString()}")); //TODO logging
+            }
+            //TODO pass the def to the value delegate
             return;
         }
 
