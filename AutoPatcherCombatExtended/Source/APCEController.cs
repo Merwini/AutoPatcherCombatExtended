@@ -39,10 +39,12 @@ namespace nuff.AutoPatcherCombatExtended
             //}
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
-                if (APCESettings.modsAlreadyPatched.Add(mod))
-                {
-                    PatchMod(mod);
-                }
+                GenerateDataHoldersForMod(mod);
+            }
+
+            foreach (var holder in APCESettings.defDataDict)
+            {
+                holder.Value.Patch();
             }
             //if (APCESettings.printLogs)
             //{
@@ -51,20 +53,19 @@ namespace nuff.AutoPatcherCombatExtended
             //}
         }
 
-        public static void PatchMod(ModContentPack mod)
+        public static void GenerateDataHoldersForMod(ModContentPack mod)
         {
             APCEPatchLogger log = new APCEPatchLogger(mod);
             //log.BeginPatch(); //TODO redo logging
             foreach (Def def in mod.AllDefs)
             {
-                SortDefToPatch(def);
+                TryGenerateDataHolderForDef(def);
             }
             //log.EndPatch();
         }
 
-        public static void SortDefToPatch(Def def)
+        public static void TryGenerateDataHolderForDef(Def def)
         {
-            //vehicles checked by a Harmony prefix applied by APCEVF PatchVehicle
             if (def is ThingDef td)
             {
                 if (td.IsApparel)

@@ -251,7 +251,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (APCESettings.modsAlreadyPatched.Add(mod))
                 {
-                    APCEController.PatchMod(mod);
+                    APCEController.GenerateDataHoldersForMod(mod);
                 }
             }
             base.WriteSettings();

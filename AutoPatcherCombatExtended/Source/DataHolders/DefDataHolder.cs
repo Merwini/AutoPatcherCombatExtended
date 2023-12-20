@@ -216,7 +216,10 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void RegisterSelfInDict()
         {
-            APCESettings.defDataDict.Add(def, this);
+            if (!APCESettings.defDataDict.ContainsKey(def))
+            {
+                APCESettings.defDataDict.Add(def, this);
+            }
         }
     }
 }

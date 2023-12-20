@@ -109,7 +109,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
                 {
                     gunKind = APCEConstants.gunKinds.Other;
                 }
-                AmmoSetDef ammoSet = APCEController.GenerateAmmoSet(pseudoWeapon, gunKind);
+                AmmoSetDef ammoSet = null; //APCEController.GenerateAmmoSet(pseudoWeapon, gunKind);
                 List<ThingDef> ammos = new List<ThingDef>();
                 for (int i = 0; i < ammoSet.ammoTypes.Count; i++)
                 {
