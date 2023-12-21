@@ -526,7 +526,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " FMJ bullet");
                         modified_damages.Add(original_damage);
                         modified_armorPenetrationSharps.Add(armorPenSharpModded);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_speeds.Add(168);
 
                         modified_ammoDefs.Add(APCEDefOf.Ammo_RifleIntermediate_FMJ);
@@ -537,7 +537,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " AP bullet");
                         modified_damages.Add((int)(original_damage * 0.66f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 2f);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_speeds.Add(168);
 
                         modified_ammoDefs.Add(APCEDefOf.Ammo_RifleIntermediate_AP);
@@ -548,7 +548,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " HP bullet");
                         modified_damages.Add((int)(original_damage * 1.33f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 0.5f);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_speeds.Add(168);
 
                         modified_ammoDefs.Add(APCEDefOf.Ammo_RifleIntermediate_HP);
@@ -559,7 +559,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " AP-I bullet");
                         modified_damages.Add((int)(original_damage * 0.66f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 2f);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_speeds.Add(168);
                         secondaryDamageDefs.Add(CE_DamageDefOf.Flame_Secondary);
                         secondaryDamageAmounts.Add((int)(original_damage * 0.33f + 0.5f));
@@ -573,7 +573,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " HE bullet");
                         modified_damages.Add(original_damage);
                         modified_armorPenetrationSharps.Add(armorPenSharpModded);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_speeds.Add(168);
                         secondaryDamageDefs.Add(DamageDefOf.Bomb);
                         secondaryDamageAmounts.Add((int)(original_damage * 0.66f + 0.5f));
@@ -587,7 +587,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
                         modified_damages.Add((int)(original_damage * 0.5f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 3.5f);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded * 1.5f);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded * 1.5f);
                         modified_speeds.Add(227);
 
                         modified_ammoDefs.Add(APCEDefOf.Ammo_RifleIntermediate_Sabot);
@@ -628,7 +628,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
                         modified_damages.Add((int)(original_damage));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_empShieldBreakChances.Add(1);
 
                         modified_ammoDefs.Add(APCEDefOf.Ammo_RifleCharged);
@@ -639,7 +639,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
                         modified_damages.Add((int)(original_damage * 0.75f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 2f);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_empShieldBreakChances.Add(1);
 
                         modified_ammoDefs.Add(APCEDefOf.Ammo_RifleCharged_AP);
@@ -650,7 +650,7 @@ namespace nuff.AutoPatcherCombatExtended
                         modified_projectileLabels.Add(weaponDef.label + " sabot bullet");
                         modified_damages.Add((int)(original_damage * 0.75f + 0.5f));
                         modified_armorPenetrationSharps.Add(armorPenSharpModded * 1.5f);
-                        modified_armorPenetrationSharps.Add(armorPenBluntModded);
+                        modified_armorPenetrationBlunts.Add(armorPenBluntModded);
                         modified_empShieldBreakChances.Add(0.2f);
                         secondaryDamageDefs.Add(DamageDefOf.EMP);
                         secondaryDamageAmounts.Add((int)(original_damage * 0.5f + 0.5f));
@@ -860,7 +860,6 @@ namespace nuff.AutoPatcherCombatExtended
         public void BuildProjectiles()
         {
             modified_projectiles.Clear();
-
             for (int i = 0; i < modified_projectileNames.Count; i++)
             {
                 ProjectilePropertiesCE newProjProps = new ProjectilePropertiesCE()
@@ -880,6 +879,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                     secondaryDamage = modified_secondaryDamages[i] //this should have been populated already at this point
                 };
+
                 DataHolderUtils.SetDamage(newProjProps, modified_damages[i]);
 
                 ThingDef newProj = new ThingDef()
@@ -890,7 +890,7 @@ namespace nuff.AutoPatcherCombatExtended
                     projectile = newProjProps
                 };
 
-                SetProjectileDefaults(newProj);
+                SetProjectileDefaults(newProj, original_projectile);
 
                 InjectedDefHasher.GiveShortHashToDef(newProj, typeof(ThingDef));
                 DefGenerator.AddImpliedDef<ThingDef>(newProj);
@@ -899,20 +899,21 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void SetProjectileDefaults(ThingDef proj)
+        public void SetProjectileDefaults(ThingDef newProj, ThingDef oldProj)
         {
-            proj.category = ThingCategory.Projectile;
-            proj.tickerType = TickerType.Normal;
-            proj.altitudeLayer = AltitudeLayer.Projectile;
-            proj.useHitPoints = false;
-            proj.neverMultiSelect = true;
-            if (proj.graphicData == null)
+            newProj.category = ThingCategory.Projectile;
+            newProj.tickerType = TickerType.Normal;
+            newProj.altitudeLayer = AltitudeLayer.Projectile;
+            newProj.useHitPoints = false;
+            newProj.neverMultiSelect = true;
+            if (newProj.graphicData == null)
             {
-                proj.graphicData = new GraphicData();
+                newProj.graphicData = new GraphicData();
             }
-            proj.graphicData.shaderType = ShaderTypeDefOf.Transparent;
-            proj.graphicData.graphicClass = typeof(Graphic_Single);
-            proj.projectile.explosionDamageFalloff = true;
+            newProj.graphicData.shaderType = ShaderTypeDefOf.Transparent;
+            newProj.graphicData.graphicClass = typeof(Graphic_Single);
+            newProj.graphicData.texPath = oldProj.graphicData.texPath; //TODO modifiable texPath
+            newProj.projectile.explosionDamageFalloff = true;
         }
 
         private void BuildAmmoLinks()
