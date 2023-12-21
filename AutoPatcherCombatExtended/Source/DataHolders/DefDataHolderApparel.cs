@@ -91,6 +91,11 @@ namespace nuff.AutoPatcherCombatExtended
         {
             modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;;
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.apparelBluntMult * apparelTechMult;
+            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+
+            modified_Mass = Math.Min(original_Mass, 50);
+            modified_MaxHitPoints = original_MaxHitPoints;
+
             CalculateBulk();
             CalculateStatMods();
         }
