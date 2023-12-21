@@ -135,8 +135,8 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ToolLinkedBodyPartsGroupDefs.Add(tool.linkedBodyPartsGroup);
             modified_ToolCooldownTimes.Add(tool.cooldownTime);
             modified_ToolArmorPenetrationSharps.Add(tool.armorPenetration); //will be multiplied in overrides
-            modified_ToolArmorPenetrationSharps.Add(tool.armorPenetration); //will be multiplied in overrides
-            modified_ToolPowers.Add(tool.power);
+            modified_ToolArmorPenetrationBlunts.Add(tool.armorPenetration); //will be multiplied in overrides
+            modified_ToolPowers.Add(tool.power); //will be multiplied in overrides
             modified_ToolChanceFactors.Add(tool.chanceFactor);
         }
 

@@ -15,6 +15,11 @@ namespace nuff.AutoPatcherCombatExtended
         //Made my own so I can use it to change equippedStatOffSets, too
         public static void AddOrChangeStat(List<StatModifier> list, StatDef stat, float value)
         {
+            if (list == null)
+            {
+                list = new List<StatModifier>();
+            }
+
             int index = list.FindIndex(x => x.stat == stat);
             if (index != -1)
             {
@@ -70,7 +75,7 @@ namespace nuff.AutoPatcherCombatExtended
             ModDataHolder modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId);
             if (modData == null)
             {
-                modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
+                modData = APCESettings.modDataDict.TryGetValue("nuff.apcedefaults");
             }
             return modData;
         }
