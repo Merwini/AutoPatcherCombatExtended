@@ -112,7 +112,14 @@ namespace nuff.AutoPatcherCombatExtended
                     ModToolAtIndex(i);
                 }
             }
+
             CalculateStatBaseValues();
+
+            if (gunKind == APCEConstants.gunKinds.BeamGun)
+            {
+                return;
+            }
+
             if (gunKind != APCEConstants.gunKinds.Grenade)
             {
                 CalculateCEVerbPropValues();
@@ -252,59 +259,68 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_sightsEfficiency = 0.6f;
                     modified_shotSpread = 1f;
                     modified_swayFactor = 2f;
-                    modified_bulk = 2f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     modified_recoilAmount = 2f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Handgun:
                     modified_shotSpread = (0.2f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 0.7f + gunTechModAdd;
                     modified_swayFactor = 1f;
-                    modified_bulk = 1f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(1f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.SMG:
                     modified_shotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 0.7f + gunTechModAdd;
                     modified_swayFactor = 2f;
-                    modified_bulk = 1f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(1f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.Shotgun:
                     modified_shotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.2f;
-                    modified_bulk = 2f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.assaultRifle:
                     modified_shotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.33f;
-                    modified_bulk = 2f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     modified_recoilAmount = 1.8f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.MachineGun:
                     modified_shotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.4f;
-                    modified_bulk = 1.5f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(1.5f * original_Mass, 20f);
                     modified_recoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.precisionRifle:
                     modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 2.6f + gunTechModAdd;
                     modified_swayFactor = 1.35f;
-                    modified_bulk = 2f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.ExplosiveLauncher:
                     modified_shotSpread = 0.122f + (weaponThingDef.Verbs[0].ForcedMissRadius * 0.02f);
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.8f;
-                    modified_bulk = 2f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     modified_recoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Turret:
                     modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f;
                     modified_swayFactor = 1.5f;
-                    modified_bulk = 2f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     modified_recoilAmount = 1f;
                     break;
                 case APCEConstants.gunKinds.Grenade:
@@ -316,14 +332,20 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_shotSpread = modified_shotSpread = (0.15f - ssAccuracyMod) * gunTechModMult; //somewhere between an SMG and assault rifle
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 2.0f;
-                    modified_bulk = 2f * original_Mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     modified_recoilAmount = 1f;
                     break;
             }
+
+            modified_workToMake = original_workToMake;
+            modified_rangedWeaponCooldown = original_rangedWeaponCooldown;
         }
 
         public void PatchStatBases()
         {
+            RemoveVanillaStatBases();
+
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.Mass, modified_mass);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_bulk);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_rangedWeaponCooldown);
@@ -628,10 +650,25 @@ namespace nuff.AutoPatcherCombatExtended
             ammoSetDataHolder.isCustomized = true; //so it will save
         }
 
+        public void RemoveVanillaStatBases()
+        {
+            weaponThingDef.statBases = weaponThingDef.statBases
+                .Where(statModifier => !IsVanillaStat(statModifier.stat))
+                .ToList();
+
+            bool IsVanillaStat(StatDef statDef)
+            {
+                return statDef == StatDefOf.AccuracyLong ||
+                       statDef == StatDefOf.AccuracyMedium ||
+                       statDef == StatDefOf.AccuracyShort ||
+                       statDef == StatDefOf.AccuracyTouch;
+            }
+        }
+
         //this returns a float instead of just setting the value, so that the customization window can suggest it if burst shot is changed from 1 to another number
         //public float CalculateRecoilAmount()
         //{
-            
+
         //}
     }
 }
