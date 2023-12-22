@@ -11,7 +11,7 @@ using CombatExtended;
 namespace nuff.AutoPatcherCombatExtended
 {
     [StaticConstructorOnStartup]
-    public static partial class APCEController
+    public static class APCEController
     {
         static APCEController()
         {
@@ -42,15 +42,24 @@ namespace nuff.AutoPatcherCombatExtended
                 GenerateDataHoldersForMod(mod);
             }
 
+            Log.Warning("defDataDict has number of entries: " + APCESettings.defDataDict.Count.ToString());
+
             foreach (var holder in APCESettings.defDataDict)
             {
-                holder.Value.Patch();
+                try
+                {
+                    holder.Value.Patch();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Failed to patch def {holder.Value.defName} due to exception: \n" + ex.ToString());
+                }
+                //if (APCESettings.printLogs)
+                //{
+                //    APCEPatchLogger.stopwatchMaster.Stop();
+                //    Log.Message($"Auto-patcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
+                //}
             }
-            //if (APCESettings.printLogs)
-            //{
-            //    APCEPatchLogger.stopwatchMaster.Stop();
-            //    Log.Message($"Auto-patcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
-            //}
         }
 
         public static void GenerateDataHoldersForMod(ModContentPack mod)
@@ -66,62 +75,84 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static void TryGenerateDataHolderForDef(Def def)
         {
-            if (def is ThingDef td)
+            try
             {
-                if (td.IsApparel)
+                if (def is ThingDef td)
                 {
-                    DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Apparel);
-                    return;
-                }
-                else if (td.IsWeapon)
-                {
-                    if (td.IsRangedWeapon
-                        && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
-                        && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
+                    if (td.IsApparel)
                     {
-                        DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.RangedWeapon);
+                        DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Apparel);
                         return;
                     }
-                    else //if (td.IsMeleeWeapon)
+                    else if (td.IsWeapon)
                     {
-                        DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.MeleeWeapon);
+                        if (td.IsRangedWeapon
+                            && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
+                            && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
+                        {
+                            DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.RangedWeapon);
+                            return;
+                        }
+                        else //if (td.IsMeleeWeapon)
+                        {
+                            DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.MeleeWeapon);
+                            return;
+                        }
+                    }
+                    else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
+                    {
+                        DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Pawn);
                         return;
                     }
+                    else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
+                    {
+                        DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Building_TurretGun);
+                    }
+                    else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
+                    {
+                        //PatchMortarShell(td, log); TODO mortarshell
+                    }
                 }
-                else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
+                else if (def is HediffDef hd)
                 {
-                    DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Pawn);
+                    DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Hediff);
                     return;
                 }
-                else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
+                else if (def is PawnKindDef pkd)
                 {
-                    DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Building_TurretGun);
+                    DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.PawnKind);
+                    return;
                 }
-                else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
+                else if (ModLister.BiotechInstalled
+                    && def is GeneDef gene)
                 {
-                    //PatchMortarShell(td, log); TODO mortarshell
+                    DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Gene);
+                    return;
+                }
+                else
+                {
+                    HandleUnknownDef(def);
                 }
             }
-            else if (def is HediffDef hd)
+            catch (Exception ex)
             {
-                DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Hediff);
-                return;
+                Log.Error(ex.ToString());
             }
-            else if (def is PawnKindDef pkd)
+        }
+
+        public static void HandleUnknownDef(Def def)
+        {
+            Type defType = def.GetType();
+            if (APCESettings.typeHandlerDictionary.TryGetValue(defType, out var handler))
             {
-                DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.PawnKind);
-                return;
-            }
-            else if (ModLister.BiotechInstalled
-                && def is GeneDef gene)
-            {
-                DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Gene);
-                return;
+                handler.DynamicInvoke(def);
             }
             else
             {
-                HandleUnknownDef(def);
+                //log.PatchFailed(def.defName, new Exception("Auto-patcher unable to patch def {def.defName} with unrecognized type {defType.ToString()}")); //TODO logging
             }
+            //TODO pass the def to the value delegate
+            return;
         }
 
         public static void FindModsNeedingPatched()
@@ -221,6 +252,54 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             return false;
+        }
+
+        public static List<ModContentPack> GetActiveModsList()
+        {
+            List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod
+                                                                                                              && !(mod.AllDefs.Count() == 0)
+                                                                                                              && !(mod.PackageId == "ceteam.combatextended")
+                                                                                                              && !(mod.PackageId == "nuff.ceautopatcher")
+                                                                                                              ).OrderBy(mod => mod.Name).ToList());
+            return activeMods;
+        }
+
+        public static List<ModContentPack> RebuildModsToPatch()
+        {
+            Dictionary<string, ModContentPack> modDict = new Dictionary<string, ModContentPack>();
+            List<ModContentPack> modsToPatch = new List<ModContentPack>();
+
+            foreach (ModContentPack mod in APCESettings.activeMods)
+            {
+                modDict[mod.PackageId] = mod;
+            }
+
+            for (int i = APCESettings.modsByPackageId.Count - 1; i >= 0; i--)
+            {
+                string packageId = APCESettings.modsByPackageId[i];
+                if (modDict.TryGetValue(packageId, out ModContentPack mod) && mod != null)
+                {
+                    modsToPatch.Add(mod);
+                }
+                else
+                {
+                    APCESettings.modsByPackageId.RemoveAt(i);
+                }
+            }
+            APCESettings.thisMod = modDict.TryGetValue("nuff.ceautopatcher");
+
+            return modsToPatch;
+        }
+        public static void RemoveListDuplicates(List<string> list)
+        {
+            HashSet<string> uniqueItems = new HashSet<string>();
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (!uniqueItems.Add(list[i]))
+                {
+                    list.RemoveAt(i);
+                }
+            }
         }
     }
 }
