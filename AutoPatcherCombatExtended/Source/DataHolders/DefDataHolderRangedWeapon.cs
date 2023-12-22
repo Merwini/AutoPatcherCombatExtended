@@ -105,7 +105,7 @@ namespace nuff.AutoPatcherCombatExtended
                 return;
             }
 
-            if (original_Tools != null)
+            if (!original_Tools.NullOrEmpty())
             {
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
@@ -165,10 +165,18 @@ namespace nuff.AutoPatcherCombatExtended
             PatchStatBases();
             PatchComps();
             BuildTools();
-            for (int i = 0; i < modified_Tools.Count; i++)
+            if (!modified_Tools.NullOrEmpty())
             {
-                weaponThingDef.tools.Add(modified_Tools[i]);
+                weaponThingDef.tools.Clear();
+                for (int i = 0; i < modified_Tools.Count; i++)
+                {
+                    weaponThingDef.tools.Add(modified_Tools[i]);
+                }
             }
+
+            if (gunKind == APCEConstants.gunKinds.BeamGun)
+                return;
+
             PatchVerb();
             
             if (gunKind == APCEConstants.gunKinds.Grenade)
