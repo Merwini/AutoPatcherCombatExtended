@@ -91,6 +91,7 @@ namespace nuff.AutoPatcherCombatExtended
             original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
             original_rangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
             original_workToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
+            original_burstShotCount = original_VerbProperties.burstShotCount;
         }
 
         public override void AutoCalculate()
@@ -452,7 +453,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_warmupTime = 0.07f;
 
             //burst sizes are usually doubled, but need to account for single-shot weapons
-            modified_burstShotCount = original_VerbProperties.burstShotCount;
+            modified_burstShotCount = original_burstShotCount;
             if (modified_burstShotCount != 1)
                 modified_burstShotCount *= 2;
 
