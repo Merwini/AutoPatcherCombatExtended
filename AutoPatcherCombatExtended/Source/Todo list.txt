@@ -17,6 +17,7 @@ TODO redo Vehicle compat by sorting using a Type, Func dictionary that the compa
 TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon Studios folder
 TODO double check that ModDataHolder mults are being applied to all relevant autocalculations
 TODO handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
+TODO window that adds/removes mods from the patch list should WriteSettings
 
 
 TODO basic:

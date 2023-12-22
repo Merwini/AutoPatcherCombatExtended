@@ -9,7 +9,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
 {
     public class DefDataHolderVehicleTurretDef : DefDataHolder
     {
-        public DefDataHolderVehicleTurretDef(ThingDef def) : base(def)
+        public DefDataHolderVehicleTurretDef(Def def) : base(def)
         {
         }
 

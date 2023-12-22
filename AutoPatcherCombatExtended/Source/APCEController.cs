@@ -131,7 +131,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else
                 {
-                    HandleUnknownDef(def);
+                    HandleUnknownDefGenerate(def);
                 }
             }
             catch (Exception ex)
@@ -140,10 +140,10 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public static void HandleUnknownDef(Def def)
+        public static void HandleUnknownDefGenerate(Def def)
         {
             Type defType = def.GetType();
-            if (APCESettings.typeHandlerDictionary.TryGetValue(defType, out var handler))
+            if (APCESettings.typeHandlerDictionaryGenerate.TryGetValue(defType, out var handler))
             {
                 handler.DynamicInvoke(def);
             }
@@ -153,6 +153,20 @@ namespace nuff.AutoPatcherCombatExtended
             }
             //TODO pass the def to the value delegate
             return;
+        }
+
+        public static bool HandleUnknownDefCheck(Def def)
+        {
+            Type defType = def.GetType();
+
+            if (APCESettings.typeHandlerDictionaryCheck.TryGetValue(defType, out var handler))
+            {
+                return handler.Invoke(def);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static void FindModsNeedingPatched()
@@ -249,6 +263,10 @@ namespace nuff.AutoPatcherCombatExtended
                 && (pkd.race.race.intelligence != Intelligence.Animal && !pkd.modExtensions.NullOrEmpty() && !pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension)))
             {
                 return true;
+            }
+            else
+            {
+                return HandleUnknownDefCheck(def);
             }
 
             return false;

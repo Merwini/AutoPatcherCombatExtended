@@ -37,9 +37,10 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
         public static Dictionary<Def, DefDataHolder> defDataDict = new Dictionary<Def, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
-        //TODO on save, go through these dicts, for isCustomized dataholders, add them to a collection which will be saved
+                                                                                                         //TODO on save, go through these dicts, for isCustomized dataholders, add them to a collection which will be saved
 
-        public static Dictionary<Type, Delegate> typeHandlerDictionary = new Dictionary<Type, Delegate>();
+        public static Dictionary<Type, Func<Def, bool>> typeHandlerDictionaryCheck = new Dictionary<Type, Func<Def, bool>>();
+        public static Dictionary<Type, Delegate> typeHandlerDictionaryGenerate = new Dictionary<Type, Delegate>();
         
         //public static Dictionary<string, ThingCategoryDef> modAmmoThingCategoryDict = new Dictionary<string, ThingCategoryDef>(); //not saved, populated if/when ammos are made for that mod
 
