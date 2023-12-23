@@ -89,10 +89,11 @@ namespace nuff.AutoPatcherCombatExtended.VF
             modified_CargoCapacity = original_CargoCapacity;
         }  
         
-        //TODO
         public override void Patch()
         {
-            throw new NotImplementedException();
+            PatchVehicleStatBases();
+            PatchVehicleComponents();
+            PatchVehicleStats();
         }
 
         public override StringBuilder PrepExport()
@@ -103,6 +104,28 @@ namespace nuff.AutoPatcherCombatExtended.VF
         public override void ExportXML()
         {
             throw new NotImplementedException();
+        }
+
+        internal void PatchVehicleStatBases()
+        {
+            DataHolderUtils.AddOrChangeStat(vehicleDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+            DataHolderUtils.AddOrChangeStat(vehicleDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+            DataHolderUtils.AddOrChangeStat(vehicleDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+        }
+
+        internal void PatchVehicleComponents()
+        {
+            for (int i = 0; i < vehicleDef.components.Count; i++)
+            {
+                DataHolderUtils.AddOrChangeStat(vehicleDef.components[i].armor, StatDefOf.ArmorRating_Sharp, modified_ComponentArmorSharps[i]);
+                DataHolderUtils.AddOrChangeStat(vehicleDef.components[i].armor, StatDefOf.ArmorRating_Blunt, modified_ComponentArmorBlunts[i]);
+                vehicleDef.components[i].health = modified_ComponentHealths[i];
+            }
+        }
+
+        internal void PatchVehicleStats()
+        {
+            vehicleDef.vehicleStats[cargoIndex].value = modified_CargoCapacity;
         }
     }
 }
