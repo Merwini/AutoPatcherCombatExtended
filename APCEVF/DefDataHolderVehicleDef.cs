@@ -106,6 +106,20 @@ namespace nuff.AutoPatcherCombatExtended.VF
             throw new NotImplementedException();
         }
 
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0f);
+            Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
+            Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
+
+            Scribe_Collections.Look(ref modified_ComponentArmorSharps, "modified_ComponentArmorSharps", LookMode.Value);
+            Scribe_Collections.Look(ref modified_ComponentArmorBlunts, "modified_ComponentArmorBlunts", LookMode.Value);
+            Scribe_Collections.Look(ref modified_ComponentHealths, "modified_ComponentHealths", LookMode.Value);
+
+            Scribe_Values.Look(ref modified_CargoCapacity, "modified_CargoCapacity", 0f);
+        }
+
         internal void PatchVehicleStatBases()
         {
             DataHolderUtils.AddOrChangeStat(vehicleDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
