@@ -67,12 +67,26 @@ namespace nuff.AutoPatcherCombatExtended.VF
                     break;
                 }
             }
-
         }
 
         public override void AutoCalculate()
         {
-            throw new NotImplementedException();
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.vehicleSharpMult;
+            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.vehicleBluntMult;
+            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+
+            modified_ComponentArmorSharps.Clear();
+            modified_ComponentArmorBlunts.Clear();
+            modified_ComponentHealths.Clear();
+
+            for (int i = 0; i < vehicleDef.components.Count; i++)
+            {
+                modified_ComponentArmorSharps.Add(original_ComponentArmorSharps[i] * modData.vehicleSharpMult);
+                modified_ComponentArmorBlunts.Add(original_ComponentArmorBlunts[i] * modData.vehicleBluntMult);
+                modified_ComponentHealths.Add((int)(original_ComponentHealths[i] * modData.vehicleHealthMult));
+            }
+
+            modified_CargoCapacity = original_CargoCapacity;
         }  
         
         //TODO
