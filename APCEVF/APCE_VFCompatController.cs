@@ -50,17 +50,16 @@ namespace nuff.AutoPatcherCombatExtended.VF
 
         public static bool CheckIfVehicleNeedsPatch(Def def)
         {
-            //TODO check if vehicle needs patch
+            //TODO check if vehicle needs patch - no good way to do this
             return false;
         }
 
         public static bool CheckIfVehicleTurretNeedsPatch(Def def)
         {
-            //TODO check if turret needs patch
+            VehicleTurretDef vtd = def as VehicleTurretDef;
+            if (!vtd.HasModExtension<CETurretDataDefModExtension>())
+                return true;
             return false;
         }
-
-        //make methods for constructing DefDataHolders out of VehicleDef and VehicleTurretDef
-        //make delegates for handling types VehicleDef and VehicleTurretDef, register those types and delegates in APCESettings.typeHandlerDict
     }
 }
