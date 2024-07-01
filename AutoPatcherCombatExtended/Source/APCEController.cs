@@ -39,7 +39,10 @@ namespace nuff.AutoPatcherCombatExtended
             //}
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
-                GenerateDataHoldersForMod(mod);
+                if (APCESettings.modsAlreadyPatched.Add(mod))
+                {
+                    APCEController.GenerateDataHoldersForMod(mod);
+                }
             }
 
             Log.Warning("defDataDict has number of entries: " + APCESettings.defDataDict.Count.ToString());
