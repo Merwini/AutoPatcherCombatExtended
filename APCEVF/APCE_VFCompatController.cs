@@ -16,9 +16,11 @@ namespace nuff.AutoPatcherCombatExtended.VF
         static APCE_VFCompatController()
         {
             Log.Message("APCE Vehicle Compatibility Controller Constructed");
+            RegisterCheckDelegates();
+            RegisterGenerateDelegates();
         }
 
-        internal static void RegisterDelegates()
+        internal static void RegisterGenerateDelegates()
         {
             Action<Def> patchVehicle = new Action<Def>(GenerateDefDataHolderVehicle);
             Action<Def> patchVehicleTurret = new Action<Def>(GenerateDefDataHolderVehicleTurret);
@@ -28,7 +30,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
 
         }
 
-        internal static void RegisterFuncs()
+        internal static void RegisterCheckDelegates()
         {
             Func<Def, bool> vehicleFunc = new Func<Def, bool>(CheckIfVehicleNeedsPatch);
             Func<Def, bool> vehicleTurretFunc = new Func<Def, bool>(CheckIfVehicleTurretNeedsPatch);
