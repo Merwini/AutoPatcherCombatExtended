@@ -27,8 +27,6 @@ namespace nuff.AutoPatcherCombatExtended
             ModDataHolder apceDefaults = new ModDataHolder();
             apceDefaults.packageId = "nuff.apcedefaults";
             APCESettings.modDataDict.Add(apceDefaults.packageId, apceDefaults);
-
-            FindModsNeedingPatched();
         }
 
         public static void APCEPatchController()
@@ -45,7 +43,8 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
 
-            Log.Warning("defDataDict has number of entries: " + APCESettings.defDataDict.Count.ToString());
+            //DEBUG
+            //Log.Warning("defDataDict has number of entries: " + APCESettings.defDataDict.Count.ToString());
 
             foreach (var holder in APCESettings.defDataDict)
             {
@@ -55,7 +54,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning($"Failed to patch def {holder.Value.defName} due to exception: \n" + ex.ToString());
+                    Log.Warning($"Failed to patch def {holder.Value.defName} from mod {holder.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
                 }
                 //if (APCESettings.printLogs)
                 //{
@@ -63,6 +62,9 @@ namespace nuff.AutoPatcherCombatExtended
                 //    Log.Message($"Auto-patcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
                 //}
             }
+
+            AmmoInjector.Inject();
+            AmmoInjector.AddRemoveCaliberFromGunRecipes();
         }
 
         public static void GenerateDataHoldersForMod(ModContentPack mod)
@@ -80,7 +82,11 @@ namespace nuff.AutoPatcherCombatExtended
         {
             try
             {
-                if (def is ThingDef td)
+                if (HandleDelegatedDefTypesGenerate(def))
+                {
+                    return;
+                }
+                else if (def is ThingDef td)
                 {
                     if (td.IsApparel)
                     {
@@ -139,26 +145,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error(ex.ToString());
+                Log.Warning($"Exception while trying to generate DefDataHolder for def {def.defName} from mod {def.modContentPack.Name}. Exception: \n" + ex.ToString());
             }
         }
 
-        public static void HandleUnknownDefGenerate(Def def)
+        public static bool HandleDelegatedDefTypesGenerate(Def def)
         {
             Type defType = def.GetType();
             if (APCESettings.typeHandlerDictionaryGenerate.TryGetValue(defType, out var handler))
             {
                 handler.DynamicInvoke(def);
+                return true;
             }
-            else
-            {
-                //log.PatchFailed(def.defName, new Exception("Auto-patcher unable to patch def {def.defName} with unrecognized type {defType.ToString()}")); //TODO logging
-            }
-            //TODO pass the def to the value delegate
-            return;
+            return false;
         }
 
-        public static bool HandleUnknownDefCheck(Def def)
+        public static bool HandleDelegatedDefTypesCheck(Def def)
         {
             Type defType = def.GetType();
 
@@ -170,6 +172,20 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 return false;
             }
+        }
+
+        public static void HandleUnknownDefGenerate(Def def)
+        {
+            //TODO remove? most unhandled def types are not in need of patching
+            //Log.Warning($"Unable to generate DefDataHolder for {def.defName} from mod {def.modContentPack.Name}. Type {def.GetType()} is unrecognized.");
+            return;
+        }
+
+        public static bool HandleUnknownDefCheck(Def def)
+        {
+            //TODO remove?
+            //Log.Warning($"Unable to check if def {def.defName} from mod {def.modContentPack.Name} needs patching. Type {def.GetType()} is unrecognized.");
+            return false;
         }
 
         public static void FindModsNeedingPatched()
@@ -191,6 +207,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (!APCESettings.modsToPatch.Contains(mod))
                 {
+                    Log.Warning("Adding " + mod.Name);
                     APCESettings.modsToRecommendAdd.Add(mod);
                 }
             }
@@ -207,7 +224,10 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
         public static bool CheckIfModNeedsPatched(ModContentPack mod)
-        { 
+        {
+            if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
+                return false;
+
             foreach (Def def in mod.AllDefs)
             {
                 if (CheckIfDefNeedsPatched(def))
@@ -220,58 +240,73 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static bool CheckIfDefNeedsPatched(Def def)
         {
-            //TODO check for vehicle defs is added by Harmony prefix
-
-            if (def is ThingDef thingDef)
+            bool needsPatched = false;
+            try
             {
-                if (thingDef.IsApparel
-                    && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk)
-                    && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.WornBulk))
+                if (HandleDelegatedDefTypesCheck(def))
                 {
-                    return true;
+                    needsPatched = true;
                 }
-                else if (thingDef.IsWeapon)
+                else if (def is ThingDef thingDef)
                 {
-                    if (thingDef.IsRangedWeapon
-                        && !thingDef.Verbs[0].verbClass.ToString().Contains("CE")
-                        //&& !thingDef.comps.Any(comp => comp is CompProperties_AmmoUser)
-                        && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk))
+                    if (thingDef.IsApparel
+                        && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk)
+                        && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.WornBulk))
                     {
-                        return true;
+                        needsPatched = true;
                     }
-                    else if (thingDef.IsMeleeWeapon
-                        && !thingDef.tools.Any(tool => tool is ToolCE))
+                    else if (thingDef.IsWeapon)
                     {
-                        return true;
+                        if (thingDef.IsRangedWeapon
+                            && !thingDef.Verbs[0].verbClass.ToString().Contains("CE")
+                            //&& !thingDef.comps.Any(comp => comp is CompProperties_AmmoUser)
+                            && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk))
+                        {
+                            needsPatched = true;
+                        }
+                        else if (thingDef.IsMeleeWeapon
+                            && (!thingDef.tools.NullOrEmpty() && !thingDef.tools.Any(tool => tool is ToolCE)))
+                        {
+                            needsPatched = true;
+                        }
+                    }
+                    else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass)
+                        && (!thingDef.tools.NullOrEmpty() && !thingDef.tools.Any(tool => tool is ToolCE)))
+                    {
+                        needsPatched = true;
                     }
                 }
-                else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass)
-                    && !thingDef.tools.Any(tool => tool is ToolCE))
+                else if (def is HediffDef hd
+                    && (!hd.comps.NullOrEmpty() && hd.comps.Any(comp => comp is HediffCompProperties_VerbGiver hcp_vg && !hcp_vg.tools.NullOrEmpty() && !hcp_vg.tools.Any(tool => tool is ToolCE))))
                 {
-                    return true;
+                    needsPatched = true;
+                }
+                /*
+                else if (ModLister.BiotechInstalled && def is GeneDef gene)
+                {
+                    //TODO not a great way to see if a gene mod needs to be patched other than really low armor values?
+                }
+                */
+                else if (def is PawnKindDef pkd
+                    && (pkd.race.race.intelligence != Intelligence.Animal && !pkd.modExtensions.NullOrEmpty() && !pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension)))
+                {
+                    needsPatched = true;
+                }
+                else
+                {
+                    needsPatched = HandleUnknownDefCheck(def);
                 }
             }
-            else if (def is HediffDef hd
-                && (!hd.comps.NullOrEmpty() && hd.comps.Any(comp => comp is HediffCompProperties_VerbGiver hcp_vg && !hcp_vg.tools.Any(tool => tool is ToolCE))))
+            catch (Exception ex)
             {
+                Log.Warning($"Exception when checking if def {def.defName} from mod {def.modContentPack.Name} needs patching. Exception is: \n" + ex.ToString());
+            }
+
+            if (needsPatched)
+            {
+                APCELogUtility.LogDefCause(def);
                 return true;
             }
-            /*
-            else if (ModLister.BiotechInstalled && def is GeneDef gene)
-            {
-                //TODO not a great way to see if a gene mod needs to be patched other than really low armor values?
-            }
-            */
-            else if (def is PawnKindDef pkd
-                && (pkd.race.race.intelligence != Intelligence.Animal && !pkd.modExtensions.NullOrEmpty() && !pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension)))
-            {
-                return true;
-            }
-            else
-            {
-                return HandleUnknownDefCheck(def);
-            }
-
             return false;
         }
 
@@ -307,7 +342,7 @@ namespace nuff.AutoPatcherCombatExtended
                     APCESettings.modsByPackageId.RemoveAt(i);
                 }
             }
-            APCESettings.thisMod = modDict.TryGetValue("nuff.ceautopatcher");
+            APCESettings.thisModContent = modDict.TryGetValue("nuff.ceautopatcher");
 
             return modsToPatch;
         }

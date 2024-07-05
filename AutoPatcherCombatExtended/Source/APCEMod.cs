@@ -21,6 +21,7 @@ namespace nuff.AutoPatcherCombatExtended
         public AutoPatcherCombatExtended(ModContentPack content) : base(content)
         {
             this.Settings = GetSettings<APCESettings>();
+            APCESettings.thisMod = this;
             CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Loader.Loader));
             CESettings = CEMod.GetSettings<Settings>();
             AdjustCESettings();

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -25,7 +26,8 @@ namespace nuff.AutoPatcherCombatExtended
         public static Dictionary<ModContentPack, bool> modsToRecommendAddDict = new Dictionary<ModContentPack, bool>();
         public static Dictionary<ModContentPack, bool> modsToRecommendRemoveDict = new Dictionary<ModContentPack, bool>();
         public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
-        public static ModContentPack thisMod;
+        public static ModContentPack thisModContent;
+        public static Mod thisMod;
         public static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
         public static bool suggestionWindowOpened = false;
 
@@ -144,7 +146,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             //General Settings
-            Scribe_Values.Look(ref printLogs, "printDebug", false);
+            Scribe_Values.Look(ref printLogs, "printLogs", false);
             Scribe_Values.Look(ref printPatchErrors, "printPatchErrors", false);
             Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);
             Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
