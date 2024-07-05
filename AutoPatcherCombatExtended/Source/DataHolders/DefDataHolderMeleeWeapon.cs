@@ -42,10 +42,12 @@ namespace nuff.AutoPatcherCombatExtended
             modified_Bulk = modified_Mass * 2f;
             CalculateStatMods();
             CalculateWeaponTechMult();
-
-            for (int i = 0; i < original_Tools.Count; i++)
+            if (!original_Tools.NullOrEmpty())
             {
-                ModToolAtIndex(i);
+                for (int i = 0; i < original_Tools.Count; i++)
+                {
+                    ModToolAtIndex(i);
+                }
             }
         }
 
@@ -68,11 +70,14 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
             DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
 
-            thingDef.tools.Clear();
-            BuildTools();
-            for (int i = 0; i < modified_Tools.Count; i++)
+            if (!original_Tools.NullOrEmpty())
             {
-                thingDef.tools.Add(modified_Tools[i]);
+                thingDef.tools.Clear();
+                BuildTools();
+                for (int i = 0; i < modified_Tools.Count; i++)
+                {
+                    thingDef.tools.Add(modified_Tools[i]);
+                }
             }
         }
 

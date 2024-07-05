@@ -101,15 +101,18 @@ namespace nuff.AutoPatcherCombatExtended
             weaponDef = def as ThingDef;
             gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
             original_projectile = weaponDef.Verbs[0].defaultProjectile;
-            original_damage = original_projectile.projectile.GetDamageAmount(1);
-            original_armorPenetration = original_projectile.projectile.GetArmorPenetration(1);
-            original_speed = original_projectile.projectile.speed;
-            original_explosionRadius = original_projectile.projectile.explosionRadius;
-            original_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;
-            original_applyDamageToExplosionCellsNeighbors = original_projectile.projectile.applyDamageToExplosionCellsNeighbors;
-            original_damageDef = original_projectile.projectile.damageDef;
-            original_extraDamages = original_projectile.projectile.extraDamages;
-
+            if (original_projectile != null)
+            {
+                original_damage = original_projectile.projectile.GetDamageAmount(1);
+                original_armorPenetration = original_projectile.projectile.GetArmorPenetration(1);
+                original_speed = original_projectile.projectile.speed;
+                original_explosionRadius = original_projectile.projectile.explosionRadius;
+                original_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;
+                original_applyDamageToExplosionCellsNeighbors = original_projectile.projectile.applyDamageToExplosionCellsNeighbors;
+                original_damageDef = original_projectile.projectile.damageDef;
+                original_extraDamages = original_projectile.projectile.extraDamages;
+            }
+            
             CalculateWeaponTechMult();
         }
 
