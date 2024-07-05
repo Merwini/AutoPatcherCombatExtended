@@ -53,6 +53,7 @@ namespace nuff.AutoPatcherCombatExtended
             Turret,
             Mortar,
             BeamGun,
+            Flamethrower,
             Other
         }
         public enum VanillaStatBases //StatModifiers used by vanilla and not CE

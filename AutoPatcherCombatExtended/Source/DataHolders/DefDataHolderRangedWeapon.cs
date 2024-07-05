@@ -98,6 +98,10 @@ namespace nuff.AutoPatcherCombatExtended
         {
             //TODO may need to allow user to override gunKind for better recalculating
             gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
+            if (APCESettings.printLogs)
+            {
+                Log.Message($"APCE thinks that gun {def.label} from {def.modContentPack.Name} is a gun of kind: " + gunKind.ToString());
+            }
             CalculateWeaponTechMult();
 
             if (gunKind == APCEConstants.gunKinds.Mortar)
@@ -131,6 +135,12 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 CalculateGrenade();
             }
+
+            if (gunKind == APCEConstants.gunKinds.Flamethrower)
+            {
+                modified_AmmoSetDef = APCEDefOf.AmmoSet_Flamethrower;
+            }
+
             if (modified_AmmoSetDef == null)
             {
                 GenerateAmmoSet();
@@ -435,6 +445,8 @@ namespace nuff.AutoPatcherCombatExtended
             //newVerbPropsCE.ejectsCasings //TODO
             //newVerbPropsCE.indirectFirePenalty //TODO
             newVerbPropsCE.defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
+
+            weaponThingDef.Verbs[0] = newVerbPropsCE;
         }
 
         public void CalculateCEVerbPropValues()

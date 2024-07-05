@@ -26,6 +26,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static DamageDef PrometheumFlame;
         public static DamageDef Thermobaric;
 
+        public static AmmoSetDef AmmoSet_Flamethrower;
 
         public static ThingDef Filth_Fuel;
         public static ThingDef FilthPrometheum;
