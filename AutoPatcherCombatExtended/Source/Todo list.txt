@@ -13,11 +13,12 @@ TODO make stringify/destringify virtual methods in base DefDataHolder, with over
 TODO alreadyGenerated bool, so that repatching grenades, mortars, ammosets does not keep generating new ones 
 TODO in customization page, if user changes a weapon from burst 1 to multi, suggest to add recoil
 TODO each DefDataHolder needs to set their def subclass reference at the end of loading (i.e. ThingDef td = def as ThingDef). Class base loads the def itself
-TODO redo Vehicle compat by sorting using a Type, Func dictionary that the compat code can just add to
+	DONE redo Vehicle compat by sorting using a Type, Func dictionary that the compat code can just add to
 TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon Studios folder
 TODO double check that ModDataHolder mults are being applied to all relevant autocalculations
-TODO handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
-TODO window that adds/removes mods from the patch list should WriteSettings
+	DONE handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
+	DONE window that adds/removes mods from the patch list should WriteSettings
+TODO option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
 
 
 TODO basic:
@@ -26,12 +27,12 @@ TODO basic:
 	Hediff
 	Melee weapon
 MortarShell
-Ranged Weapon
+	Ranged Weapon
 Turret
-Pawn
+	Pawn
 PawnKind
-Vehicle
-Vehicle Turret
+	Vehicle
+	Vehicle Turret
 
 TODO export: 
 Apparel

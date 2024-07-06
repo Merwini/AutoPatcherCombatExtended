@@ -915,7 +915,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
             newProj.graphicData.shaderType = ShaderTypeDefOf.Transparent;
             newProj.graphicData.graphicClass = typeof(Graphic_Single);
-            newProj.graphicData.texPath = oldProj.graphicData.texPath; //TODO modifiable texPath
+            newProj.graphicData.texPath = oldProj.graphicData.texPath; //TODO modifiable texPath //TODO handle VE's stupid fucking graphicData subclass
             newProj.projectile.explosionDamageFalloff = true;
         }
 
