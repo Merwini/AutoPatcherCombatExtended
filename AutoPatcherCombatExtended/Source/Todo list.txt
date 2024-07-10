@@ -19,6 +19,8 @@ TODO double check that ModDataHolder mults are being applied to all relevant aut
 	DONE handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
 	DONE window that adds/removes mods from the patch list should WriteSettings
 TODO option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
+TODO check for genes that add verbs
+TODO fix scrollview for showModsToRemove
 
 
 TODO basic:
