@@ -38,17 +38,21 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 list.Label("The auto-patcher has detected new mods that it thinks need patching, that are not on the list of mods to patch.");
                 list.Label("Please click the red \"X\" to select mods that you want patched, or click \"Select All\" down below.");
-
-                Rect scrollViewRect = new Rect(0f, 0f, inRect.width, inRect.height);
-                Rect checkboxRect = new Rect(0f, 200f, 30f, 30f);
+                list.Gap(20);
+                Rect scrollViewRect = new Rect(0f, 90f, inRect.width, inRect.height-200);
+                Rect viewRect = new Rect(0f, 0f, scrollViewRect.width - 20f, APCESettings.modsToRecommendAddDict.Count * 35f);
                 List<ModContentPack> checksToChange = new List<ModContentPack>();
-                Widgets.BeginScrollView(inRect, ref scrollPosition, scrollViewRect, true);
+
+                GUI.BeginGroup(scrollViewRect, style: GUI.skin.box);
+                Widgets.BeginScrollView(scrollViewRect.AtZero(), ref scrollPosition, viewRect, true);
+
+                Rect checkboxRect = new Rect(0f, 0f, 30f, 30f);
                 foreach (var mod in APCESettings.modsToRecommendAddDict)
                 {
                     bool checkBool = mod.Value;
 
                     Widgets.Checkbox(checkboxRect.position, ref checkBool);
-                    Rect labelRect = new Rect(checkboxRect.xMax + 10f, checkboxRect.y, inRect.width - checkboxRect.width - 10f, 30f);
+                    Rect labelRect = new Rect(checkboxRect.xMax + 10f, checkboxRect.y, viewRect.width - checkboxRect.width - 10f, 30f);
                     Widgets.Label(labelRect, mod.Key.Name);
 
                     if (checkBool != mod.Value)
@@ -59,6 +63,7 @@ namespace nuff.AutoPatcherCombatExtended
                     checkboxRect.y += 35f;
                 }
                 Widgets.EndScrollView();
+                GUI.EndGroup();
 
 
                 Rect selectAllRect = new Rect(inRect.width / 2 - 70f, inRect.height - 60f, 120f, 30f);
@@ -101,6 +106,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Rect scrollViewRect = new Rect(0f, 0f, inRect.width, inRect.height);
                 Rect checkboxRect = new Rect(0f, 200f, 30f, 30f);
                 List<ModContentPack> checksToChange = new List<ModContentPack>();
+                GUI.BeginGroup(position: inRect, style: GUI.skin.box);
                 Widgets.BeginScrollView(inRect, ref scrollPosition, scrollViewRect, true);
                 foreach (var mod in APCESettings.modsToRecommendRemoveDict)
                 {
@@ -118,6 +124,7 @@ namespace nuff.AutoPatcherCombatExtended
                     checkboxRect.y += 35f;
                 }
                 Widgets.EndScrollView();
+                GUI.EndGroup();
 
 
                 Rect selectAllRect = new Rect(inRect.width / 2 - 70f, inRect.height - 60f, 120f, 30f);
