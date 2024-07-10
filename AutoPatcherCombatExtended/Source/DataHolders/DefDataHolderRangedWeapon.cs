@@ -47,6 +47,7 @@ namespace nuff.AutoPatcherCombatExtended
         float modified_warmupTime = 1;
         int modified_burstShotCount = 1;
         float modified_recoilAmount;
+        float modified_range; //TODO
         RecoilPattern modified_recoilPattern = RecoilPattern.None;
 
         //modified comp stuff
@@ -66,10 +67,11 @@ namespace nuff.AutoPatcherCombatExtended
         bool modified_noSnapShot;
         AimMode modified_aiAimMode;
 
-        //modified other stuff
+        //modified grenade stuff
         AmmoDef modified_ammoDef; // for use in grenades
         int modified_recipeCount; //also for grenades
         int modified_stackLimit;
+        int modified_grenadeDamage;
 
 
         public override void GetOriginalData()
@@ -93,7 +95,6 @@ namespace nuff.AutoPatcherCombatExtended
             original_workToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
             original_burstShotCount = original_VerbProperties.burstShotCount;
         }
-
         public override void AutoCalculate()
         {
             //TODO may need to allow user to override gunKind for better recalculating
@@ -125,15 +126,17 @@ namespace nuff.AutoPatcherCombatExtended
                 return;
             }
 
+            CalculateVerbPropValues();
+
             if (gunKind != APCEConstants.gunKinds.Grenade)
             {
-                CalculateCEVerbPropValues();
                 CalculateCompFireModesValues();
                 CalculateCompAmmoUserValues();
             }
             else
             {
                 CalculateGrenade();
+                return;
             }
 
             if (gunKind == APCEConstants.gunKinds.Flamethrower)
@@ -146,7 +149,6 @@ namespace nuff.AutoPatcherCombatExtended
                 GenerateAmmoSet();
             }
         }
-
         public override void PostLoad()
         {
             if (modified_AmmoSetDef == null && modified_AmmoSetDefString != null)
@@ -163,7 +165,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 modified_AmmoSetDef = DefDatabase<AmmoSetDef>.AllDefsListForReading.First(asd => asd.defName.Equals(modified_AmmoSetDefString));
             }
-            if (modified_AmmoSetDef == null)
+            if (modified_AmmoSetDef == null && gunKind != APCEConstants.gunKinds.Grenade && gunKind != APCEConstants.gunKinds.BeamGun)
             {
                 GenerateAmmoSet();
             }
@@ -172,13 +174,12 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void Patch()
         {
-            //TODO
             PatchStatBases();
-            PatchComps();
             BuildTools();
+
             if (!modified_Tools.NullOrEmpty())
             {
-                weaponThingDef.tools.Clear();
+                weaponThingDef.tools = new List<Tool>(); // changed from clear, because grenades are given a generic tool despite having an empty list, and this combines a null check + clear into one
                 for (int i = 0; i < modified_Tools.Count; i++)
                 {
                     weaponThingDef.tools.Add(modified_Tools[i]);
@@ -188,17 +189,14 @@ namespace nuff.AutoPatcherCombatExtended
             if (gunKind == APCEConstants.gunKinds.BeamGun)
                 return;
 
-            PatchVerb();
-            
             if (gunKind == APCEConstants.gunKinds.Grenade)
             {
-                DataHolderUtils.AddCompReplaceMe(weaponThingDef, modified_ammoDef);
-                bool hasRecipe = DataHolderUtils.ReplaceRecipes(weaponThingDef, modified_ammoDef, modified_recipeCount);
-                if (APCESettings.printLogs)
-                {
-                    Log.Message("ThingDef " + weaponThingDef.defName + " classified as a grenade, found a recipe to modify: " + hasRecipe.ToString());
-                }
+                PatchGrenade();
+                return;
             }
+
+            PatchVerb();
+            PatchComps();
         }
 
         public override StringBuilder PrepExport()
@@ -211,7 +209,6 @@ namespace nuff.AutoPatcherCombatExtended
         {
             //TODO
         }
-
         public override void ExposeData()
         {
             base.ExposeData();
@@ -256,14 +253,14 @@ namespace nuff.AutoPatcherCombatExtended
 
                 Scribe_Values.Look(ref modified_recipeCount, "modified_recipeCount", 1);
                 Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit", 25);
+                Scribe_Values.Look(ref modified_grenadeDamage, "modified_grenadeDamage", 1);
 
                 if (Scribe.mode == LoadSaveMode.LoadingVars && gunKind == APCEConstants.gunKinds.Grenade)
                 {
-                    GenerateGrenadeAmmoDef();
+                    modified_ammoDef = GenerateGrenadeAmmoDef();
                 }
             }
         }
-
         public void CalculateStatBaseValues()
         {
             //recoil is calculated here since I don't want to make another switch in the other method
@@ -360,7 +357,6 @@ namespace nuff.AutoPatcherCombatExtended
             modified_workToMake = original_workToMake;
             modified_rangedWeaponCooldown = original_rangedWeaponCooldown;
         }
-
         public void PatchStatBases()
         {
             RemoveVanillaStatBases();
@@ -373,23 +369,11 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_shotSpread);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_swayFactor);
         }
-
         public void PatchComps()
         {
             if (weaponThingDef.comps == null)
             {
                 weaponThingDef.comps = new List<CompProperties>();
-            }
-
-            if (gunKind == APCEConstants.gunKinds.Grenade)
-            {
-                CompProperties_ExplosiveCE newComp_ExCE = new CompProperties_ExplosiveCE()
-                {
-                    damageAmountBase = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1),
-                    explosiveDamageType = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.damageDef,
-                    explosiveRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius
-                };
-                weaponThingDef.comps.Add(newComp_ExCE);
             }
 
             //TODO customization
@@ -431,7 +415,6 @@ namespace nuff.AutoPatcherCombatExtended
             };
             weaponThingDef.comps.Add(newComp_FireModes);
         }
-
         public void PatchVerb()
         {
             VerbPropertiesCE newVerbPropsCE = new VerbPropertiesCE();
@@ -449,7 +432,7 @@ namespace nuff.AutoPatcherCombatExtended
             weaponThingDef.Verbs[0] = newVerbPropsCE;
         }
 
-        public void CalculateCEVerbPropValues()
+        public void CalculateVerbPropValues()
         {
             //if verb doesn't need patching, early return
             if ((original_VerbProperties.verbClass == typeof(Verb_ShootCE)) || (original_VerbProperties.verbClass == typeof(Verb_ShootCEOneUse)) || original_VerbProperties.verbClass == typeof(Verb_ShootBeam))
@@ -476,9 +459,11 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (original_VerbProperties.verbClass == typeof(Verb_Shoot))
                 modified_VerbClass = typeof(Verb_ShootCE);
-            else if (original_VerbProperties.verbClass == typeof(Verb_LaunchProjectile) 
+            else if (original_VerbProperties.verbClass == typeof(Verb_LaunchProjectile)
                 || (original_VerbProperties.verbClass == typeof(Verb_ShootOneUse)))
                 modified_VerbClass = typeof(Verb_ShootCEOneUse);
+            else if (original_VerbProperties.verbClass == typeof(Verb_SpewFire))
+                modified_VerbClass = typeof(Verb_SpewFire);
             else
             {
                 if (APCESettings.patchCustomVerbs)
@@ -598,12 +583,10 @@ namespace nuff.AutoPatcherCombatExtended
             modified_warmupTime = original_VerbProperties.warmupTime;
         }
 
+        #region Grenade
         public void CalculateGrenade()
         {
-            if (modified_ammoDef == null)
-            {
-                modified_ammoDef = GenerateGrenadeAmmoDef();
-            }
+            
             if (modified_toolIds.NullOrEmpty())
             {
                 modified_toolIds.Add("APCE_Tool_" + weaponThingDef.defName);
@@ -618,7 +601,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             modified_stackLimit = 75;
             modified_recipeCount = 10;
-            //Apply ReplaceMe comp to ThingDef, just in case
+            modified_grenadeDamage = original_VerbProperties.defaultProjectile.projectile.GetDamageAmount(1);
             //CompProperties_ExplosiveCE (for if the Thing is damaged)
             //CompProperties_Fragments 
             //todo
@@ -628,11 +611,38 @@ namespace nuff.AutoPatcherCombatExtended
             //make sure comps aren't null, add Fragments comp if necessary -- TODO, explosive launcher needs fragments as well
         }
 
+        public void PatchGrenade()
+        {
+            if (modified_ammoDef == null)
+            {
+                modified_ammoDef = GenerateGrenadeAmmoDef();
+            }
+            DataHolderUtils.AddCompReplaceMe(weaponThingDef, modified_ammoDef);
+
+            bool hasRecipe = DataHolderUtils.ReplaceRecipes(weaponThingDef, modified_ammoDef, modified_recipeCount);
+            if (APCESettings.printLogs)
+            {
+                Log.Message("ThingDef " + weaponThingDef.defName + " classified as a grenade, found a recipe to modify: " + hasRecipe.ToString());
+            }
+
+            CompProperties_ExplosiveCE newComp_ExCE = new CompProperties_ExplosiveCE()
+            {
+                damageAmountBase = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1),
+                explosiveDamageType = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.damageDef,
+                explosiveRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius
+            };
+            modified_ammoDef.comps.Add(newComp_ExCE);
+            //TODO comp fragments
+
+            return;
+        }
+
         public AmmoDef GenerateGrenadeAmmoDef()
         {
             AmmoDef ammoGrenade = new AmmoDef();
             DataHolderUtils.CopyFields(weaponThingDef, ammoGrenade);
 
+            ammoGrenade.thingClass = typeof(ProjectileCE_Explosive);
             ammoGrenade.graphicData.graphicClass = typeof(Graphic_Multi);
             ammoGrenade.graphicData.onGroundRandomRotateAngle = 0;
 
@@ -659,8 +669,13 @@ namespace nuff.AutoPatcherCombatExtended
             weaponThingDef.generateAllowChance = 0;
             weaponThingDef.generateCommonality = 0;
 
+            //InjectedDefHasher.GiveShortHashToDef(ammoGrenade, typeof(ThingDef));
+            //DefGenerator.AddImpliedDef<ThingDef>(ammoGrenade);
             return ammoGrenade;
-        } 
+        }
+
+        
+        #endregion
 
         public void GenerateAmmoSet()
         {

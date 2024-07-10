@@ -125,12 +125,12 @@
     <Content Include="About\About.xml" />
     <Content Include="About\preview.png" />
     <Content Include="About\PublishedFileId.txt" />
-    <Content Include="Defs\APCE_Generics_Bow.xml" />
-    <Content Include="Defs\APCE_Generics_ExplosiveLauncher.xml" />
-    <Content Include="Defs\APCE_Generics_Grenade.xml" />
-    <Content Include="Defs\APCE_Generics_IndGun.xml" />
-    <Content Include="Defs\APCE_Generics_IndShotgun.xml" />
-    <Content Include="Defs\APCE_Generics_SpacerGun.xml" />
+    <Content Include="TrashFolder\APCE_Generics_Bow.xml" />
+    <Content Include="TrashFolder\APCE_Generics_ExplosiveLauncher.xml" />
+    <Content Include="TrashFolder\APCE_Generics_Grenade.xml" />
+    <Content Include="TrashFolder\APCE_Generics_IndGun.xml" />
+    <Content Include="TrashFolder\APCE_Generics_IndShotgun.xml" />
+    <Content Include="TrashFolder\APCE_Generics_SpacerGun.xml" />
     <Content Include="Source\AutoPatcherCombatExtended.csproj.user" />
     <Content Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\NuGetUpgradeLog.html" />
     <Content Include="Source\Todo list.txt" />
@@ -140,6 +140,7 @@
     <None Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Defs\" />
     <Folder Include="Source\bin\Debug\" />
     <Folder Include="Source\bin\Release\" />
   </ItemGroup>
