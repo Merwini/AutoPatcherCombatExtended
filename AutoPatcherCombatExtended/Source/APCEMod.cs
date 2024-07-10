@@ -68,6 +68,7 @@ namespace nuff.AutoPatcherCombatExtended
                     list.Gap();
                     list.CheckboxLabeled("Show patch logs: ", ref APCESettings.printLogs);
                     list.CheckboxLabeled("Enable Debug Mode (print errors): ", ref APCESettings.printPatchErrors);
+                    list.CheckboxLabeled("Stop checking mod after first unpatched def is found: ", ref APCESettings.stopAfterOneDefCheckFails);
                 }
 
                 else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Modlist)

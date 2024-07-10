@@ -12,11 +12,17 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public static class APCELogUtility
     {
-        public static void LogDefCause(Def def)
+        public static void LogDefsCause(List<Def> defs)
         {
             if (APCESettings.printLogs)
             {
-                Log.Message($"Mod {def.modContentPack.Name} was suggested to patch due to def {def.defName}.");
+                StringBuilder causeString = new StringBuilder("");
+                causeString.Append($"Mod {defs[0].modContentPack.Name} was suggested to patch due to defs: ");
+                foreach (Def def in defs)
+                {
+                    causeString.Append($"\n{def.defName}");
+                }
+                Log.Message(causeString);
             }
         }
     }

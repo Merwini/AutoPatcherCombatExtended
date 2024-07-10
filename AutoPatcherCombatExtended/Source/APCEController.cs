@@ -207,7 +207,6 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (!APCESettings.modsToPatch.Contains(mod))
                 {
-                    Log.Warning("Adding " + mod.Name);
                     APCESettings.modsToRecommendAdd.Add(mod);
                 }
             }
@@ -225,6 +224,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static bool CheckIfModNeedsPatched(ModContentPack mod)
         {
+            List<Def> defsNeedingPatched = new List<Def>();
+
             if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
                 return false;
 
@@ -232,8 +233,18 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (CheckIfDefNeedsPatched(def))
                 {
-                    return true;
+                    defsNeedingPatched.Add(def);
+                    if (APCESettings.stopAfterOneDefCheckFails)
+                    {
+                        break;
+                    }
                 }
+            }
+
+            if (defsNeedingPatched.Count != 0)
+            {
+                APCELogUtility.LogDefsCause(defsNeedingPatched);
+                return true;
             }
             return false;
         }
@@ -304,7 +315,6 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (needsPatched)
             {
-                APCELogUtility.LogDefCause(def);
                 return true;
             }
             return false;

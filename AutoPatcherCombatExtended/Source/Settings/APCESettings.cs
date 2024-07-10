@@ -59,6 +59,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static bool patchVehicles = true;
         public static bool printLogs = false;
         public static bool printPatchErrors = false;
+        public static bool stopAfterOneDefCheckFails = false;
 
         //Balance Control Settings
 
@@ -158,6 +159,7 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref patchGenes, "patchGenes", true);
             Scribe_Values.Look(ref patchHediffs, "patchHediffs", true);
             Scribe_Values.Look(ref patchVehicles, "patchVehicles", true);
+            Scribe_Values.Look(ref stopAfterOneDefCheckFails, "stopAfterOneDefCheckFails", false);
 
             //Modlist Settings
             Scribe_Collections.Look(ref modsByPackageId, "modsByPackageId", LookMode.Value);
