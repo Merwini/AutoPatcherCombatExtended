@@ -72,6 +72,7 @@ namespace nuff.AutoPatcherCombatExtended
         int modified_recipeCount; //also for grenades
         int modified_stackLimit;
         int modified_grenadeDamage;
+        float modified_explosionRadius;
 
 
         public override void GetOriginalData()
@@ -602,6 +603,7 @@ namespace nuff.AutoPatcherCombatExtended
             modified_stackLimit = 75;
             modified_recipeCount = 10;
             modified_grenadeDamage = original_VerbProperties.defaultProjectile.projectile.GetDamageAmount(1);
+            modified_explosionRadius = original_VerbProperties.defaultProjectile.projectile.explosionRadius;
             //CompProperties_ExplosiveCE (for if the Thing is damaged)
             //CompProperties_Fragments 
             //todo
@@ -627,9 +629,9 @@ namespace nuff.AutoPatcherCombatExtended
 
             CompProperties_ExplosiveCE newComp_ExCE = new CompProperties_ExplosiveCE()
             {
-                damageAmountBase = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1),
-                explosiveDamageType = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.damageDef,
-                explosiveRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius
+                damageAmountBase = modified_grenadeDamage,
+                explosiveDamageType = original_VerbProperties.defaultProjectile.projectile.damageDef,
+                explosiveRadius = modified_explosionRadius
             };
             modified_ammoDef.comps.Add(newComp_ExCE);
             //TODO comp fragments
