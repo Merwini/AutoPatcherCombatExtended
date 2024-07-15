@@ -105,11 +105,12 @@ namespace nuff.AutoPatcherCombatExtended
                 list.Gap(20);
                 Rect scrollViewRect = new Rect(0f, 90f, inRect.width, inRect.height - 200);
                 Rect viewRect = new Rect(0f, 0f, scrollViewRect.width - 20f, APCESettings.modsToRecommendRemoveDict.Count * 35f);
-                Rect checkboxRect = new Rect(0f, 200f, 30f, 30f);
                 List<ModContentPack> checksToChange = new List<ModContentPack>();
 
                 GUI.BeginGroup(scrollViewRect, style: GUI.skin.box);
                 Widgets.BeginScrollView(scrollViewRect.AtZero(), ref scrollPosition, viewRect, true);
+
+                Rect checkboxRect = new Rect(0f, 0f, 30f, 30f);
                 foreach (var mod in APCESettings.modsToRecommendRemoveDict)
                 {
                     bool checkBool = mod.Value;
