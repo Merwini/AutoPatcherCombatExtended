@@ -41,6 +41,7 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public enum gunKinds
         {
+            Default,
             Bow,
             Grenade,
             Handgun,

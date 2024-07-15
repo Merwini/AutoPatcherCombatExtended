@@ -15,6 +15,18 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
+        public DefDataHolderAmmoSet(ThingDef def, APCEConstants.gunKinds gunKind) : base(def)
+        {
+            this.def = def;
+            defName = def.defName;
+            this.gunKind = gunKind;
+            parentModPackageId = def.modContentPack.PackageId;
+            modData = DataHolderUtils.ReturnModDataOrDefault(def);
+            RegisterSelfInDict();
+            GetOriginalData();
+            AutoCalculate();
+        }
+
         ThingDef weaponDef;
         APCEConstants.gunKinds gunKind;
         ThingDef original_projectile;
@@ -99,7 +111,10 @@ namespace nuff.AutoPatcherCombatExtended
         public override void GetOriginalData()
         {
             weaponDef = def as ThingDef;
-            gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
+            if (gunKind == APCEConstants.gunKinds.Default)
+            {
+                gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
+            }
             original_projectile = weaponDef.Verbs[0].defaultProjectile;
             if (original_projectile != null)
             {
