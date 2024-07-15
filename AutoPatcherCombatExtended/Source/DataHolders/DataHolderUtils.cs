@@ -202,17 +202,14 @@ namespace nuff.AutoPatcherCombatExtended
                 case APCEConstants.DefTypes.Pawn:
                     ddh = new DefDataHolderPawn(def as ThingDef);
                     break;
+                case APCEConstants.DefTypes.PawnKind:
+                    ddh = new DefDataHolderPawnKind(def as PawnKindDef);
+                    break;
                 case APCEConstants.DefTypes.RangedWeapon:
                     ddh = new DefDataHolderRangedWeapon(def as ThingDef);
                     break;
                 case APCEConstants.DefTypes.Stuff: //TODO Stuff is not a def, figure out a way to work with them
                     break;
-                case APCEConstants.DefTypes.Vehicle: //TODO these will need to be prefixed in by the compat
-                    break;
-                case APCEConstants.DefTypes.VehicleTurret:
-                    break;
-
-
             }
         }
 
