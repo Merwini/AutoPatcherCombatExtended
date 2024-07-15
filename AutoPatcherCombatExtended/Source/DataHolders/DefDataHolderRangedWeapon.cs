@@ -129,17 +129,6 @@ namespace nuff.AutoPatcherCombatExtended
 
             CalculateVerbPropValues();
 
-            if (gunKind != APCEConstants.gunKinds.Grenade)
-            {
-                CalculateCompFireModesValues();
-                CalculateCompAmmoUserValues();
-            }
-            else
-            {
-                CalculateGrenade();
-                return;
-            }
-
             if (gunKind == APCEConstants.gunKinds.Flamethrower)
             {
                 modified_AmmoSetDef = APCEDefOf.AmmoSet_Flamethrower;
@@ -148,6 +137,16 @@ namespace nuff.AutoPatcherCombatExtended
             if (modified_AmmoSetDef == null)
             {
                 GenerateAmmoSet();
+            }
+
+            if (gunKind != APCEConstants.gunKinds.Grenade)
+            {
+                CalculateCompFireModesValues();
+                CalculateCompAmmoUserValues();
+            }
+            else
+            {
+                CalculateGrenade();
             }
         }
         public override void PostLoad()
@@ -190,13 +189,14 @@ namespace nuff.AutoPatcherCombatExtended
             if (gunKind == APCEConstants.gunKinds.BeamGun)
                 return;
 
+            PatchVerb();
+
             if (gunKind == APCEConstants.gunKinds.Grenade)
             {
                 PatchGrenade();
                 return;
             }
 
-            PatchVerb();
             PatchComps();
         }
 
@@ -256,10 +256,10 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit", 25);
                 Scribe_Values.Look(ref modified_grenadeDamage, "modified_grenadeDamage", 1);
 
-                if (Scribe.mode == LoadSaveMode.LoadingVars && gunKind == APCEConstants.gunKinds.Grenade)
-                {
-                    modified_ammoDef = GenerateGrenadeAmmoDef();
-                }
+                //if (Scribe.mode == LoadSaveMode.LoadingVars && gunKind == APCEConstants.gunKinds.Grenade)
+                //{
+                //    modified_ammoDef = GenerateGrenadeAmmoDef();
+                //}
             }
         }
         public void CalculateStatBaseValues()
@@ -602,8 +602,8 @@ namespace nuff.AutoPatcherCombatExtended
 
             modified_stackLimit = 75;
             modified_recipeCount = 10;
-            modified_grenadeDamage = original_VerbProperties.defaultProjectile.projectile.GetDamageAmount(1);
-            modified_explosionRadius = original_VerbProperties.defaultProjectile.projectile.explosionRadius;
+            modified_grenadeDamage = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1);
+            modified_explosionRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius;
             //CompProperties_ExplosiveCE (for if the Thing is damaged)
             //CompProperties_Fragments 
             //todo
@@ -615,25 +615,29 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void PatchGrenade()
         {
-            if (modified_ammoDef == null)
-            {
-                modified_ammoDef = GenerateGrenadeAmmoDef();
-            }
-            DataHolderUtils.AddCompReplaceMe(weaponThingDef, modified_ammoDef);
+            //if (modified_ammoDef == null)
+            //{
+            //    modified_ammoDef = GenerateGrenadeAmmoDef();
+            //}
+            //DataHolderUtils.AddCompReplaceMe(weaponThingDef, modified_ammoDef);
 
-            bool hasRecipe = DataHolderUtils.ReplaceRecipes(weaponThingDef, modified_ammoDef, modified_recipeCount);
-            if (APCESettings.printLogs)
-            {
-                Log.Message("ThingDef " + weaponThingDef.defName + " classified as a grenade, found a recipe to modify: " + hasRecipe.ToString());
-            }
+            //bool hasRecipe = DataHolderUtils.ReplaceRecipes(weaponThingDef, modified_ammoDef, modified_recipeCount);
+            //if (APCESettings.printLogs)
+            //{
+            //    Log.Message("ThingDef " + weaponThingDef.defName + " classified as a grenade, found a recipe to modify: " + hasRecipe.ToString());
+            //}
 
+            weaponThingDef.thingClass = typeof(AmmoThing);
+
+            //remove old CompProperties_Explosive, as wel as CE version so duplicates don't get added if patch is rerun
+            weaponThingDef.comps.RemoveAll(c => c is CompProperties_Explosive || c is CompProperties_ExplosiveCE);
             CompProperties_ExplosiveCE newComp_ExCE = new CompProperties_ExplosiveCE()
             {
                 damageAmountBase = modified_grenadeDamage,
                 explosiveDamageType = original_VerbProperties.defaultProjectile.projectile.damageDef,
                 explosiveRadius = modified_explosionRadius
             };
-            modified_ammoDef.comps.Add(newComp_ExCE);
+            weaponThingDef.comps.Add(newComp_ExCE);
             //TODO comp fragments
 
             return;
@@ -644,19 +648,22 @@ namespace nuff.AutoPatcherCombatExtended
             AmmoDef ammoGrenade = new AmmoDef();
             DataHolderUtils.CopyFields(weaponThingDef, ammoGrenade);
 
-            ammoGrenade.thingClass = typeof(ProjectileCE_Explosive);
+            ammoGrenade.thingClass = typeof(AmmoThing);
             ammoGrenade.graphicData.graphicClass = typeof(Graphic_Multi);
             ammoGrenade.graphicData.onGroundRandomRotateAngle = 0;
 
             //make new tag lists so I can .Clear() the ones on the ThingDef version
+            // this will remove the ThingDef version of the grenade from most traders' stock, unless the mod has a custom trader with the ThingDef explicitly added as stock -- TODO search/remove
             if (!weaponThingDef.tradeTags.NullOrEmpty())
-            {// this will remove the ThingDef version of the grenade from most traders' stock, unless the mod has a custom trader with the ThingDef explicitly added as stock -- TODO search/remove
+            {
                 List<string> newTradeTags = new List<string>(weaponThingDef.tradeTags);
                 ammoGrenade.tradeTags = newTradeTags;
                 weaponThingDef.tradeTags.Clear();
             }
+            
+            // this will hopefully prevent Pawns from spawning with the ThingDef version
             if (!weaponThingDef.weaponTags.NullOrEmpty())
-            {// this will hopefully prevent Pawns from spawning with the ThingDef version
+            {
                 List<string> newWeaponTags = new List<string>(weaponThingDef.weaponTags);
                 ammoGrenade.weaponTags = newWeaponTags;
                 weaponThingDef.weaponTags.Clear();
@@ -665,6 +672,14 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 ammoGrenade.weaponTags = new List<string>();
             }
+
+            //make a new list of comps so the CompReplaceMe isn't added to the new def
+            ammoGrenade.comps = new List<CompProperties>();
+            foreach (CompProperties comp in weaponThingDef.comps)
+            {
+                ammoGrenade.comps.Add(comp);
+            }
+
             ammoGrenade.weaponTags.Add("CE_AI_Grenade");
             ammoGrenade.weaponTags.Add("CE_AI_AOE"); // TODO might need to make these conditional, if I end up re-using code for non-explosive thrown weapons
             ammoGrenade.weaponTags.Add("CE_OneHandedWeapon");
@@ -675,7 +690,6 @@ namespace nuff.AutoPatcherCombatExtended
             //DefGenerator.AddImpliedDef<ThingDef>(ammoGrenade);
             return ammoGrenade;
         }
-
         
         #endregion
 
