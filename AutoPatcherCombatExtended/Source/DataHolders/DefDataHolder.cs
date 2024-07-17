@@ -37,6 +37,11 @@ namespace nuff.AutoPatcherCombatExtended
 
         public bool IsCustomized => isCustomized;
          
+        public DefDataHolder()
+        {
+
+        }
+
         public DefDataHolder(Def def)
         {
             this.def = def;

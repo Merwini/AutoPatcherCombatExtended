@@ -15,16 +15,19 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        public DefDataHolderAmmoSet(ThingDef def, APCEConstants.gunKinds gunKind) : base(def)
+        //constructor for use by VehicleTurrets
+        public DefDataHolderAmmoSet(ThingDef def, APCEConstants.gunKinds gunKind) : base()
         {
             this.def = def;
             defName = def.defName;
             this.gunKind = gunKind;
             parentModPackageId = def.modContentPack.PackageId;
             modData = DataHolderUtils.ReturnModDataOrDefault(def);
-            RegisterSelfInDict();
+            //needs to not register self, so that .Patch() isn't re-run
+            //RegisterSelfInDict();
             GetOriginalData();
             AutoCalculate();
+            Patch();
         }
 
         ThingDef weaponDef;
@@ -54,7 +57,11 @@ namespace nuff.AutoPatcherCombatExtended
 
         //ammosetdef and its serializable data
         AmmoSetDef modified_ammoSetDef;
-        public AmmoSetDef GeneratedAmmoSetDef { get { return modified_ammoSetDef; }}
+
+        public AmmoSetDef GeneratedAmmoSetDef 
+        { 
+            get => modified_ammoSetDef;
+        }
         List<AmmoLink> modified_ammoLinks = new List<AmmoLink>();
         string modified_ammoSetDefName;
         string modified_ammoSetLabel;
