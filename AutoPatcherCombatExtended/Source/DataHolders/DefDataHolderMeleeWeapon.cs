@@ -19,9 +19,11 @@ namespace nuff.AutoPatcherCombatExtended
         public ThingDef thingDef;
 
         float original_Mass;
+        bool stuffed;
 
-        float modified_Mass;
-        float modified_Bulk;
+        float modified_mass;
+        float modified_bulk;
+        float modified_weaponToughness;
         float modified_MeleeCounterParryBonus; //reminder - statbase
         float modified_MeleeDodgeChance;
         float modified_MeleeParryChance;
@@ -34,12 +36,14 @@ namespace nuff.AutoPatcherCombatExtended
 
             original_Tools = thingDef.tools;
             original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+            stuffed = thingDef.MadeFromStuff;
         }
 
         public override void AutoCalculate()
         {
-            modified_Mass = original_Mass;
-            modified_Bulk = modified_Mass * 2f;
+            modified_mass = original_Mass;
+            modified_bulk = modified_mass * 2f; //TODO better calculation
+            modified_weaponToughness = DataHolderUtils.WeaponToughnessAutocalc(thingDef, modified_bulk);
             CalculateStatMods();
             CalculateWeaponTechMult();
             if (!original_Tools.NullOrEmpty())
@@ -62,8 +66,16 @@ namespace nuff.AutoPatcherCombatExtended
                 thingDef.statBases = new List<StatModifier>();
             }
 
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+            DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_mass);
+            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_bulk);
+            if (stuffed)
+            {
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_weaponToughness);
+            }
+            else
+            {
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_weaponToughness);
+            }
             DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
 
             DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
@@ -98,8 +110,9 @@ namespace nuff.AutoPatcherCombatExtended
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
-                Scribe_Values.Look(ref modified_Mass, "modified_Mass", original_Mass);
-                Scribe_Values.Look(ref modified_Bulk, "modified_Bulk", 1f);
+                Scribe_Values.Look(ref modified_mass, "modified_Mass", original_Mass);
+                Scribe_Values.Look(ref modified_bulk, "modified_Bulk", 1f);
+                Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness", 1f);
                 Scribe_Values.Look(ref modified_MeleeCounterParryBonus, "modified_MeleeCounterParryBonus", 0f);
                 Scribe_Values.Look(ref modified_MeleeDodgeChance, "modified_MeleeDodgeChance", 0f);
                 Scribe_Values.Look(ref modified_MeleeParryChance, "modified_MeleeParryChance", 0f);
@@ -111,7 +124,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             float value = thingDef.BaseMarketValue;
             float valueLog = (float)Math.Log10(value);
-            float massFactor = Mathf.Clamp((modified_Mass * 0.2f), 0.1f, 0.9f);
+            float massFactor = Mathf.Clamp((modified_mass * 0.2f), 0.1f, 0.9f);
 
             //todo refine these... again
             modified_MeleeCounterParryBonus = valueLog * 0.1f;

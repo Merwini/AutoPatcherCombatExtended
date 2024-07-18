@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using CombatExtended;
 using System.Reflection;
+using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -258,5 +259,88 @@ namespace nuff.AutoPatcherCombatExtended
             return labelNoSpaces;
         }
         */
+
+        //modified from CE's built-in so that it can rerun on the same def, if that def's Bulk is modified
+        public static float WeaponToughnessAutocalc(ThingDef def, float bulk = 1)
+        {
+
+            StatDef SHARP_ARMOR_STUFF_POWER = StatDefOf.ArmorRating_Sharp.GetStatPart<StatPart_Stuff>().stuffPowerStat;
+
+            // Approximate weapon thickness with the bulk of the weapon.
+            // Longswords get about 2.83mm, knives get 1mm, spears get about 3.162mm
+            float weaponThickness = def.statBases
+                .Find(statMod => statMod.stat == CE_StatDefOf.Bulk)?.value
+                ?? 0f;
+                
+            weaponThickness = Mathf.Sqrt(weaponThickness);
+
+            // Tech level improves toughness
+            switch (def.techLevel)
+            {
+                //Plasteel
+                case (TechLevel.Spacer):
+                    weaponThickness *= 2f;
+                    break;
+                case (TechLevel.Ultra):
+                    weaponThickness *= 4f;
+                    break;
+                case (TechLevel.Archotech):
+                    weaponThickness *= 8f;
+                    break;
+            }
+
+            // Blunt-only weapons get additional weapon thickness. Ranged weapons excluded
+            if (!def.IsRangedWeapon
+                    && (!def.tools?
+                        .Any(tool => tool.VerbsProperties
+                            .Any(property => property.meleeDamageDef
+                                .armorCategory == DamageArmorCategoryDefOf.Sharp))
+                        ?? false))
+            {
+                weaponThickness *= 2f;
+            }
+
+            // Stuffable weapons receive the multiplier stat, to be applied in the DefDataHolder
+            if (def.MadeFromStuff)
+            {
+                return weaponThickness;
+            }
+
+            // Non-stuffable weapons get the rating value, to be applied in the DefDataHolder
+            // Search for a fitting recipe
+            RecipeDef firstRecipeDef = DefDatabase<RecipeDef>.AllDefs
+                .FirstOrDefault(recipeDef => recipeDef.products?
+                        .Any(productDef => productDef.thingDef == def) ?? false);
+
+            IngredientCount biggestIngredientCount = null;
+            if (!firstRecipeDef?.ingredients?.Empty() ?? false)
+            {
+                biggestIngredientCount = firstRecipeDef.ingredients
+                    .MaxBy(ingredientCount => ingredientCount.count);
+            }
+
+            float strongestIngredientSharpArmor = 1f;
+
+            // Recipe does exist and has a fixed ingredient
+            if (biggestIngredientCount?.IsFixedIngredient ?? false)
+            {
+                strongestIngredientSharpArmor = biggestIngredientCount.FixedIngredient.statBases
+                    .Find(statMod => statMod.stat == SHARP_ARMOR_STUFF_POWER)?.value
+                    ?? 0f;
+                strongestIngredientSharpArmor *= biggestIngredientCount.FixedIngredient
+                    .GetModExtension<StuffToughnessMultiplierExtensionCE>()?.toughnessMultiplier
+                    ?? 1f;
+            }
+            // Recipe may or may not exist
+            else
+            {
+                strongestIngredientSharpArmor = biggestIngredientCount?.filter?.thingDefs?
+                    .Max(thingDef => (thingDef.statBases?.Find(statMod => statMod.stat == SHARP_ARMOR_STUFF_POWER)?.value ?? 0f)
+                            * (thingDef.GetModExtension<StuffToughnessMultiplierExtensionCE>()?.toughnessMultiplier ?? 1f))
+                    ?? 1f;
+            }
+
+            return weaponThickness * strongestIngredientSharpArmor;
+        }
     }
 }

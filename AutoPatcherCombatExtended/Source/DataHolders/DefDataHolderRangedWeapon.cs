@@ -25,6 +25,8 @@ namespace nuff.AutoPatcherCombatExtended
         float original_workToMake;
         int original_burstShotCount;
 
+        bool stuffed;
+
         //original verbprops stuff - just store the whole thing, since it won't be modified
         VerbProperties original_VerbProperties;
 
@@ -39,6 +41,7 @@ namespace nuff.AutoPatcherCombatExtended
         float modified_sightsEfficiency;
         float modified_shotSpread;
         float modified_swayFactor;
+        float modified_weaponToughness;
 
         //modified verbprops stuff
         Type modified_VerbClass;
@@ -95,6 +98,7 @@ namespace nuff.AutoPatcherCombatExtended
             original_rangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
             original_workToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
             original_burstShotCount = original_VerbProperties.burstShotCount;
+            stuffed = weaponThingDef.MadeFromStuff;
         }
         public override void AutoCalculate()
         {
@@ -229,6 +233,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_sightsEfficiency, "modified_sightsEfficiency", 1f);
                 Scribe_Values.Look(ref modified_shotSpread, "modified_shotSpread", 0.1f);
                 Scribe_Values.Look(ref modified_swayFactor, "modified_swayFactor", 2f);
+                Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness", 1f);
 
                 Scribe_Deep.Look(ref modified_VerbClass, "modified_VerbClass");
                 Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale", 9);
@@ -355,6 +360,7 @@ namespace nuff.AutoPatcherCombatExtended
                     break;
             }
 
+            modified_weaponToughness = DataHolderUtils.WeaponToughnessAutocalc(weaponThingDef, modified_bulk);
             modified_workToMake = original_workToMake;
             modified_rangedWeaponCooldown = original_rangedWeaponCooldown;
         }
@@ -369,6 +375,14 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_sightsEfficiency);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_shotSpread);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_swayFactor);
+            if (stuffed)
+            {
+                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_weaponToughness);
+            }
+            else
+            {
+                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_weaponToughness);
+            }
         }
         public void PatchComps()
         {

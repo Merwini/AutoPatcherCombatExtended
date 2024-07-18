@@ -57,7 +57,7 @@ namespace nuff.AutoPatcherCombatExtended
                     list.Gap();
                     list.Label("Apparel Stuff:");
                     //list.CheckboxLabeled("Patch apparels from selected mods: ", ref APCESettings.patchApparels);
-                    list.CheckboxLabeled("Patch headgear layers: ", ref APCESettings.patchHeadgearLayers);
+                    //list.CheckboxLabeled("Patch headgear layers: ", ref APCESettings.patchHeadgearLayers);
                     list.Gap();
                     list.Label("Other Stuff:");
                     //list.CheckboxLabeled("Patch pawns from selected mods: ", ref APCESettings.patchPawns);
@@ -230,7 +230,8 @@ namespace nuff.AutoPatcherCombatExtended
             "enableApparelAutopatcher",
             "enableWeaponAutopatcher",
             "enableRaceAutopatcher",
-            "enablePawnKindAutopatcher"
+            "enablePawnKindAutopatcher",
+            "enableWeaponToughnessAutopatcher"
             };
 
             Type settingsType = typeof(Settings);
