@@ -41,6 +41,7 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public enum gunKinds
         {
+            Default,
             Bow,
             Grenade,
             Handgun,
@@ -53,6 +54,7 @@ namespace nuff.AutoPatcherCombatExtended
             Turret,
             Mortar,
             BeamGun,
+            Flamethrower,
             Other
         }
         public enum VanillaStatBases //StatModifiers used by vanilla and not CE

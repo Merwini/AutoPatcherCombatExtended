@@ -1,6 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -15,10 +21,13 @@ namespace nuff.AutoPatcherCombatExtended
         //Modlist Settings
         public static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
         public static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
-        public static List<ModContentPack> modsToRecommend = new List<ModContentPack>();
-        public static Dictionary<ModContentPack, bool> modsToRecommendDict = new Dictionary<ModContentPack, bool>();
+        public static List<ModContentPack> modsToRecommendAdd = new List<ModContentPack>();
+        public static List<ModContentPack> modsToRecommendRemove = new List<ModContentPack>();
+        public static Dictionary<ModContentPack, bool> modsToRecommendAddDict = new Dictionary<ModContentPack, bool>();
+        public static Dictionary<ModContentPack, bool> modsToRecommendRemoveDict = new Dictionary<ModContentPack, bool>();
         public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
-        public static ModContentPack thisMod;
+        public static ModContentPack thisModContent;
+        public static Mod thisMod;
         public static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
         public static bool suggestionWindowOpened = false;
 
@@ -29,7 +38,13 @@ namespace nuff.AutoPatcherCombatExtended
         public ModContentPack rightSelectedObject = null;
 
         public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
-        public static Dictionary<string, DefDataHolder> defDataDict = new Dictionary<string, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+        public static Dictionary<Def, DefDataHolder> defDataDict = new Dictionary<Def, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+                                                                                                         //TODO on save, go through these dicts, for isCustomized dataholders, add them to a collection which will be saved
+
+        public static Dictionary<Type, Func<Def, bool>> typeHandlerDictionaryCheck = new Dictionary<Type, Func<Def, bool>>();
+        public static Dictionary<Type, Delegate> typeHandlerDictionaryGenerate = new Dictionary<Type, Delegate>();
+        
+        //public static Dictionary<string, ThingCategoryDef> modAmmoThingCategoryDict = new Dictionary<string, ThingCategoryDef>(); //not saved, populated if/when ammos are made for that mod
 
         //General Settings
         public static bool patchWeapons = true;
@@ -44,6 +59,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static bool patchVehicles = true;
         public static bool printLogs = false;
         public static bool printPatchErrors = false;
+        public static bool stopAfterOneDefCheckFails = false;
 
         //Balance Control Settings
 
@@ -131,7 +147,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             //General Settings
-            Scribe_Values.Look(ref printLogs, "printDebug", false);
+            Scribe_Values.Look(ref printLogs, "printLogs", false);
             Scribe_Values.Look(ref printPatchErrors, "printPatchErrors", false);
             Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);
             Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
@@ -143,6 +159,7 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Values.Look(ref patchGenes, "patchGenes", true);
             Scribe_Values.Look(ref patchHediffs, "patchHediffs", true);
             Scribe_Values.Look(ref patchVehicles, "patchVehicles", true);
+            Scribe_Values.Look(ref stopAfterOneDefCheckFails, "stopAfterOneDefCheckFails", false);
 
             //Modlist Settings
             Scribe_Collections.Look(ref modsByPackageId, "modsByPackageId", LookMode.Value);

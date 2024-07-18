@@ -15,15 +15,17 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        public ThingDef thingDef;
+        public ThingDef weaponThingDef;
 
         float rangedToolTechMult;
 
         //original statbase stuff
-        float original_mass;
+        float original_Mass;
         float original_rangedWeaponCooldown;
         float original_workToMake;
         int original_burstShotCount;
+
+        bool stuffed;
 
         //original verbprops stuff - just store the whole thing, since it won't be modified
         VerbProperties original_VerbProperties;
@@ -34,20 +36,22 @@ namespace nuff.AutoPatcherCombatExtended
         //modified statbase stuff
         float modified_mass;
         float modified_bulk;
-        float modified_rangedWeaponCoolDown;
+        float modified_rangedWeaponCooldown;
         float modified_workToMake;
         float modified_sightsEfficiency;
         float modified_shotSpread;
         float modified_swayFactor;
-        float modified_recoil;
+        float modified_weaponToughness;
 
         //modified verbprops stuff
         Type modified_VerbClass;
         float modified_muzzleFlashScale;
         int modified_ticksBetweenBurstShots;
-        float modified_warmupTime;
-        int modified_burstShotCount;
-        RecoilPattern modified_recoilPattern;
+        float modified_warmupTime = 1;
+        int modified_burstShotCount = 1;
+        float modified_recoilAmount;
+        float modified_range; //TODO
+        RecoilPattern modified_recoilPattern = RecoilPattern.None;
 
         //modified comp stuff
         int modified_magazineSize;
@@ -57,6 +61,8 @@ namespace nuff.AutoPatcherCombatExtended
         bool modified_reloadOneAtATime;
         float modified_loadedAmmoBulkFactor;
         AmmoSetDef modified_AmmoSetDef;
+        string modified_AmmoSetDefString;
+        DefDataHolderAmmoSet ammoSetDataHolder;
 
         int modified_aimedBurstShotCount;
         bool modified_aiUseBurstMode;
@@ -64,46 +70,79 @@ namespace nuff.AutoPatcherCombatExtended
         bool modified_noSnapShot;
         AimMode modified_aiAimMode;
 
-        //modified other stuff
+        //modified grenade stuff
+        AmmoDef modified_ammoDef; // for use in grenades
+        int modified_recipeCount; //also for grenades
+        int modified_stackLimit;
+        int modified_grenadeDamage;
+        float modified_explosionRadius;
+
 
         public override void GetOriginalData()
         {
-            thingDef = def as ThingDef;
+            weaponThingDef = def as ThingDef;
 
             //need to make sure these lists aren't null before starting DetermineGunKind
-            if (thingDef.statBases == null)
+            if (weaponThingDef.statBases == null)
             {
-                thingDef.statBases = new List<StatModifier>();
+                weaponThingDef.statBases = new List<StatModifier>();
             }
-            if (thingDef.weaponTags == null)
+            if (weaponThingDef.weaponTags == null)
             {
-                thingDef.weaponTags = new List<string>();
+                weaponThingDef.weaponTags = new List<string>();
             }
 
-            original_Tools = thingDef.tools;
-            original_VerbProperties = thingDef.Verbs[0]; // TODO eventually make compatible with MVCF
-            original_mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
-            original_rangedWeaponCooldown = thingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
-            original_workToMake = thingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
+            original_Tools = weaponThingDef.tools;
+            original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
+            original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+            original_rangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
+            original_workToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
+            original_burstShotCount = original_VerbProperties.burstShotCount;
+            stuffed = weaponThingDef.MadeFromStuff;
         }
-
         public override void AutoCalculate()
         {
             //TODO may need to allow user to override gunKind for better recalculating
-            gunKind = DataHolderUtils.DetermineGunKind(thingDef);
+            gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
+            if (APCESettings.printLogs)
+            {
+                Log.Message($"APCE thinks that gun {def.label} from {def.modContentPack.Name} is a gun of kind: " + gunKind.ToString());
+            }
             CalculateWeaponTechMult();
 
-            //todo mortar
+            if (gunKind == APCEConstants.gunKinds.Mortar)
+            {
+                CalculateMortar();
+                return;
+            }
 
-            if (original_Tools != null)
+            if (!original_Tools.NullOrEmpty())
             {
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
                     ModToolAtIndex(i);
                 }
             }
+
             CalculateStatBaseValues();
-            CalculateCEVerbPropValues();
+
+            if (gunKind == APCEConstants.gunKinds.BeamGun)
+            {
+                return;
+            }
+
+            CalculateVerbPropValues();
+
+            if (gunKind == APCEConstants.gunKinds.Flamethrower)
+            {
+                modified_AmmoSetDef = APCEDefOf.AmmoSet_Flamethrower;
+            }
+
+            if (modified_AmmoSetDef == null)
+            {
+                GenerateAmmoSet();
+            }
+
             if (gunKind != APCEConstants.gunKinds.Grenade)
             {
                 CalculateCompFireModesValues();
@@ -111,17 +150,58 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else
             {
-                //todo grenade
+                CalculateGrenade();
             }
-            //generate values for comps
         }
+        public override void PostLoad()
+        {
+            if (modified_AmmoSetDef == null && modified_AmmoSetDefString != null)
+            {
+                modified_AmmoSetDef = DefDatabase<AmmoSetDef>.AllDefsListForReading.First(asd => asd.defName.Equals(modified_AmmoSetDefString));
+            }
+            base.PostLoad();
+        }
+
+        public override void PrePatch()
+        {
+            //try again to find the AmmoSetDef, and generate a new one if unable to
+            if (modified_AmmoSetDef == null && modified_AmmoSetDefString != null)
+            {
+                modified_AmmoSetDef = DefDatabase<AmmoSetDef>.AllDefsListForReading.First(asd => asd.defName.Equals(modified_AmmoSetDefString));
+            }
+            if (modified_AmmoSetDef == null && gunKind != APCEConstants.gunKinds.Grenade && gunKind != APCEConstants.gunKinds.BeamGun)
+            {
+                GenerateAmmoSet();
+            }
+            base.PrePatch();
+        }
+
         public override void Patch()
         {
-            //TODO
-            //patch stat bases
-            //create and add comps
-            //patch tools
-            //patch verb - copy old verb + add recoil
+            PatchStatBases();
+            BuildTools();
+
+            if (!modified_Tools.NullOrEmpty())
+            {
+                weaponThingDef.tools = new List<Tool>(); // changed from clear, because grenades are given a generic tool despite having an empty list, and this combines a null check + clear into one
+                for (int i = 0; i < modified_Tools.Count; i++)
+                {
+                    weaponThingDef.tools.Add(modified_Tools[i]);
+                }
+            }
+
+            if (gunKind == APCEConstants.gunKinds.BeamGun)
+                return;
+
+            PatchVerb();
+
+            if (gunKind == APCEConstants.gunKinds.Grenade)
+            {
+                PatchGrenade();
+                return;
+            }
+
+            PatchComps();
         }
 
         public override StringBuilder PrepExport()
@@ -134,20 +214,66 @@ namespace nuff.AutoPatcherCombatExtended
         {
             //TODO
         }
-
         public override void ExposeData()
         {
             base.ExposeData();
-            //TODO
-        }
+            if (Scribe.mode == LoadSaveMode.LoadingVars
+                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+            {
+                if (Scribe.mode == LoadSaveMode.Saving && modified_AmmoSetDef != null)
+                {
+                    modified_AmmoSetDefString = modified_AmmoSetDef.ToString();
+                }
+                Scribe_Values.Look(ref gunKind, "gunKind");
 
+                Scribe_Values.Look(ref modified_mass, "modified_mass", original_Mass);
+                Scribe_Values.Look(ref modified_bulk, "modified_bulk", 1f);
+                Scribe_Values.Look(ref modified_rangedWeaponCooldown, "modified_rangedWeaponCooldown", 1f);
+                Scribe_Values.Look(ref modified_workToMake, "modified_workToMake", 1000);
+                Scribe_Values.Look(ref modified_sightsEfficiency, "modified_sightsEfficiency", 1f);
+                Scribe_Values.Look(ref modified_shotSpread, "modified_shotSpread", 0.1f);
+                Scribe_Values.Look(ref modified_swayFactor, "modified_swayFactor", 2f);
+                Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness", 1f);
+
+                Scribe_Deep.Look(ref modified_VerbClass, "modified_VerbClass");
+                Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale", 9);
+                Scribe_Values.Look(ref modified_ticksBetweenBurstShots, "modified_ticksBetweenBurstShots", 6);
+                Scribe_Values.Look(ref modified_warmupTime, "modified_warmupTime", 1f);
+                Scribe_Values.Look(ref modified_burstShotCount, "modified_burstShotCount", 1);
+                Scribe_Values.Look(ref modified_recoilAmount, "modified_recoilAmount", 0);
+                Scribe_Values.Look(ref modified_recoilPattern, "modified_recoilPattern", RecoilPattern.None);
+
+                Scribe_Values.Look(ref modified_magazineSize, "modified_magazineSize", 1);
+                Scribe_Values.Look(ref modified_ammoGenPerMagOverride, "modified_ammoGenPerMagOverride", 0);
+                Scribe_Values.Look(ref modified_reloadTime, "modified_reloadTime", 4);
+                Scribe_Values.Look(ref modified_throwMote, "modified_throwMote", false);
+                Scribe_Values.Look(ref modified_reloadOneAtATime, "modified_reloadOneAtATime", false);
+                Scribe_Values.Look(ref modified_loadedAmmoBulkFactor, "modified_loadedAmmoBulkFactor", 0);
+                Scribe_Values.Look(ref modified_AmmoSetDefString, "modified_AmmoSetDefString");
+
+                Scribe_Values.Look(ref modified_aimedBurstShotCount, "modified_aimedBurstShotCount");
+                Scribe_Values.Look(ref modified_aiUseBurstMode, "modified_aiUseBurstMode");
+                Scribe_Values.Look(ref modified_noSingleShot, "modified_noSingleShot");
+                Scribe_Values.Look(ref modified_noSnapShot, "modified_noSnapShot");
+                Scribe_Values.Look(ref modified_aiAimMode, "modified_aiAimMode");
+
+                Scribe_Values.Look(ref modified_recipeCount, "modified_recipeCount", 1);
+                Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit", 25);
+                Scribe_Values.Look(ref modified_grenadeDamage, "modified_grenadeDamage", 1);
+
+                //if (Scribe.mode == LoadSaveMode.LoadingVars && gunKind == APCEConstants.gunKinds.Grenade)
+                //{
+                //    modified_ammoDef = GenerateGrenadeAmmoDef();
+                //}
+            }
+        }
         public void CalculateStatBaseValues()
         {
             //recoil is calculated here since I don't want to make another switch in the other method
-            float ssAccuracyMod = (thingDef.statBases.GetStatValueFromList(StatDefOf.AccuracyLong, 0.5f) * 0.1f);
-            float gunTechModAdd = (thingDef.techLevel.CompareTo(TechLevel.Industrial) * 0.1f);
+            float ssAccuracyMod = (weaponThingDef.statBases.GetStatValueFromList(StatDefOf.AccuracyLong, 0.5f) * 0.1f);
+            float gunTechModAdd = (weaponThingDef.techLevel.CompareTo(TechLevel.Industrial) * 0.1f);
             float gunTechModMult = (1 - gunTechModAdd);
-            float recoilTechMod = (1 - (((float)thingDef.techLevel - 3) * 0.2f));
+            float recoilTechMod = (1 - (((float)weaponThingDef.techLevel - 3) * 0.2f));
             switch (gunKind)
             {
                 //calc new stat bases
@@ -155,75 +281,173 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_sightsEfficiency = 0.6f;
                     modified_shotSpread = 1f;
                     modified_swayFactor = 2f;
-                    modified_bulk = 2f * original_mass;
-                    modified_recoil = 2f * recoilTechMod;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_recoilAmount = 2f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Handgun:
                     modified_shotSpread = (0.2f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 0.7f + gunTechModAdd;
                     modified_swayFactor = 1f;
-                    modified_bulk = 1f * original_mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(1f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.SMG:
                     modified_shotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 0.7f + gunTechModAdd;
                     modified_swayFactor = 2f;
-                    modified_bulk = 1f * original_mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(1f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.Shotgun:
                     modified_shotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.2f;
-                    modified_bulk = 2f * original_mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.assaultRifle:
                     modified_shotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.33f;
-                    modified_bulk = 2f * original_mass;
-                    modified_recoil = 1.8f * recoilTechMod;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_recoilAmount = 1.8f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.MachineGun:
                     modified_shotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.4f;
-                    modified_bulk = 1.5f * original_mass;
-                    modified_recoil = 2.3f * recoilTechMod;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(1.5f * original_Mass, 20f);
+                    modified_recoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.precisionRifle:
                     modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 2.6f + gunTechModAdd;
                     modified_swayFactor = 1.35f;
-                    modified_bulk = 2f * original_mass;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.ExplosiveLauncher:
-                    modified_shotSpread = 0.122f + (thingDef.Verbs[0].ForcedMissRadius * 0.02f);
+                    modified_shotSpread = 0.122f + (weaponThingDef.Verbs[0].ForcedMissRadius * 0.02f);
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 1.8f;
-                    modified_bulk = 2f * original_mass;
-                    modified_recoil = 2.3f * recoilTechMod;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_recoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Turret:
                     modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
                     modified_sightsEfficiency = 1f;
                     modified_swayFactor = 1.5f;
-                    modified_bulk = 2f * original_mass;
-                    modified_recoil = 1f;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_recoilAmount = 1f;
                     break;
                 case APCEConstants.gunKinds.Grenade:
-                    modified_sightsEfficiency = 0.65f;
+                    modified_sightsEfficiency = 1.00f;
+                    modified_bulk = 0.87f;
+                    modified_mass = 0.7f;
                     break;
                 default:
                     modified_shotSpread = modified_shotSpread = (0.15f - ssAccuracyMod) * gunTechModMult; //somewhere between an SMG and assault rifle
                     modified_sightsEfficiency = 1f + gunTechModAdd;
                     modified_swayFactor = 2.0f;
-                    modified_bulk = 2f * original_mass;
-                    modified_recoil = 1f;
+                    modified_mass = Math.Min(original_Mass, 30);
+                    modified_bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_recoilAmount = 1f;
                     break;
             }
+
+            modified_weaponToughness = DataHolderUtils.WeaponToughnessAutocalc(weaponThingDef, modified_bulk);
+            modified_workToMake = original_workToMake;
+            modified_rangedWeaponCooldown = original_rangedWeaponCooldown;
+        }
+        public void PatchStatBases()
+        {
+            RemoveVanillaStatBases();
+
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.Mass, modified_mass);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_bulk);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_rangedWeaponCooldown);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.WorkToMake, modified_workToMake);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_sightsEfficiency);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_shotSpread);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_swayFactor);
+            if (stuffed)
+            {
+                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_weaponToughness);
+            }
+            else
+            {
+                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_weaponToughness);
+            }
+        }
+        public void PatchComps()
+        {
+            if (weaponThingDef.comps == null)
+            {
+                weaponThingDef.comps = new List<CompProperties>();
+            }
+
+            //TODO customization
+            if (gunKind == APCEConstants.gunKinds.Mortar)
+            {
+                CompProperties_Charges newComp_Charges = new CompProperties_Charges()
+                {
+                    chargeSpeeds = new List<int>()
+                    {
+                        30,
+                        50,
+                        70,
+                        90
+                    }
+                };
+            }
+
+            CompProperties_AmmoUser newComp_AmmoUser = new CompProperties_AmmoUser()
+            {
+                magazineSize = modified_magazineSize,
+                reloadTime = modified_reloadTime,
+                reloadOneAtATime = modified_reloadOneAtATime,
+                throwMote = modified_throwMote,
+                ammoSet = modified_AmmoSetDef,
+                //loadedAmmoBulkFactor = modified_loadedAmmoBulkFactor //TODO
+            };
+            weaponThingDef.comps.Add(newComp_AmmoUser);
+
+            if (gunKind == APCEConstants.gunKinds.Mortar)
+                return;
+
+            CompProperties_FireModes newComp_FireModes = new CompProperties_FireModes()
+            {
+                aimedBurstShotCount = modified_aimedBurstShotCount,
+                aiUseBurstMode = modified_aiUseBurstMode,
+                noSingleShot = modified_noSingleShot,
+                noSnapshot = modified_noSnapShot,
+                aiAimMode = modified_aiAimMode
+            };
+            weaponThingDef.comps.Add(newComp_FireModes);
+        }
+        public void PatchVerb()
+        {
+            VerbPropertiesCE newVerbPropsCE = new VerbPropertiesCE();
+            DataHolderUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
+
+            newVerbPropsCE.ticksBetweenBurstShots = modified_ticksBetweenBurstShots;
+            newVerbPropsCE.warmupTime = modified_warmupTime;
+            newVerbPropsCE.burstShotCount = modified_burstShotCount;
+            newVerbPropsCE.recoilPattern = modified_recoilPattern;
+            newVerbPropsCE.verbClass = modified_VerbClass;
+            //newVerbPropsCE.ejectsCasings //TODO
+            //newVerbPropsCE.indirectFirePenalty //TODO
+            newVerbPropsCE.defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
+
+            weaponThingDef.Verbs[0] = newVerbPropsCE;
         }
 
-        public void CalculateCEVerbPropValues()
+        public void CalculateVerbPropValues()
         {
             //if verb doesn't need patching, early return
             if ((original_VerbProperties.verbClass == typeof(Verb_ShootCE)) || (original_VerbProperties.verbClass == typeof(Verb_ShootCEOneUse)) || original_VerbProperties.verbClass == typeof(Verb_ShootBeam))
@@ -233,13 +457,13 @@ namespace nuff.AutoPatcherCombatExtended
 
             modified_ticksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
 
-            //if warmupTime is too low, some weapons will get stuck permanently unable to fire
+            //if warmupTime is too low, some weapons will get stuck permanently unable to fire, since it fires when the timer ticks from 1 to 0, not when it is AT 0
             modified_warmupTime = original_VerbProperties.warmupTime;
             if (modified_warmupTime < 0.07)
                 modified_warmupTime = 0.07f;
 
             //burst sizes are usually doubled, but need to account for single-shot weapons
-            modified_burstShotCount = original_VerbProperties.burstShotCount;
+            modified_burstShotCount = original_burstShotCount;
             if (modified_burstShotCount != 1)
                 modified_burstShotCount *= 2;
 
@@ -250,15 +474,17 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (original_VerbProperties.verbClass == typeof(Verb_Shoot))
                 modified_VerbClass = typeof(Verb_ShootCE);
-            else if (original_VerbProperties.verbClass == typeof(Verb_LaunchProjectile) 
+            else if (original_VerbProperties.verbClass == typeof(Verb_LaunchProjectile)
                 || (original_VerbProperties.verbClass == typeof(Verb_ShootOneUse)))
                 modified_VerbClass = typeof(Verb_ShootCEOneUse);
+            else if (original_VerbProperties.verbClass == typeof(Verb_SpewFire))
+                modified_VerbClass = typeof(Verb_SpewFire);
             else
             {
                 if (APCESettings.patchCustomVerbs)
                     modified_VerbClass = typeof(Verb_ShootCE);
                 else
-                    throw new Exception($"Unable to patch {thingDef.label} due to unrecognized and/or custom verbClass: {original_VerbProperties.verbClass}");
+                    throw new Exception($"Unable to patch {weaponThingDef.label} due to unrecognized and/or custom verbClass: {original_VerbProperties.verbClass}");
             }
         }
 
@@ -320,28 +546,28 @@ namespace nuff.AutoPatcherCombatExtended
         public void CalculateWeaponTechMult()
         {
             float techMult = 1f;
-            switch (thingDef.techLevel)
+            switch (weaponThingDef.techLevel)
             {
                 case TechLevel.Animal:
-                    techMult *= modData.weaponToolTechMultAnimal;
+                    techMult *= modData.gunTechMultAnimal;
                     break;
                 case TechLevel.Neolithic:
-                    techMult *= modData.weaponToolTechMultNeolithic;
+                    techMult *= modData.gunTechMultNeolithic;
                     break;
                 case TechLevel.Medieval:
-                    techMult *= modData.weaponToolTechMultMedieval;
+                    techMult *= modData.gunTechMultMedieval;
                     break;
                 case TechLevel.Industrial:
-                    techMult *= modData.weaponToolTechMultIndustrial;
+                    techMult *= modData.gunTechMultIndustrial;
                     break;
                 case TechLevel.Spacer:
-                    techMult *= modData.weaponToolTechMultSpacer;
+                    techMult *= modData.gunTechMultSpacer;
                     break;
                 case TechLevel.Ultra:
-                    techMult *= modData.weaponToolTechMultUltratech;
+                    techMult *= modData.gunTechMultUltratech;
                     break;
                 case TechLevel.Archotech:
-                    techMult *= modData.weaponToolTechMultArchotech;
+                    techMult *= modData.gunTechMultArchotech;
                     break;
                 default:
                     break;
@@ -352,19 +578,163 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_toolPowers[i] *= modData.weaponToolPowerMult;
-            modified_toolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult?
-            modified_toolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration;
+            modified_ToolPowers[i] *= modData.weaponToolPowerMult;
+            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult? Will weaken things with intended weapons like bayonets, but be better for most cases
+            modified_ToolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration;
         }
 
-        public void PatchMortar()
+        public void CalculateMortar()
         {
+            //statbases
+            modified_sightsEfficiency = 0.5f;
 
+            //comps
+            modified_magazineSize = 1;
+            modified_reloadTime = 5;
+            modified_AmmoSetDef = APCEDefOf.AmmoSet_81mmMortarShell;
+
+            //verb
+            modified_VerbClass = typeof(Verb_ShootMortarCE);
+            modified_warmupTime = original_VerbProperties.warmupTime;
+        }
+
+        #region Grenade
+        public void CalculateGrenade()
+        {
+            
+            if (modified_toolIds.NullOrEmpty())
+            {
+                modified_toolIds.Add("APCE_Tool_" + weaponThingDef.defName);
+                modified_ToolCapacityDefs.Add(new List<ToolCapacityDef>() { APCEDefOf.Blunt });
+                modified_ToolLinkedBodyPartsGroupDefs.Add(APCEDefOf.Base);
+                modified_ToolCooldownTimes.Add(1.75f);
+                modified_ToolArmorPenetrationSharps.Add(0f);
+                modified_ToolArmorPenetrationBlunts.Add(1f);
+                modified_ToolPowers.Add(2);
+                modified_ToolChanceFactors.Add(1);
+            }
+
+            modified_stackLimit = 75;
+            modified_recipeCount = 10;
+            modified_grenadeDamage = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1);
+            modified_explosionRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius;
+            //CompProperties_ExplosiveCE (for if the Thing is damaged)
+            //CompProperties_Fragments 
+            //todo
+            //projectile
+            //thingClass CombatExtended.ProjectileCE_Explosive
+            //projectilepropsCE
+            //make sure comps aren't null, add Fragments comp if necessary -- TODO, explosive launcher needs fragments as well
         }
 
         public void PatchGrenade()
         {
+            //if (modified_ammoDef == null)
+            //{
+            //    modified_ammoDef = GenerateGrenadeAmmoDef();
+            //}
+            //DataHolderUtils.AddCompReplaceMe(weaponThingDef, modified_ammoDef);
 
+            //bool hasRecipe = DataHolderUtils.ReplaceRecipes(weaponThingDef, modified_ammoDef, modified_recipeCount);
+            //if (APCESettings.printLogs)
+            //{
+            //    Log.Message("ThingDef " + weaponThingDef.defName + " classified as a grenade, found a recipe to modify: " + hasRecipe.ToString());
+            //}
+
+            weaponThingDef.thingClass = typeof(AmmoThing);
+
+            //remove old CompProperties_Explosive, as wel as CE version so duplicates don't get added if patch is rerun
+            weaponThingDef.comps.RemoveAll(c => c is CompProperties_Explosive || c is CompProperties_ExplosiveCE);
+            CompProperties_ExplosiveCE newComp_ExCE = new CompProperties_ExplosiveCE()
+            {
+                damageAmountBase = modified_grenadeDamage,
+                explosiveDamageType = original_VerbProperties.defaultProjectile.projectile.damageDef,
+                explosiveRadius = modified_explosionRadius
+            };
+            weaponThingDef.comps.Add(newComp_ExCE);
+            //TODO comp fragments
+
+            return;
         }
+
+        public AmmoDef GenerateGrenadeAmmoDef()
+        {
+            AmmoDef ammoGrenade = new AmmoDef();
+            DataHolderUtils.CopyFields(weaponThingDef, ammoGrenade);
+
+            ammoGrenade.thingClass = typeof(AmmoThing);
+            ammoGrenade.graphicData.graphicClass = typeof(Graphic_Multi);
+            ammoGrenade.graphicData.onGroundRandomRotateAngle = 0;
+
+            //make new tag lists so I can .Clear() the ones on the ThingDef version
+            // this will remove the ThingDef version of the grenade from most traders' stock, unless the mod has a custom trader with the ThingDef explicitly added as stock -- TODO search/remove
+            if (!weaponThingDef.tradeTags.NullOrEmpty())
+            {
+                List<string> newTradeTags = new List<string>(weaponThingDef.tradeTags);
+                ammoGrenade.tradeTags = newTradeTags;
+                weaponThingDef.tradeTags.Clear();
+            }
+            
+            // this will hopefully prevent Pawns from spawning with the ThingDef version
+            if (!weaponThingDef.weaponTags.NullOrEmpty())
+            {
+                List<string> newWeaponTags = new List<string>(weaponThingDef.weaponTags);
+                ammoGrenade.weaponTags = newWeaponTags;
+                weaponThingDef.weaponTags.Clear();
+            }
+            else
+            {
+                ammoGrenade.weaponTags = new List<string>();
+            }
+
+            //make a new list of comps so the CompReplaceMe isn't added to the new def
+            ammoGrenade.comps = new List<CompProperties>();
+            foreach (CompProperties comp in weaponThingDef.comps)
+            {
+                ammoGrenade.comps.Add(comp);
+            }
+
+            ammoGrenade.weaponTags.Add("CE_AI_Grenade");
+            ammoGrenade.weaponTags.Add("CE_AI_AOE"); // TODO might need to make these conditional, if I end up re-using code for non-explosive thrown weapons
+            ammoGrenade.weaponTags.Add("CE_OneHandedWeapon");
+            weaponThingDef.generateAllowChance = 0;
+            weaponThingDef.generateCommonality = 0;
+
+            //InjectedDefHasher.GiveShortHashToDef(ammoGrenade, typeof(ThingDef));
+            //DefGenerator.AddImpliedDef<ThingDef>(ammoGrenade);
+            return ammoGrenade;
+        }
+        
+        #endregion
+
+        public void GenerateAmmoSet()
+        {
+            ammoSetDataHolder = new DefDataHolderAmmoSet(weaponThingDef);
+            //RegisterSelfInDict, GetOriginalData, and Autocalculate are called by constructor
+            ammoSetDataHolder.Patch();
+            this.modified_AmmoSetDef = ammoSetDataHolder.GeneratedAmmoSetDef;
+            ammoSetDataHolder.isCustomized = true; //so it will save
+        }
+
+        public void RemoveVanillaStatBases()
+        {
+            weaponThingDef.statBases = weaponThingDef.statBases
+                .Where(statModifier => !IsVanillaStat(statModifier.stat))
+                .ToList();
+
+            bool IsVanillaStat(StatDef statDef)
+            {
+                return statDef == StatDefOf.AccuracyLong ||
+                       statDef == StatDefOf.AccuracyMedium ||
+                       statDef == StatDefOf.AccuracyShort ||
+                       statDef == StatDefOf.AccuracyTouch;
+            }
+        }
+
+        //this returns a float instead of just setting the value, so that the customization window can suggest it if burst shot is changed from 1 to another number
+        //public float CalculateRecoilAmount()
+        //{
+
+        //}
     }
 }

@@ -21,9 +21,11 @@ namespace nuff.AutoPatcherCombatExtended
         public AutoPatcherCombatExtended(ModContentPack content) : base(content)
         {
             this.Settings = GetSettings<APCESettings>();
+            APCESettings.thisMod = this;
             CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Loader.Loader));
             CESettings = CEMod.GetSettings<Settings>();
             AdjustCESettings();
+            //TODO get generic ammos past ammoinjector w/o generic guns
         }
 
         public override string SettingsCategory()
@@ -49,23 +51,24 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     list.Gap();
                     list.Label("Weapon Stuff:");
-                    list.CheckboxLabeled("Patch weapons from selected mods: ", ref APCESettings.patchWeapons);
+                    //list.CheckboxLabeled("Patch weapons from selected mods: ", ref APCESettings.patchWeapons);
                     list.CheckboxLabeled("Limit Weapon Mass: ", ref APCESettings.limitWeaponMass);
                     list.CheckboxLabeled("Try to patch custom verbs on guns (safety not guaranteed): ", ref APCESettings.patchCustomVerbs);
                     list.Gap();
                     list.Label("Apparel Stuff:");
-                    list.CheckboxLabeled("Patch apparels from selected mods: ", ref APCESettings.patchApparels);
-                    list.CheckboxLabeled("Patch headgear layers: ", ref APCESettings.patchHeadgearLayers);
+                    //list.CheckboxLabeled("Patch apparels from selected mods: ", ref APCESettings.patchApparels);
+                    //list.CheckboxLabeled("Patch headgear layers: ", ref APCESettings.patchHeadgearLayers);
                     list.Gap();
                     list.Label("Other Stuff:");
-                    list.CheckboxLabeled("Patch pawns from selected mods: ", ref APCESettings.patchPawns);
-                    list.CheckboxLabeled("Patch PawnKinds from selected mods: ", ref APCESettings.patchPawnKinds);
-                    list.CheckboxLabeled("Patch Genes from selected mods: ", ref APCESettings.patchGenes);
-                    list.CheckboxLabeled("Patch hediffs from selected mods: ", ref APCESettings.patchHediffs);
-                    list.CheckboxLabeled("Patch vehicles from selected mods: ", ref APCESettings.patchVehicles);
+                    //list.CheckboxLabeled("Patch pawns from selected mods: ", ref APCESettings.patchPawns);
+                    //list.CheckboxLabeled("Patch PawnKinds from selected mods: ", ref APCESettings.patchPawnKinds);
+                    //list.CheckboxLabeled("Patch Genes from selected mods: ", ref APCESettings.patchGenes);
+                    //list.CheckboxLabeled("Patch hediffs from selected mods: ", ref APCESettings.patchHediffs);
+                    //list.CheckboxLabeled("Patch vehicles from selected mods: ", ref APCESettings.patchVehicles);
                     list.Gap();
                     list.CheckboxLabeled("Show patch logs: ", ref APCESettings.printLogs);
                     list.CheckboxLabeled("Enable Debug Mode (print errors): ", ref APCESettings.printPatchErrors);
+                    list.CheckboxLabeled("Stop checking mod after first unpatched def is found: ", ref APCESettings.stopAfterOneDefCheckFails);
                 }
 
                 else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Modlist)
@@ -227,7 +230,8 @@ namespace nuff.AutoPatcherCombatExtended
             "enableApparelAutopatcher",
             "enableWeaponAutopatcher",
             "enableRaceAutopatcher",
-            "enablePawnKindAutopatcher"
+            "enablePawnKindAutopatcher",
+            "enableWeaponToughnessAutopatcher"
             };
 
             Type settingsType = typeof(Settings);
@@ -250,7 +254,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (APCESettings.modsAlreadyPatched.Add(mod))
                 {
-                    APCEController.PatchMod(mod);
+                    APCEController.GenerateDataHoldersForMod(mod);
                 }
             }
             base.WriteSettings();

@@ -27,6 +27,11 @@
 		  <Bulk>9.0</Bulk>
 		  <SightsEfficiency>1</SightsEfficiency>
 		</statBases>
+		<costList>
+			<Steel>45</Steel>
+			<WoodLog>10</WoodLog>
+			<ComponentIndustrial>1</ComponentIndustrial>
+		</costList>
 		<verbs>
 		  <li Class="CombatExtended.VerbPropertiesCE">
 			<recoilAmount>2.75</recoilAmount>

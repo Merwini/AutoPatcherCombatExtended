@@ -19,9 +19,11 @@ namespace nuff.AutoPatcherCombatExtended
         public ThingDef thingDef;
 
         float original_Mass;
+        bool stuffed;
 
-        float modified_Mass;
-        float modified_Bulk;
+        float modified_mass;
+        float modified_bulk;
+        float modified_weaponToughness;
         float modified_MeleeCounterParryBonus; //reminder - statbase
         float modified_MeleeDodgeChance;
         float modified_MeleeParryChance;
@@ -34,18 +36,22 @@ namespace nuff.AutoPatcherCombatExtended
 
             original_Tools = thingDef.tools;
             original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+            stuffed = thingDef.MadeFromStuff;
         }
 
         public override void AutoCalculate()
         {
-            modified_Mass = original_Mass;
-            modified_Bulk = modified_Mass * 2f;
+            modified_mass = original_Mass;
+            modified_bulk = modified_mass * 2f; //TODO better calculation
+            modified_weaponToughness = DataHolderUtils.WeaponToughnessAutocalc(thingDef, modified_bulk);
             CalculateStatMods();
             CalculateWeaponTechMult();
-
-            for (int i = 0; i < original_Tools.Count; i++)
+            if (!original_Tools.NullOrEmpty())
             {
-                ModToolAtIndex(i);
+                for (int i = 0; i < original_Tools.Count; i++)
+                {
+                    ModToolAtIndex(i);
+                }
             }
         }
 
@@ -60,20 +66,31 @@ namespace nuff.AutoPatcherCombatExtended
                 thingDef.statBases = new List<StatModifier>();
             }
 
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+            DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_mass);
+            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_bulk);
+            if (stuffed)
+            {
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_weaponToughness);
+            }
+            else
+            {
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_weaponToughness);
+            }
             DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
 
             DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
             DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
             DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
 
-            thingDef.tools.Clear();
-            for (int i = 0; i < modified_Tools.Count; i++)
+            if (!original_Tools.NullOrEmpty())
             {
-                thingDef.tools.Add(modified_Tools[i]);
+                thingDef.tools.Clear();
+                BuildTools();
+                for (int i = 0; i < modified_Tools.Count; i++)
+                {
+                    thingDef.tools.Add(modified_Tools[i]);
+                }
             }
-            //TODO this is where I left off
         }
 
         public override StringBuilder PrepExport()
@@ -90,14 +107,24 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             base.ExposeData();
-
+            if (Scribe.mode == LoadSaveMode.LoadingVars
+                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+            {
+                Scribe_Values.Look(ref modified_mass, "modified_Mass", original_Mass);
+                Scribe_Values.Look(ref modified_bulk, "modified_Bulk", 1f);
+                Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness", 1f);
+                Scribe_Values.Look(ref modified_MeleeCounterParryBonus, "modified_MeleeCounterParryBonus", 0f);
+                Scribe_Values.Look(ref modified_MeleeDodgeChance, "modified_MeleeDodgeChance", 0f);
+                Scribe_Values.Look(ref modified_MeleeParryChance, "modified_MeleeParryChance", 0f);
+                Scribe_Values.Look(ref modified_MeleeCritChance, "modified_MeleeCritChance", 0f);
+            }
         }
 
         private void CalculateStatMods()
         {
             float value = thingDef.BaseMarketValue;
             float valueLog = (float)Math.Log10(value);
-            float massFactor = Mathf.Clamp((modified_Mass * 0.2f), 0.1f, 0.9f);
+            float massFactor = Mathf.Clamp((modified_mass * 0.2f), 0.1f, 0.9f);
 
             //todo refine these... again
             modified_MeleeCounterParryBonus = valueLog * 0.1f;
@@ -109,9 +136,9 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_toolPowers[i] *= modData.weaponToolPowerMult;
-            modified_toolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration * techMult;
-            modified_toolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration * techMult;
+            modified_ToolPowers[i] *= modData.weaponToolPowerMult;
+            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration * techMult;
+            modified_ToolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration * techMult;
         }
 
         public void CalculateWeaponTechMult()

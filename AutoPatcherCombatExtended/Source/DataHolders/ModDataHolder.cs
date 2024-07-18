@@ -15,7 +15,12 @@ namespace nuff.AutoPatcherCombatExtended
         public string packageId;
         public bool isCustomized = false;
 
-        //toggles
+        //saved as strings so they don't have issues if the mods updates and defs are added/removed/renamed
+        public List<string> defsByName;
+        public List<string> defsToPatch;
+        public List<string> defsToIgnore; //need to save this so we can notify if new defs are added
+
+        //toggles //todo remove
         public bool patchWeapons = true;
         public bool patchCustomVerbs = false;
         public bool limitWeaponMass = false;

@@ -30,8 +30,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         //unsaved calculated values
         float apparelTechMult;
-        float bulk;
-        float wornBulk;
         bool isHeadgear; 
         bool isSkin = false;
         bool isMid = false;
@@ -57,28 +55,14 @@ namespace nuff.AutoPatcherCombatExtended
         float modified_SmokeSensitivity;
         float modified_NightVisionEfficiency;
 
-        //these are not worth letting the player customize. they can just change the bulk and worn bulk directly instead
-        float skinBulkAdd = 1f;
-        float skinWulkAdd = 0.5f;
-        float slinBulkMult = 1f;
-        float skinWulkMult = 1f;
-        float midBulkAdd = 5f;
-        float midWulkAdd = 3f;
-        float midBulkMult = 1f;
-        float midWulkMult = 1f;
-        float shellBulkAdd = 7.5f;
-        float shellWulkAdd = 2.5f;
-        float shellBulkMult = 20f;
-        float shellWulkMult = 5f;
-
         public override void GetOriginalData()
         {
             thingDef = def as ThingDef;
 
-            original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+            original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
+            original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
             original_ArmorRatingHeat = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
-            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0.01f);
             original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
             original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
             original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
@@ -91,6 +75,11 @@ namespace nuff.AutoPatcherCombatExtended
         {
             modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;;
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.apparelBluntMult * apparelTechMult;
+            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+
+            modified_Mass = Math.Min(original_Mass, 50);
+            modified_MaxHitPoints = original_MaxHitPoints;
+
             CalculateBulk();
             CalculateStatMods();
         }
@@ -213,7 +202,9 @@ namespace nuff.AutoPatcherCombatExtended
             }
             //probably still need a more elegant method to decide if an apparel should be counted as armor, but this is better than the old method of checking if mass > 2
             if ((thingDef.thingCategories != null && (thingDef.thingCategories.Contains(ThingCategoryDefOf.ApparelArmor) || thingDef.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear)))
-                || (thingDef.tradeTags != null && thingDef.tradeTags.Any(tag => tag.ToLower().Contains("armor"))))
+                || (thingDef.tradeTags != null && thingDef.tradeTags.Any(tag => tag.ToLower().Contains("armor")))
+                || original_ArmorRatingSharp > 0.5f
+                || original_ArmorRatingBlunt > 0.5f)
             {
                 isArmor = true;
             }

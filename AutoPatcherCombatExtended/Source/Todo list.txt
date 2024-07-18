@@ -1,15 +1,28 @@
-﻿	TODO popup window on game start recommending player to add mods related to defs found by above to the patch list
+﻿	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list
 TODO buttons to reset numbers to defaults
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases
 TODO verbs on apparel
 TODO headgear layers
-	TODO force disable CE autopatchers
-	TODO redo explosive launcher to use ammo types from generic LauncherGrenade - HE, HEDP, EMP, Smoke
-	Change Generic weapons to use CE's generic ammos, to get them past the AmmoInjector. Disable unused ones myself. Remember to remove the weapon recipes this time
-	TODO detect mods that need patching and are not on the list. Pop up a window suggesting to add them
+	DONE force disable CE autopatchers
+	DONE redo explosive launcher to use ammo types from generic LauncherGrenade - HE, HEDP, EMP, Smoke
+	DONE Change Generic weapons to use CE's generic ammos, to get them past the AmmoInjector. Disable unused ones myself. Remember to remove the weapon recipes this time
 TODO ThingDef tags
 TODO add logic to GetOriginalData to allow re-patching of already compatible defs
 TODO remove settings to enable/disable patching of certain defTypes, is just bloat at this point
+TODO make stringify/destringify virtual methods in base DefDataHolder, with overrides in the various subclasses
+TODO alreadyGenerated bool, so that repatching grenades, mortars, ammosets does not keep generating new ones 
+TODO in customization page, if user changes a weapon from burst 1 to multi, suggest to add recoil
+TODO each DefDataHolder needs to set their def subclass reference at the end of loading (i.e. ThingDef td = def as ThingDef). Class base loads the def itself
+	DONE redo Vehicle compat by sorting using a Type, Func dictionary that the compat code can just add to
+TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon Studios folder
+TODO double check that ModDataHolder mults are being applied to all relevant autocalculations
+	DONE handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
+	DONE window that adds/removes mods from the patch list should WriteSettings
+TODO option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
+TODO check for genes that add verbs
+	DONE fix scrollview for showModsToRemove
+TODO search for "orphan" defs without an associated modContentPack, usually caused by adding defs via PatchOperation. Popup asking player if they want to assign these to an active mod.
+
 
 TODO basic:
 	Apparel
@@ -17,12 +30,12 @@ TODO basic:
 	Hediff
 	Melee weapon
 MortarShell
-Ranged Weapon
+	Ranged Weapon
 Turret
-Pawn
+	Pawn
 PawnKind
-Vehicle
-Vehicle Turret
+	Vehicle
+	Vehicle Turret
 
 TODO export: 
 Apparel
@@ -42,3 +55,16 @@ Load saved DataHolders
 If DataHolder def field != null (would be null if mod source is not currently active) register the DataHolder in the dict
 Generate DataHolders for selected mods, unless one already exists in dict
 Run patches on all DataHolders in the dict
+
+
+
+
+
+
+Swayfactor
+=(IF('Weapon Data'!L2="Cannon",(('Length/1000)+'EmptyWeight)/370,IF('Weapon Data'!I2="Fixed",SQRT((('Weapon Data'!B2/100)+'Weapon Data'!F2)/27),IF('Weapon Data'!I2="OneHanded",(('Weapon Data'!B2/100)+'Weapon Data'!F2)/3,(('Weapon Data'!B2/100)+'Weapon Data'!F2)/10))) + MIN('Weapon Data'!K2 / 100,0.12)) * IF('Weapon Data'!I2="Bipod",0.7,1) * IF('Weapon Data'!I2="HipFired",1.15,1)
+ 
+
+RecoilAmount
+ 
+=IF(M6, MAX(SQRT((((BulletMass/500)*'MuzzleVelocity)/EmptyWeight)

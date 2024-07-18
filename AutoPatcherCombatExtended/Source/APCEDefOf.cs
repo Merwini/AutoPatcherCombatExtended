@@ -26,6 +26,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static DamageDef PrometheumFlame;
         public static DamageDef Thermobaric;
 
+        public static AmmoSetDef AmmoSet_Flamethrower;
 
         public static ThingDef Filth_Fuel;
         public static ThingDef FilthPrometheum;
@@ -36,7 +37,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static ThingDef Fragment_Small;
 
         //industrial gun
-        public static ThingDef APCE_Gun_Generic;
+        //public static ThingDef APCE_Gun_Generic;
 
         public static AmmoSetDef AmmoSet_RifleIntermediate;
         public static AmmoDef Ammo_RifleIntermediate_FMJ;
@@ -47,7 +48,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static AmmoDef Ammo_RifleIntermediate_Sabot;
 
         //shotgun
-        public static ThingDef APCE_Shotgun_Generic;
+        //public static ThingDef APCE_Shotgun_Generic;
 
         public static AmmoSetDef AmmoSet_Shotgun;
         public static AmmoDef Ammo_Shotgun_Buck;
@@ -56,7 +57,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static AmmoDef Ammo_Shotgun_ElectroSlug;
 
         //spacer gun
-        public static ThingDef APCE_SpacerGun_Generic;
+        //public static ThingDef APCE_SpacerGun_Generic;
 
         public static AmmoSetDef AmmoSet_ChargedRifle;
         public static AmmoDef Ammo_RifleCharged;
@@ -67,7 +68,7 @@ namespace nuff.AutoPatcherCombatExtended
         //might not be needed
 
         //explosive launcher
-        public static ThingDef APCE_ExplosiveLauncher_Generic;
+        //public static ThingDef APCE_ExplosiveLauncher_Generic;
 
         public static AmmoSetDef AmmoSet_LauncherGrenade;
         public static AmmoDef Ammo_LauncherGrenade_HE;
@@ -76,7 +77,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static AmmoDef Ammo_LauncherGrenade_Smoke;
 
         //bow
-        public static ThingDef APCE_Bow_Generic;
+        //public static ThingDef APCE_Bow_Generic;
 
         public static AmmoSetDef AmmoSet_Arrow;
         public static AmmoDef Ammo_Arrow_Stone;
@@ -86,7 +87,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static AmmoDef Ammo_Arrow_Flame;
 
         //grenade
-        public static ThingDef APCE_GrenadeGeneric;
+        //public static ThingDef APCE_GrenadeGeneric;
 
         //mortar
         public static AmmoCategoryDef GrenadeHE;
@@ -99,5 +100,11 @@ namespace nuff.AutoPatcherCombatExtended
         //misc ThingDefs
         public static ThingDef WoodLog;
         public static ThingDef Steel;
+
+        //misc other
+        public static ToolCapacityDef Poke;
+        public static ToolCapacityDef Blunt;
+
+        public static BodyPartGroupDef Base;
     }
 }

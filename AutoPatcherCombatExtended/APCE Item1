@@ -1,0 +1,107 @@
+﻿public static void PatchAllVerbs(ThingDef def)
+{
+    List<VerbPropertiesCE> newVerbsCE = new List<VerbPropertiesCE>();
+    foreach (VerbProperties vp in def.Verbs)
+    {
+        newVerbsCE.Add(PatchVerb(vp));
+    }
+
+    for (int i = 0; i < newVerbsCE.Count; i++)
+    {
+        def.Verbs[i] = newVerbsCE[i];
+    }
+}
+
+public static VerbPropertiesCE PatchVerb(VerbProperties vp)
+{
+    try
+    {
+        if ((vp.verbClass == typeof(Verb_ShootCE)) || (vp.verbClass == typeof(Verb_ShootCEOneUse)) || vp.verbClass == typeof(Verb_ShootBeam))
+        {
+            return vp as VerbPropertiesCE;
+        }
+        VerbPropertiesCE newVPCE = new VerbPropertiesCE();
+        CopyFields(vp, newVPCE);
+        /*
+        newVPCE.label = vp.label;
+        newVPCE.soundCast = vp.soundCast;
+        newVPCE.soundCastTail = vp.soundCastTail;
+        newVPCE.soundAiming = vp.soundAiming;
+        newVPCE.muzzleFlashScale = vp.muzzleFlashScale;
+        newVPCE.hasStandardCommand = vp.hasStandardCommand;
+        newVPCE.range = vp.range;
+        newVPCE.ticksBetweenBurstShots = vp.ticksBetweenBurstShots;
+
+        if (vp.warmupTime >= 0.07f)
+        {
+            //This took so long to debug why a turret would fire once then stop. 
+            //Turns out that a turret fires when burstWarmupTicksLeft ticks down to 0, and a warmupTime lower than 0.07 causes it to get stuck at 0, unable to tick down. 
+            newVPCE.warmupTime = vp.warmupTime;
+        }
+        else
+        {
+            newVPCE.warmupTime = 0.1f;
+        }
+        newVPCE.targetParams = vp.targetParams;
+        newVPCE.rangedFireRulepack = vp.rangedFireRulepack;
+        newVPCE.ai_IsBuildingDestroyer = vp.ai_IsBuildingDestroyer;
+        newVPCE.ai_AvoidFriendlyFireRadius = vp.ai_AvoidFriendlyFireRadius;
+        newVPCE.onlyManualCast = vp.onlyManualCast;
+        newVPCE.stopBurstWithoutLos = vp.stopBurstWithoutLos;
+        if (vp.burstShotCount != 1)
+        {
+            newVPCE.burstShotCount = vp.burstShotCount * 2;
+        }
+        else
+        {
+            newVPCE.burstShotCount = vp.burstShotCount;
+        }
+        newVPCE.defaultProjectile = vp.defaultProjectile;
+        */
+
+        //if warmupTime is too low, some weapons will get stuck in a nonfiring state since they are only able to fire when a certain counter ticks down to 0, and low numbers get divided and rounded down to 0
+        if (newVPCE.warmupTime < 0.07)
+        {
+            newVPCE.warmupTime = 0.1f;
+        }
+        if (newVPCE.burstShotCount != 1)
+        {
+            newVPCE.burstShotCount *= 2;
+        }
+
+
+
+        if (vp.verbClass == typeof(Verb_Shoot))
+        {
+            newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE);
+            /*
+            //these are done just in case. weapon should not ever use defaultProjectile.
+            newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
+            newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+            */
+        }
+        else if (vp.verbClass == typeof(Verb_LaunchProjectile) || (vp.verbClass == typeof(Verb_ShootOneUse)))
+        {
+            newVPCE.verbClass = typeof(Verb_ShootCEOneUse);
+            /*
+            newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.ProjectileCE_Explosive);
+            newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+            */
+        }
+        else
+        {
+            if (APCESettings.patchCustomVerbs)
+            {
+                newVPCE.verbClass = typeof(CombatExtended.Verb_ShootCE);
+                /*
+                newVPCE.defaultProjectile.thingClass = typeof(CombatExtended.BulletCE);
+                newVPCE.defaultProjectile.projectile = ConvertPP(newVPCE.defaultProjectile.projectile);
+                */
+            }
+            else
+            {
+                throw new Exception($"Unable to patch verb {vp.label} due to unrecognized verbClass: {vp.verbClass}");
+            }
+        }
+        return newVPCE;
+    }
