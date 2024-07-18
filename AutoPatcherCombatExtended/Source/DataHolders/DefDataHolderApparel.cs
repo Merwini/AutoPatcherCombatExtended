@@ -59,10 +59,10 @@ namespace nuff.AutoPatcherCombatExtended
         {
             thingDef = def as ThingDef;
 
-            original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+            original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
+            original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
             original_ArmorRatingHeat = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
-            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0.01f);
             original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
             original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
             original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
