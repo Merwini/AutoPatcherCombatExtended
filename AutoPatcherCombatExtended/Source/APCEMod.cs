@@ -22,10 +22,9 @@ namespace nuff.AutoPatcherCombatExtended
         {
             this.Settings = GetSettings<APCESettings>();
             APCESettings.thisMod = this;
-            CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Loader.Loader));
+            CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Controller));
             CESettings = CEMod.GetSettings<Settings>();
             AdjustCESettings();
-            //TODO get generic ammos past ammoinjector w/o generic guns
         }
 
         public override string SettingsCategory()

@@ -20,7 +20,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\RimWorld\Mods\APCE\Assemblies\</OutputPath>
+    <OutputPath>Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,9 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-	<PropertyGroup>
-		<PublicizeAll>true</PublicizeAll>
-	</PropertyGroup>
+  <PropertyGroup>
+    <PublicizeAll>true</PublicizeAll>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="0CombatExtendedLoader">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2890901044\Assemblies\0CombatExtendedLoader.dll</HintPath>
@@ -118,6 +118,7 @@
     <None Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assemblies\" />
     <Folder Include="Defs\" />
     <Folder Include="Source\bin\Debug\" />
     <Folder Include="Source\bin\Release\" />
@@ -132,8 +133,8 @@
       <Version>1.5.4104</Version>
     </PackageReference>
   </ItemGroup>
-	<ItemGroup>
-		<Publicize Include="Assembly-CSharp" />
-	</ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
