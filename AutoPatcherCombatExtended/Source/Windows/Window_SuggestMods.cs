@@ -270,34 +270,66 @@ namespace nuff.AutoPatcherCombatExtended
         public override void PreClose()
         {
             base.PreClose();
-            try
+            if (APCESettings.modsByPackageId == null)
+            {
+                Log.Warning("List modsByPackageId was null, it should not have been");
+                APCESettings.modsByPackageId = new List<string>();
+            }
+            if (APCESettings.modsToPatch == null)
+            {
+                Log.Warning("List modsToPatch was null, it should not have been");
+                APCESettings.modsToPatch = new List<ModContentPack>();
+            }
+            if (!APCESettings.modsToRecommendAdd.NullOrEmpty())
             {
                 foreach (var mod in APCESettings.modsToRecommendAddDict)
                 {
-                    if (APCESettings.modsToRecommendAddDict[mod.Key])
+                    try
                     {
-                        APCESettings.modsToPatch.Add(mod.Key);
-                        APCESettings.modsByPackageId.Add(mod.Key.PackageId);
-                        APCESettings.modsToRecommendAdd.Remove(mod.Key);
+                        if (APCESettings.modsToRecommendAddDict[mod.Key])
+                        {
+                            APCESettings.modsToPatch.Add(mod.Key);
+                            APCESettings.modsByPackageId.Add(mod.Key.PackageId);
+                            APCESettings.modsToRecommendAdd.Remove(mod.Key);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string error = "unknown";
+                        if (mod.Key == null)
+                            error = "a ModContentPack is null";
+                        else if (mod.Key.PackageId == null)
+                            error = $"PackageId for mod {mod.Key.Name} is null";
+                        Log.Error($"Exception while adding mod to modsToPatch list. \nError is: {error}\n{ex.ToString()}");
                     }
                 }
+            }
+            if (!APCESettings.modsToRecommendRemove.NullOrEmpty())
+            {
                 foreach (var mod in APCESettings.modsToRecommendRemoveDict)
                 {
-                    if (APCESettings.modsToRecommendRemoveDict[mod.Key])
+                    try
                     {
-                        APCESettings.modsToPatch.Remove(mod.Key);
-                        APCESettings.modsByPackageId.Remove(mod.Key.PackageId);
-                        APCESettings.modsToRecommendRemove.Remove(mod.Key);
+                        if (APCESettings.modsToRecommendRemoveDict[mod.Key])
+                        {
+                            APCESettings.modsToPatch.Remove(mod.Key);
+                            APCESettings.modsByPackageId.Remove(mod.Key.PackageId);
+                            APCESettings.modsToRecommendRemove.Remove(mod.Key);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string error = "unknown";
+                        if (mod.Key == null)
+                            error = "a ModContentPack is null";
+                        else if (mod.Key.PackageId == null)
+                            error = $"PackageId for mod {mod.Key.Name} is null";
+                        Log.Error($"Exception while removing mod from modsToPatch list. \nError is: {error}\n{ex.ToString()}");
                     }
                 }
-                APCESettings.thisMod.WriteSettings();
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Exception while closing mod suggestion window: \n" + ex.ToString());
             }
 
-
+            APCESettings.thisMod.WriteSettings();
         }
 
         public override void PostClose()

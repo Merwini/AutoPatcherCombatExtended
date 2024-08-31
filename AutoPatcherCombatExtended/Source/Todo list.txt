@@ -18,11 +18,11 @@ TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon
 TODO double check that ModDataHolder mults are being applied to all relevant autocalculations
 	DONE handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
 	DONE window that adds/removes mods from the patch list should WriteSettings
-TODO option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
+	DONE option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
 TODO check for genes that add verbs
 	DONE fix scrollview for showModsToRemove
 TODO search for "orphan" defs without an associated modContentPack, usually caused by adding defs via PatchOperation. Popup asking player if they want to assign these to an active mod.
-
+TODO Property for returning modified mass and bulk that checks if a limiter is set
 
 TODO basic:
 	Apparel
@@ -33,7 +33,7 @@ MortarShell
 	Ranged Weapon
 Turret
 	Pawn
-PawnKind
+	PawnKind
 	Vehicle
 	Vehicle Turret
 

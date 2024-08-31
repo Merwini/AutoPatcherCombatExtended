@@ -160,7 +160,18 @@ namespace nuff.AutoPatcherCombatExtended
             return false;
         }
 
-        public static bool HandleDelegatedDefTypesCheck(Def def)
+        public static bool DefIsDelegatedType(Def def)
+        {
+            Type defType = def.GetType();
+
+            if (APCESettings.typeHandlerDictionaryCheck.ContainsKey(defType))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static APCEConstants.NeedsPatch HandleDelegatedDefTypesCheck(Def def)
         {
             Type defType = def.GetType();
 
@@ -170,7 +181,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else
             {
-                return false;
+                return APCEConstants.NeedsPatch.unsure;
             }
         }
 
@@ -181,11 +192,11 @@ namespace nuff.AutoPatcherCombatExtended
             return;
         }
 
-        public static bool HandleUnknownDefCheck(Def def)
+        public static APCEConstants.NeedsPatch HandleUnknownDefCheck(Def def)
         {
             //TODO remove?
             //Log.Warning($"Unable to check if def {def.defName} from mod {def.modContentPack.Name} needs patching. Type {def.GetType()} is unrecognized.");
-            return false;
+            return APCEConstants.NeedsPatch.unsure;
         }
 
         public static void FindModsNeedingPatched()
@@ -224,85 +235,142 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static bool CheckIfModNeedsPatched(ModContentPack mod)
         {
+            //start as true because switching to false is more final
+            bool needsPatched = true;
             List<Def> defsNeedingPatched = new List<Def>();
 
             if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
                 return false;
 
+            //iteration does not break when a 'no' is found, so that it can still checks partially-patched mods
+            //won't recommend them, but will be useful for finding patches that need updates
             foreach (Def def in mod.AllDefs)
             {
-                if (CheckIfDefNeedsPatched(def))
+                APCEConstants.NeedsPatch defNeedsPatched = CheckIfDefNeedsPatched(def);
+                if (defNeedsPatched == APCEConstants.NeedsPatch.yes)
                 {
                     defsNeedingPatched.Add(def);
-                    if (APCESettings.stopAfterOneDefCheckFails)
-                    {
-                        break;
-                    }
+                }
+                else if (defNeedsPatched == APCEConstants.NeedsPatch.no)
+                {
+                    needsPatched = false;
                 }
             }
 
             if (defsNeedingPatched.Count != 0)
             {
                 APCELogUtility.LogDefsCause(defsNeedingPatched);
-                return true;
             }
-            return false;
+
+            if (needsPatched && defsNeedingPatched.Count == 0)
+            {
+                needsPatched = false;
+            }
+
+            return needsPatched;
         }
 
-        public static bool CheckIfDefNeedsPatched(Def def)
+        public static APCEConstants.NeedsPatch CheckIfDefNeedsPatched(Def def)
         {
-            bool needsPatched = false;
+            APCEConstants.NeedsPatch needsPatched = APCEConstants.NeedsPatch.unsure;
             try
             {
-                if (HandleDelegatedDefTypesCheck(def))
+                if (DefIsDelegatedType(def))
                 {
-                    needsPatched = true;
+                    needsPatched = HandleDelegatedDefTypesCheck(def);
                 }
                 else if (def is ThingDef thingDef)
                 {
-                    if (thingDef.IsApparel
-                        && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk)
-                        && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.WornBulk))
+                    if (thingDef.IsApparel)
                     {
-                        needsPatched = true;
+                        if (thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk)
+                        || thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.WornBulk))
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.no;
+                        }
+                        else
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.yes;
+                        }
                     }
                     else if (thingDef.IsWeapon)
                     {
-                        if (thingDef.IsRangedWeapon
-                            && !thingDef.Verbs[0].verbClass.ToString().Contains("CE")
-                            //&& !thingDef.comps.Any(comp => comp is CompProperties_AmmoUser)
-                            && !thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk))
+                        if (thingDef.IsRangedWeapon)
                         {
-                            needsPatched = true;
+                            if (thingDef.Verbs[0].verbClass.ToString().Contains("CE")
+                            || thingDef.statBases.Any(sm => sm.stat == CE_StatDefOf.Bulk)
+                            || (!thingDef.comps.NullOrEmpty() && thingDef.comps.Any(comp => comp is CompProperties_AmmoUser)))
+                            {
+                                needsPatched = APCEConstants.NeedsPatch.no;
+                            }
+                            else
+                            {
+                                needsPatched = APCEConstants.NeedsPatch.yes;
+                            }
                         }
-                        else if (thingDef.IsMeleeWeapon
-                            && (!thingDef.tools.NullOrEmpty() && !thingDef.tools.Any(tool => tool is ToolCE)))
+                        else if (thingDef.IsMeleeWeapon)
                         {
-                            needsPatched = true;
+                            if (thingDef.tools.NullOrEmpty() || thingDef.tools.Any(tool => tool is ToolCE))
+                            {
+                                needsPatched = APCEConstants.NeedsPatch.no;
+                            }
+                            else
+                            {
+                                needsPatched = APCEConstants.NeedsPatch.yes;
+                            }
                         }
+                        //else default/unsure
                     }
-                    else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass)
-                        && (!thingDef.tools.NullOrEmpty() && !thingDef.tools.Any(tool => tool is ToolCE)))
+                    else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass))
                     {
-                        needsPatched = true;
+                        //TODO might need to allow this to return unsure. Can pawns have no tools?
+                        if (thingDef.tools.NullOrEmpty() || thingDef.tools.Any(tool => tool is ToolCE))
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.no;
+                        }
+                        else
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.yes;
+                        }
                     }
                 }
-                else if (def is HediffDef hd
-                    && (!hd.comps.NullOrEmpty() && hd.comps.Any(comp => comp is HediffCompProperties_VerbGiver hcp_vg && !hcp_vg.tools.NullOrEmpty() && !hcp_vg.tools.Any(tool => tool is ToolCE))))
+                else if (def is HediffDef hd)
                 {
-                    needsPatched = true;
+                    if (!hd.comps.NullOrEmpty())
+                    {
+                        HediffCompProperties_VerbGiver hcp_vg = (HediffCompProperties_VerbGiver)hd.comps.FirstOrDefault(c => c is HediffCompProperties_VerbGiver);
+                        if (hcp_vg == null || hcp_vg.tools.NullOrEmpty() || hcp_vg.tools.Any(tool => tool is ToolCE))
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.no;
+                        }
+                        else
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.yes;
+                        }
+                    }
+                    //else default/unsure
                 }
                 /*
                 else if (ModLister.BiotechInstalled && def is GeneDef gene)
                 {
-                    //TODO not a great way to see if a gene mod needs to be patched other than really low armor values?
+                    //TODO check for genes that add tools
                 }
                 */
-                else if (def is PawnKindDef pkd
-                    && (pkd.race.race.intelligence != Intelligence.Animal && !pkd.modExtensions.NullOrEmpty() && !pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension)))
+                else if (def is PawnKindDef pkd)
                 {
-                    needsPatched = true;
+                    if (pkd.race.race.intelligence != Intelligence.Animal)
+                    {
+                        if (!pkd.modExtensions.NullOrEmpty() && pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension))
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.no;
+                        }
+                        else
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.yes;
+                        }
+                    }
                 }
+                //else default/unsure
                 else
                 {
                     needsPatched = HandleUnknownDefCheck(def);
@@ -313,11 +381,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Log.Warning($"Exception when checking if def {def.defName} from mod {def.modContentPack.Name} needs patching. Exception is: \n" + ex.ToString());
             }
 
-            if (needsPatched)
-            {
-                return true;
-            }
-            return false;
+            return needsPatched;
         }
 
         public static List<ModContentPack> GetActiveModsList()

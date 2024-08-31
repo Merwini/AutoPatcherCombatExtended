@@ -32,8 +32,8 @@ namespace nuff.AutoPatcherCombatExtended.VF
 
         internal static void RegisterCheckDelegates()
         {
-            Func<Def, bool> vehicleFunc = new Func<Def, bool>(CheckIfVehicleNeedsPatch);
-            Func<Def, bool> vehicleTurretFunc = new Func<Def, bool>(CheckIfVehicleTurretNeedsPatch);
+            Func<Def, APCEConstants.NeedsPatch> vehicleFunc = new Func<Def, APCEConstants.NeedsPatch>(CheckIfVehicleNeedsPatch);
+            Func<Def, APCEConstants.NeedsPatch> vehicleTurretFunc = new Func<Def, APCEConstants.NeedsPatch>(CheckIfVehicleTurretNeedsPatch);
 
             APCESettings.typeHandlerDictionaryCheck.Add(typeof(VehicleDef), vehicleFunc);
             APCESettings.typeHandlerDictionaryCheck.Add(typeof(VehicleTurretDef), vehicleTurretFunc);
@@ -50,18 +50,18 @@ namespace nuff.AutoPatcherCombatExtended.VF
             DefDataHolder ddhv = new DefDataHolderVehicleTurretDef(def);
         }
 
-        public static bool CheckIfVehicleNeedsPatch(Def def)
+        public static APCEConstants.NeedsPatch CheckIfVehicleNeedsPatch(Def def)
         {
-            //TODO check if vehicle needs patch - no good way to do this
-            return false;
+            //TODO check if vehicle needs patch
+            return APCEConstants.NeedsPatch.unsure;
         }
 
-        public static bool CheckIfVehicleTurretNeedsPatch(Def def)
+        public static APCEConstants.NeedsPatch CheckIfVehicleTurretNeedsPatch(Def def)
         {
             VehicleTurretDef vtd = def as VehicleTurretDef;
-            if (!vtd.HasModExtension<CETurretDataDefModExtension>())
-                return true;
-            return false;
+            if (vtd.HasModExtension<CETurretDataDefModExtension>())
+                return APCEConstants.NeedsPatch.no;
+            return APCEConstants.NeedsPatch.yes;
         }
     }
 }
