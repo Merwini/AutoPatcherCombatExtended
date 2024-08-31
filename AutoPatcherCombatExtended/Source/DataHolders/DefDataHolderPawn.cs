@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using CombatExtended;
+using UnityEngine;
 
 
 namespace nuff.AutoPatcherCombatExtended
@@ -166,8 +167,8 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= modData.pawnToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] *= modData.pawnToolSharpPenetration * techMult;
-            modified_ToolArmorPenetrationBlunts[i] *= modData.pawnToolBluntPenetration * techMult;
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.pawnToolSharpPenetration, 0, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * modData.pawnToolBluntPenetration, 0, 99999);
         }
 
         public void PatchStatBases()

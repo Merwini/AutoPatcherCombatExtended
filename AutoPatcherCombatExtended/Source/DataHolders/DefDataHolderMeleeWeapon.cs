@@ -137,8 +137,8 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= modData.weaponToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration * techMult;
-            modified_ToolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration * techMult;
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolSharpPenetration * techMult, 0, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolBluntPenetration * techMult, 0, 99999);
         }
 
         public void CalculateWeaponTechMult()

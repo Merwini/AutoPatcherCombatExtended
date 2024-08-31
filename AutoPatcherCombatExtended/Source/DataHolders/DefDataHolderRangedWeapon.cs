@@ -579,8 +579,9 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= modData.weaponToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] *= modData.weaponToolSharpPenetration; //TODO - I think gun tools should not use techMult? Will weaken things with intended weapons like bayonets, but be better for most cases
-            modified_ToolArmorPenetrationBlunts[i] *= modData.weaponToolBluntPenetration;
+            //TODO - I think gun tools should not use techMult? Will weaken things with intended weapons like bayonets, but be better for most cases
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolSharpPenetration, 0, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * modData.weaponToolBluntPenetration, 0, 99999);
         }
 
         public void CalculateMortar()
