@@ -238,6 +238,7 @@ namespace nuff.AutoPatcherCombatExtended
             //start as true because switching to false is more final
             bool needsPatched = true;
             List<Def> defsNeedingPatched = new List<Def>();
+            List<Def> defsNotNeedingPatched = new List<Def>();
 
             if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
                 return false;
@@ -253,6 +254,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else if (defNeedsPatched == APCEConstants.NeedsPatch.no)
                 {
+                    defsNotNeedingPatched.Add(def);
                     needsPatched = false;
                 }
             }
@@ -265,6 +267,11 @@ namespace nuff.AutoPatcherCombatExtended
             if (needsPatched && defsNeedingPatched.Count == 0)
             {
                 needsPatched = false;
+            }
+
+            if (!needsPatched && defsNeedingPatched.Count != 0)
+            {
+                APCELogUtility.LogDefsCauseNotSuggested(defsNotNeedingPatched);
             }
 
             return needsPatched;
