@@ -238,6 +238,7 @@ namespace nuff.AutoPatcherCombatExtended
             //start as true because switching to false is more final
             bool needsPatched = true;
             List<Def> defsNeedingPatched = new List<Def>();
+            List<Def> defsNotNeedingPatched = new List<Def>();
 
             if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
                 return false;
@@ -253,6 +254,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else if (defNeedsPatched == APCEConstants.NeedsPatch.no)
                 {
+                    defsNotNeedingPatched.Add(def);
                     needsPatched = false;
                 }
             }
@@ -265,6 +267,11 @@ namespace nuff.AutoPatcherCombatExtended
             if (needsPatched && defsNeedingPatched.Count == 0)
             {
                 needsPatched = false;
+            }
+
+            if (!needsPatched && defsNeedingPatched.Count != 0)
+            {
+                APCELogUtility.LogDefsCauseNotSuggested(defsNotNeedingPatched);
             }
 
             return needsPatched;
@@ -323,12 +330,13 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass))
                     {
-                        //TODO might need to allow this to return unsure. Can pawns have no tools?
-                        if (thingDef.tools.NullOrEmpty() || thingDef.tools.Any(tool => tool is ToolCE))
-                        {
-                            needsPatched = APCEConstants.NeedsPatch.no;
-                        }
-                        else
+                        //removing "no" condition, because unpatched pawns might just be inheriting from a patched base, so can't be sure
+                        //if (!thingDef.tools.NullOrEmpty() && thingDef.tools.Any(tool => tool is ToolCE))
+                        //{
+                        //    needsPatched = APCEConstants.NeedsPatch.no;
+                        //    Log.Warning($"pawn {thingDef.defName} returning no");
+                        //}
+                        if (!thingDef.tools.NullOrEmpty() && !thingDef.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.yes;
                         }
@@ -339,11 +347,11 @@ namespace nuff.AutoPatcherCombatExtended
                     if (!hd.comps.NullOrEmpty())
                     {
                         HediffCompProperties_VerbGiver hcp_vg = (HediffCompProperties_VerbGiver)hd.comps.FirstOrDefault(c => c is HediffCompProperties_VerbGiver);
-                        if (hcp_vg == null || hcp_vg.tools.NullOrEmpty() || hcp_vg.tools.Any(tool => tool is ToolCE))
+                        if (hcp_vg != null && !hcp_vg.tools.NullOrEmpty() && hcp_vg.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.no;
                         }
-                        else
+                        else if (hcp_vg != null && !hcp_vg.tools.NullOrEmpty() && !hcp_vg.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.yes;
                         }
@@ -363,6 +371,7 @@ namespace nuff.AutoPatcherCombatExtended
                         if (!pkd.modExtensions.NullOrEmpty() && pkd.modExtensions.Any(ext => ext is LoadoutPropertiesExtension))
                         {
                             needsPatched = APCEConstants.NeedsPatch.no;
+                            Log.Warning($"pawnKindDef {pkd.defName} returning no");
                         }
                         else
                         {
