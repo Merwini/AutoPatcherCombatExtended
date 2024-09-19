@@ -323,12 +323,13 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass))
                     {
-                        //TODO might need to allow this to return unsure. Can pawns have no tools?
-                        if (thingDef.tools.NullOrEmpty() || thingDef.tools.Any(tool => tool is ToolCE))
-                        {
-                            needsPatched = APCEConstants.NeedsPatch.no;
-                        }
-                        else
+                        //removing "no" condition, because unpatched pawns might just be inheriting from a patched base, so can't be sure
+                        //if (!thingDef.tools.NullOrEmpty() && thingDef.tools.Any(tool => tool is ToolCE))
+                        //{
+                        //    needsPatched = APCEConstants.NeedsPatch.no;
+                        //    Log.Warning($"pawn {thingDef.defName} returning no");
+                        //}
+                        if (!thingDef.tools.NullOrEmpty() && !thingDef.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.yes;
                         }
@@ -339,11 +340,11 @@ namespace nuff.AutoPatcherCombatExtended
                     if (!hd.comps.NullOrEmpty())
                     {
                         HediffCompProperties_VerbGiver hcp_vg = (HediffCompProperties_VerbGiver)hd.comps.FirstOrDefault(c => c is HediffCompProperties_VerbGiver);
-                        if (hcp_vg == null || hcp_vg.tools.NullOrEmpty() || hcp_vg.tools.Any(tool => tool is ToolCE))
+                        if (hcp_vg != null && !hcp_vg.tools.NullOrEmpty() && hcp_vg.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.no;
                         }
-                        else
+                        else if (hcp_vg != null && !hcp_vg.tools.NullOrEmpty() && !hcp_vg.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.yes;
                         }
