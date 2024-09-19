@@ -15,7 +15,6 @@ namespace nuff.AutoPatcherCombatExtended
     {
         static APCEController()
         {
-            Log.Message("APCE Controller constructed");
             APCESettings.activeMods = GetActiveModsList();
             APCESettings.modsToPatch = RebuildModsToPatch();
             InjectedDefHasher.PrepareReflection();
@@ -27,6 +26,7 @@ namespace nuff.AutoPatcherCombatExtended
             ModDataHolder apceDefaults = new ModDataHolder();
             apceDefaults.packageId = "nuff.apcedefaults";
             APCESettings.modDataDict.Add(apceDefaults.packageId, apceDefaults);
+            Log.Message("APCE Controller constructed");
         }
 
         public static void APCEPatchController()
