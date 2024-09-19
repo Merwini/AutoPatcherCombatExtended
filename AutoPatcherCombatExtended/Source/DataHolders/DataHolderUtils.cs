@@ -313,7 +313,7 @@ namespace nuff.AutoPatcherCombatExtended
                         .Any(productDef => productDef.thingDef == def) ?? false);
 
             IngredientCount biggestIngredientCount = null;
-            if (!firstRecipeDef?.ingredients?.Empty() ?? false)
+            if (!firstRecipeDef?.ingredients?.NullOrEmpty() ?? false)
             {
                 biggestIngredientCount = firstRecipeDef.ingredients
                     .MaxBy(ingredientCount => ingredientCount.count);
