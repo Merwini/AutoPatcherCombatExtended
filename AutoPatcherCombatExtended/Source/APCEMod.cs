@@ -276,15 +276,22 @@ namespace nuff.AutoPatcherCombatExtended
         public override void WriteSettings()
         {
             //DEBUG
+            base.WriteSettings();
             APCEController.RemoveListDuplicates(APCESettings.modsByPackageId);
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
                 if (APCESettings.modsAlreadyPatched.Add(mod))
                 {
                     APCEController.GenerateDataHoldersForMod(mod);
+                    foreach (Def def in mod.AllDefs)
+                    {
+                        if (APCESettings.defDataDict.TryGetValue(def, out var holder))
+                        {
+                            holder.Patch();
+                        }
+                    }
                 }
             }
-            base.WriteSettings();
         }
     }
 }
