@@ -12,7 +12,11 @@ namespace nuff.AutoPatcherCombatExtended
     public class DefDataHolderGene : DefDataHolder
     {
         //TODO can genes add verbs? Need to look into whether they would need patching.
-        //TODO genes can absolutely add tools. Need to patch those.
+        public DefDataHolderGene()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderGene(GeneDef def) : base(def)
         {
         }

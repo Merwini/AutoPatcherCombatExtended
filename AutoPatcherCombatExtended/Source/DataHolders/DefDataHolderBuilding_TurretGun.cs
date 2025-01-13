@@ -11,6 +11,11 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class DefDataHolderBuilding_TurretGun : DefDataHolder
     {
+        public DefDataHolderBuilding_TurretGun()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderBuilding_TurretGun(ThingDef def) : base(def)
         {
         }

@@ -12,6 +12,11 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class DefDataHolderMeleeWeapon : DefDataHolder
     {
+        public DefDataHolderMeleeWeapon()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderMeleeWeapon(ThingDef def) : base(def)
         {
         }

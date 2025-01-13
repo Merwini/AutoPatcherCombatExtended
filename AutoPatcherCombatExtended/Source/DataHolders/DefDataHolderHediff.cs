@@ -11,6 +11,11 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class DefDataHolderHediff : DefDataHolder
     {
+        public DefDataHolderHediff()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderHediff(HediffDef def) : base(def)
         {
         }

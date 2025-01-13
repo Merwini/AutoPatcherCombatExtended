@@ -15,22 +15,16 @@ namespace nuff.AutoPatcherCombatExtended
         public string packageId;
         public bool isCustomized = false;
 
-        //saved as strings so they don't have issues if the mods updates and defs are added/removed/renamed
-        public List<string> defsByName;
-        public List<string> defsToPatch;
-        public List<string> defsToIgnore; //need to save this so we can notify if new defs are added
+        //Dictionary uses strings as keys so it doesn't break as hard if defs are renamed or removed
+        public Dictionary<string, APCEConstants.NeedsPatch> defsToPatch;
+
+        //
+        public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
 
         //toggles //todo remove
-        public bool patchWeapons = true;
         public bool patchCustomVerbs = false;
         public bool limitWeaponMass = false;
-        public bool patchApparels = true;
-        public bool patchPawns = true;
-        public bool patchPawnKinds = true;
-        public bool patchGenes = true;
-        public bool patchHediffs = true;
         public bool patchHeadgearLayers = true;
-        public bool patchVehicles = true;
 
         //apparel values
         public float apparelSharpMult = 10f;
@@ -95,9 +89,61 @@ namespace nuff.AutoPatcherCombatExtended
         public float vehicleSharpMult = 15;
         public float vehicleBluntMult = 15;
         public float vehicleHealthMult = 3;
+
+        public ModDataHolder()
+        {
+            //for generating nuff.apcedefaults
+        }
+
+        public ModDataHolder(ModContentPack mcp)
+        {
+            this.mod = mcp;
+            RegisterSelfInDict();
+            GenerateDefDataHolders();
+        }
+
         public void Reset()
         {
-            //TODO reset values to those of nuff.ceautopatcher
+            //TODO reset values to those of nuff.apcedefaults. Maybe just construct a new one?
+        }
+
+        public int GenerateDefDataHolders()
+        {
+            int holderCount = 0;
+            foreach (Def def in mod.AllDefs)
+            {
+                if (APCEController.TryGenerateDataHolderForDef(def))
+                {
+                    holderCount++;
+                }
+            }
+            return holderCount;
+        }
+
+        public void Patch()
+        {
+            foreach (var kvp in defDict)
+            {
+                try
+                {
+                    kvp.Value.Patch();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Failed to patch def {kvp.Value.defName} from mod {kvp.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
+                }
+            }
+        }
+
+        //returns true if new entry is added to dict. returns false if value is replaced.
+        public bool RegisterSelfInDict()
+        {
+            if (!APCESettings.modDataDict.TryAdd(packageId, this))
+            {
+                APCESettings.modDataDict[packageId] = this;
+                return false;
+            }
+            return true;
         }
 
         public void ExposeData()
@@ -110,16 +156,9 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
 
                 //toggles
-                Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);
                 Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
                 Scribe_Values.Look(ref limitWeaponMass, "limitWeaponMass", false);
-                Scribe_Values.Look(ref patchApparels, "patchApparels", true);
-                Scribe_Values.Look(ref patchPawns, "patchPawns", true);
-                Scribe_Values.Look(ref patchPawnKinds, "patchPawnKinds", true);
-                Scribe_Values.Look(ref patchGenes, "patchGenes", true);
-                Scribe_Values.Look(ref patchHediffs, "patchHediffs", true);
                 Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers", true);
-                Scribe_Values.Look(ref patchVehicles, "patchVehicles", true);
 
                 // Apparel values
                 Scribe_Values.Look(ref apparelSharpMult, "apparelSharpMult", 10);
@@ -191,5 +230,6 @@ namespace nuff.AutoPatcherCombatExtended
                 mod = LoadedModManager.RunningMods.First(m => m.PackageId == packageId);
             }
         }
+
     }
 }

@@ -11,6 +11,11 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class DefDataHolderRangedWeapon : DefDataHolder
     {
+        public DefDataHolderRangedWeapon()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderRangedWeapon(ThingDef def) : base(def)
         {
         }

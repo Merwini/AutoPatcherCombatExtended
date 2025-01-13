@@ -50,7 +50,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     LoadModDataHolder(dataHolderFolder);
 
-                    //each type of dataholder will have its own folder and use its own loader method, just in case any need custom logic
+                    
                     //will need Delegates for mod def types
 
                     //TODO call LoadDefDataHolderFolder for each def type in the dictionary
@@ -91,16 +91,33 @@ namespace nuff.AutoPatcherCombatExtended
 
             foreach (string defDataHolderFile in Directory.EnumerateFiles(folderPath, "*.xml"))
             {
-                LoadDefDataHolderFile(defDataHolderFile);
+                LoadDefDataHolderFile(defDataHolderFile, defType);
             }
 
             return true;
         }
 
-        internal static void LoadDefDataHolderFile(string file)
+        internal static void LoadDefDataHolderFile(string filePath, Type defType)
         {
+            if (filePath == null || !File.Exists(filePath))
+            {
+                Log.Error("Error: tried to load DefDataHolders, but either file path or Def Type was null");
+                return;
+            }
 
+            if (defType == null || !typeof(DefDataHolder).IsAssignableFrom(defType))
+            {
+                Log.Error("Error: tried to load DefDataHolders, but either Def Type was null, or was not a valid Type");
+            }
+
+            Object obj = Activator.CreateInstance(defType);
+            if (obj is DefDataHolder defDataHolder)
+            {
+                Scribe.loader.InitLoading(filePath);
+                defDataHolder.ExposeData();
+            }
         }
+
 
         public static bool RegisterDefTypeFolder(string folderName, Type defType)
         {

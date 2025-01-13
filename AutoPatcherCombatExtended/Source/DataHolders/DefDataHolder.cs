@@ -14,7 +14,7 @@ namespace nuff.AutoPatcherCombatExtended
         public bool isCustomized = false; //this will be changed by the customization window if the user changes any values
         public bool defGeneratedAlready = false;
         public string defName;
-        public string parentModPackageId;
+        public string parentModPackageId; //todo I don't seem to use this for anything?
 
         public Def def;
 
@@ -221,9 +221,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void RegisterSelfInDict()
         {
-            if (!APCESettings.defDataDict.ContainsKey(def))
+            if (!APCESettings.modsAlreadyPatched.TryAdd(def, this))
             {
-                APCESettings.defDataDict.Add(def, this);
+                APCESettings.defDataDict[def] = this;
             }
         }
     }

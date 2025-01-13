@@ -11,6 +11,11 @@ namespace nuff.AutoPatcherCombatExtended
 {
     class DefDataHolderPawnKind : DefDataHolder
     {
+        public DefDataHolderPawnKind()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderPawnKind(PawnKindDef def) : base(def)
         {
         }

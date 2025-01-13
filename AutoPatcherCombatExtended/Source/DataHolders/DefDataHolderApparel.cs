@@ -12,6 +12,11 @@ namespace nuff.AutoPatcherCombatExtended
     public class DefDataHolderApparel : DefDataHolder
     {
         //TODO: headgear layers
+        public DefDataHolderApparel()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderApparel(ThingDef def) : base(def)
         {
         }
