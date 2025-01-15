@@ -18,7 +18,20 @@ namespace nuff.AutoPatcherCombatExtended
         private static string DataHoldersPath;
         private static string PatchesPath;
 
-        private static Dictionary<string, Type> defFolderTypesDictionary; //TODO initialize this with the core def types and their folders
+        //TODO need to move this and the method for adding entries to APCEMod, so it can be added to by compatibility dlls before this class is constructed
+        private static Dictionary<string, Type> defFolderTypesDictionary = new Dictionary<string, Type>
+        {
+            {"DefDtaHolderAmmoSet", typeof(DefDataHolderAmmoSet) },
+            {"DefDataHolderApparel", typeof(DefDataHolderApparel) },
+            {"DefDataHolderBuilding_TurretGun", typeof(DefDataHolderBuilding_TurretGun) },
+            {"DefDataHolderGene", typeof(DefDataHolderGene) },
+            {"DefDataHolderHediff", typeof(DefDataHolderHediff) },
+            {"DefDataHolderMeleeWeapon", typeof(DefDataHolderMeleeWeapon) },
+            {"DefDataHolderPawn", typeof(DefDataHolderPawn) },
+            {"DefDataHolderPawnKind", typeof(DefDataHolderPawnKind) },
+            {"DefDataHolderRangedWeapon", typeof(DefDataHolderRangedWeapon) }
+            //TODO stuff once implemented
+        };
 
         static APCESaveLoad()
         {
@@ -44,18 +57,13 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static bool LoadDataHolders()
         {
-            foreach (string dataHolderFolder in Directory.EnumerateDirectories(DataHoldersPath))
+            foreach (string modDataFolder in Directory.EnumerateDirectories(DataHoldersPath))
             {
                 try
                 {
-                    LoadModDataHolder(dataHolderFolder);
+                    LoadModDataHolder(modDataFolder);
 
-                    
-                    //will need Delegates for mod def types
-
-                    //TODO call LoadDefDataHolderFolder for each def type in the dictionary
-
-
+                    LoadDefDataHolders(modDataFolder);
                 }
                 catch (Exception ex)
                 {
@@ -71,15 +79,25 @@ namespace nuff.AutoPatcherCombatExtended
             return false;
         }
 
-        internal static void LoadModDataHolder(string folder)
+        internal static void LoadModDataHolder(string modDataFolder)
         {
-            string[] mdha = Directory.GetFiles(folder, "ModDataHolder.xml");
+            string[] mdha = Directory.GetFiles(modDataFolder, "ModDataHolder.xml");
             if (mdha.Length != 0)
             {
                 ModDataHolder mdh = new ModDataHolder();
                 Scribe.loader.InitLoading(mdha[0]);
                 mdh.ExposeData();
             }
+        }
+
+        internal static bool LoadDefDataHolders(string modDataFolder)
+        {
+            foreach (var entry in defFolderTypesDictionary)
+            {
+                LoadDefDataHolderFolder(Path.Combine(modDataFolder, entry.Key), entry.Value);
+            }
+
+            return true;
         }
 
         internal static bool LoadDefDataHolderFolder(string folderPath, Type defType)
