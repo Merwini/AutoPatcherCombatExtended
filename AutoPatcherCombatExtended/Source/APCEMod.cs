@@ -18,6 +18,20 @@ namespace nuff.AutoPatcherCombatExtended
         Mod CEMod;
         Settings CESettings;
 
+        internal static Dictionary<string, Type> defFolderTypesDictionary = new Dictionary<string, Type>
+        {
+            {"DefDtaHolderAmmoSet", typeof(DefDataHolderAmmoSet) },
+            {"DefDataHolderApparel", typeof(DefDataHolderApparel) },
+            {"DefDataHolderBuilding_TurretGun", typeof(DefDataHolderBuilding_TurretGun) },
+            {"DefDataHolderGene", typeof(DefDataHolderGene) },
+            {"DefDataHolderHediff", typeof(DefDataHolderHediff) },
+            {"DefDataHolderMeleeWeapon", typeof(DefDataHolderMeleeWeapon) },
+            {"DefDataHolderPawn", typeof(DefDataHolderPawn) },
+            {"DefDataHolderPawnKind", typeof(DefDataHolderPawnKind) },
+            {"DefDataHolderRangedWeapon", typeof(DefDataHolderRangedWeapon) }
+            //TODO stuff once implemented
+        };
+
         public AutoPatcherCombatExtended(ModContentPack content) : base(content)
         {
             this.Settings = GetSettings<APCESettings>();
@@ -101,9 +115,10 @@ namespace nuff.AutoPatcherCombatExtended
                 else if (APCESettings.settingsTabs == APCEConstants.SettingsTabs.Modlist)
                 {
                     Rect listRect = new Rect(0, 0, inRect.width, inRect.height * 0.85f);
-                    list.ListControl(listRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
-                        ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 1f);
-
+                    //list.ListControl(listRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
+                    //    ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 1f);
+                    list.ListControlDynamic(listRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref Settings.searchTerm, ref Settings.leftScrollPosition, ref Settings.rightScrollPosition,
+                        ref Settings.leftSelectedObject, ref Settings.rightSelectedObject, "Mods to patch", rectPCT: 1f, "Name");
 
                     //Rect customizeButtonRect = new Rect(inRect.xMax + 10f, inRect.yMax - 40f, 100f, 30f);
                     // Customize Mod button
@@ -292,6 +307,16 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
             }
+        }
+
+        public static bool RegisterDefTypeFolder(string folderName, Type defType)
+        {
+            defFolderTypesDictionary.TryAdd(folderName, defType);
+            if (defFolderTypesDictionary.TryGetValue(folderName, out Type value) && value == defType)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

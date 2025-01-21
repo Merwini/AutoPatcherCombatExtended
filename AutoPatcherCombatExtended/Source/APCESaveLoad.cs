@@ -18,21 +18,6 @@ namespace nuff.AutoPatcherCombatExtended
         private static string DataHoldersPath;
         private static string PatchesPath;
 
-        //TODO need to move this and the method for adding entries to APCEMod, so it can be added to by compatibility dlls before this class is constructed
-        private static Dictionary<string, Type> defFolderTypesDictionary = new Dictionary<string, Type>
-        {
-            {"DefDtaHolderAmmoSet", typeof(DefDataHolderAmmoSet) },
-            {"DefDataHolderApparel", typeof(DefDataHolderApparel) },
-            {"DefDataHolderBuilding_TurretGun", typeof(DefDataHolderBuilding_TurretGun) },
-            {"DefDataHolderGene", typeof(DefDataHolderGene) },
-            {"DefDataHolderHediff", typeof(DefDataHolderHediff) },
-            {"DefDataHolderMeleeWeapon", typeof(DefDataHolderMeleeWeapon) },
-            {"DefDataHolderPawn", typeof(DefDataHolderPawn) },
-            {"DefDataHolderPawnKind", typeof(DefDataHolderPawnKind) },
-            {"DefDataHolderRangedWeapon", typeof(DefDataHolderRangedWeapon) }
-            //TODO stuff once implemented
-        };
-
         static APCESaveLoad()
         {
             FolderPath = Path.Combine(GenFilePaths.SaveDataFolderPath, "NuffsAutoPatcher");
@@ -92,7 +77,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static bool LoadDefDataHolders(string modDataFolder)
         {
-            foreach (var entry in defFolderTypesDictionary)
+            foreach (var entry in AutoPatcherCombatExtended.defFolderTypesDictionary)
             {
                 LoadDefDataHolderFolder(Path.Combine(modDataFolder, entry.Key), entry.Value);
             }
@@ -134,17 +119,6 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe.loader.InitLoading(filePath);
                 defDataHolder.ExposeData();
             }
-        }
-
-
-        public static bool RegisterDefTypeFolder(string folderName, Type defType)
-        {
-            defFolderTypesDictionary.TryAdd(folderName, defType);
-            if (defFolderTypesDictionary.TryGetValue(folderName, out Type value) && value == defType)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }
