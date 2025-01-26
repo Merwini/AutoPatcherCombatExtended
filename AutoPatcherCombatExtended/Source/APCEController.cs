@@ -37,25 +37,19 @@ namespace nuff.AutoPatcherCombatExtended
             //}
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
+                //todo might not need to check, since this is currently the first attempt to patch mods 
                 if (APCESettings.modsAlreadyPatched.Add(mod))
                 {
-                    APCEController.GenerateDataHoldersForMod(mod);
+                    ModDataHolder mdh = new ModDataHolder(mod);
                 }
             }
 
             //DEBUG
             //Log.Warning("defDataDict has number of entries: " + APCESettings.defDataDict.Count.ToString());
 
-            foreach (var holder in APCESettings.defDataDict)
+            foreach (var holder in APCESettings.modDataDict)
             {
-                try
-                {
-                    holder.Value.Patch();
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning($"Failed to patch def {holder.Value.defName} from mod {holder.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
-                }
+                holder.Value.Patch();
                 //if (APCESettings.printLogs)
                 //{
                 //    APCEPatchLogger.stopwatchMaster.Stop();
@@ -78,20 +72,20 @@ namespace nuff.AutoPatcherCombatExtended
             //log.EndPatch();
         }
 
-        public static void TryGenerateDataHolderForDef(Def def)
+        public static bool TryGenerateDataHolderForDef(Def def)
         {
             try
             {
                 if (HandleDelegatedDefTypesGenerate(def))
                 {
-                    return;
+                    return true;
                 }
                 else if (def is ThingDef td)
                 {
                     if (td.IsApparel)
                     {
                         DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Apparel);
-                        return;
+                        return true;
                     }
                     else if (td.IsWeapon)
                     {
@@ -100,18 +94,18 @@ namespace nuff.AutoPatcherCombatExtended
                             && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
                         {
                             DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.RangedWeapon);
-                            return;
+                            return true;
                         }
                         else //if (td.IsMeleeWeapon)
                         {
                             DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.MeleeWeapon);
-                            return;
+                            return true;
                         }
                     }
                     else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
                     {
                         DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Pawn);
-                        return;
+                        return true;
                     }
                     else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
                     {
@@ -125,27 +119,29 @@ namespace nuff.AutoPatcherCombatExtended
                 else if (def is HediffDef hd)
                 {
                     DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Hediff);
-                    return;
+                    return true;
                 }
                 else if (def is PawnKindDef pkd)
                 {
                     DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.PawnKind);
-                    return;
+                    return true;
                 }
                 else if (ModLister.BiotechInstalled
                     && def is GeneDef gene)
                 {
                     DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Gene);
-                    return;
+                    return true;
                 }
                 else
                 {
                     HandleUnknownDefGenerate(def);
                 }
+                return false;
             }
             catch (Exception ex)
             {
                 Log.Warning($"Exception while trying to generate DefDataHolder for def {def.defName} from mod {def.modContentPack.Name}. Exception: \n" + ex.ToString());
+                return false;
             }
         }
 
