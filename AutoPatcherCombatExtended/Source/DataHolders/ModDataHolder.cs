@@ -13,13 +13,19 @@ namespace nuff.AutoPatcherCombatExtended
         public ModContentPack mod;
 
         public string packageId;
-        public bool isCustomized = false;
+        public bool isCustomized = true; //TODO revert to false
+        //TODO methods to change values instead of modifying them directly
+        //need this to flip isCustomized to true
+        //Also TODO write a method that resets all values to match those in apceDefaults. Call this before running autocalcs or patches. This is so that, if the player changes the defaults, they don't have to restart to get those changes to permeate down to the ModDataHolders
 
         //Dictionary uses strings as keys so it doesn't break as hard if defs are renamed or removed
         public Dictionary<string, APCEConstants.NeedsPatch> defsToPatch;
 
         //
         public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
+
+        //Needed to track if the mod has any customized defs, for use during saving. Didn't want to have to iterate through all of them to check isCustomized on each.
+        public Dictionary<Def, DefDataHolder> customizedDefDict = new Dictionary<Def, DefDataHolder>();
 
         //toggles //todo remove
         public bool patchCustomVerbs = false;
@@ -98,6 +104,7 @@ namespace nuff.AutoPatcherCombatExtended
         public ModDataHolder(ModContentPack mcp)
         {
             this.mod = mcp;
+            this.packageId = mcp.PackageId;
             RegisterSelfInDict();
             GenerateDefDataHolders();
         }
@@ -213,7 +220,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref patchBackpacks, "patchBackpacks", true);
 
                 Scribe_Values.Look(ref geneArmorSharpMult, "geneArmorSharpMult", 10f);
-                Scribe_Values.Look(ref geneArmorBluntMult, "geneArmorBluntMult", 40f);
+                Scribe_Values.Look(ref geneArmorBluntMult, "geneArmorBluntMult", 10f);
 
                 // Hediff settings
                 Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult", 10f);

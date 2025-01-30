@@ -76,7 +76,7 @@ namespace nuff.AutoPatcherCombatExtended
             ModDataHolder modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId);
             if (modData == null)
             {
-                modData = APCESettings.modDataDict.TryGetValue("nuff.apcedefaults");
+                modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
             }
             return modData;
         }

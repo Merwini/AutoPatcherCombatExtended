@@ -13,10 +13,18 @@ namespace nuff.AutoPatcherCombatExtended
     {
         ModContentPack mod;
         ModDataHolder modData;
+        APCEConstants.ModSettingsTabs categoryTab = APCEConstants.ModSettingsTabs.General_Settings;
+        APCEConstants.BalanceTabs balanceTab = APCEConstants.BalanceTabs.Apparel;
+        APCEConstants.BalanceWeaponTabs weaponTab = APCEConstants.BalanceWeaponTabs.Melee;
 
         public Window_CustomizeMod(ModContentPack mod)
         {
             this.mod = mod;
+            modData = APCESettings.modDataDict.TryGetValue(mod.PackageId);
+            if (modData == null)
+            {
+                modData = new ModDataHolder(mod);
+            }
         }
 
         public override Vector2 InitialSize
@@ -38,17 +46,220 @@ namespace nuff.AutoPatcherCombatExtended
 
             list.Label("COMING SOON! (hit escape to exit I haven't made a button yet)");
 
-            list.EnumSelector(ref APCESettings.modSettingsTabs, "", "", "select settings page");
+            list.EnumSelector(ref categoryTab, "", "", "select settings page");
 
-            if (APCESettings.modSettingsTabs == APCEConstants.ModSettingsTabs.General_Settings)
+            if (categoryTab == APCEConstants.ModSettingsTabs.General_Settings)
             {
-
+                list.Gap();
+                list.Label("Weapon Stuff:");
+                list.CheckboxLabeled("Limit Weapon Mass: ", ref modData.limitWeaponMass);
+                list.CheckboxLabeled("Try to patch custom verbs on guns (safety not guaranteed): ", ref modData.patchCustomVerbs);
+                list.Gap();
+                list.Label("Apparel Stuff:");
+                //list.CheckboxLabeled("Patch apparels from selected mods: ", ref APCESettings.patchApparels);
+                //list.CheckboxLabeled("Patch headgear layers: ", ref APCESettings.patchHeadgearLayers);
+                list.Gap();
+                list.Label("Other Stuff:");
             }
-            else if (APCESettings.modSettingsTabs == APCEConstants.ModSettingsTabs.Balance_Control)
+            else if (categoryTab == APCEConstants.ModSettingsTabs.Balance_Control)
             {
+                list.Label("Balance Control placeholder");
+                list.EnumSelector(ref balanceTab, "", "", "select balance category");
+                if (balanceTab == APCEConstants.BalanceTabs.Apparel)
+                {
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Armor value settings");
+                    Text.Font = GameFont.Small;
 
+                    list.Gap();
+                    list.Label("These multipliers will apply to all apparels, and are then further multiplied by techlevel");
+                    string apparelSharpMultBuffer = modData.apparelSharpMult.ToString();
+                    list.TextFieldNumericLabeled("Armor sharp base multiplier (default: 10)", ref modData.apparelSharpMult, ref apparelSharpMultBuffer);
+                    string apparelBluntMultBuffer = modData.apparelBluntMult.ToString();
+                    list.TextFieldNumericLabeled("Armor blunt base multiplier (default: 40)", ref modData.apparelBluntMult, ref apparelBluntMultBuffer);
+                    list.Gap();
+
+                    string apparelTechMultAnimalBuffer = modData.apparelTechMultAnimal.ToString();
+                    list.TextFieldNumericLabeled("Tech level 'Animal' apparel multiplier (default: 0.25)", ref modData.apparelTechMultAnimal, ref apparelTechMultAnimalBuffer);
+                    string apparelTechMultNeolithicBuffer = modData.apparelTechMultNeolithic.ToString();
+                    list.TextFieldNumericLabeled("Tech level 'Neolithic' apparel multiplier (default: 0.5)", ref modData.apparelTechMultNeolithic, ref apparelTechMultNeolithicBuffer);
+                    string apparelTechMultMedievalBuffer = modData.apparelTechMultMedieval.ToString();
+                    list.TextFieldNumericLabeled("Tech level 'Medieval' apparel multiplier (default: 0.75)", ref modData.apparelTechMultMedieval, ref apparelTechMultMedievalBuffer);
+                    string apparelTechMultIndustrialBuffer = modData.apparelTechMultIndustrial.ToString();
+                    list.TextFieldNumericLabeled("Tech level 'Industrial' apparel multiplier (default: 1.0)", ref modData.apparelTechMultIndustrial, ref apparelTechMultIndustrialBuffer);
+                    string apparelTechMultSpacerBuffer = modData.apparelTechMultSpacer.ToString();
+                    list.TextFieldNumericLabeled("Tech level 'Spacer' apparel multiplier (default: 2.0)", ref modData.apparelTechMultSpacer, ref apparelTechMultSpacerBuffer);
+                    string apparelTechMultUltratechBuffer = modData.apparelTechMultUltratech.ToString();
+                    list.TextFieldNumericLabeled("Tech level 'Ultratech' apparel multiplier (default: 3.0)", ref modData.apparelTechMultUltratech, ref apparelTechMultUltratechBuffer);
+                    string apparelTechMultArchotechBuffer = modData.apparelTechMultArchotech.ToString();
+                    list.TextFieldNumericLabeled("Tech level 'Archotech' apparel multiplier (default: 4.0)", ref modData.apparelTechMultArchotech, ref apparelTechMultArchotechBuffer);
+                }
+                if (balanceTab == APCEConstants.BalanceTabs.Weapons)
+                {
+                    list.EnumSelector(ref weaponTab, "", "", "select weapon category");
+                    if (weaponTab == APCEConstants.BalanceWeaponTabs.Ranged)
+                    {
+                        list.Gap();
+                        Text.Font = GameFont.Medium;
+                        list.Label("Ranged weapon armor penetration settings");
+                        Text.Font = GameFont.Small;
+                        string gunSharpPenMultBuffer = modData.gunSharpPenMult.ToString();
+                        list.TextFieldNumericLabeled("Ranged weapon sharp penetration multiplier (default: 10)", ref modData.gunSharpPenMult, ref gunSharpPenMultBuffer);
+
+                        string gunBluntPenMultBuffer = modData.gunBluntPenMult.ToString();
+                        list.TextFieldNumericLabeled("Ranged weapon blunt penetration multiplier (default: 40)", ref modData.gunBluntPenMult, ref gunBluntPenMultBuffer);
+
+                        list.Gap();
+
+                        string gunTechMultAnimalBuffer = modData.gunTechMultAnimal.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Animal' ammo penetration multiplier (default: 0.5)", ref modData.gunTechMultAnimal, ref gunTechMultAnimalBuffer);
+
+                        string gunTechMultNeolithicBuffer = modData.gunTechMultNeolithic.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Neolithic' ammo penetration multiplier (default: 1.0)", ref modData.gunTechMultNeolithic, ref gunTechMultNeolithicBuffer);
+
+                        string gunTechMultMedievalBuffer = modData.gunTechMultMedieval.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Medieval' ammo penetration multiplier (default: 2.0)", ref modData.gunTechMultMedieval, ref gunTechMultMedievalBuffer);
+
+                        string gunTechMultIndustrialBuffer = modData.gunTechMultIndustrial.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Industrial' ammo penetration multiplier (default: 4.0)", ref modData.gunTechMultIndustrial, ref gunTechMultIndustrialBuffer);
+
+                        string gunTechMultSpacerBuffer = modData.gunTechMultSpacer.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Spacer' ammo penetration multiplier (default: 5.0)", ref modData.gunTechMultSpacer, ref gunTechMultSpacerBuffer);
+
+                        string gunTechMultUltratechBuffer = modData.gunTechMultUltratech.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Ultratech' ammo penetration multiplier (default: 6.0)", ref modData.gunTechMultUltratech, ref gunTechMultUltratechBuffer);
+
+                        string gunTechMultArchotechBuffer = modData.gunTechMultArchotech.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Archotech' ammo penetration multiplier (default: 8.0)", ref modData.gunTechMultArchotech, ref gunTechMultArchotechBuffer);
+
+                        list.Gap();
+
+                        string maximumWeaponMassBuffer = modData.maximumWeaponMass.ToString();
+                        list.TextFieldNumericLabeled("Maximum weapon mass (default 20.0)", ref modData.maximumWeaponMass, ref maximumWeaponMassBuffer);
+                    }
+                    if (weaponTab == APCEConstants.BalanceWeaponTabs.Melee)
+                    {
+                        list.Gap();
+                        Text.Font = GameFont.Medium;
+                        list.Label("Weapon tool (melee attacks) settings");
+                        Text.Font = GameFont.Small;
+                        string weaponToolPowerMultBuffer = modData.weaponToolPowerMult.ToString();
+                        list.TextFieldNumericLabeled("Weapon tool power (damage) multiplier (default: 1)", ref modData.weaponToolPowerMult, ref weaponToolPowerMultBuffer);
+
+                        string weaponToolSharpPenetrationBuffer = modData.weaponToolSharpPenetration.ToString();
+                        list.TextFieldNumericLabeled("Weapon tool sharp penetration multiplier (default: 1)", ref modData.weaponToolSharpPenetration, ref weaponToolSharpPenetrationBuffer);
+
+                        string weaponToolBluntPenetrationBuffer = modData.weaponToolBluntPenetration.ToString();
+                        list.TextFieldNumericLabeled("Weapon tool blunt penetration multiplier (default: 4)", ref modData.weaponToolBluntPenetration, ref weaponToolBluntPenetrationBuffer);
+
+                        list.Gap();
+
+                        string weaponToolTechMultAnimalBuffer = modData.weaponToolTechMultAnimal.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Animal' tool penetration multiplier (default: 1.0)", ref modData.weaponToolTechMultAnimal, ref weaponToolTechMultAnimalBuffer);
+
+                        string weaponToolTechMultNeolithicBuffer = modData.weaponToolTechMultNeolithic.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Neolithic' tool penetration multiplier (default: 1.0)", ref modData.weaponToolTechMultNeolithic, ref weaponToolTechMultNeolithicBuffer);
+
+                        string weaponToolTechMultMedievalBuffer = modData.weaponToolTechMultMedieval.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Medieval' tool penetration multiplier (default: 1.0)", ref modData.weaponToolTechMultMedieval, ref weaponToolTechMultMedievalBuffer);
+
+                        string weaponToolTechMultIndustrialBuffer = modData.weaponToolTechMultIndustrial.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Industrial' tool penetration multiplier (default: 2.0)", ref modData.weaponToolTechMultIndustrial, ref weaponToolTechMultIndustrialBuffer);
+
+                        string weaponToolTechMultSpacerBuffer = modData.weaponToolTechMultSpacer.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Spacer' tool penetration multiplier (default: 3.0)", ref modData.weaponToolTechMultSpacer, ref weaponToolTechMultSpacerBuffer);
+
+                        string weaponToolTechMultUltratechBuffer = modData.weaponToolTechMultUltratech.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Ultratech' tool penetration multiplier (default: 4.0)", ref modData.weaponToolTechMultUltratech, ref weaponToolTechMultUltratechBuffer);
+
+                        string weaponToolTechMultArchotechBuffer = modData.weaponToolTechMultArchotech.ToString();
+                        list.TextFieldNumericLabeled("Tech level 'Archotech' tool penetration multiplier (default: 6.0)", ref modData.weaponToolTechMultArchotech, ref weaponToolTechMultArchotechBuffer);
+                    }
+                }
+                if (balanceTab == APCEConstants.BalanceTabs.Pawns)
+                {
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Pawn armor settings");
+                    Text.Font = GameFont.Small;
+
+                    string pawnArmorSharpMultBuffer = modData.pawnArmorSharpMult.ToString();
+                    list.TextFieldNumericLabeled("Pawn sharp armor multiplier (default: 10)", ref modData.pawnArmorSharpMult, ref pawnArmorSharpMultBuffer);
+
+                    string pawnArmorBluntMultBuffer = modData.pawnArmorBluntMult.ToString();
+                    list.TextFieldNumericLabeled("Pawn blunt armor multiplier (default: 40)", ref modData.pawnArmorBluntMult, ref pawnArmorBluntMultBuffer);
+
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Pawn tool (melee attack) settings");
+                    Text.Font = GameFont.Small;
+
+                    string pawnToolPowerMultBuffer = modData.pawnToolPowerMult.ToString();
+                    list.TextFieldNumericLabeled("Pawn tool power (damage) multiplier (default: 1)", ref modData.pawnToolPowerMult, ref pawnToolPowerMultBuffer);
+
+                    string pawnToolSharpPenetrationBuffer = modData.pawnToolSharpPenetration.ToString();
+                    list.TextFieldNumericLabeled("Pawn tool sharp penetration multiplier (default: 10)", ref modData.pawnToolSharpPenetration, ref pawnToolSharpPenetrationBuffer);
+
+                    string pawnToolBluntPenetrationBuffer = modData.pawnToolBluntPenetration.ToString();
+                    list.TextFieldNumericLabeled("Pawn tool blunt penetration multiplier (default: 40)", ref modData.pawnToolBluntPenetration, ref pawnToolBluntPenetrationBuffer);
+
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Pawn Kind settings");
+                    Text.Font = GameFont.Small;
+
+                    list.CheckboxLabeled("Patch PawnKinds with weapons to be allowed backpacks: ", ref modData.patchBackpacks);
+
+                    string pawnKindMinMagsBuffer = modData.pawnKindMinMags.ToString();
+                    list.TextFieldNumericLabeled("Pawn kind minimum ammo magazines when spawned (default: 2)", ref modData.pawnKindMinMags, ref pawnKindMinMagsBuffer);
+
+                    string pawnKindMaxMagsBuffer = modData.pawnKindMaxMags.ToString();
+                    list.TextFieldNumericLabeled("Pawn kind maximum ammo magazines when spawned (default: 5)", ref modData.pawnKindMaxMags, ref pawnKindMaxMagsBuffer);
+
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Hediff settings");
+                    Text.Font = GameFont.Small;
+
+                    string hediffSharpMultBuffer = modData.hediffSharpMult.ToString();
+                    list.TextFieldNumericLabeled("Hediff sharp armor multiplier (default: 10)", ref modData.hediffSharpMult, ref hediffSharpMultBuffer);
+
+                    string hediffBluntMultBuffer = modData.hediffBluntMult.ToString();
+                    list.TextFieldNumericLabeled("Hediff blunt armor multiplier (default: 40)", ref modData.hediffBluntMult, ref hediffBluntMultBuffer);
+
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Gene settings");
+                    Text.Font = GameFont.Small;
+
+                    string geneArmorSharpMultBuffer = modData.geneArmorSharpMult.ToString();
+                    list.TextFieldNumericLabeled("Gene sharp armor multiplier (default: 10)", ref modData.geneArmorSharpMult, ref geneArmorSharpMultBuffer);
+
+                    string geneArmorBluntMultBuffer = modData.geneArmorBluntMult.ToString();
+                    list.TextFieldNumericLabeled("Gene blunt armor multiplier (default: 10)", ref modData.geneArmorBluntMult, ref geneArmorBluntMultBuffer);
+                }
+
+                if (balanceTab == APCEConstants.BalanceTabs.Other)
+                {
+                    list.Gap();
+                    Text.Font = GameFont.Medium;
+                    list.Label("Vehicle settings");
+                    Text.Font = GameFont.Small;
+
+                    list.Gap();
+
+                    string vehicleSharpMultBuffer = modData.vehicleSharpMult.ToString();
+                    list.TextFieldNumericLabeled("Vehicle sharp armor multiplier (default: 15)", ref modData.vehicleSharpMult, ref vehicleSharpMultBuffer);
+
+                    string vehicleBluntMultBuffer = modData.vehicleBluntMult.ToString();
+                    list.TextFieldNumericLabeled("Vehicle blunt armor multiplier (default: 15)", ref modData.vehicleBluntMult, ref vehicleBluntMultBuffer);
+
+                    string vehicleHealthMultBuffer = modData.vehicleHealthMult.ToString();
+                    list.TextFieldNumericLabeled("Vehicle health multiplier (default: 3.0)", ref modData.vehicleHealthMult, ref vehicleHealthMultBuffer);
+                }
             }
-            else if (APCESettings.modSettingsTabs == APCEConstants.ModSettingsTabs.Deflist)
+            else if (categoryTab == APCEConstants.ModSettingsTabs.Deflist)
             {
 
             }

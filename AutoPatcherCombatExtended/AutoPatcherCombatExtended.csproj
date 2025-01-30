@@ -58,6 +58,7 @@
   <ItemGroup>
     <None Include="APCE Item1" />
     <Compile Include="Source\APCELogUtility.cs" />
+    <Compile Include="Source\APCESaveLoad.cs" />
     <Compile Include="Source\CompatibilityPatches.cs" />
     <Compile Include="Source\APCEHarmonyPatches.cs" />
     <Compile Include="Source\DataHolders\DefDataHolder.cs" />

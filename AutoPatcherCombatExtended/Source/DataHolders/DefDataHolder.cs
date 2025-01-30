@@ -11,7 +11,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public abstract class DefDataHolder : IExposable
     {
-        public bool isCustomized = false; //this will be changed by the customization window if the user changes any values
+        public bool isCustomized = true; //TODO revert //this will be changed by the customization window if the user changes any values //TODO add that logic //TODO also register the DDH in the MDH's customizedDefDict. Unregister if reset to default.
         public bool defGeneratedAlready = false;
         public string defName;
         public string parentModPackageId; //todo I don't seem to use this for anything?
@@ -221,7 +221,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void RegisterSelfInDict()
         {
-            if (!APCESettings.modsAlreadyPatched.TryAdd(def, this))
+            if (!APCESettings.defDataDict.TryAdd(def, this))
             {
                 APCESettings.defDataDict[def] = this;
             }

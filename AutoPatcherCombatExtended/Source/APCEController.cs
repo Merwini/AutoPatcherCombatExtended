@@ -18,23 +18,27 @@ namespace nuff.AutoPatcherCombatExtended
             APCESettings.activeMods = GetActiveModsList();
             APCESettings.modsToPatch = RebuildModsToPatch();
             InjectedDefHasher.PrepareReflection();
+
             CompatibilityPatches compat = new CompatibilityPatches();
             compat.PatchMods();
+
             APCEHarmonyPatches harmony = new APCEHarmonyPatches();
 
-            //defaults should be rebuilt on startup
-            ModDataHolder apceDefaults = new ModDataHolder();
-            apceDefaults.packageId = "nuff.apcedefaults";
-            APCESettings.modDataDict.Add(apceDefaults.packageId, apceDefaults);
+            APCESaveLoad saveLoad = new APCESaveLoad();
+            APCESaveLoad.LoadDataHolders();
+
+            //if a nuff.ceautopatcher ModDataHolder wasn't loaded, make one. essential for autocalcs and changing settings
+            if (!APCESettings.modDataDict.ContainsKey("nuff.ceautopatcher"))
+            {
+                ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId == ("nuff.ceautopatcher"));
+                ModDataHolder apceDefaults = new ModDataHolder(thisMod);
+            }
+
             Log.Message("APCE Controller constructed");
         }
 
         public static void APCEPatchController()
         {
-            //if (APCESettings.printLogs)
-            //{
-            //    APCEPatchLogger.stopwatchMaster.Start();
-            //}
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
                 //todo might not need to check, since this is currently the first attempt to patch mods 
@@ -44,17 +48,9 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
 
-            //DEBUG
-            //Log.Warning("defDataDict has number of entries: " + APCESettings.defDataDict.Count.ToString());
-
             foreach (var holder in APCESettings.modDataDict)
             {
                 holder.Value.Patch();
-                //if (APCESettings.printLogs)
-                //{
-                //    APCEPatchLogger.stopwatchMaster.Stop();
-                //    Log.Message($"Auto-patcher for Combat Extended finished in {APCEPatchLogger.stopwatchMaster.ElapsedMilliseconds / 1000f} seconds.");
-                //}
             }
 
             AmmoInjector.Inject();
@@ -64,12 +60,10 @@ namespace nuff.AutoPatcherCombatExtended
         public static void GenerateDataHoldersForMod(ModContentPack mod)
         {
             APCEPatchLogger log = new APCEPatchLogger(mod);
-            //log.BeginPatch(); //TODO redo logging
             foreach (Def def in mod.AllDefs)
             {
                 TryGenerateDataHolderForDef(def);
             }
-            //log.EndPatch();
         }
 
         public static bool TryGenerateDataHolderForDef(Def def)
@@ -420,7 +414,6 @@ namespace nuff.AutoPatcherCombatExtended
                     APCESettings.modsByPackageId.RemoveAt(i);
                 }
             }
-            APCESettings.thisModContent = modDict.TryGetValue("nuff.ceautopatcher");
 
             return modsToPatch;
         }
