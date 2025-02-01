@@ -135,7 +135,6 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (Def def in mod.AllDefs)
             {
-                Log.Warning("def null" + (def == null).ToString());
                 APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
                 if (need != APCEConstants.NeedsPatch.ignore)
                 {

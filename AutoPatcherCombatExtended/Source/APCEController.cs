@@ -381,7 +381,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (needsPatched != APCEConstants.NeedsPatch.ignore)
             {
-                APCESettings.patchableDefs.Add(def, needsPatched);
+                APCESettings.patchableDefs[def] = needsPatched;
             }
             return needsPatched;
         }

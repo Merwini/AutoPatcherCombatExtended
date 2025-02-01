@@ -922,9 +922,16 @@ namespace nuff.AutoPatcherCombatExtended
 
                 SetProjectileDefaults(newProj, original_projectile);
 
-                InjectedDefHasher.GiveShortHashToDef(newProj, typeof(ThingDef));
-                DefGenerator.AddImpliedDef<ThingDef>(newProj);
-
+                ThingDef td = DefDatabase<ThingDef>.GetNamedSilentFail(newProj.defName);
+                if (td != null)
+                {
+                    td = newProj;
+                }
+                else
+                {
+                    InjectedDefHasher.GiveShortHashToDef(newProj, typeof(ThingDef));
+                    DefGenerator.AddImpliedDef<ThingDef>(newProj);
+                }
                 modified_projectiles.Add(newProj);
             }
         }
@@ -986,9 +993,17 @@ namespace nuff.AutoPatcherCombatExtended
                 label = modified_ammoSetLabel,
                 ammoTypes = modified_ammoLinks
             };
-            InjectedDefHasher.GiveShortHashToDef(ammoSet, typeof(AmmoSetDef));
-            DefGenerator.AddImpliedDef<AmmoSetDef>(ammoSet);
 
+            AmmoSetDef asd = DefDatabase<AmmoSetDef>.GetNamedSilentFail(ammoSet.defName);
+            if (asd != null)
+            {
+                asd = ammoSet;
+            }
+            else
+            {
+                InjectedDefHasher.GiveShortHashToDef(ammoSet, typeof(AmmoSetDef));
+                DefGenerator.AddImpliedDef<AmmoSetDef>(ammoSet);
+            }
             modified_ammoSetDef = ammoSet;
         }
 
