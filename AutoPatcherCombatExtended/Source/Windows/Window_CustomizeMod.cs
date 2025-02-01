@@ -17,6 +17,15 @@ namespace nuff.AutoPatcherCombatExtended
         APCEConstants.BalanceTabs balanceTab = APCEConstants.BalanceTabs.Apparel;
         APCEConstants.BalanceWeaponTabs weaponTab = APCEConstants.BalanceWeaponTabs.Melee;
 
+        string searchTerm = "";
+        internal Vector2 leftScrollPosition = new Vector2();
+        internal Vector2 rightScrollPosition = new Vector2();
+        internal Def leftSelectedObject = null;
+        internal Def rightSelectedObject = null;
+
+        internal ModContentPack leftSelectedObject2 = null;
+        internal ModContentPack rightSelectedObject2 = null;
+
         public Window_CustomizeMod(ModContentPack mod)
         {
             this.mod = mod;
@@ -25,6 +34,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 modData = new ModDataHolder(mod);
             }
+            modData.isCustomized = true;
         }
 
         public override Vector2 InitialSize
@@ -41,10 +51,7 @@ namespace nuff.AutoPatcherCombatExtended
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(0f, 0f, inRect.width - 150f - 17f, 35f), mod.Name);
-            list.Gap(45);
             Text.Font = GameFont.Small;
-
-            list.Label("COMING SOON! (hit escape to exit I haven't made a button yet)");
 
             list.EnumSelector(ref categoryTab, "", "", "select settings page");
 
@@ -261,7 +268,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else if (categoryTab == APCEConstants.ModSettingsTabs.Deflist)
             {
+                Rect listRect = new Rect(0, 0, inRect.width, inRect.height * 0.75f);
+                //list.ListControlMods(listRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref searchTerm, ref leftScrollPosition, ref rightScrollPosition,
+                //        ref leftSelectedObject2, ref rightSelectedObject2, "Mods to patch", rectPCT: 1f);
+                list.ListControlDefs(listRect, ref searchTerm, ref leftScrollPosition, ref rightScrollPosition,
+                    ref leftSelectedObject, ref rightSelectedObject, "Defs to patch", rectPCT: 1f, modData);
 
+                //Rect customizeButtonRect = new Rect(inRect.xMax + 10f, inRect.yMax - 40f, 100f, 30f);
+                // Customize Mod button
+                if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).TopPart(0.5f).RightPart(0.5f).LeftPart(0.3f), "Customize Def"))
+                {
+                    if (rightSelectedObject != null)
+                    {
+                        Window_CustomizeDef window = new Window_CustomizeDef(rightSelectedObject);
+                        Find.WindowStack.Add(window);
+                    }
+                }
             }
 
             list.End();
@@ -271,6 +293,12 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.PreOpen();
             modData = APCESettings.modDataDict.TryGetValue(mod.PackageId);
+        }
+
+        public override void PreClose()
+        {
+            base.PreClose();
+            APCESaveLoad.SaveDataHolders();
         }
     }
 }

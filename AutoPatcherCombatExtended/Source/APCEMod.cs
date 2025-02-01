@@ -369,8 +369,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void WriteSettings()
         {
-            //DEBUG
-            base.WriteSettings();
             APCEController.RemoveListDuplicates(APCESettings.modsByPackageId);
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
@@ -386,7 +384,7 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
             }
-            APCESaveLoad.SaveDataHolders();
+            base.WriteSettings();
         }
 
         public static bool RegisterDefTypeFolder(string folderName, Type defType)

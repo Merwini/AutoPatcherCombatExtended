@@ -39,8 +39,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static bool LoadDataHolders()
         {
-            Log.Message("Calling LoadDataHolders");
-
             HashSet<string> activeModPackageIds = ModsConfig.ActiveModsInLoadOrder
                 .Select(mod => mod.PackageId)
                 .ToHashSet();
@@ -73,20 +71,29 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal static void LoadModDataHolder(string modDataFolder)
         {
-            Log.Message("Calling LoadModDataHolder");
             string[] mdha = Directory.GetFiles(modDataFolder, "ModDataHolder.xml");
             if (mdha.Length != 0)
             {
-                ModDataHolder mdh = new ModDataHolder();
-                Scribe.loader.InitLoading(mdha[0]);
-                mdh.ExposeData();
+                try
+                {
+                    ModDataHolder mdh = new ModDataHolder();
+                    Scribe.loader.InitLoading(mdha[0]);
+                    mdh.ExposeData();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    Scribe.loader.FinalizeLoading();
+                }
             }
         }
 
         //TODO rewrite this. No more individual folders for DDH types. Will instead store the type as a node and read it
         internal static bool LoadDefDataHolders(string modDataFolder)
         {
-            Log.Message("Calling LoadDefDataHolders");
             foreach (var entry in AutoPatcherCombatExtended.defFolderTypesDictionary)
             {
                 LoadDefDataHolderFolder(Path.Combine(modDataFolder, entry.Key), entry.Value);
@@ -126,8 +133,19 @@ namespace nuff.AutoPatcherCombatExtended
             Object obj = Activator.CreateInstance(defType);
             if (obj is DefDataHolder defDataHolder)
             {
-                Scribe.loader.InitLoading(filePath);
-                defDataHolder.ExposeData();
+                try
+                {
+                    Scribe.loader.InitLoading(filePath);
+                    defDataHolder.ExposeData();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    Scribe.loader.FinalizeLoading();
+                }
             }
         }
 
@@ -171,7 +189,6 @@ namespace nuff.AutoPatcherCombatExtended
                output: string for the path of the mod's folder. Null string if folder failed to make */
             string MakeFolderForMod(ModDataHolder mdh)
             {
-                Log.Message("Calling MakeFolderForMod");
                 return MakeFolders();
 
                 string MakeFolders()
@@ -210,7 +227,6 @@ namespace nuff.AutoPatcherCombatExtended
                output: bool indicating success or failure */
             bool SaveModDataHolder(ModDataHolder mdh, string folderPath)
             {
-                Log.Message("Calling SaveModDataHolder");
                 string filePath = Path.Combine(folderPath, "ModDataHolder.xml");
                 try
                 {
@@ -233,7 +249,6 @@ namespace nuff.AutoPatcherCombatExtended
                output: list of defs with DataHolders that failed to save */
             List<Def> SaveDefDataHolders(ModDataHolder mdh, string folderPath)
             {
-                Log.Message("Calling SaveDefDataHolders");
                 List<Def> failedDefs = new List<Def>();
                 string defFolderPath = Path.Combine(folderPath, "DefDataHolders");
 

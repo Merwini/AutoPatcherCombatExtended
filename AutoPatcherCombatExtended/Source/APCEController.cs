@@ -171,7 +171,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else
             {
-                return APCEConstants.NeedsPatch.unsure;
+                return APCEConstants.NeedsPatch.ignore;
             }
         }
 
@@ -186,7 +186,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             //TODO remove?
             //Log.Warning($"Unable to check if def {def.defName} from mod {def.modContentPack.Name} needs patching. Type {def.GetType()} is unrecognized.");
-            return APCEConstants.NeedsPatch.unsure;
+            return APCEConstants.NeedsPatch.ignore;
         }
 
         public static void FindModsNeedingPatched()
@@ -230,7 +230,7 @@ namespace nuff.AutoPatcherCombatExtended
             List<Def> defsNeedingPatched = new List<Def>();
             List<Def> defsNotNeedingPatched = new List<Def>();
 
-            if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
+            if (mod.AllDefs == null || mod.AllDefs.Count() == 0 || APCESettings.modDataDict.ContainsKey(mod.PackageId))
                 return false;
 
             //iteration does not break when a 'no' is found, so that it can still checks partially-patched mods
@@ -269,7 +269,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static APCEConstants.NeedsPatch CheckIfDefNeedsPatched(Def def)
         {
-            APCEConstants.NeedsPatch needsPatched = APCEConstants.NeedsPatch.unsure;
+            APCEConstants.NeedsPatch needsPatched = APCEConstants.NeedsPatch.ignore;
             try
             {
                 if (DefIsDelegatedType(def))
@@ -379,6 +379,10 @@ namespace nuff.AutoPatcherCombatExtended
                 Log.Warning($"Exception when checking if def {def.defName} from mod {def.modContentPack.Name} needs patching. Exception is: \n" + ex.ToString());
             }
 
+            if (needsPatched != APCEConstants.NeedsPatch.ignore)
+            {
+                APCESettings.patchableDefs.Add(def, needsPatched);
+            }
             return needsPatched;
         }
 

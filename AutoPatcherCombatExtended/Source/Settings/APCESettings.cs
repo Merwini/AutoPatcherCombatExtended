@@ -16,8 +16,6 @@ namespace nuff.AutoPatcherCombatExtended
         public static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
         public static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;
 
-        public static APCEConstants.ModSettingsTabs modSettingsTabs = APCEConstants.ModSettingsTabs.General_Settings;
-
         //Modlist Settings
         public static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
         public static List<ModContentPack> modsToPatch = new List<ModContentPack>(); //will also not be saved, but instead a saved list of PackageIDs will be used to rebuild this list at startup
@@ -37,8 +35,14 @@ namespace nuff.AutoPatcherCombatExtended
         public ModContentPack leftSelectedObject = null;
         public ModContentPack rightSelectedObject = null;
 
-        public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded. String is the packageID of the mod
-        public static Dictionary<Def, DefDataHolder> defDataDict = new Dictionary<Def, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+        //when mods are being checked for whether they need patching, defs that can be patched e.g. weapons, armor, are added to this to prevent having to iterate through them a second time later
+        public static Dictionary<Def, APCEConstants.NeedsPatch> patchableDefs = new Dictionary<Def, APCEConstants.NeedsPatch>();
+
+        //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded. String is the packageID of the mod
+        public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>();
+
+        //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+        public static Dictionary<Def, DefDataHolder> defDataDict = new Dictionary<Def, DefDataHolder>(); 
 
         public static Dictionary<Type, Func<Def, APCEConstants.NeedsPatch>> typeHandlerDictionaryCheck = new Dictionary<Type, Func<Def, APCEConstants.NeedsPatch>>();
         public static Dictionary<Type, Delegate> typeHandlerDictionaryGenerate = new Dictionary<Type, Delegate>();

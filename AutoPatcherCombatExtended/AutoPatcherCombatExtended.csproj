@@ -79,6 +79,7 @@
     <Compile Include="Source\APCEController.cs" />
     <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />
     <Compile Include="Source\Comps\CompReplaceMe.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDef.cs" />
     <Compile Include="TrashFolder\GenerateAmmo.cs" />
     <Compile Include="Source\InjectedDefHasher.cs" />
     <Compile Include="Source\Patchers\PatchGrenade.cs" />

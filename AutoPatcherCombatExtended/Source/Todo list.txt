@@ -1,4 +1,11 @@
-﻿	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list
+﻿TODO skip CheckIfModNeedsPatched in APCECOntroller if mod is already in alreadyPatched (was loaded in SaveLoad)
+
+
+
+
+
+
+	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list
 TODO buttons to reset numbers to defaults
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases
 TODO verbs on apparel

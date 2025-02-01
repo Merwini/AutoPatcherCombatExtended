@@ -62,7 +62,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             yes,
             no,
-            unsure
+            ignore
         }
 
         public enum VanillaStatBases //StatModifiers used by vanilla and not CE

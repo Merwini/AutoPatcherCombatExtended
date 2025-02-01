@@ -268,7 +268,7 @@ namespace nuff.AutoPatcherCombatExtended
 		}
 
 
-		public static void ListControlDefs(this Listing_Standard listingStandard, Rect inRect, ref List<Def> leftList, ref List<Def> rightList,
+		public static void ListControlDefs(this Listing_Standard listingStandard, Rect inRect,
 										ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition, ref Def leftSelectedObject, ref Def rightSelectedObject,
 										string columnLabel, float rectPCT, ModDataHolder modDataHolder)
 		{
@@ -286,15 +286,22 @@ namespace nuff.AutoPatcherCombatExtended
 
 			Rect leftRect = bottomRect.LeftHalf().RightPart(pct: 0.9f).LeftPart(pct: 0.9f);
 			GUI.BeginGroup(position: leftRect, style: new GUIStyle(other: GUI.skin.box));
-			List<Def> tempList2 = rightList;
-			List<Def> tempList = leftList.Where(predicate: def => def.label.ToLower().Contains(tempString.ToLower())
-																		&& !tempList2.Contains(def)).ToList();
+			List<Def> tempLeftList = modDataHolder.defsToPatch
+				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.no && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
+				.Select(kvp => kvp.Key)
+				.OrderBy(def => def.label)
+				.ToList();
+			List<Def> tempRightList = modDataHolder.defsToPatch
+				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.yes && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
+				.Select(kvp => kvp.Key)
+				.OrderBy(def => def.label)
+				.ToList();
 			float num = 3f;
 			Widgets.BeginScrollView(outRect: leftRect.AtZero(), scrollPosition: ref leftScrollPosition,
-									viewRect: new Rect(x: 0f, y: 0f, width: leftRect.width / 10 * 9, height: tempList.Count * 32f));
-			if (!tempList.NullOrEmpty())
+									viewRect: new Rect(x: 0f, y: 0f, width: leftRect.width / 10 * 9, height: tempRightList.Count * 32f));
+			if (!tempLeftList.NullOrEmpty())
 			{
-				foreach (Def def in tempList)
+				foreach (Def def in tempLeftList)
 				{
 					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
 					Widgets.DrawHighlightIfMouseover(rect: rowRect);
@@ -320,10 +327,10 @@ namespace nuff.AutoPatcherCombatExtended
 			GUI.BeginGroup(position: rightRect, style: GUI.skin.box);
 			num = 6f;
 			Widgets.BeginScrollView(outRect: rightRect.AtZero(), scrollPosition: ref rightScrollPosition,
-									viewRect: new Rect(x: 0f, y: 0f, width: rightRect.width / 10 * 9, height: rightList.Count * 32f));
-			if (!rightList.NullOrEmpty())
+									viewRect: new Rect(x: 0f, y: 0f, width: rightRect.width / 10 * 9, height: tempRightList.Count * 32f));
+			if (!tempRightList.NullOrEmpty())
 			{
-				foreach (Def def in rightList.Where(predicate: def => (def.label.Contains(value: tempString))))
+				foreach (Def def in tempRightList)
 				{
 					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
 					Widgets.DrawHighlightIfMouseover(rect: rowRect);
@@ -347,9 +354,9 @@ namespace nuff.AutoPatcherCombatExtended
 			if (Widgets.ButtonImage(butRect: bottomRect.BottomPart(pct: 0.6f).TopPart(pct: 0.1f).RightPart(pct: 0.525f).LeftPart(pct: 0.1f), tex: TexUI.ArrowTexRight) &&
 				leftSelectedObject != null)
 			{
-				rightList.Add(item: leftSelectedObject);
+				modDataHolder.defsToPatch[leftSelectedObject] = APCEConstants.NeedsPatch.yes;
 
-				rightList = rightList.OrderBy(keySelector: def => def.label).ToList();
+				//rightList = rightList.OrderBy(keySelector: def => def.label).ToList();
 				rightSelectedObject = leftSelectedObject;
 				leftSelectedObject = null;
 			}
@@ -357,7 +364,8 @@ namespace nuff.AutoPatcherCombatExtended
 			if (Widgets.ButtonImage(butRect: bottomRect.BottomPart(pct: 0.4f).TopPart(pct: 0.15f).RightPart(pct: 0.525f).LeftPart(pct: 0.1f), tex: TexUI.ArrowTexLeft) &&
 				rightSelectedObject != null)
 			{
-				rightList.Remove(item: rightSelectedObject);
+				modDataHolder.defsToPatch[rightSelectedObject] = APCEConstants.NeedsPatch.no;
+				//rightList.Remove(item: rightSelectedObject);
 				leftSelectedObject = rightSelectedObject;
 				rightSelectedObject = null;
 			}

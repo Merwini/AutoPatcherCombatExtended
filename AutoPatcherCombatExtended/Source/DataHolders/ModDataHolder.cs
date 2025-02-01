@@ -14,12 +14,12 @@ namespace nuff.AutoPatcherCombatExtended
 
         public string packageId;
         public bool isCustomized = true; //TODO revert to false
-        //TODO methods to change values instead of modifying them directly
-        //need this to flip isCustomized to true
+        //TODO methods to change values instead of modifying them directly, need this to flip isCustomized to true
         //Also TODO write a method that resets all values to match those in apceDefaults. Call this before running autocalcs or patches. This is so that, if the player changes the defaults, they don't have to restart to get those changes to permeate down to the ModDataHolders
 
-        //Dictionary uses strings as keys so it doesn't break as hard if defs are renamed or removed
-        public Dictionary<string, APCEConstants.NeedsPatch> defsToPatch;
+        public Dictionary<Def, APCEConstants.NeedsPatch> defsToPatch = new Dictionary<Def, APCEConstants.NeedsPatch>();
+        //for saving and loading so def names can be validated
+        public List<string> defsToPatchNames = new List<string>();
 
         //
         public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
@@ -98,7 +98,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public ModDataHolder()
         {
-            //for generating nuff.apcedefaults
+            //for being constructed by SaveLoad
         }
 
         public ModDataHolder(ModContentPack mcp)
@@ -106,6 +106,7 @@ namespace nuff.AutoPatcherCombatExtended
             this.mod = mcp;
             this.packageId = mcp.PackageId;
             RegisterSelfInDict();
+            SelectDefsToPatch();
             GenerateDefDataHolders();
         }
 
@@ -114,14 +115,55 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO reset values to those of nuff.apcedefaults. Maybe just construct a new one?
         }
 
+        public void SelectDefsToPatch()
+        {
+            foreach (Def def in mod.AllDefs)
+            {
+                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                if (need == APCEConstants.NeedsPatch.yes)
+                {
+                    defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
+                }
+                else
+                {
+                    defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
+                }
+            }
+        }
+
+        public void SelectDefsToPatch(List<string> list)
+        {
+            Log.Warning("mod null" + (mod == null).ToString());
+            Log.Warning("defsToPatch null" + (defsToPatch == null).ToString());
+            Log.Warning("defsToPatchNames null" + (defsToPatchNames == null).ToString());
+            foreach (Def def in mod.AllDefs)
+            {
+                Log.Warning("def null" + (def == null).ToString());
+                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                if (need != APCEConstants.NeedsPatch.ignore)
+                {
+                    if (defsToPatchNames.Contains(def.defName))
+                    {
+                        defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
+                    }
+                    else
+                    {
+                        defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
+                    }
+                }
+            }
+        }
+
         public int GenerateDefDataHolders()
         {
             int holderCount = 0;
-            foreach (Def def in mod.AllDefs)
+            foreach (var entry in defsToPatch)
             {
-                if (APCEController.TryGenerateDataHolderForDef(def))
+                if (APCEController.TryGenerateDataHolderForDef(entry.Key))
                 {
                     holderCount++;
+                    //This is probably less correct, but way easier than passing the DefDataHolder back up through multiple methods
+                    defDict.Add(entry.Key, APCESettings.defDataDict.TryGetValue(entry.Key));
                 }
             }
             return holderCount;
@@ -159,8 +201,22 @@ namespace nuff.AutoPatcherCombatExtended
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
+                //turn the defsToPatch dictionary into a list of strings
+                if (Scribe.mode == LoadSaveMode.Saving)
+                {
+                    defsToPatchNames = new List<string>();
+                    foreach (var entry in defsToPatch)
+                    {
+                        if (entry.Value == APCEConstants.NeedsPatch.yes)
+                        {
+                            defsToPatchNames.Add(entry.key.defName);
+                        }
+                    }
+                }
+
                 Scribe_Values.Look(ref packageId, "packageId");
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
+                Scribe_Collections.Look(ref defsToPatchNames, "defsToPatchNames");
 
                 //toggles
                 Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
@@ -235,6 +291,13 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 APCESettings.modDataDict.Add(packageId, this);
                 mod = LoadedModManager.RunningMods.First(m => m.PackageId == packageId);
+
+                //turn the list of defName strings back into a dictionary
+                if (defsToPatchNames == null)
+                {
+                    defsToPatchNames = new List<string>();
+                }
+                SelectDefsToPatch(defsToPatchNames);
             }
         }
 
