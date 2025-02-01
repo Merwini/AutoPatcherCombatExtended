@@ -133,9 +133,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void SelectDefsToPatch(List<string> list)
         {
-            Log.Warning("mod null" + (mod == null).ToString());
-            Log.Warning("defsToPatch null" + (defsToPatch == null).ToString());
-            Log.Warning("defsToPatchNames null" + (defsToPatchNames == null).ToString());
             foreach (Def def in mod.AllDefs)
             {
                 Log.Warning("def null" + (def == null).ToString());
