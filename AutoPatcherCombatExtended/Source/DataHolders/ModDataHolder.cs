@@ -20,6 +20,7 @@ namespace nuff.AutoPatcherCombatExtended
         public Dictionary<Def, APCEConstants.NeedsPatch> defsToPatch = new Dictionary<Def, APCEConstants.NeedsPatch>();
         //for saving and loading so def names can be validated
         public List<string> defsToPatchNames = new List<string>();
+        public List<string> defsToPatchTypes = new List<string>();
 
         //
         public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
@@ -128,25 +129,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
                 }
-            }
-        }
-
-        public void SelectDefsToPatch(List<string> list)
-        {
-            foreach (Def def in mod.AllDefs)
-            {
-                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
-                if (need != APCEConstants.NeedsPatch.ignore)
-                {
-                    if (defsToPatchNames.Contains(def.defName))
-                    {
-                        defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
-                    }
-                    else
-                    {
-                        defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
-                    }
-                }
+                Log.Warning($"{def.defName} selected to patch: {need.ToString()}");
             }
         }
 
@@ -191,6 +174,60 @@ namespace nuff.AutoPatcherCombatExtended
             return true;
         }
 
+        public void RebuildDefsToPatchDict(List<string> namesList, List<string> typesList)
+        {
+            if (namesList.NullOrEmpty() || typesList.NullOrEmpty())
+            {
+                return;
+            }
+
+            if (namesList.Count != typesList.Count)
+            {
+                Log.Warning("Error in loading list of defs to patch, names list and types list are not the same length");
+                return;
+            }
+
+            for (int i = 0; i < namesList.Count; i++)
+            {
+                Type defType = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .FirstOrDefault(t => t.FullName == typesList[i]);
+                if (defType == null || !typeof(Def).IsAssignableFrom(defType))
+                {
+                    Log.Warning($"Skipping invalid or missing Def with name {namesList[i]} and type {defType}");
+                    continue;
+                }
+
+                var method = typeof(DefDatabase<>).MakeGenericType(defType).GetMethod("GetNamedSilentFail", new Type[] { typeof(string) });
+                if (method != null)
+                {
+                    Def foundDef = method.Invoke(null, new object[] { namesList[i] }) as Def;
+                    if (foundDef != null)
+                    {
+                        defsToPatch[foundDef] = APCEConstants.NeedsPatch.yes;
+                    }
+                    else
+                    {
+                        Log.Warning($"Def not found: {namesList[i]} (Type: {namesList[i]})");
+                    }
+                }
+                else
+                {
+                    Log.Warning($"Could not find GetNamedSilentFail for type: {namesList[i]}");
+                }
+            }
+
+            //populate the rest of the dictionary for defs NOT to patch
+            foreach (Def def in mod.AllDefs)
+            {
+                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                if (need != APCEConstants.NeedsPatch.ignore && !defsToPatch.ContainsKey(def))
+                {
+                    defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
+                }
+            }
+        }
+
         public void ExposeData()
         {
             //only bother to save data if the user has changed values. If not, just recalculate during patching
@@ -201,11 +238,13 @@ namespace nuff.AutoPatcherCombatExtended
                 if (Scribe.mode == LoadSaveMode.Saving)
                 {
                     defsToPatchNames = new List<string>();
+                    defsToPatchTypes = new List<string>();
                     foreach (var entry in defsToPatch)
                     {
                         if (entry.Value == APCEConstants.NeedsPatch.yes)
                         {
                             defsToPatchNames.Add(entry.key.defName);
+                            defsToPatchTypes.Add(entry.key.GetType().ToString());
                         }
                     }
                 }
@@ -213,6 +252,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref packageId, "packageId");
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
                 Scribe_Collections.Look(ref defsToPatchNames, "defsToPatchNames");
+                Scribe_Collections.Look(ref defsToPatchTypes, "defsToPatchTypes");
 
                 //toggles
                 Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
@@ -293,7 +333,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     defsToPatchNames = new List<string>();
                 }
-                SelectDefsToPatch(defsToPatchNames);
+                RebuildDefsToPatchDict(defsToPatchNames, defsToPatchTypes);
             }
         }
 

@@ -53,6 +53,7 @@ namespace nuff.AutoPatcherCombatExtended
             Widgets.Label(new Rect(0f, 0f, inRect.width - 150f - 17f, 35f), mod.Name);
             Text.Font = GameFont.Small;
 
+            list.Gap(45);
             list.EnumSelector(ref categoryTab, "", "", "select settings page");
 
             if (categoryTab == APCEConstants.ModSettingsTabs.General_Settings)
