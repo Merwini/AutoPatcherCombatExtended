@@ -287,12 +287,12 @@ namespace nuff.AutoPatcherCombatExtended
 			Rect leftRect = bottomRect.LeftHalf().RightPart(pct: 0.9f).LeftPart(pct: 0.9f);
 			GUI.BeginGroup(position: leftRect, style: new GUIStyle(other: GUI.skin.box));
 			List<Def> tempLeftList = modDataHolder.defsToPatch
-				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.no && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
+				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.no && kvp.Key.label != null && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
 				.Select(kvp => kvp.Key)
 				.OrderBy(def => def.label)
 				.ToList();
 			List<Def> tempRightList = modDataHolder.defsToPatch
-				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.yes && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
+				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.yes && kvp.Key.label != null && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
 				.Select(kvp => kvp.Key)
 				.OrderBy(def => def.label)
 				.ToList();
