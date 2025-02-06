@@ -49,7 +49,6 @@ namespace nuff.AutoPatcherCombatExtended
             parentModPackageId = def.modContentPack.PackageId;
             RegisterSelfInDicts();
             GetOriginalData();
-            AutoCalculate();
         }
 
 
