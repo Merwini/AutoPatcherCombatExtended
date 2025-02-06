@@ -1,5 +1,10 @@
-﻿TODO skip CheckIfModNeedsPatched in APCECOntroller if mod is already in alreadyPatched (was loaded in SaveLoad)
-TODO patches seem to not run on mods that were loaded instead of being autocalc'd
+﻿TODO figure out why Ranged Weapon patches aren't running
+TODO melee weapons getting duplicated tools when repatching
+TODO melee weapons negative tool armor penetration
+TODO Start writing CustomizeMod windows
+TODO test def customizing and save/load
+TODO fix mod suggest suggest window suggesting to remove mods that are already compatible because they loaded during SaveLoad
+
 
 
 	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list
