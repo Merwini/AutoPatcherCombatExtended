@@ -38,7 +38,7 @@ namespace nuff.AutoPatcherCombatExtended
             verbGiver = hediffDef.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
             if (verbGiver != null && verbGiver.tools != null)
             {
-                original_Tools = verbGiver.tools;
+                original_Tools = verbGiver.tools.ToList();
             }
 
             if (hediffDef.stages.NullOrEmpty())

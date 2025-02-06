@@ -51,7 +51,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void GetOriginalData()
         {
             pawn = def as ThingDef;
-            original_Tools = pawn.tools;
+            original_Tools = pawn.tools.ToList();
 
             original_ArmorRatingSharp = pawn.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
             original_ArmorRatingBlunt = pawn.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);

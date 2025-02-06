@@ -97,7 +97,7 @@ namespace nuff.AutoPatcherCombatExtended
                 weaponThingDef.weaponTags = new List<string>();
             }
 
-            original_Tools = weaponThingDef.tools;
+            original_Tools = weaponThingDef.tools.ToList();
             original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
             original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
             original_rangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
