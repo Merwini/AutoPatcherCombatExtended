@@ -158,13 +158,13 @@ namespace nuff.AutoPatcherCombatExtended
                 CalculateGrenade();
             }
         }
-        public override void PostLoad()
+        public override void PostPatch()
         {
             if (modified_AmmoSetDef == null && modified_AmmoSetDefString != null)
             {
                 modified_AmmoSetDef = DefDatabase<AmmoSetDef>.AllDefsListForReading.First(asd => asd.defName.Equals(modified_AmmoSetDefString));
             }
-            base.PostLoad();
+            base.PostPatch();
         }
 
         public override void PrePatch()

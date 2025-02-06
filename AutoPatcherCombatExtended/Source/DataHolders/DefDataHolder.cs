@@ -11,7 +11,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public abstract class DefDataHolder : IExposable
     {
-        public bool isCustomized = true; //TODO revert //this will be changed by the customization window if the user changes any values //TODO add that logic //TODO also register the DDH in the MDH's customizedDefDict. Unregister if reset to default.
+        public bool isCustomized = false; //this will be changed by the customization window if the user changes any values //TODO add that logic //TODO also register the DDH in the MDH's customizedDefDict. Unregister if reset to default.
         public bool defGeneratedAlready = false;
         public string defName;
         public string parentModPackageId; //todo I don't seem to use this for anything?
@@ -47,11 +47,11 @@ namespace nuff.AutoPatcherCombatExtended
             this.def = def;
             defName = def.defName;
             parentModPackageId = def.modContentPack.PackageId;
-            modData = DataHolderUtils.ReturnModDataOrDefault(def);
-            RegisterSelfInDict();
+            RegisterSelfInDicts();
             GetOriginalData();
             AutoCalculate();
         }
+
 
         public virtual void ExposeData()
         {
@@ -62,6 +62,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     StringifyTool();
                 }
+                Scribe_Defs.Look(ref def, "def");
                 Scribe_Values.Look(ref defName, "defName");
                 Scribe_Values.Look(ref parentModPackageId, "parentModPackageId");
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
@@ -76,33 +77,25 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Collections.Look(ref modified_ToolArmorPenetrationBlunts, "toolArmorPenetrationBlunts", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ToolPowers, "toolPowers", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ToolChanceFactors, "toolChanceFactors", LookMode.Value);
-                if (Scribe.mode == LoadSaveMode.LoadingVars)
-                {
-                    DestringifyTool();
-                }
             }
 
-            if (Scribe.mode == LoadSaveMode.LoadingVars
-                && defName != null)
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                def = DefDatabase<Def>.GetNamed(defName, false);
-                if (def != null) //TODO exception for AmmoSet, since they will not exist in DefDatabase until Patch is run
-                {
-                    GetOriginalData();
-                    RegisterSelfInDict();
-                }
+                DestringifyTool();
+                GetOriginalData();
+                RegisterSelfInDicts();
             }
         }
 
-        //used for things like resolving references after all DataHolders have been loaded
-        public virtual void PostLoad()
+
+        //will get relevant values from the def and fill the original_ fields
+        public abstract void GetOriginalData();
+
+        public virtual void WhenLoaded()
         {
             return;
         }
 
-        //will get relevant values from the def and fill the original_ fields
-        public abstract void GetOriginalData();
-        
         //will use modData and original_ fields to autocalculate modified_ fields
         public abstract void AutoCalculate();
 
@@ -111,6 +104,11 @@ namespace nuff.AutoPatcherCombatExtended
             return;
         }
 
+        //used for things like resolving references after all DataHolders have been loaded
+        public virtual void PostPatch()
+        {
+            return;
+        }
 
         //will use the modified_ fields to edit the def
         public abstract void Patch();
@@ -124,6 +122,7 @@ namespace nuff.AutoPatcherCombatExtended
         public virtual void SelfDelete()
         {
             APCESettings.defDataDict.Remove(def);
+            modData.defDict.Remove(def);
             //TODO
         }
 
@@ -219,12 +218,11 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void RegisterSelfInDict()
+        public void RegisterSelfInDicts()
         {
-            if (!APCESettings.defDataDict.TryAdd(def, this))
-            {
-                APCESettings.defDataDict[def] = this;
-            }
+            APCESettings.defDataDict[def] = this;
+            modData = DataHolderUtils.ReturnModDataOrDefault(def);
+            modData.defDict[def] = this;
         }
     }
 }

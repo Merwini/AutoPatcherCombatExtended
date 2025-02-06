@@ -108,7 +108,19 @@ namespace nuff.AutoPatcherCombatExtended
             this.packageId = mcp.PackageId;
             RegisterSelfInDict();
             SelectDefsToPatch();
-            GenerateDefDataHolders();
+        }
+
+        public void GetModContentPack()
+        {
+            if (packageId == null)
+            {
+                Log.Error("ModDataHolder tried to get ModContentPack but PackageId was null");
+            }
+            mod = LoadedModManager.RunningMods.FirstOrDefault(m => m.PackageId == packageId);
+            if (mod == null)
+            {
+                Log.Error($"ModDataHolder tried to get ModContentPack, but found none with PackageId {packageId}");
+            }
         }
 
         public void Reset()
@@ -129,36 +141,72 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
                 }
-                Log.Warning($"{def.defName} selected to patch: {need.ToString()}");
             }
         }
 
-        public int GenerateDefDataHolders()
+        public void GenerateDefDataHolders()
         {
-            int holderCount = 0;
             foreach (var entry in defsToPatch)
             {
-                if (APCEController.TryGenerateDataHolderForDef(entry.Key))
+                if (entry.value == APCEConstants.NeedsPatch.yes && !defDict.ContainsKey(entry.Key))
                 {
-                    holderCount++;
-                    //This is probably less correct, but way easier than passing the DefDataHolder back up through multiple methods
-                    defDict.Add(entry.Key, APCESettings.defDataDict.TryGetValue(entry.Key));
+                    APCEController.TryGenerateDataHolderForDef(entry.Key);
                 }
             }
-            return holderCount;
+        }
+
+        public void ReCalc()
+        {
+            foreach (var entry in defDict)
+            {
+                if (!entry.Value.isCustomized)
+                {
+                    entry.Value.AutoCalculate();
+                }
+            }
+        }
+
+        public void PrePatch()
+        {
+            foreach (var entry in defDict)
+            {
+                try
+                {
+                    entry.Value.PrePatch();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Failed to prepatch def {entry.Value.defName} from mod {entry.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
+                }
+            }
+        }
+
+        public void PostPatch()
+        {
+            foreach (var entry in defDict)
+            {
+                try
+                {
+                    entry.Value.PostPatch();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Failed to postpatching def {entry.Value.defName} from mod {entry.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
+                }
+            }
         }
 
         public void Patch()
         {
-            foreach (var kvp in defDict)
+            foreach (var entry in defDict)
             {
                 try
                 {
-                    kvp.Value.Patch();
+                    entry.Value.Patch();
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning($"Failed to patch def {kvp.Value.defName} from mod {kvp.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
+                    Log.Warning($"Failed to patch def {entry.Value.defName} from mod {entry.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
                 }
             }
         }

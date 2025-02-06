@@ -26,7 +26,6 @@ namespace nuff.AutoPatcherCombatExtended
         public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
         public static ModContentPack thisModContent;
         public static Mod thisMod;
-        public static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
         public static bool suggestionWindowOpened = false;
 
         public string searchTerm = "";

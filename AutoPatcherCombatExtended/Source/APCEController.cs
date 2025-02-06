@@ -41,28 +41,28 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
-                //todo might not need to check, since this is currently the first attempt to patch mods 
-                if (APCESettings.modsAlreadyPatched.Add(mod))
-                {
-                    ModDataHolder mdh = new ModDataHolder(mod);
-                }
+                GenerateDataHolderForMod(mod);
             }
 
             foreach (var holder in APCESettings.modDataDict)
             {
+                holder.value.GenerateDefDataHolders();
+                holder.value.ReCalc(); //TODO inefficient as it basically calls Autocalculate a second time needlessly on newly generated ddhs
+                holder.Value.PrePatch();
                 holder.Value.Patch();
+                holder.Value.PostPatch();
             }
 
             AmmoInjector.Inject();
             AmmoInjector.AddRemoveCaliberFromGunRecipes();
         }
 
-        public static void GenerateDataHoldersForMod(ModContentPack mod)
+        public static void GenerateDataHolderForMod(ModContentPack mod)
         {
-            APCEPatchLogger log = new APCEPatchLogger(mod);
-            foreach (Def def in mod.AllDefs)
+            //Don't generate a ModDataHolder if it already generated during SaveLoad
+            if (!APCESettings.modDataDict.ContainsKey(mod.PackageId))
             {
-                TryGenerateDataHolderForDef(def);
+                ModDataHolder mdh = new ModDataHolder(mod);
             }
         }
 
