@@ -51,7 +51,10 @@ namespace nuff.AutoPatcherCombatExtended
         public override void GetOriginalData()
         {
             pawn = def as ThingDef;
-            original_Tools = pawn.tools.ToList();
+            if (!pawn.tools.NullOrEmpty())
+            {
+                original_Tools = pawn.tools.ToList();
+            }
 
             original_ArmorRatingSharp = pawn.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
             original_ArmorRatingBlunt = pawn.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
@@ -77,6 +80,7 @@ namespace nuff.AutoPatcherCombatExtended
             modified_CarryWeight = 40;
             modified_CarryBulk = 20;
 
+            ClearModdedTools();
             for (int i = 0; i < original_Tools.Count; i++)
             {
                 ModToolAtIndex(i);

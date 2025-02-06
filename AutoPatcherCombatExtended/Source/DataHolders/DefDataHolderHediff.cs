@@ -66,6 +66,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             if (!original_Tools.NullOrEmpty())
             {
+                ClearModdedTools();
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
                     ModToolAtIndex(i);

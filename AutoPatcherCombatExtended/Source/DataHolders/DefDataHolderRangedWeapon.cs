@@ -97,7 +97,10 @@ namespace nuff.AutoPatcherCombatExtended
                 weaponThingDef.weaponTags = new List<string>();
             }
 
-            original_Tools = weaponThingDef.tools.ToList();
+            if (!weaponThingDef.tools.NullOrEmpty())
+            {
+                original_Tools = weaponThingDef.tools.ToList();
+            }
             original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
             original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
             original_rangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
@@ -123,6 +126,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (!original_Tools.NullOrEmpty())
             {
+                ClearModdedTools();
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
                     ModToolAtIndex(i);
@@ -715,7 +719,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void GenerateAmmoSet()
         {
-            ammoSetDataHolder = new DefDataHolderAmmoSet(weaponThingDef);
+            ammoSetDataHolder = new DefDataHolderAmmoSet(weaponThingDef, gunKind);
             //RegisterSelfInDict, GetOriginalData, and Autocalculate are called by constructor
             ammoSetDataHolder.Patch();
             this.modified_AmmoSetDef = ammoSetDataHolder.GeneratedAmmoSetDef;

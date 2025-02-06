@@ -38,8 +38,10 @@ namespace nuff.AutoPatcherCombatExtended
         public override void GetOriginalData()
         {
             thingDef = def as ThingDef;
-
-            original_Tools = thingDef.tools.ToList();
+            if (!thingDef.tools.NullOrEmpty())
+            {
+                original_Tools = thingDef.tools.ToList();
+            }
             Log.Warning($"Weapon {def.defName} has {original_Tools.Count} after GetOriginalData");
             original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
             stuffed = thingDef.MadeFromStuff;
@@ -54,7 +56,7 @@ namespace nuff.AutoPatcherCombatExtended
             CalculateWeaponTechMult();
             if (!original_Tools.NullOrEmpty())
             {
-                
+                ClearModdedTools();
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
                     ModToolAtIndex(i);

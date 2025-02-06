@@ -125,6 +125,21 @@ namespace nuff.AutoPatcherCombatExtended
             //TODO
         }
 
+        public void ClearModdedTools()
+        {
+            modified_toolIds.Clear();
+            modified_ToolCapacityDefs.Clear();
+            modified_ToolCapacityStrings.Clear();
+            modified_ToolLinkedBodyPartsGroupDefs.Clear();
+            modified_ToolLinkedBPGStrings.Clear();
+            modified_ToolCooldownTimes.Clear();
+            modified_ToolArmorPenetrationSharps.Clear();
+            modified_ToolArmorPenetrationBlunts.Clear();
+            modified_ToolPowers.Clear();
+            modified_ToolChanceFactors.Clear();
+            modified_Tools.Clear();
+        }
+
         public virtual void ModToolAtIndex(int i)
         {
             Tool tool = original_Tools[i];
