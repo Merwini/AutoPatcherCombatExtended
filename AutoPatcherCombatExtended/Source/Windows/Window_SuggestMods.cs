@@ -334,7 +334,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void PostClose()
         {
-            APCEController.APCEPatchController();
             base.PostClose();
         }
     }

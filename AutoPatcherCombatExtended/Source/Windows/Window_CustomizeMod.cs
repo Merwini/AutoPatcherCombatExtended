@@ -298,8 +298,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void PreClose()
         {
-            base.PreClose();
             APCESaveLoad.SaveDataHolders();
+            base.PreClose();
         }
     }
 }
