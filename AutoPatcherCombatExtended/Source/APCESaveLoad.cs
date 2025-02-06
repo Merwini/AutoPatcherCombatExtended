@@ -79,6 +79,8 @@ namespace nuff.AutoPatcherCombatExtended
                     ModDataHolder mdh = new ModDataHolder();
                     Scribe.loader.InitLoading(mdha[0]);
                     mdh.ExposeData();
+                    mdh.GetModContentPack();
+                    mdh.RegisterSelfInDict();
                 }
                 catch (Exception ex)
                 {
