@@ -1,5 +1,4 @@
-﻿TODO figure out why Ranged Weapon patches aren't running
-TODO melee weapons getting duplicated tools when repatching
+﻿TODO figure out why ammosets don't repatch when settings change. Not registering themselves correctly?
 TODO melee weapons negative tool armor penetration
 TODO Start writing CustomizeMod windows
 TODO test def customizing and save/load

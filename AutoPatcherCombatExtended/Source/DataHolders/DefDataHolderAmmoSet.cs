@@ -24,7 +24,6 @@ namespace nuff.AutoPatcherCombatExtended
         public DefDataHolderAmmoSet(ThingDef def, APCEConstants.gunKinds gunKind) : base()
         {
             this.def = def;
-            defName = def.defName;
             this.gunKind = gunKind;
             parentModPackageId = def.modContentPack.PackageId;
             modData = DataHolderUtils.ReturnModDataOrDefault(def);
