@@ -205,7 +205,6 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 try
                 {
-                    Log.Warning(entry.Key.defName);
                     entry.Value.Patch();
                 }
                 catch (Exception ex)

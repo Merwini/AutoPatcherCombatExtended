@@ -723,7 +723,6 @@ namespace nuff.AutoPatcherCombatExtended
             //RegisterSelfInDict, GetOriginalData, and Autocalculate are called by constructor
             ammoSetDataHolder.Patch();
             this.modified_AmmoSetDef = ammoSetDataHolder.GeneratedAmmoSetDef;
-            ammoSetDataHolder.isCustomized = true; //so it will save //TODO probably only if this.isCustomized
         }
 
         public void RemoveVanillaStatBases()

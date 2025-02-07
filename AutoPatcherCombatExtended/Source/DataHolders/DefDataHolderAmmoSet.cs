@@ -149,11 +149,14 @@ namespace nuff.AutoPatcherCombatExtended
 
             armorPenSharpModded = original_armorPenetration * modData.gunSharpPenMult * original_techMult;
             armorPenBluntModded = original_armorPenetration * modData.gunBluntPenMult * original_techMult;
+            Log.Warning($"{weaponDef.defName} md {modData.gunSharpPenMult} apsm {armorPenSharpModded} ");
 
             if (original_damageDef == DamageDefOf.Bomb && original_damage == 635)
             {//since CE changes the default damage of Bomb from 50 to 635, projectiles relying on the default value will do unintended levels of damage
                 original_damage = 50;
             }
+
+            ClearModifiedProjectileLists();
 
             switch (gunKind)
             {
@@ -205,6 +208,28 @@ namespace nuff.AutoPatcherCombatExtended
                         break;
                     }
             }
+        }
+
+        private void ClearModifiedProjectileLists()
+        {
+            List<string> modified_projectileNames = new List<string>();
+            List<string> modified_projectileLabels = new List<string>();
+            List<APCEConstants.ThingClasses> modified_thingClasses = new List<APCEConstants.ThingClasses>();
+
+            modified_damageDefs.Clear();
+            modified_damageDefStrings.Clear();
+            modified_damages.Clear();
+            modified_armorPenetrationSharps.Clear();
+            modified_armorPenetrationBlunts.Clear();
+            modified_speeds.Clear();
+            modified_explosionRadii.Clear();
+            modified_pelletCounts.Clear();
+            modified_spreadMults.Clear();
+            modified_empShieldBreakChances.Clear();
+            modified_suppressionFactors.Clear();
+            modified_dangerFactors.Clear();
+            modified_ai_IsIncendiary.Clear();
+            modified_applyDamageToExplosionCellsNeighbors.Clear();
         }
 
         public void CalculateAmmoBow()
@@ -787,11 +812,14 @@ namespace nuff.AutoPatcherCombatExtended
 
             BuildSecondaryDamages();
 
-            BuildProjectiles();
+            BuildOrModifyProjectiles();
 
             BuildAmmoLinks();
 
             BuildOrModifyAmmoSet();
+
+            ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
+            Log.Warning($"AmmoSet for {weaponDef.defName} first projectile sharp penetration: {ppce.armorPenetrationSharp}");
         }
 
         public override StringBuilder PrepExport()
@@ -884,7 +912,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void BuildProjectiles()
+        public void BuildOrModifyProjectiles()
         {
             modified_projectiles.Clear();
             for (int i = 0; i < modified_projectileNames.Count; i++)
@@ -909,27 +937,32 @@ namespace nuff.AutoPatcherCombatExtended
 
                 DataHolderUtils.SetDamage(newProjProps, modified_damages[i]);
 
-                ThingDef newProj = new ThingDef()
-                {
-                    defName = modified_projectileNames[i],
-                    label = modified_projectileLabels[i],
-                    thingClass = GetProjectileThingClass(i),
-                    projectile = newProjProps
-                };
-
-                SetProjectileDefaults(newProj, original_projectile);
-
-                ThingDef td = DefDatabase<ThingDef>.GetNamedSilentFail(newProj.defName);
+                ThingDef td = DefDatabase<ThingDef>.GetNamedSilentFail(modified_projectileNames[i]);
                 if (td != null)
                 {
-                    td = newProj;
+                    td.label = modified_projectileLabels[i];
+                    td.thingClass = GetProjectileThingClass(i);
+                    td.projectile = newProjProps;
+
+                    modified_projectiles.Add(td);
                 }
                 else
                 {
+                    ThingDef newProj = new ThingDef()
+                    {
+                        defName = modified_projectileNames[i],
+                        label = modified_projectileLabels[i],
+                        thingClass = GetProjectileThingClass(i),
+                        projectile = newProjProps
+                    };
+
+                    SetProjectileDefaults(newProj, original_projectile);
+
                     InjectedDefHasher.GiveShortHashToDef(newProj, typeof(ThingDef));
                     DefGenerator.AddImpliedDef<ThingDef>(newProj);
+
+                    modified_projectiles.Add(newProj);
                 }
-                modified_projectiles.Add(newProj);
             }
         }
 
