@@ -160,17 +160,17 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 case APCEConstants.gunKinds.Bow:
                     {
-                        GenerateAmmoBow();
+                        CalculateAmmoBow();
                         break;
                     }
                 case APCEConstants.gunKinds.Shotgun:
                     {
-                        GenerateAmmoShotgun();
+                        CalculateAmmoShotgun();
                         break;
                     }
                 case APCEConstants.gunKinds.ExplosiveLauncher:
                     {
-                        GenerateAmmoExplosiveLauncher();
+                        CalculateAmmoExplosiveLauncher();
                         break;
                     }
                 case APCEConstants.gunKinds.Turret:
@@ -179,36 +179,36 @@ namespace nuff.AutoPatcherCombatExtended
                             || (weaponDef.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_Explosive>() != null)
                             || (weaponDef.Verbs[0].defaultProjectile.thingClass == typeof(Projectile_Explosive)))
                         {
-                            GenerateAmmoExplosiveLauncher();
+                            CalculateAmmoExplosiveLauncher();
                         }
                         else
                         {
-                            GenerateAmmoIndustrial();
+                            CalculateAmmoIndustrial();
                         }
                         break;
                     }
                 case APCEConstants.gunKinds.Grenade:
                     {
-                        GenerateAmmoGrenade();
+                        CalculateAmmoGrenade();
                         break;
                     }
                 default:
                     {
                         if ((weaponDef.techLevel == TechLevel.Spacer) || (weaponDef.techLevel == TechLevel.Ultra) || (weaponDef.techLevel == TechLevel.Archotech))
                         {
-                            GenerateAmmoSpacer();
+                            CalculateAmmoSpacer();
 
                         }
                         else
                         {
-                            GenerateAmmoIndustrial();
+                            CalculateAmmoIndustrial();
                         }
                         break;
                     }
             }
         }
 
-        public void GenerateAmmoBow()
+        public void CalculateAmmoBow()
         {
             for (int i = 0; i < 5; i++)
             {
@@ -309,7 +309,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoShotgun()
+        public void CalculateAmmoShotgun()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -398,7 +398,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoExplosiveLauncher()
+        public void CalculateAmmoExplosiveLauncher()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -527,7 +527,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoIndustrial()
+        public void CalculateAmmoIndustrial()
         {
             for (int i = 0; i < 6; i++)
             {
@@ -629,7 +629,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoSpacer()
+        public void CalculateAmmoSpacer()
         {
             for (int i = 0; i < 3; i++)
             {
@@ -695,7 +695,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoGrenade()
+        public void CalculateAmmoGrenade()
         {
             //TODO
             List<DamageDef> secondaryDamageDefs = new List<DamageDef>();
