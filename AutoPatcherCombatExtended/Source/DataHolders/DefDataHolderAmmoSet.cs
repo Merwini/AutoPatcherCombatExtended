@@ -791,7 +791,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             BuildAmmoLinks();
 
-            BuildAmmoSet();
+            BuildOrModifyAmmoSet();
         }
 
         public override StringBuilder PrepExport()
@@ -982,26 +982,29 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void BuildAmmoSet()
+        public void BuildOrModifyAmmoSet()
         {
-            AmmoSetDef ammoSet = new AmmoSetDef()
-            {
-                defName = modified_ammoSetDefName,
-                label = modified_ammoSetLabel,
-                ammoTypes = modified_ammoLinks
-            };
-
-            AmmoSetDef asd = DefDatabase<AmmoSetDef>.GetNamedSilentFail(ammoSet.defName);
+            AmmoSetDef asd = DefDatabase<AmmoSetDef>.GetNamedSilentFail(modified_ammoSetDefName);
             if (asd != null)
             {
-                asd = ammoSet;
+                asd.label = modified_ammoSetLabel;
+                asd.ammoTypes = modified_ammoLinks;
+                modified_ammoSetDef = asd;
             }
             else
             {
-                InjectedDefHasher.GiveShortHashToDef(ammoSet, typeof(AmmoSetDef));
-                DefGenerator.AddImpliedDef<AmmoSetDef>(ammoSet);
+                AmmoSetDef newAmmoSet = new AmmoSetDef()
+                {
+                    defName = modified_ammoSetDefName,
+                    label = modified_ammoSetLabel,
+                    ammoTypes = modified_ammoLinks
+                };
+                InjectedDefHasher.GiveShortHashToDef(newAmmoSet, typeof(AmmoSetDef));
+                DefGenerator.AddImpliedDef<AmmoSetDef>(newAmmoSet);
+
+                modified_ammoSetDef = newAmmoSet;
             }
-            modified_ammoSetDef = ammoSet;
+
             DelayedRegister();
         }
 
