@@ -42,7 +42,6 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 original_Tools = thingDef.tools.ToList();
             }
-            Log.Warning($"Weapon {def.defName} has {original_Tools.Count} after GetOriginalData");
             original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
             stuffed = thingDef.MadeFromStuff;
         }
@@ -62,8 +61,6 @@ namespace nuff.AutoPatcherCombatExtended
                     ModToolAtIndex(i);
                 }
             }
-
-            Log.Warning($"Weapon {def.defName} has {modified_toolIds.Count} after AutoCalculate");
         }
 
         public override void Patch()
@@ -102,8 +99,6 @@ namespace nuff.AutoPatcherCombatExtended
                     thingDef.tools.Add(modified_Tools[i]);
                 }
             }
-
-            Log.Warning($"Weapon {def.defName} has {modified_Tools.Count} after Patch");
         }
 
         public override StringBuilder PrepExport()
