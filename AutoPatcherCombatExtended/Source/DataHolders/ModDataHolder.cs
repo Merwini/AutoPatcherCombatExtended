@@ -28,6 +28,9 @@ namespace nuff.AutoPatcherCombatExtended
         //Needed to track if the mod has any customized defs, for use during saving. Didn't want to have to iterate through all of them to check isCustomized on each.
         public Dictionary<Def, DefDataHolder> customizedDefDict = new Dictionary<Def, DefDataHolder>();
 
+        //for storing Implied Defs to be added to dictionary after a foreach is finished, so it doesn't modify the collection
+        public List<DefDataHolder> delayedRegistrations = new List<DefDataHolder>();
+
         //toggles //todo remove
         public bool patchCustomVerbs = false;
         public bool limitWeaponMass = false;
@@ -202,11 +205,24 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 try
                 {
+                    Log.Warning(entry.Key.defName);
                     entry.Value.Patch();
                 }
                 catch (Exception ex)
                 {
                     Log.Warning($"Failed to patch def {entry.Value.defName} from mod {entry.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
+                }
+            }
+        }
+
+        //this is for Implied defs like AmmoSets to register themselves late so they don't break the 'foreach entry in Dictionary' methods by modifying the collection
+        public void RegisterDelayedHolders()
+        {
+            if (!delayedRegistrations.NullOrEmpty())
+            {
+                foreach (DefDataHolder ddh in delayedRegistrations)
+                {
+                    ddh.RegisterSelfInDicts();
                 }
             }
         }

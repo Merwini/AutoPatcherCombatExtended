@@ -14,22 +14,21 @@ namespace nuff.AutoPatcherCombatExtended
         public DefDataHolderAmmoSet()
         {
             //empty constructor for use by SaveLoad
+
         }
 
         public DefDataHolderAmmoSet(ThingDef def) : base(def)
         {
         }
 
-        //constructor for use by VehicleTurrets
         public DefDataHolderAmmoSet(ThingDef def, APCEConstants.gunKinds gunKind) : base()
         {
             this.def = def;
             this.gunKind = gunKind;
             parentModPackageId = def.modContentPack.PackageId;
             modData = DataHolderUtils.ReturnModDataOrDefault(def);
-            //needs to not register self, so that .Patch() isn't re-run
-            //RegisterSelfInDict();
             GetOriginalData();
+            //Needs to call AutoCalculate and Patch during construction because it is usually instantiated by a RangedWeapon that needs the AmmoDef immediately afterward
             AutoCalculate();
             Patch();
         }
@@ -816,6 +815,10 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     Stringify();
                 }
+
+                Scribe_Defs.Look(ref def, "def");
+                Scribe_Values.Look(ref gunKind, "gunKind");
+
                 // Strings related to AmmoSetDef
                 Scribe_Values.Look(ref modified_ammoSetDefName, "modified_ammoSetDefName");
                 Scribe_Values.Look(ref modified_ammoSetLabel, "modified_ammoSetLabel");
@@ -999,6 +1002,7 @@ namespace nuff.AutoPatcherCombatExtended
                 DefGenerator.AddImpliedDef<AmmoSetDef>(ammoSet);
             }
             modified_ammoSetDef = ammoSet;
+            DelayedRegister();
         }
 
         public void Stringify()
@@ -1072,6 +1076,21 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     modified_secondaryDamageDefs[i].Add(dam2);
                 }
+            }
+        }
+
+        public override void RegisterSelfInDicts()
+        {
+            RegisterOnce(false);
+        }
+
+        public void RegisterOnce(bool forceReregister)
+        {
+            if (!alreadyRegistered || forceReregister)
+            {
+                APCESettings.defDataDict[modified_ammoSetDef] = this;
+                modData.defDict[modified_ammoSetDef] = this;
+                alreadyRegistered = true;
             }
         }
 

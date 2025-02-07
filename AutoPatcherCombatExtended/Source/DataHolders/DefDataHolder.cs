@@ -12,7 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
     public abstract class DefDataHolder : IExposable
     {
         public bool isCustomized = false; //this will be changed by the customization window if the user changes any values //TODO add that logic //TODO also register the DDH in the MDH's customizedDefDict. Unregister if reset to default.
-        public bool defGeneratedAlready = false;
+        public bool alreadyRegistered = false;
         public string defName;
         public string parentModPackageId; //todo I don't seem to use this for anything?
 
@@ -35,8 +35,6 @@ namespace nuff.AutoPatcherCombatExtended
         public List<float> modified_ToolChanceFactors = new List<float>();
         public List<ToolCE> modified_Tools = new List<ToolCE>();
 
-        public bool IsCustomized => isCustomized;
-         
         public DefDataHolder()
         {
 
@@ -232,11 +230,16 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void RegisterSelfInDicts()
+        public virtual void RegisterSelfInDicts()
         {
             APCESettings.defDataDict[def] = this;
             modData = DataHolderUtils.ReturnModDataOrDefault(def);
             modData.defDict[def] = this;
+        }
+
+        public virtual void DelayedRegister()
+        {
+            modData.delayedRegistrations.Add(this);
         }
     }
 }

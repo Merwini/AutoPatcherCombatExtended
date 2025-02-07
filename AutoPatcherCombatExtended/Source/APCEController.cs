@@ -47,10 +47,11 @@ namespace nuff.AutoPatcherCombatExtended
             foreach (var holder in APCESettings.modDataDict)
             {
                 holder.value.GenerateDefDataHolders();
-                holder.value.ReCalc(); //TODO inefficient as it basically calls Autocalculate a second time needlessly on newly generated ddhs
+                holder.value.ReCalc();
                 holder.Value.PrePatch();
                 holder.Value.Patch();
                 holder.Value.PostPatch();
+                holder.value.RegisterDelayedHolders();
             }
 
             AmmoInjector.Inject();

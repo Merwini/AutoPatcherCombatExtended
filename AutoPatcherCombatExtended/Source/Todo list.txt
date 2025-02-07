@@ -3,6 +3,7 @@ TODO melee weapons negative tool armor penetration
 TODO Start writing CustomizeMod windows
 TODO test def customizing and save/load
 TODO fix mod suggest suggest window suggesting to remove mods that are already compatible because they loaded during SaveLoad
+TODO rewrite the Loading methods for saved DefDataHolders. Need to figure out if they should call GetOriginalData in their default constructor, or if SaveLoad should call it after all are loaded (might cause problems with Implied Defs)
 
 
 
@@ -16,14 +17,14 @@ TODO headgear layers
 	DONE Change Generic weapons to use CE's generic ammos, to get them past the AmmoInjector. Disable unused ones myself. Remember to remove the weapon recipes this time
 TODO ThingDef tags
 TODO add logic to GetOriginalData to allow re-patching of already compatible defs
-TODO remove settings to enable/disable patching of certain defTypes, is just bloat at this point
+	TODO remove settings to enable/disable patching of certain defTypes, is just bloat at this point
 TODO make stringify/destringify virtual methods in base DefDataHolder, with overrides in the various subclasses
 TODO alreadyGenerated bool, so that repatching grenades, mortars, ammosets does not keep generating new ones 
 TODO in customization page, if user changes a weapon from burst 1 to multi, suggest to add recoil
-TODO each DefDataHolder needs to set their def subclass reference at the end of loading (i.e. ThingDef td = def as ThingDef). Class base loads the def itself
+	TODO each DefDataHolder needs to set their def subclass reference at the end of loading (i.e. ThingDef td = def as ThingDef). Class base loads the def itself
 	DONE redo Vehicle compat by sorting using a Type, Func dictionary that the compat code can just add to
 TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon Studios folder
-TODO double check that ModDataHolder mults are being applied to all relevant autocalculations
+	TODO double check that ModDataHolder mults are being applied to all relevant autocalculations
 	DONE handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
 	DONE window that adds/removes mods from the patch list should WriteSettings
 	DONE option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
