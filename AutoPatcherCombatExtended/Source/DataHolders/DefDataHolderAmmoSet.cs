@@ -727,11 +727,6 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ammoDefs.Add(null);
         }
 
-        public void SetBasePenetrations()
-        {
-            //todo I think I moved this into autocalculate
-        }
-
         public void CalculateWeaponTechMult()
         {
             float techMult = 1f;
