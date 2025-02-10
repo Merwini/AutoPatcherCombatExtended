@@ -34,6 +34,9 @@ namespace nuff.AutoPatcherCombatExtended
         float modified_MeleeParryChance;
         float modified_MeleeCritChance;
 
+        float floorArmorPenetrationSharp;
+        float floorArmorPenetrationBlunt;
+
         //TODO
         public override void GetOriginalData()
         {
@@ -145,8 +148,30 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= modData.weaponToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolSharpPenetration * techMult, 0, 99999);
-            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolBluntPenetration * techMult, 0, 99999);
+            CalculateMinimumPenetrations(i);
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolSharpPenetration * techMult, floorArmorPenetrationSharp, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * modData.weaponToolBluntPenetration * techMult, floorArmorPenetrationBlunt, 99999);
+        }
+
+        public void CalculateMinimumPenetrations(int i)
+        {
+            //TODO null checks
+            DamageArmorCategoryDef ac = modified_ToolCapacityDefs[i][0].VerbsProperties.First().meleeDamageDef.armorCategory;
+            if (ac == DamageArmorCategoryDefOf.Sharp)
+            {
+                floorArmorPenetrationSharp = modified_ToolPowers[i] * techMult * 0.1f;
+                floorArmorPenetrationBlunt = floorArmorPenetrationSharp;
+            }
+            else if (ac == APCEDefOfTwo.Blunt)
+            {
+                floorArmorPenetrationSharp = 0;
+                floorArmorPenetrationBlunt = modified_ToolPowers[i] * techMult * 0.33f;
+            }
+            else //heat or maybe mods add new ones
+            {
+                floorArmorPenetrationSharp = 0;
+                floorArmorPenetrationBlunt = 0;
+            }
         }
 
         public void CalculateWeaponTechMult()

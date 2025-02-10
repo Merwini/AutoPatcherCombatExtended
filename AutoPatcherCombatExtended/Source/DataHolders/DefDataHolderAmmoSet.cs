@@ -149,7 +149,6 @@ namespace nuff.AutoPatcherCombatExtended
 
             armorPenSharpModded = original_armorPenetration * modData.gunSharpPenMult * original_techMult;
             armorPenBluntModded = original_armorPenetration * modData.gunBluntPenMult * original_techMult;
-            Log.Warning($"{weaponDef.defName} md {modData.gunSharpPenMult} apsm {armorPenSharpModded} ");
 
             if (original_damageDef == DamageDefOf.Bomb && original_damage == 635)
             {//since CE changes the default damage of Bomb from 50 to 635, projectiles relying on the default value will do unintended levels of damage
@@ -819,7 +818,6 @@ namespace nuff.AutoPatcherCombatExtended
             BuildOrModifyAmmoSet();
 
             ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
-            Log.Warning($"AmmoSet for {weaponDef.defName} first projectile sharp penetration: {ppce.armorPenetrationSharp}");
         }
 
         public override StringBuilder PrepExport()
