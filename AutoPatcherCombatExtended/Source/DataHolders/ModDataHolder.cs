@@ -13,7 +13,7 @@ namespace nuff.AutoPatcherCombatExtended
         public ModContentPack mod;
 
         public string packageId;
-        public bool isCustomized = true; //TODO revert to false
+        public bool isCustomized = false;
         //TODO methods to change values instead of modifying them directly, need this to flip isCustomized to true
         //Also TODO write a method that resets all values to match those in apceDefaults. Call this before running autocalcs or patches. This is so that, if the player changes the defaults, they don't have to restart to get those changes to permeate down to the ModDataHolders
 
@@ -24,9 +24,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         //
         public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
-
-        //Needed to track if the mod has any customized defs, for use during saving. Didn't want to have to iterate through all of them to check isCustomized on each.
-        public Dictionary<Def, DefDataHolder> customizedDefDict = new Dictionary<Def, DefDataHolder>();
 
         //for storing Implied Defs to be added to dictionary after a foreach is finished, so it doesn't modify the collection
         public List<DefDataHolder> delayedRegistrations = new List<DefDataHolder>();

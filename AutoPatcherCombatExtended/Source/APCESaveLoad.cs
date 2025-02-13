@@ -156,9 +156,9 @@ namespace nuff.AutoPatcherCombatExtended
             foreach (var entry in APCESettings.modDataDict)
             {
                 ModDataHolder mdh = entry.value;
-                if (!mdh.isCustomized && mdh.customizedDefDict.Count == 0)
+                if (!mdh.isCustomized)
                 {
-                    //todo remove this message, only here for debugging
+                    //TODO remove this message, only here for debugging
                     Log.Message($"Content from mod {mdh.mod.Name} is not customized, skipping save");
                     continue;
                 }
@@ -254,9 +254,13 @@ namespace nuff.AutoPatcherCombatExtended
                 List<Def> failedDefs = new List<Def>();
                 string defFolderPath = Path.Combine(folderPath, "DefDataHolders");
 
-                foreach (var entry in mdh.customizedDefDict)
+                foreach (var entry in mdh.defDict)
                 {
                     DefDataHolder ddh = entry.value;
+                    if (!ddh.isCustomized)
+                    {
+                        continue;
+                    }
                     string filePath = Path.Combine(defFolderPath, $"{entry.Key.defName}.xml");
 
                     try
