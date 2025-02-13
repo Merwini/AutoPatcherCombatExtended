@@ -45,20 +45,20 @@ namespace nuff.AutoPatcherCombatExtended
 
         //saved modified values
         //vanilla bloc
-        float modified_ArmorRatingSharp;
-        float modified_ArmorRatingBlunt;
-        float modified_ArmorRatingHeat;
-        float modified_Mass;
-        float modified_MaxHitPoints;
-        float modified_ShootingAccuracyPawn;
+        internal float modified_ArmorRatingSharp;
+        internal float modified_ArmorRatingBlunt;
+        internal float modified_ArmorRatingHeat;
+        internal float modified_Mass;
+        internal float modified_MaxHitPoints;
+        internal float modified_ShootingAccuracyPawn;
 
         //CE bloc
-        float modified_Bulk;
-        float modified_WornBulk;
-        float modified_CarryWeight;
-        float modified_CarryBulk;
-        float modified_SmokeSensitivity;
-        float modified_NightVisionEfficiency;
+        internal float modified_Bulk;
+        internal float modified_WornBulk;
+        internal float modified_CarryWeight;
+        internal float modified_CarryBulk;
+        internal float modified_SmokeSensitivity;
+        internal float modified_NightVisionEfficiency;
 
         public override void GetOriginalData()
         {
@@ -78,7 +78,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void AutoCalculate()
         {
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;;
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.apparelBluntMult * apparelTechMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
