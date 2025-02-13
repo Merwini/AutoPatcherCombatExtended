@@ -193,7 +193,7 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ToolLinkedBPGStrings.Clear();
             for (int i = 0; i < modified_ToolLinkedBodyPartsGroupDefs.Count; i++)
             {
-                modified_ToolLinkedBPGStrings.Add(modified_ToolLinkedBodyPartsGroupDefs.ToString());
+                modified_ToolLinkedBPGStrings.Add(modified_ToolLinkedBodyPartsGroupDefs[i].ToString());
             }
         }
 
