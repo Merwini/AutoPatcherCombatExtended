@@ -35,10 +35,6 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AutoPatcherCombatExtended">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\APCE\Assemblies\AutoPatcherCombatExtended.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="CombatExtended">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2890901044\Assemblies\CombatExtended.dll</HintPath>
       <Private>False</Private>
@@ -76,6 +72,12 @@
     <PackageReference Include="Krafs.Rimworld.Ref">
       <Version>1.5.4104</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoPatcherCombatExtended\AutoPatcherCombatExtended.csproj">
+      <Project>{dc20ad9c-d97a-4c5c-8622-3d9150e37e71}</Project>
+      <Name>AutoPatcherCombatExtended</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

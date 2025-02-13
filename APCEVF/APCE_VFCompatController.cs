@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using Vehicles;
+using nuff.AutoPatcherCombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended.VF
 {
@@ -53,7 +54,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
         public static APCEConstants.NeedsPatch CheckIfVehicleNeedsPatch(Def def)
         {
             //TODO check if vehicle needs patch
-            return APCEConstants.NeedsPatch.unsure;
+            return APCEConstants.NeedsPatch.ignore;
         }
 
         public static APCEConstants.NeedsPatch CheckIfVehicleTurretNeedsPatch(Def def)
@@ -63,5 +64,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
                 return APCEConstants.NeedsPatch.no;
             return APCEConstants.NeedsPatch.yes;
         }
+
+        //TODO customization windows, register them in APCESettings.defCustomizationWindowDictionary
     }
 }
