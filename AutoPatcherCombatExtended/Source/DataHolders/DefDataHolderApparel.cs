@@ -62,7 +62,16 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            thingDef = def as ThingDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && thingDef == null)
+            {
+                this.thingDef = def as ThingDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (thingDef != null && def == null)
+            {
+                def = thingDef;
+            }
 
             original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
             original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
@@ -72,12 +81,13 @@ namespace nuff.AutoPatcherCombatExtended
             original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
             original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
 
-            CalculateApparelTechMult();
             CheckWhatCovers();
         }
 
         public override void AutoCalculate()
         {
+            CalculateApparelTechMult();
+
             modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.apparelBluntMult * apparelTechMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
@@ -123,10 +133,10 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void ExposeData()
         {
-            base.ExposeData();
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
+                Scribe_Defs.Look(ref thingDef, "def");
                 Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0);
                 Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
                 Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
@@ -140,6 +150,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_SmokeSensitivity, "modified_SmokeSensitivity", 0f);
                 Scribe_Values.Look(ref modified_NightVisionEfficiency, "modified_NightVisionEfficiency", 0f);
             }
+            base.ExposeData();
         }
 
         public void CalculateApparelTechMult()

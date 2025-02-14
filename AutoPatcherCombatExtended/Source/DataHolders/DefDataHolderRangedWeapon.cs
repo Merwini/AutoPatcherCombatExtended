@@ -85,7 +85,16 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            weaponThingDef = def as ThingDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && weaponThingDef == null)
+            {
+                this.weaponThingDef = def as ThingDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (weaponThingDef != null && def == null)
+            {
+                def = weaponThingDef;
+            }
 
             //need to make sure these lists aren't null before starting DetermineGunKind
             if (weaponThingDef.statBases == null)
@@ -110,14 +119,25 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public override void AutoCalculate()
         {
+            if (weaponThingDef.defName == "Gun_FenrirSMG")
+            {
+                Log.Warning($"Starting autocalc on {def.defName}");
+            }
             //TODO may need to allow user to override gunKind for better recalculating
             gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
+            if (weaponThingDef.defName == "Gun_FenrirSMG")
+            {
+                Log.Warning($"gunKind {gunKind}");
+            }
             if (APCESettings.printLogs)
             {
                 Log.Message($"APCE thinks that gun {def.label} from {def.modContentPack.Name} is a gun of kind: " + gunKind.ToString());
             }
             CalculateWeaponTechMult();
-
+            if (weaponThingDef.defName == "Gun_FenrirSMG")
+            {
+                Log.Warning($"techmult {techMult}");
+            }
             if (gunKind == APCEConstants.gunKinds.Mortar)
             {
                 CalculateMortar();
@@ -132,8 +152,23 @@ namespace nuff.AutoPatcherCombatExtended
                     ModToolAtIndex(i);
                 }
             }
+            if (weaponThingDef.defName == "Gun_FenrirSMG")
+            {
+                foreach (var entry in modified_toolIds)
+                {
+                    Log.Warning(entry);
+                }
+            }
 
             CalculateStatBaseValues();
+            if (weaponThingDef.defName == "Gun_FenrirSMG")
+            {
+                Log.Warning($"shotspread {modified_shotSpread}");
+                Log.Warning($"sights {modified_sightsEfficiency}");
+                Log.Warning($"swap {modified_swayFactor}");
+                Log.Warning($"mass {modified_mass}");
+                Log.Warning($"bulk {modified_bulk}");
+            }
 
             if (gunKind == APCEConstants.gunKinds.BeamGun)
             {
@@ -141,6 +176,12 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             CalculateVerbPropValues();
+            if (weaponThingDef.defName == "Gun_FenrirSMG")
+            {
+                Log.Warning($"warmup {modified_warmupTime}");
+                Log.Warning($"burst {modified_burstShotCount}");
+                Log.Warning($"verbClass {modified_VerbClass}");
+            }
 
             if (gunKind == APCEConstants.gunKinds.Flamethrower)
             {
@@ -160,6 +201,10 @@ namespace nuff.AutoPatcherCombatExtended
             else
             {
                 CalculateGrenade();
+            }
+            if (weaponThingDef.defName == "Gun_FenrirSMG")
+            {
+                Log.Warning($"Autocalc on {def.defName} ended with ");
             }
         }
         public override void PostPatch()
@@ -225,7 +270,6 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public override void ExposeData()
         {
-            base.ExposeData();
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
@@ -233,6 +277,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     modified_AmmoSetDefString = modified_AmmoSetDef.ToString();
                 }
+                Scribe_Defs.Look(ref weaponThingDef, "def");
                 Scribe_Values.Look(ref gunKind, "gunKind");
 
                 Scribe_Values.Look(ref modified_mass, "modified_mass", original_Mass);
@@ -266,15 +311,16 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_noSnapShot, "modified_noSnapShot");
                 Scribe_Values.Look(ref modified_aiAimMode, "modified_aiAimMode");
 
-                Scribe_Values.Look(ref modified_recipeCount, "modified_recipeCount", 1);
-                Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit", 25);
-                Scribe_Values.Look(ref modified_grenadeDamage, "modified_grenadeDamage", 1);
+                Scribe_Values.Look(ref modified_recipeCount, "modified_recipeCount");
+                Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit");
+                Scribe_Values.Look(ref modified_grenadeDamage, "modified_grenadeDamage");
 
                 //if (Scribe.mode == LoadSaveMode.LoadingVars && gunKind == APCEConstants.gunKinds.Grenade)
                 //{
                 //    modified_ammoDef = GenerateGrenadeAmmoDef();
                 //}
             }
+            base.ExposeData();
         }
         public void CalculateStatBaseValues()
         {

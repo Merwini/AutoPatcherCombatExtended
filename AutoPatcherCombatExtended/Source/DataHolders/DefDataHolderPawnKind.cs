@@ -20,7 +20,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
         }
 
-        PawnKindDef kind;
+        PawnKindDef kindDef;
 
         List<string> original_ApparelTags = new List<string>();
         List<string> original_WeaponTags = new List<string>();
@@ -32,18 +32,27 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            kind = def as PawnKindDef;
-
-            if (kind.apparelTags != null)
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && kindDef == null)
             {
-                foreach (string str in kind.apparelTags)
+                this.kindDef = def as PawnKindDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (kindDef != null && def == null)
+            {
+                def = kindDef;
+            }
+
+            if (kindDef.apparelTags != null)
+            {
+                foreach (string str in kindDef.apparelTags)
                 {
                     original_ApparelTags.Add(str);
                 }
             }
-            if (kind.weaponTags != null)
+            if (kindDef.weaponTags != null)
             {
-                foreach (string str in kind.weaponTags)
+                foreach (string str in kindDef.weaponTags)
                 {
                     original_WeaponTags.Add(str);
                 }
@@ -80,34 +89,34 @@ namespace nuff.AutoPatcherCombatExtended
         {
             if (modified_ApparelTags.Count > 0)
             {
-                if (kind.apparelTags == null)
-                    kind.apparelTags = new List<string>();
-                kind.apparelTags.Clear();
+                if (kindDef.apparelTags == null)
+                    kindDef.apparelTags = new List<string>();
+                kindDef.apparelTags.Clear();
                 foreach (string str in modified_ApparelTags)
                 {
-                    kind.apparelTags.Add(str);
+                    kindDef.apparelTags.Add(str);
                 }
             }
 
             if (modified_WeaponTags.Count > 0)
             {
-                if (kind.weaponTags == null)
-                    kind.weaponTags = new List<string>();
-                kind.weaponTags.Clear();
+                if (kindDef.weaponTags == null)
+                    kindDef.weaponTags = new List<string>();
+                kindDef.weaponTags.Clear();
                 foreach (string str in modified_WeaponTags)
                 {
-                    kind.weaponTags.Add(str);
+                    kindDef.weaponTags.Add(str);
                 }
             }
 
-            if (kind.modExtensions == null)
+            if (kindDef.modExtensions == null)
             {
-                kind.modExtensions = new List<DefModExtension>();
+                kindDef.modExtensions = new List<DefModExtension>();
             }
             LoadoutPropertiesExtension loadout = new LoadoutPropertiesExtension();
             loadout.primaryMagazineCount = new FloatRange(modified_MinMags, modified_MaxMags);
 
-            DataHolderUtils.AddOrReplaceExtension(kind, loadout);
+            DataHolderUtils.AddOrReplaceExtension(kindDef, loadout);
         }
 
         public override StringBuilder PrepExport()
@@ -122,12 +131,14 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void ExposeData()
         {
-            base.ExposeData();
+            Scribe_Defs.Look(ref kindDef, "def");
             Scribe_Collections.Look(ref modified_ApparelTags, "modified_ApparelTags");
             Scribe_Collections.Look(ref modified_WeaponTags, "modified_WeaponTags");
 
             Scribe_Values.Look(ref modified_MinMags, "modified_MinMags");
             Scribe_Values.Look(ref modified_MaxMags, "modified_MaxMags");
+
+            base.ExposeData();
         }
     }
 }

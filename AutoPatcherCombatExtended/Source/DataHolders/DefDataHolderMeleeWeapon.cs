@@ -40,7 +40,17 @@ namespace nuff.AutoPatcherCombatExtended
         //TODO
         public override void GetOriginalData()
         {
-            thingDef = def as ThingDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && thingDef == null)
+            {
+                this.thingDef = def as ThingDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (thingDef != null && def == null)
+            {
+                def = thingDef;
+            }
+
             if (!thingDef.tools.NullOrEmpty())
             {
                 original_Tools = thingDef.tools.ToList();
@@ -117,10 +127,10 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void ExposeData()
         {
-            base.ExposeData();
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
+                Scribe_Defs.Look(ref thingDef, "def");
                 Scribe_Values.Look(ref modified_mass, "modified_Mass", original_Mass);
                 Scribe_Values.Look(ref modified_bulk, "modified_Bulk", 1f);
                 Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness", 1f);
@@ -129,6 +139,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_MeleeParryChance, "modified_MeleeParryChance", 0f);
                 Scribe_Values.Look(ref modified_MeleeCritChance, "modified_MeleeCritChance", 0f);
             }
+            base.ExposeData();
         }
 
         private void CalculateStatMods()

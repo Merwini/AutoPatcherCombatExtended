@@ -33,7 +33,16 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            geneDef = def as GeneDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && geneDef == null)
+            {
+                this.geneDef = def as GeneDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (geneDef != null && def == null)
+            {
+                def = geneDef;
+            }
 
             original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
             original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
@@ -65,8 +74,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void ExposeData()
         {
-            base.ExposeData();
-
+            Scribe_Defs.Look(ref geneDef, "def");
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
@@ -74,6 +82,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
                 Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
             }
+            base.ExposeData();
         }
     }
 }

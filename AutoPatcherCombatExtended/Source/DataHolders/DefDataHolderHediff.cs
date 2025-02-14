@@ -33,7 +33,16 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            hediffDef = def as HediffDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && hediffDef == null)
+            {
+                this.hediffDef = def as HediffDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (hediffDef != null && def == null)
+            {
+                def = hediffDef;
+            }
 
             verbGiver = hediffDef.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
             if (verbGiver != null && verbGiver.tools != null)
@@ -126,15 +135,15 @@ namespace nuff.AutoPatcherCombatExtended
         //TODO
         public override void ExposeData()
         {
-            base.ExposeData();
-
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
+                Scribe_Defs.Look(ref hediffDef, "def");
                 Scribe_Collections.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", LookMode.Value);
             }
+            base.ExposeData();
         }
     }
 }
