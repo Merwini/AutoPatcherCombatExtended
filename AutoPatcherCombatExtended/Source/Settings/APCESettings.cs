@@ -45,6 +45,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static Dictionary<Type, Func<Def, APCEConstants.NeedsPatch>> typeHandlerDictionaryCheck = new Dictionary<Type, Func<Def, APCEConstants.NeedsPatch>>();
         public static Dictionary<Type, Delegate> typeHandlerDictionaryGenerate = new Dictionary<Type, Delegate>();
+
+        public static Dictionary<Type, Type> defCustomizationWindowDictionary = new Dictionary<Type, Type>();
         
         //public static Dictionary<string, ThingCategoryDef> modAmmoThingCategoryDict = new Dictionary<string, ThingCategoryDef>(); //not saved, populated if/when ammos are made for that mod
 

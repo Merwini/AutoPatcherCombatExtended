@@ -35,6 +35,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modData = new ModDataHolder(mod);
             }
             modData.isCustomized = true;
+            doCloseButton = true;
         }
 
         public override Vector2 InitialSize
@@ -277,18 +278,98 @@ namespace nuff.AutoPatcherCombatExtended
 
                 //Rect customizeButtonRect = new Rect(inRect.xMax + 10f, inRect.yMax - 40f, 100f, 30f);
                 // Customize Mod button
-                if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).TopPart(0.5f).RightPart(0.5f).LeftPart(0.3f), "Customize Def"))
+                if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).BottomPart(0.5f).RightPart(0.3f).RightPart(0.5f), "Customize Def"))
                 {
                     if (rightSelectedObject != null)
                     {
-                        Window_CustomizeDef window = new Window_CustomizeDef(rightSelectedObject);
-                        Find.WindowStack.Add(window);
+                        TryOpenDefWindow(rightSelectedObject, modData);
                     }
                 }
+
             }
 
             list.End();
         }
+
+        public void TryOpenDefWindow(Def def, ModDataHolder modData)
+        {
+            Log.Warning(def.defName);
+            DefDataHolder defDataHolder = TryGetDataHolder();
+            Log.Warning($"defDataHolder is null: {(defDataHolder == null).ToString()}");
+            if (defDataHolder == null)
+            {
+                Window_DefFailure failureWindow = new Window_DefFailure(def);
+                Find.WindowStack.Add(failureWindow);
+            }
+            else
+            {
+                Window newWindow;
+                if (defDataHolder is DefDataHolderAmmoSet)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (defDataHolder is DefDataHolderApparel)
+                {
+                    newWindow = new Window_CustomizeDefApparel(defDataHolder);
+                }
+                else if (defDataHolder is DefDataHolderBuilding_TurretGun)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (defDataHolder is DefDataHolderGene)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (defDataHolder is DefDataHolderHediff)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (defDataHolder is DefDataHolderMeleeWeapon)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (defDataHolder is DefDataHolderPawn)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (defDataHolder is DefDataHolderPawnKind)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (defDataHolder is DefDataHolderRangedWeapon)
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+                else if (APCESettings.defCustomizationWindowDictionary.TryGetValue(defDataHolder.GetType(), out Type windowType))
+                {
+                    newWindow = (Window)Activator.CreateInstance(windowType, defDataHolder);
+                }
+                else
+                {
+                    newWindow = new Window_DefFailure(def);
+                }
+
+                Find.WindowStack.Add(newWindow);
+            }
+
+            DefDataHolder TryGetDataHolder()
+            {
+            if (modData.defDict.TryGetValue(def, out DefDataHolder dataHolder))
+            {
+                return dataHolder;
+            }
+            else if (APCEController.TryGenerateDataHolderForDef(def))
+            {
+                modData.defDict.TryGetValue(def, out DefDataHolder ddh2);
+                return ddh2;
+            }
+            else
+            {
+                //handle failure in the caller
+                return default;
+            }
+        }
+    }
 
         public override void PreOpen()
         {

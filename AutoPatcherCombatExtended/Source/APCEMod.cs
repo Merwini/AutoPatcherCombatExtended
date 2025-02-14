@@ -124,7 +124,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                     //Rect customizeButtonRect = new Rect(inRect.xMax + 10f, inRect.yMax - 40f, 100f, 30f);
                     // Customize Mod button
-                    if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).TopPart(0.5f).RightPart(0.5f).LeftPart(0.3f), "Customize"))
+                    if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).TopPart(0.5f).RightPart(0.3f).RightPart(0.5f), "Customize"))
                     {
                         if (Settings.rightSelectedObject != null)
                         {
