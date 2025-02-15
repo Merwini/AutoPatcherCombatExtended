@@ -39,41 +39,41 @@ namespace nuff.AutoPatcherCombatExtended
         APCEConstants.gunKinds gunKind;
 
         //modified statbase stuff
-        float modified_mass;
-        float modified_bulk;
-        float modified_rangedWeaponCooldown;
-        float modified_workToMake;
-        float modified_sightsEfficiency;
-        float modified_shotSpread;
-        float modified_swayFactor;
-        float modified_weaponToughness;
+        internal float modified_mass;
+        internal float modified_bulk;
+        internal float modified_rangedWeaponCooldown;
+        internal float modified_workToMake;
+        internal float modified_sightsEfficiency;
+        internal float modified_shotSpread;
+        internal float modified_swayFactor;
+        internal float modified_weaponToughness;
 
         //modified verbprops stuff
-        Type modified_VerbClass;
-        float modified_muzzleFlashScale;
-        int modified_ticksBetweenBurstShots;
-        float modified_warmupTime = 1;
-        int modified_burstShotCount = 1;
-        float modified_recoilAmount;
-        float modified_range; //TODO
-        RecoilPattern modified_recoilPattern = RecoilPattern.None;
+        internal Type modified_VerbClass;
+        internal float modified_muzzleFlashScale;
+        internal int modified_ticksBetweenBurstShots;
+        internal float modified_warmupTime = 1;
+        internal int modified_burstShotCount = 1;
+        internal float modified_recoilAmount;
+        internal float modified_range; //TODO
+        internal RecoilPattern modified_recoilPattern = RecoilPattern.None;
 
         //modified comp stuff
-        int modified_magazineSize;
-        int modified_ammoGenPerMagOverride;
-        float modified_reloadTime;
-        bool modified_throwMote;
-        bool modified_reloadOneAtATime;
-        float modified_loadedAmmoBulkFactor;
-        AmmoSetDef modified_AmmoSetDef;
-        string modified_AmmoSetDefString;
-        DefDataHolderAmmoSet ammoSetDataHolder;
+        internal int modified_magazineSize;
+        internal int modified_ammoGenPerMagOverride;
+        internal float modified_reloadTime;
+        internal bool modified_throwMote;
+        internal bool modified_reloadOneAtATime;
+        internal float modified_loadedAmmoBulkFactor;
+        internal AmmoSetDef modified_AmmoSetDef;
+        internal string modified_AmmoSetDefString;
+        internal DefDataHolderAmmoSet ammoSetDataHolder;
 
-        int modified_aimedBurstShotCount;
-        bool modified_aiUseBurstMode;
-        bool modified_noSingleShot;
-        bool modified_noSnapShot;
-        AimMode modified_aiAimMode;
+        internal int modified_aimedBurstShotCount;
+        internal bool modified_aiUseBurstMode;
+        internal bool modified_noSingleShot;
+        internal bool modified_noSnapShot;
+        internal AimMode modified_aiAimMode;
 
         //modified grenade stuff
         AmmoDef modified_ammoDef; // for use in grenades

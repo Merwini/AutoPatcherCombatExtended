@@ -25,10 +25,10 @@ namespace nuff.AutoPatcherCombatExtended
         List<string> original_ApparelTags = new List<string>();
         List<string> original_WeaponTags = new List<string>();
 
-        List<string> modified_ApparelTags = new List<string>();
-        List<string> modified_WeaponTags = new List<string>();
-        float modified_MinMags;
-        float modified_MaxMags;
+        internal List<string> modified_ApparelTags = new List<string>();
+        internal List<string> modified_WeaponTags = new List<string>();
+        internal float modified_MinMags;
+        internal float modified_MaxMags;
 
         public override void GetOriginalData()
         {

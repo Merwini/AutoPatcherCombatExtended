@@ -26,13 +26,13 @@ namespace nuff.AutoPatcherCombatExtended
         float original_Mass;
         bool stuffed;
 
-        float modified_mass;
-        float modified_bulk;
-        float modified_weaponToughness;
-        float modified_MeleeCounterParryBonus; //reminder - statbase
-        float modified_MeleeDodgeChance;
-        float modified_MeleeParryChance;
-        float modified_MeleeCritChance;
+        internal float modified_mass;
+        internal float modified_bulk;
+        internal float modified_weaponToughness;
+        internal float modified_MeleeCounterParryBonus; //reminder - statbase
+        internal float modified_MeleeDodgeChance;
+        internal float modified_MeleeParryChance;
+        internal float modified_MeleeCritChance;
 
         float floorArmorPenetrationSharp;
         float floorArmorPenetrationBlunt;

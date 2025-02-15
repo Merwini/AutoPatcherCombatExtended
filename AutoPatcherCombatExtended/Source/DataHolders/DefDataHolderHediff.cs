@@ -27,9 +27,9 @@ namespace nuff.AutoPatcherCombatExtended
         List<float> original_ArmorRatingHeat = new List<float>();
         HediffCompProperties_VerbGiver verbGiver;
 
-        List<float> modified_ArmorRatingSharp = new List<float>();
-        List<float> modified_ArmorRatingBlunt = new List<float>();
-        List<float> modified_ArmorRatingHeat = new List<float>();
+        internal List<float> modified_ArmorRatingSharp = new List<float>();
+        internal List<float> modified_ArmorRatingBlunt = new List<float>();
+        internal List<float> modified_ArmorRatingHeat = new List<float>();
 
         public override void GetOriginalData()
         {

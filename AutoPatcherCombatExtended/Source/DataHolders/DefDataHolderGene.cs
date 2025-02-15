@@ -27,9 +27,9 @@ namespace nuff.AutoPatcherCombatExtended
         float original_ArmorRatingBlunt;
         float original_ArmorRatingHeat;
 
-        float modified_ArmorRatingSharp;
-        float modified_ArmorRatingBlunt;
-        float modified_ArmorRatingHeat;
+        internal float modified_ArmorRatingSharp;
+        internal float modified_ArmorRatingBlunt;
+        internal float modified_ArmorRatingHeat;
 
         public override void GetOriginalData()
         {

@@ -26,9 +26,9 @@ namespace nuff.AutoPatcherCombatExtended
         float original_TurretBurstCooldownTime;
         //ConceptDef original_SpawnedConcentLearnOpportunity;
 
-        float modified_FillPercent = 0.85f;
-        float modified_TurretBurstCooldownTime;
-        float modified_AimingAccuracy;
+        internal float modified_FillPercent = 0.85f;
+        internal float modified_TurretBurstCooldownTime;
+        internal float modified_AimingAccuracy;
         //ConceptDef modified_SpawnedConceptLearnOpportunity;
         //string modified_SpawnedConceptLearnOpportunityString;
 

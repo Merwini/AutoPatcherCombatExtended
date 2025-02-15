@@ -28,25 +28,25 @@ namespace nuff.AutoPatcherCombatExtended
         float original_ArmorRatingBlunt;
         float original_ArmorRatingHeat;
 
-        float modified_ArmorRatingSharp;
-        float modified_ArmorRatingBlunt;
-        float modified_ArmorRatingHeat;
+        internal float modified_ArmorRatingSharp;
+        internal float modified_ArmorRatingBlunt;
+        internal float modified_ArmorRatingHeat;
 
-        float modified_MeleeDodgeChance;
-        float modified_MeleeParryChance;
-        float modified_MeleeCritChance;
+        internal float modified_MeleeDodgeChance;
+        internal float modified_MeleeParryChance;
+        internal float modified_MeleeCritChance;
 
-        float modified_SmokeSensitivity;
-        float modified_Suppressability;
-        float modified_NightVisionEfficiency;
-        float modified_ReloadSpeed;
-        float modified_AimingAccuracy;
+        internal float modified_SmokeSensitivity;
+        internal float modified_Suppressability;
+        internal float modified_NightVisionEfficiency;
+        internal float modified_ReloadSpeed;
+        internal float modified_AimingAccuracy;
 
-        float modified_CarryWeight;
-        float modified_CarryBulk;
+        internal float modified_CarryWeight;
+        internal float modified_CarryBulk;
 
-        BodyShapeDef modified_BodyShape;
-        string modified_BodyShapeDefString;
+        internal BodyShapeDef modified_BodyShape;
+        internal string modified_BodyShapeDefString;
 
         public override void GetOriginalData()
         {

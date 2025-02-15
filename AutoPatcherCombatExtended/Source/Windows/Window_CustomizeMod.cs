@@ -294,8 +294,10 @@ namespace nuff.AutoPatcherCombatExtended
         public void TryOpenDefWindow(Def def, ModDataHolder modData)
         {
             Log.Warning(def.defName);
+            Log.Warning(def.GetType().ToString());
             DefDataHolder defDataHolder = TryGetDataHolder();
             Log.Warning($"defDataHolder is null: {(defDataHolder == null).ToString()}");
+            Log.Warning($"defDataHolder type: {defDataHolder.GetType().ToString()}");
             if (defDataHolder == null)
             {
                 Window_DefFailure failureWindow = new Window_DefFailure(def);
@@ -314,31 +316,31 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else if (defDataHolder is DefDataHolderBuilding_TurretGun)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeDefBuilding_TurretGun(defDataHolder);
                 }
                 else if (defDataHolder is DefDataHolderGene)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeDefGene(defDataHolder);
                 }
                 else if (defDataHolder is DefDataHolderHediff)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeDefHediff(defDataHolder);
                 }
                 else if (defDataHolder is DefDataHolderMeleeWeapon)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeDefMeleeWeapon(defDataHolder);
                 }
                 else if (defDataHolder is DefDataHolderPawn)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeDefPawn(defDataHolder);
                 }
                 else if (defDataHolder is DefDataHolderPawnKind)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeDefPawnKind(defDataHolder);
                 }
                 else if (defDataHolder is DefDataHolderRangedWeapon)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeDefRangedWeapon(defDataHolder);
                 }
                 else if (APCESettings.defCustomizationWindowDictionary.TryGetValue(defDataHolder.GetType(), out Type windowType))
                 {
