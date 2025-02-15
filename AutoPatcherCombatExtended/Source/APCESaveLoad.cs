@@ -96,58 +96,52 @@ namespace nuff.AutoPatcherCombatExtended
         //TODO rewrite this. No more individual folders for DDH types. Will instead store the type as a node and read it
         internal static bool LoadDefDataHolders(string modDataFolder)
         {
-            foreach (var entry in AutoPatcherCombatExtended.defFolderTypesDictionary)
+            string defDataHoldersFolderPath = Path.Combine(modDataFolder, "DefDataHolders");
+            foreach (string defDataHolderFile in Directory.EnumerateFiles(defDataHoldersFolderPath, "*.xml"))
             {
-                LoadDefDataHolderFolder(Path.Combine(modDataFolder, entry.Key), entry.Value);
+                LoadDefDataHolderFile(defDataHolderFile);
             }
 
             return true;
         }
 
-        internal static bool LoadDefDataHolderFolder(string folderPath, Type defType)
+        internal static void LoadDefDataHolderFile(string filePath)
         {
-            if (!Directory.Exists(folderPath))
+            DefDataHolder ddh = null;
+            try
             {
-                return false;
-            }
+                Scribe.loader.InitLoading(filePath);
 
-            foreach (string defDataHolderFile in Directory.EnumerateFiles(folderPath, "*.xml"))
-            {
-                LoadDefDataHolderFile(defDataHolderFile, defType);
-            }
+                string defType = null;
+                Scribe_Values.Look(ref defType, "DefDataHolderType");
 
-            return true;
-        }
-
-        internal static void LoadDefDataHolderFile(string filePath, Type defType)
-        {
-            if (filePath == null || !File.Exists(filePath))
-            {
-                Log.Error("Error: tried to load DefDataHolders, but either file path or Def Type was null");
-                return;
-            }
-
-            if (defType == null || !typeof(DefDataHolder).IsAssignableFrom(defType))
-            {
-                Log.Error("Error: tried to load DefDataHolders, but either Def Type was null, or was not a valid Type");
-            }
-
-            Object obj = Activator.CreateInstance(defType);
-            if (obj is DefDataHolder defDataHolder)
-            {
-                try
+                if (defType != null)
                 {
-                    Scribe.loader.InitLoading(filePath);
-                    defDataHolder.ExposeData();
+                    Type type = Type.GetType(defType);
+                    if (type != null && typeof(DefDataHolder).IsAssignableFrom(type))
+                    {
+                        ddh = (DefDataHolder)Activator.CreateInstance(type);
+                        ddh.ExposeData();
+                    }
+                    else
+                    {
+                        Log.Error($"Unknown or invalid DefDataHolder type: {defType}");
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Log.Error(ex.ToString());
+                    string defName = null;
+                    Scribe_Values.Look(ref defName, "defName");
+                    Log.Error($"Missing DefDataHolderType in saved data of DefDataHolder for: {defName}.");
                 }
-                finally
-                {
-                    Scribe.loader.FinalizeLoading();
-                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to load DefDataHolder from {filePath}: {ex}");
+            }
+            finally
+            {
+                Scribe.loader.FinalizeLoading();
             }
         }
 
@@ -266,6 +260,8 @@ namespace nuff.AutoPatcherCombatExtended
                     try
                     {
                         Scribe.saver.InitSaving(filePath, "DefDataHolder");
+                        string defType = ddh.GetType().AssemblyQualifiedName;
+                        Scribe_Values.Look(ref defType, "DefDataHolderType");
                         ddh.ExposeData();
                     }
                     catch (Exception ex)
