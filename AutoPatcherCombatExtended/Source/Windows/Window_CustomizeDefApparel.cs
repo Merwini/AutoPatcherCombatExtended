@@ -30,7 +30,7 @@ namespace nuff.AutoPatcherCombatExtended
             Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 150f - 17f, 35f), dataHolder.def.label);
+            Widgets.Label(new Rect(0f, 0f, inRect.width - 150f - 17f, 35f), $"{dataHolder.def.label} - {dataHolder.def.defName}");
             Text.Font = GameFont.Small;
             list.Gap(45);
 
