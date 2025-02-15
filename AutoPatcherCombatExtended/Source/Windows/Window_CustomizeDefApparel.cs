@@ -69,6 +69,8 @@ namespace nuff.AutoPatcherCombatExtended
 
             string modified_ShootingAccuracyPawnBuffer = dataHolder.modified_ShootingAccuracyPawn.ToString();
             list.TextFieldNumericLabeled("Pawn Shooting Accuracy Offset", ref dataHolder.modified_ShootingAccuracyPawn, ref modified_ShootingAccuracyPawnBuffer);
+            
+            list.End();
         }
     }
 }
