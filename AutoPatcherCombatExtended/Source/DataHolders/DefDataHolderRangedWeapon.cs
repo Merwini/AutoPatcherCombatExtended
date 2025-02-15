@@ -119,25 +119,13 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public override void AutoCalculate()
         {
-            if (weaponThingDef.defName == "Gun_FenrirSMG")
-            {
-                Log.Warning($"Starting autocalc on {def.defName}");
-            }
             //TODO may need to allow user to override gunKind for better recalculating
             gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
-            if (weaponThingDef.defName == "Gun_FenrirSMG")
-            {
-                Log.Warning($"gunKind {gunKind}");
-            }
             if (APCESettings.printLogs)
             {
                 Log.Message($"APCE thinks that gun {def.label} from {def.modContentPack.Name} is a gun of kind: " + gunKind.ToString());
             }
             CalculateWeaponTechMult();
-            if (weaponThingDef.defName == "Gun_FenrirSMG")
-            {
-                Log.Warning($"techmult {techMult}");
-            }
             if (gunKind == APCEConstants.gunKinds.Mortar)
             {
                 CalculateMortar();
@@ -152,23 +140,8 @@ namespace nuff.AutoPatcherCombatExtended
                     ModToolAtIndex(i);
                 }
             }
-            if (weaponThingDef.defName == "Gun_FenrirSMG")
-            {
-                foreach (var entry in modified_toolIds)
-                {
-                    Log.Warning(entry);
-                }
-            }
 
             CalculateStatBaseValues();
-            if (weaponThingDef.defName == "Gun_FenrirSMG")
-            {
-                Log.Warning($"shotspread {modified_shotSpread}");
-                Log.Warning($"sights {modified_sightsEfficiency}");
-                Log.Warning($"swap {modified_swayFactor}");
-                Log.Warning($"mass {modified_mass}");
-                Log.Warning($"bulk {modified_bulk}");
-            }
 
             if (gunKind == APCEConstants.gunKinds.BeamGun)
             {
@@ -176,12 +149,6 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             CalculateVerbPropValues();
-            if (weaponThingDef.defName == "Gun_FenrirSMG")
-            {
-                Log.Warning($"warmup {modified_warmupTime}");
-                Log.Warning($"burst {modified_burstShotCount}");
-                Log.Warning($"verbClass {modified_VerbClass}");
-            }
 
             if (gunKind == APCEConstants.gunKinds.Flamethrower)
             {
@@ -201,10 +168,6 @@ namespace nuff.AutoPatcherCombatExtended
             else
             {
                 CalculateGrenade();
-            }
-            if (weaponThingDef.defName == "Gun_FenrirSMG")
-            {
-                Log.Warning($"Autocalc on {def.defName} ended with ");
             }
         }
         public override void PostPatch()
