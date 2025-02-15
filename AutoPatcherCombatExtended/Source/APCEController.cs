@@ -321,12 +321,10 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass))
                     {
-                        //removing "no" condition, because unpatched pawns might just be inheriting from a patched base, so can't be sure
-                        //if (!thingDef.tools.NullOrEmpty() && thingDef.tools.Any(tool => tool is ToolCE))
-                        //{
-                        //    needsPatched = APCEConstants.NeedsPatch.no;
-                        //    Log.Warning($"pawn {thingDef.defName} returning no");
-                        //}
+                        if (!thingDef.tools.NullOrEmpty() && thingDef.tools.Any(tool => tool is ToolCE))
+                        {
+                            needsPatched = APCEConstants.NeedsPatch.unsure;
+                        }
                         if (!thingDef.tools.NullOrEmpty() && !thingDef.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.yes;
@@ -347,12 +345,19 @@ namespace nuff.AutoPatcherCombatExtended
                             needsPatched = APCEConstants.NeedsPatch.yes;
                         }
                     }
-                    //else default/unsure
+                    else if (hd.stages != null && hd.stages.Any(stage => stage.statOffsets != null && stage.statOffsets.Any(stat =>
+                           stat.stat == StatDefOf.ArmorRating_Sharp ||
+                           stat.stat == StatDefOf.ArmorRating_Blunt ||
+                           stat.stat == StatDefOf.ArmorRating_Heat)))
+                    {
+                        needsPatched = APCEConstants.NeedsPatch.unsure;
+                    }
+                    //implicit else ignore
                 }
                 /*
                 else if (ModLister.BiotechInstalled && def is GeneDef gene)
                 {
-                    //TODO check for genes that add tools
+                    //TODO check for genes that add tools / armor
                 }
                 */
                 else if (def is PawnKindDef pkd)

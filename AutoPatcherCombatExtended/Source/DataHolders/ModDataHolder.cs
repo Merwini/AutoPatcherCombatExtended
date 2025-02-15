@@ -137,7 +137,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
                 }
-                else
+                else if (need == APCEConstants.NeedsPatch.no || need == APCEConstants.NeedsPatch.unsure)
                 {
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
                 }
@@ -236,6 +236,16 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void RebuildDefsToPatchDict(List<string> namesList, List<string> typesList)
         {
+            //populate the dictionary with all patchable defs as "no", will be flipped the "yes" further below if appropriate
+            foreach (Def def in mod.AllDefs)
+            {
+                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                if (need != APCEConstants.NeedsPatch.ignore)
+                {
+                    defsToPatch[def] = APCEConstants.NeedsPatch.no;
+                }
+            }
+
             if (namesList.NullOrEmpty() || typesList.NullOrEmpty())
             {
                 return;
@@ -264,6 +274,7 @@ namespace nuff.AutoPatcherCombatExtended
                     Def foundDef = method.Invoke(null, new object[] { namesList[i] }) as Def;
                     if (foundDef != null)
                     {
+                        Log.Warning($"Adding def {foundDef.defName} to defsToPatch as yes");
                         defsToPatch[foundDef] = APCEConstants.NeedsPatch.yes;
                     }
                     else
@@ -273,7 +284,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else
                 {
-                    Log.Warning($"Could not find GetNamedSilentFail for type: {namesList[i]}");
+                    Log.Warning($"Could not find DefDatabase<T> for type: {defType}");
                 }
             }
 
@@ -283,6 +294,7 @@ namespace nuff.AutoPatcherCombatExtended
                 APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
                 if (need != APCEConstants.NeedsPatch.ignore && !defsToPatch.ContainsKey(def))
                 {
+                    Log.Warning($"Adding def {def.defName} to defsToPatch as no");
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
                 }
             }

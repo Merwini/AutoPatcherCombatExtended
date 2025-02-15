@@ -82,6 +82,13 @@
     <Compile Include="Source\Comps\CompReplaceMe.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDef.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDefApparel.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefBuilding_TurretGun.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefGene.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefHediff.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefMeleeWeapon.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefPawn.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefRangedWeapon.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefPawnKind.cs" />
     <Compile Include="Source\Windows\Window_DefFailure.cs" />
     <Compile Include="TrashFolder\GenerateAmmo.cs" />
     <Compile Include="Source\InjectedDefHasher.cs" />
