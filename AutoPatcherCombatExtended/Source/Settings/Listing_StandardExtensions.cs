@@ -307,7 +307,7 @@ namespace nuff.AutoPatcherCombatExtended
 					Widgets.DrawHighlightIfMouseover(rect: rowRect);
 					if (def == leftSelectedObject)
 						Widgets.DrawHighlightSelected(rect: rowRect);
-					Widgets.Label(rect: rowRect, label: def.label);
+					Widgets.Label(rect: rowRect, label: def.label + $" ({def.GetType().Name})");
 					if (Widgets.ButtonInvisible(butRect: rowRect))
 						leftSelectedObject = def;
 
@@ -336,7 +336,7 @@ namespace nuff.AutoPatcherCombatExtended
 					Widgets.DrawHighlightIfMouseover(rect: rowRect);
 					if (def == rightSelectedObject)
 						Widgets.DrawHighlightSelected(rect: rowRect);
-					Widgets.Label(rect: rowRect, label: def.label);
+					Widgets.Label(rect: rowRect, label: def.label + $" ({def.GetType().Name})");
 					if (Widgets.ButtonInvisible(butRect: rowRect))
 						rightSelectedObject = def;
 
