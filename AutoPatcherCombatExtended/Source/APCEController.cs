@@ -354,12 +354,16 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     //implicit else ignore
                 }
-                /*
                 else if (ModLister.BiotechInstalled && def is GeneDef gene)
                 {
-                    //TODO check for genes that add tools / armor
+                    if (gene.statOffsets != null && gene.statOffsets.Any(stat =>
+                           stat.stat == StatDefOf.ArmorRating_Sharp ||
+                           stat.stat == StatDefOf.ArmorRating_Blunt ||
+                           stat.stat == StatDefOf.ArmorRating_Heat))
+                    {
+                        needsPatched = APCEConstants.NeedsPatch.unsure;
+                    }
                 }
-                */
                 else if (def is PawnKindDef pkd)
                 {
                     if (pkd.race.race.intelligence != Intelligence.Animal)
