@@ -12,6 +12,8 @@ namespace nuff.AutoPatcherCombatExtended
     {
         DefDataHolderRangedWeapon dataHolder;
 
+        private Vector2 scrollPosition = Vector2.zero;
+
         public Window_CustomizeDefRangedWeapon(DefDataHolder defDataHolder) : base(defDataHolder)
         {
         }
@@ -25,23 +27,40 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.DoWindowContents(inRect);
             Listing_Standard list = new Listing_Standard();
+
+            // Begin main listing (Header)
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(0f, 0f, inRect.width - 150f - 17f, 35f), $"{dataHolder.def.label} - {dataHolder.def.defName}");
             Text.Font = GameFont.Small;
+            list.End();
             list.Gap(45);
 
+            // Define innerRect and scrolling parameters
+            Rect outerRect = new Rect(inRect.x, inRect.y + 45f, inRect.width, inRect.height - 145f);
+            Rect innerRect = outerRect.ContractedBy(10f); // Add some padding
+            float scrollHeight = 9999f; // Temporarily large to measure actual content height
+            Rect viewRect = new Rect(0, 0, innerRect.width - 16f, scrollHeight);
+
+            // Begin measuring scroll height
+            Widgets.BeginScrollView(innerRect, ref scrollPosition, viewRect);
+            list.Begin(viewRect);
+
+            // List of fields
             string modified_massBuffer = dataHolder.modified_mass.ToString();
             list.TextFieldNumericLabeled("Mass", ref dataHolder.modified_mass, ref modified_massBuffer);
 
             string modified_bulkBuffer = dataHolder.modified_bulk.ToString();
             list.TextFieldNumericLabeled("Bulk", ref dataHolder.modified_bulk, ref modified_bulkBuffer);
 
-            string modified_rangedWeaponCooldownBuffer = dataHolder.modified_rangedWeaponCooldown.ToString();
-            list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_rangedWeaponCooldown, ref modified_rangedWeaponCooldownBuffer);
-
             string modified_workToMakeBuffer = dataHolder.modified_workToMake.ToString();
             list.TextFieldNumericLabeled("Work To Make", ref dataHolder.modified_workToMake, ref modified_workToMakeBuffer);
+
+            string modified_weaponToughnessBuffer = dataHolder.modified_weaponToughness.ToString();
+            list.TextFieldNumericLabeled("Weapon Toughness", ref dataHolder.modified_weaponToughness, ref modified_weaponToughnessBuffer);
+
+            string modified_rangedWeaponCooldownBuffer = dataHolder.modified_rangedWeaponCooldown.ToString();
+            list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_rangedWeaponCooldown, ref modified_rangedWeaponCooldownBuffer);
 
             string modified_sightsEfficiencyBuffer = dataHolder.modified_sightsEfficiency.ToString();
             list.TextFieldNumericLabeled("Sights Efficiency", ref dataHolder.modified_sightsEfficiency, ref modified_sightsEfficiencyBuffer);
@@ -51,28 +70,6 @@ namespace nuff.AutoPatcherCombatExtended
 
             string modified_swayFactorBuffer = dataHolder.modified_swayFactor.ToString();
             list.TextFieldNumericLabeled("Sway Factor", ref dataHolder.modified_swayFactor, ref modified_swayFactorBuffer);
-
-            string modified_weaponToughnessBuffer = dataHolder.modified_weaponToughness.ToString();
-            list.TextFieldNumericLabeled("Weapon Toughness", ref dataHolder.modified_weaponToughness, ref modified_weaponToughnessBuffer);
-
-            // Modified VerbProps
-            string modified_muzzleFlashScaleBuffer = dataHolder.modified_muzzleFlashScale.ToString();
-            list.TextFieldNumericLabeled("Muzzle Flash Scale", ref dataHolder.modified_muzzleFlashScale, ref modified_muzzleFlashScaleBuffer);
-
-            string modified_ticksBetweenBurstShotsBuffer = dataHolder.modified_ticksBetweenBurstShots.ToString();
-            list.TextFieldNumericLabeled("Ticks Between Burst Shots", ref dataHolder.modified_ticksBetweenBurstShots, ref modified_ticksBetweenBurstShotsBuffer);
-
-            string modified_warmupTimeBuffer = dataHolder.modified_warmupTime.ToString();
-            list.TextFieldNumericLabeled("Warmup Time", ref dataHolder.modified_warmupTime, ref modified_warmupTimeBuffer);
-
-            string modified_burstShotCountBuffer = dataHolder.modified_burstShotCount.ToString();
-            list.TextFieldNumericLabeled("Burst Shot Count", ref dataHolder.modified_burstShotCount, ref modified_burstShotCountBuffer);
-
-            string modified_recoilAmountBuffer = dataHolder.modified_recoilAmount.ToString();
-            list.TextFieldNumericLabeled("Recoil Amount", ref dataHolder.modified_recoilAmount, ref modified_recoilAmountBuffer);
-
-            string modified_rangeBuffer = dataHolder.modified_range.ToString();
-            list.TextFieldNumericLabeled("Range", ref dataHolder.modified_range, ref modified_rangeBuffer);
 
             // Magazine & Reload
             string modified_magazineSizeBuffer = dataHolder.modified_magazineSize.ToString();
@@ -91,18 +88,18 @@ namespace nuff.AutoPatcherCombatExtended
             list.TextFieldNumericLabeled("Loaded Ammo Bulk Factor", ref dataHolder.modified_loadedAmmoBulkFactor, ref modified_loadedAmmoBulkFactorBuffer);
 
             // Aimed Burst & AI Settings
-            string modified_aimedBurstShotCountBuffer = dataHolder.modified_aimedBurstShotCount.ToString();
-            list.TextFieldNumericLabeled("Aimed Burst Shot Count", ref dataHolder.modified_aimedBurstShotCount, ref modified_aimedBurstShotCountBuffer);
-
             list.CheckboxLabeled("AI Use Burst Mode", ref dataHolder.modified_aiUseBurstMode);
             list.CheckboxLabeled("No Single Shot", ref dataHolder.modified_noSingleShot);
             list.CheckboxLabeled("No Snap Shot", ref dataHolder.modified_noSnapShot);
-
-            //TODO modified_recoilPattern
-            //TODO modified_AmmoSetDef
-            //TODO modified_aiAimMode
+            list.CheckboxLabeled("Uses Ammo", ref dataHolder.modified_usesAmmo);
 
             list.End();
+
+            // Update the actual scrollHeight after layout
+            scrollHeight = list.CurHeight + 20f; // Add padding to prevent clipping
+            viewRect.height = scrollHeight;
+
+            Widgets.EndScrollView();
         }
     }
 }

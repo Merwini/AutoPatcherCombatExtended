@@ -59,6 +59,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal RecoilPattern modified_recoilPattern = RecoilPattern.None;
 
         //modified comp stuff
+        internal bool modified_usesAmmo = true;
         internal int modified_magazineSize;
         internal int modified_ammoGenPerMagOverride;
         internal float modified_reloadTime;
@@ -145,6 +146,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (gunKind == APCEConstants.gunKinds.BeamGun)
             {
+                modified_usesAmmo = false;
                 return;
             }
 
@@ -424,19 +426,27 @@ namespace nuff.AutoPatcherCombatExtended
                 };
             }
 
-            CompProperties_AmmoUser newComp_AmmoUser = new CompProperties_AmmoUser()
-            {
-                magazineSize = modified_magazineSize,
-                reloadTime = modified_reloadTime,
-                reloadOneAtATime = modified_reloadOneAtATime,
-                throwMote = modified_throwMote,
-                ammoSet = modified_AmmoSetDef,
-                //loadedAmmoBulkFactor = modified_loadedAmmoBulkFactor //TODO
-            };
-            weaponThingDef.comps.Add(newComp_AmmoUser);
+            //remove existing CompProperties_AmmoUser
+            weaponThingDef.comps.RemoveAll(c => c is CompProperties_AmmoUser);
 
+            if (modified_usesAmmo)
+            {
+                CompProperties_AmmoUser newComp_AmmoUser = new CompProperties_AmmoUser()
+                {
+                    magazineSize = modified_magazineSize,
+                    reloadTime = modified_reloadTime,
+                    reloadOneAtATime = modified_reloadOneAtATime,
+                    throwMote = modified_throwMote,
+                    ammoSet = modified_AmmoSetDef,
+                    //loadedAmmoBulkFactor = modified_loadedAmmoBulkFactor //TODO
+                };
+                weaponThingDef.comps.Add(newComp_AmmoUser);
+            }
+            
             if (gunKind == APCEConstants.gunKinds.Mortar)
                 return;
+
+            weaponThingDef.comps.RemoveAll(c => c is CompProperties_FireModes);
 
             CompProperties_FireModes newComp_FireModes = new CompProperties_FireModes()
             {
@@ -450,6 +460,11 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public void PatchVerb()
         {
+            if (original_VerbProperties.verbClass == typeof(Verb_ShootBeam))
+            {
+                return;
+            }
+
             VerbPropertiesCE newVerbPropsCE = new VerbPropertiesCE();
             DataHolderUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
 
