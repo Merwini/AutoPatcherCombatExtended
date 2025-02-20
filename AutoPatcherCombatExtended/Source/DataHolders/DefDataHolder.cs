@@ -59,7 +59,6 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     StringifyTool();
                 }
-                Scribe_Defs.Look(ref def, "def");
                 Scribe_Values.Look(ref defName, "defName");
                 Scribe_Values.Look(ref parentModPackageId, "parentModPackageId");
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
@@ -193,7 +192,7 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ToolLinkedBPGStrings.Clear();
             for (int i = 0; i < modified_ToolLinkedBodyPartsGroupDefs.Count; i++)
             {
-                modified_ToolLinkedBPGStrings.Add(modified_ToolLinkedBodyPartsGroupDefs[i].ToString());
+                modified_ToolLinkedBPGStrings.Add(modified_ToolLinkedBodyPartsGroupDefs[i]?.ToString() ?? "null"); //TODO maybe add actual null instead of the word "null"?
             }
         }
 
@@ -220,6 +219,12 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ToolLinkedBodyPartsGroupDefs.Clear();
             for (int i = 0; i < modified_ToolLinkedBPGStrings.Count; i++)
             {
+                if (modified_ToolLinkedBPGStrings[i] == "null") //TODO see todo in Stringify about null vs "null"
+                {
+                    modified_ToolLinkedBodyPartsGroupDefs.Add(null);
+                    continue;
+                }
+
                 BodyPartGroupDef bpgd = DefDatabase<BodyPartGroupDef>.GetNamed(modified_ToolLinkedBPGStrings[i]);
                 if (bpgd == null)
                 {
