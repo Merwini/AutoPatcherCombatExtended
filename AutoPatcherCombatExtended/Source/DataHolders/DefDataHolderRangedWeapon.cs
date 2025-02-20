@@ -172,14 +172,7 @@ namespace nuff.AutoPatcherCombatExtended
                 CalculateGrenade();
             }
         }
-        public override void PostPatch()
-        {
-            if (modified_AmmoSetDef == null && modified_AmmoSetDefString != null)
-            {
-                modified_AmmoSetDef = DefDatabase<AmmoSetDef>.AllDefsListForReading.First(asd => asd.defName.Equals(modified_AmmoSetDefString));
-            }
-            base.PostPatch();
-        }
+        
 
         public override void PrePatch()
         {
@@ -193,6 +186,15 @@ namespace nuff.AutoPatcherCombatExtended
                 GenerateAmmoSet();
             }
             base.PrePatch();
+        }
+
+        public override void PostPatch()
+        {
+            if (modified_AmmoSetDef == null && modified_AmmoSetDefString != null)
+            {
+                modified_AmmoSetDef = DefDatabase<AmmoSetDef>.AllDefsListForReading.First(asd => asd.defName.Equals(modified_AmmoSetDefString));
+            }
+            base.PostPatch();
         }
 
         public override void Patch()
@@ -238,10 +240,15 @@ namespace nuff.AutoPatcherCombatExtended
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
-                if (Scribe.mode == LoadSaveMode.Saving && modified_AmmoSetDef != null)
+                if (Scribe.mode == LoadSaveMode.Saving)
                 {
-                    modified_AmmoSetDefString = modified_AmmoSetDef.ToString();
+                    if (modified_AmmoSetDef != null)
+                    {
+                        //doesn't need to be destringified during loading, since PrePatch() will do that
+                        modified_AmmoSetDefString = modified_AmmoSetDef.ToString();
+                    }
                 }
+                
                 Scribe_Defs.Look(ref weaponThingDef, "def");
                 Scribe_Values.Look(ref gunKind, "gunKind");
 
@@ -254,7 +261,8 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_swayFactor, "modified_swayFactor", 2f);
                 Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness", 1f);
 
-                Scribe_Deep.Look(ref modified_VerbClass, "modified_VerbClass");
+                string verbClassName = modified_VerbClass?.AssemblyQualifiedName;
+                Scribe_Values.Look(ref verbClassName, "modified_VerbClass");
                 Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale", 9);
                 Scribe_Values.Look(ref modified_ticksBetweenBurstShots, "modified_ticksBetweenBurstShots", 6);
                 Scribe_Values.Look(ref modified_warmupTime, "modified_warmupTime", 1f);
@@ -280,6 +288,18 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit");
                 Scribe_Values.Look(ref modified_grenadeDamage, "modified_grenadeDamage");
 
+                if (Scribe.mode == LoadSaveMode.LoadingVars)
+                {
+                    if (!string.IsNullOrEmpty(verbClassName))
+                    {
+                        modified_VerbClass = Type.GetType(verbClassName);
+
+                        if (modified_VerbClass == null)
+                        {
+                            Log.Warning($"Failed to load modified_VerbClass: {verbClassName}. Type not found.");
+                        }
+                    }
+                }
                 //if (Scribe.mode == LoadSaveMode.LoadingVars && gunKind == APCEConstants.gunKinds.Grenade)
                 //{
                 //    modified_ammoDef = GenerateGrenadeAmmoDef();
