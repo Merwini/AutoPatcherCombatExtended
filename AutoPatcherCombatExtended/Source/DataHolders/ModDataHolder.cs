@@ -274,7 +274,6 @@ namespace nuff.AutoPatcherCombatExtended
                     Def foundDef = method.Invoke(null, new object[] { namesList[i] }) as Def;
                     if (foundDef != null)
                     {
-                        Log.Warning($"Adding def {foundDef.defName} to defsToPatch as yes");
                         defsToPatch[foundDef] = APCEConstants.NeedsPatch.yes;
                     }
                     else
@@ -294,7 +293,6 @@ namespace nuff.AutoPatcherCombatExtended
                 APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
                 if (need != APCEConstants.NeedsPatch.ignore && !defsToPatch.ContainsKey(def))
                 {
-                    Log.Warning($"Adding def {def.defName} to defsToPatch as no");
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
                 }
             }

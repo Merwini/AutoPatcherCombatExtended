@@ -1,9 +1,9 @@
 ﻿
-TODO Start writing CustomizeMod windows
-TODO test def customizing and save/load
+TODO Customize AmmoSet window
 TODO fix mod suggest suggest window suggesting to remove mods that are already compatible because they loaded during SaveLoad
-TODO rewrite the Loading methods for saved DefDataHolders. Need to figure out if they should call GetOriginalData in their default constructor, or if SaveLoad should call it after all are loaded (might cause problems with Implied Defs)
-
+TODO Building_TurretGun not showing up in Deflist
+TODO solution to existing loaded guns breaking if AmmoSet is changed, unable to unload
+TODO look into Index Out oF Range when repatching AmmoSets (in nuff.AutoPatcherCombatExtended.DefDataHolderAmmoSet.BuildOrModifyProjectiles)
 
 
 	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list
@@ -27,7 +27,6 @@ TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon
 	DONE handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
 	DONE window that adds/removes mods from the patch list should WriteSettings
 	DONE option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
-TODO check for genes that add verbs
 	DONE fix scrollview for showModsToRemove
 TODO search for "orphan" defs without an associated modContentPack, usually caused by adding defs via PatchOperation. Popup asking player if they want to assign these to an active mod.
 TODO Property for returning modified mass and bulk that checks if a limiter is set

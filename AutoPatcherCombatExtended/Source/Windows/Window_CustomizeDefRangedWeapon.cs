@@ -62,6 +62,12 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_rangedWeaponCooldownBuffer = dataHolder.modified_rangedWeaponCooldown.ToString();
             list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_rangedWeaponCooldown, ref modified_rangedWeaponCooldownBuffer);
 
+            string modified_burstShotCountBuffer = dataHolder.modified_burstShotCount.ToString();
+            list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_burstShotCount, ref modified_burstShotCountBuffer);
+
+            string modified_aimedBurstShotCountBuffer = dataHolder.modified_aimedBurstShotCount.ToString();
+            list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_aimedBurstShotCount, ref modified_aimedBurstShotCountBuffer);
+
             string modified_sightsEfficiencyBuffer = dataHolder.modified_sightsEfficiency.ToString();
             list.TextFieldNumericLabeled("Sights Efficiency", ref dataHolder.modified_sightsEfficiency, ref modified_sightsEfficiencyBuffer);
 
