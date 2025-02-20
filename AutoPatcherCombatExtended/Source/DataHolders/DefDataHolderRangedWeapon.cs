@@ -416,6 +416,7 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_sightsEfficiency);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_shotSpread);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_swayFactor);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_burstShotCount);
             if (stuffed)
             {
                 DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_weaponToughness);
