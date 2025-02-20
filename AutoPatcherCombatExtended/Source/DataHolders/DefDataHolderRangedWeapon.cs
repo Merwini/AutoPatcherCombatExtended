@@ -176,10 +176,10 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void PrePatch()
         {
-            //try again to find the AmmoSetDef, and generate a new one if unable to
+            //try to find the AmmoSetDef, and generate a new one if unable to
             if (modified_AmmoSetDef == null && modified_AmmoSetDefString != null)
             {
-                modified_AmmoSetDef = DefDatabase<AmmoSetDef>.AllDefsListForReading.First(asd => asd.defName.Equals(modified_AmmoSetDefString));
+                modified_AmmoSetDef = DefDatabase<AmmoSetDef>.GetNamedSilentFail(modified_AmmoSetDefString);
             }
             if (modified_AmmoSetDef == null && gunKind != APCEConstants.gunKinds.Grenade && gunKind != APCEConstants.gunKinds.BeamGun)
             {
@@ -252,30 +252,30 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Defs.Look(ref weaponThingDef, "def");
                 Scribe_Values.Look(ref gunKind, "gunKind");
 
-                Scribe_Values.Look(ref modified_mass, "modified_mass", original_Mass);
-                Scribe_Values.Look(ref modified_bulk, "modified_bulk", 1f);
-                Scribe_Values.Look(ref modified_rangedWeaponCooldown, "modified_rangedWeaponCooldown", 1f);
-                Scribe_Values.Look(ref modified_workToMake, "modified_workToMake", 1000);
-                Scribe_Values.Look(ref modified_sightsEfficiency, "modified_sightsEfficiency", 1f);
-                Scribe_Values.Look(ref modified_shotSpread, "modified_shotSpread", 0.1f);
-                Scribe_Values.Look(ref modified_swayFactor, "modified_swayFactor", 2f);
-                Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness", 1f);
+                Scribe_Values.Look(ref modified_mass, "modified_mass");
+                Scribe_Values.Look(ref modified_bulk, "modified_bulk");
+                Scribe_Values.Look(ref modified_rangedWeaponCooldown, "modified_rangedWeaponCooldown");
+                Scribe_Values.Look(ref modified_workToMake, "modified_workToMake");
+                Scribe_Values.Look(ref modified_sightsEfficiency, "modified_sightsEfficiency");
+                Scribe_Values.Look(ref modified_shotSpread, "modified_shotSpread");
+                Scribe_Values.Look(ref modified_swayFactor, "modified_swayFactor");
+                Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness");
 
                 string verbClassName = modified_VerbClass?.AssemblyQualifiedName;
                 Scribe_Values.Look(ref verbClassName, "modified_VerbClass");
-                Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale", 9);
-                Scribe_Values.Look(ref modified_ticksBetweenBurstShots, "modified_ticksBetweenBurstShots", 6);
-                Scribe_Values.Look(ref modified_warmupTime, "modified_warmupTime", 1f);
-                Scribe_Values.Look(ref modified_burstShotCount, "modified_burstShotCount", 1);
-                Scribe_Values.Look(ref modified_recoilAmount, "modified_recoilAmount", 0);
+                Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale");
+                Scribe_Values.Look(ref modified_ticksBetweenBurstShots, "modified_ticksBetweenBurstShots");
+                Scribe_Values.Look(ref modified_warmupTime, "modified_warmupTime");
+                Scribe_Values.Look(ref modified_burstShotCount, "modified_burstShotCount");
+                Scribe_Values.Look(ref modified_recoilAmount, "modified_recoilAmount");
                 Scribe_Values.Look(ref modified_recoilPattern, "modified_recoilPattern", RecoilPattern.None);
 
                 Scribe_Values.Look(ref modified_magazineSize, "modified_magazineSize", 1);
-                Scribe_Values.Look(ref modified_ammoGenPerMagOverride, "modified_ammoGenPerMagOverride", 0);
-                Scribe_Values.Look(ref modified_reloadTime, "modified_reloadTime", 4);
-                Scribe_Values.Look(ref modified_throwMote, "modified_throwMote", false);
-                Scribe_Values.Look(ref modified_reloadOneAtATime, "modified_reloadOneAtATime", false);
-                Scribe_Values.Look(ref modified_loadedAmmoBulkFactor, "modified_loadedAmmoBulkFactor", 0);
+                Scribe_Values.Look(ref modified_ammoGenPerMagOverride, "modified_ammoGenPerMagOverride");
+                Scribe_Values.Look(ref modified_reloadTime, "modified_reloadTime");
+                Scribe_Values.Look(ref modified_throwMote, "modified_throwMote");
+                Scribe_Values.Look(ref modified_reloadOneAtATime, "modified_reloadOneAtATime");
+                Scribe_Values.Look(ref modified_loadedAmmoBulkFactor, "modified_loadedAmmoBulkFactor");
                 Scribe_Values.Look(ref modified_AmmoSetDefString, "modified_AmmoSetDefString");
 
                 Scribe_Values.Look(ref modified_aimedBurstShotCount, "modified_aimedBurstShotCount");
