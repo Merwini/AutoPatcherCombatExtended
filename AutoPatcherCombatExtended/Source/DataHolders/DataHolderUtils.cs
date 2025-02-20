@@ -268,9 +268,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             // Approximate weapon thickness with the bulk of the weapon.
             // Longswords get about 2.83mm, knives get 1mm, spears get about 3.162mm
-            float weaponThickness = def.statBases
-                .Find(statMod => statMod.stat == CE_StatDefOf.Bulk)?.value
-                ?? 0f;
+            float weaponThickness = bulk;
                 
             weaponThickness = Mathf.Sqrt(weaponThickness);
 
