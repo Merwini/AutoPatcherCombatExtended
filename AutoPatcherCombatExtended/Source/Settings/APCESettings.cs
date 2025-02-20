@@ -12,6 +12,7 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class APCESettings : ModSettings
     {
+        //TODO can probably move these into the window classes
         public static APCEConstants.SettingsTabs settingsTabs = APCEConstants.SettingsTabs.General_Settings;
         public static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
         public static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;

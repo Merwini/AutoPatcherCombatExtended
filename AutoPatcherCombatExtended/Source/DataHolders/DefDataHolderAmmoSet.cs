@@ -120,7 +120,17 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            weaponDef = def as ThingDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && weaponDef == null)
+            {
+                this.weaponDef = def as ThingDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (weaponDef != null && def == null)
+            {
+                def = weaponDef;
+            }
+
             if (gunKind == APCEConstants.gunKinds.Default)
             {
                 gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
@@ -804,11 +814,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void Patch()
         {
-            //construct secondaryDamages
-            //construct projectiles
-            //construct AmmoLinks
-            //construct AmmoSet
-
             BuildSecondaryDamages();
 
             BuildOrModifyProjectiles();
@@ -832,8 +837,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void ExposeData()
         {
-            base.ExposeData();
-
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
@@ -842,7 +845,7 @@ namespace nuff.AutoPatcherCombatExtended
                     Stringify();
                 }
 
-                Scribe_Defs.Look(ref def, "def");
+                Scribe_Defs.Look(ref weaponDef, "def");
                 Scribe_Values.Look(ref gunKind, "gunKind");
 
                 // Strings related to AmmoSetDef
@@ -883,6 +886,7 @@ namespace nuff.AutoPatcherCombatExtended
                     Patch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
                 }
             }
+            base.ExposeData();
         }
 
         public void BuildSecondaryDamages()

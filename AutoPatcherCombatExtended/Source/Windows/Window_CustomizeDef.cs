@@ -13,7 +13,6 @@ namespace nuff.AutoPatcherCombatExtended
     {
         DefDataHolder dataHolder;
 
-        //logic for all Def types in here, or separate classes and have the previous window select which window to open?
         public Window_CustomizeDef(DefDataHolder dataHolder)
         {
             this.dataHolder = dataHolder;
@@ -48,12 +47,6 @@ namespace nuff.AutoPatcherCombatExtended
             dataHolder.PrePatch();
             dataHolder.Patch();
             dataHolder.PostPatch();
-        }
-
-        public void DiscardChanges()
-        {
-            //TODO
-            //Set DefDataHolder.isCustomized back to false so it recalcs when settings are written
         }
     }
 }

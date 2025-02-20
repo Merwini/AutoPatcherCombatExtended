@@ -93,6 +93,17 @@ namespace nuff.AutoPatcherCombatExtended
             list.CheckboxLabeled("No Snap Shot", ref dataHolder.modified_noSnapShot);
             list.CheckboxLabeled("Uses Ammo", ref dataHolder.modified_usesAmmo);
 
+            if (dataHolder.modified_usesAmmo)
+            {
+                list.Gap();
+                list.Label("AmmoSet to use:");
+                if (Widgets.ButtonText(new Rect(list.curX, list.curY, 400f, 30f), dataHolder.modified_AmmoSetDef.defName))
+                {
+                    Find.WindowStack.Add(new Window_SelectAmmoSet(dataHolder));
+                }
+                list.Gap(35f);
+            }
+
             list.End();
 
             // Update the actual scrollHeight after layout

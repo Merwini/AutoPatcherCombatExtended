@@ -90,6 +90,7 @@
     <Compile Include="Source\Windows\Window_CustomizeDefRangedWeapon.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDefPawnKind.cs" />
     <Compile Include="Source\Windows\Window_DefFailure.cs" />
+    <Compile Include="Source\Windows\Window_SelectAmmoSet.cs" />
     <Compile Include="TrashFolder\GenerateAmmo.cs" />
     <Compile Include="Source\InjectedDefHasher.cs" />
     <Compile Include="Source\Patchers\PatchGrenade.cs" />

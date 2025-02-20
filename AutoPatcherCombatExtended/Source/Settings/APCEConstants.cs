@@ -122,5 +122,11 @@ namespace nuff.AutoPatcherCombatExtended
             Vehicle,
             VehicleTurret
         }
+
+        public enum DefNameOrLabel
+        {
+            defName,
+            label
+        }
     }
 }
