@@ -62,6 +62,8 @@
     <Compile Include="Source\APCESaveLoad.cs" />
     <Compile Include="Source\CompatibilityPatches.cs" />
     <Compile Include="Source\APCEHarmonyPatches.cs" />
+    <Compile Include="Source\Comps\CompGunAmmoFixer.cs" />
+    <Compile Include="Source\Comps\CompProperties_GunAmmoFixer.cs" />
     <Compile Include="Source\DataHolders\DefDataHolder.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderAmmoSet.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderApparel.cs" />
