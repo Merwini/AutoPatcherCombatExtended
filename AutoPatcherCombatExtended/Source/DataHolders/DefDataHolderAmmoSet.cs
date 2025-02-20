@@ -165,7 +165,7 @@ namespace nuff.AutoPatcherCombatExtended
                 original_damage = 50;
             }
 
-            ClearModifiedProjectileLists();
+            ClearLists();
 
             switch (gunKind)
             {
@@ -219,12 +219,12 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        private void ClearModifiedProjectileLists()
+        private void ClearLists()
         {
-            List<string> modified_projectileNames = new List<string>();
-            List<string> modified_projectileLabels = new List<string>();
-            List<APCEConstants.ThingClasses> modified_thingClasses = new List<APCEConstants.ThingClasses>();
-
+            modified_thingClasses.Clear();
+            modified_secondaryDamages.Clear();
+            modified_projectileNames.Clear();
+            modified_projectileLabels.Clear();
             modified_damageDefs.Clear();
             modified_damageDefStrings.Clear();
             modified_damages.Clear();
@@ -239,6 +239,8 @@ namespace nuff.AutoPatcherCombatExtended
             modified_dangerFactors.Clear();
             modified_ai_IsIncendiary.Clear();
             modified_applyDamageToExplosionCellsNeighbors.Clear();
+
+            modified_ammoDefs.Clear();
         }
 
         public void CalculateAmmoBow()
@@ -917,6 +919,7 @@ namespace nuff.AutoPatcherCombatExtended
         public void BuildOrModifyProjectiles()
         {
             modified_projectiles.Clear();
+
             for (int i = 0; i < modified_projectileNames.Count; i++)
             {
                 ProjectilePropertiesCE newProjProps = new ProjectilePropertiesCE()
@@ -936,9 +939,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                     secondaryDamage = modified_secondaryDamages[i] //this should have been populated already at this point
                 };
-
                 DataHolderUtils.SetDamage(newProjProps, modified_damages[i]);
-
                 ThingDef td = DefDatabase<ThingDef>.GetNamedSilentFail(modified_projectileNames[i]);
                 if (td != null)
                 {
