@@ -63,8 +63,6 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref parentModPackageId, "parentModPackageId");
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
 
-                Scribe_Values.Look(ref techMult, "techMult", 1f);
-
                 Scribe_Collections.Look(ref modified_toolIds, "toolIds", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ToolCapacityStrings, "toolCapacityStrings", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ToolLinkedBPGStrings, "toolLinkedBPGStrings", LookMode.Value);

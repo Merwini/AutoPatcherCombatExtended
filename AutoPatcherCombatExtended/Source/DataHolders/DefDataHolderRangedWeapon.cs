@@ -269,6 +269,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_burstShotCount, "modified_burstShotCount");
                 Scribe_Values.Look(ref modified_recoilAmount, "modified_recoilAmount");
                 Scribe_Values.Look(ref modified_recoilPattern, "modified_recoilPattern", RecoilPattern.None);
+                Scribe_Values.Look(ref modified_range, "modified_range");
 
                 Scribe_Values.Look(ref modified_magazineSize, "modified_magazineSize", 1);
                 Scribe_Values.Look(ref modified_ammoGenPerMagOverride, "modified_ammoGenPerMagOverride");
@@ -489,6 +490,7 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
 
             newVerbPropsCE.ticksBetweenBurstShots = modified_ticksBetweenBurstShots;
+            newVerbPropsCE.range = modified_range;
             newVerbPropsCE.warmupTime = modified_warmupTime;
             newVerbPropsCE.burstShotCount = modified_burstShotCount;
             newVerbPropsCE.recoilPattern = modified_recoilPattern;
@@ -509,6 +511,8 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             modified_ticksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
+
+            modified_range = original_VerbProperties.range;
 
             //if warmupTime is too low, some weapons will get stuck permanently unable to fire, since it fires when the timer ticks from 1 to 0, not when it is AT 0
             modified_warmupTime = original_VerbProperties.warmupTime;
