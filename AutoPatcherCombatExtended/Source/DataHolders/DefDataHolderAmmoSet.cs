@@ -807,10 +807,6 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
 
-            modified_secondaryDamageDefs.Add(secondaryDamageDefs);
-            modified_secondaryDamageAmounts.Add(secondaryDamageAmounts);
-            modified_secondaryDamageChances.Add(secondaryDamageChances);
-
             return;
         }
 
@@ -859,32 +855,35 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Collections.Look(ref modified_ammoDefs, "modified_ammoDefs");
 
                 //Projectile things
-                Scribe_Collections.Look(ref modified_projectileNames, "modified_projectileNames");
-                Scribe_Collections.Look(ref modified_projectileLabels, "modified_projectileLabels");
-                Scribe_Collections.Look(ref modified_thingClasses, "modified_thingClasses");
+                Scribe_Collections.Look(ref modified_projectileNames, "modified_projectileNames", LookMode.Value);
+                Scribe_Collections.Look(ref modified_projectileLabels, "modified_projectileLabels", LookMode.Value);
+                Scribe_Collections.Look(ref modified_thingClasses, "modified_thingClasses", LookMode.Value);
 
                 //Projectile Properties
-                Scribe_Collections.Look(ref modified_damageDefStrings, "modified_damageDefNames");
-                Scribe_Collections.Look(ref modified_damages, "modified_damages");
-                Scribe_Collections.Look(ref modified_armorPenetrationSharps, "modified_armorPenetrationSharps");
-                Scribe_Collections.Look(ref modified_armorPenetrationBlunts, "modified_armorPenetrationBlunts");
-                Scribe_Collections.Look(ref modified_speeds, "modified_speeds");
-                Scribe_Collections.Look(ref modified_explosionRadii, "modified_explosionRadii");
-                Scribe_Collections.Look(ref modified_pelletCounts, "modified_pelletCounts");
-                Scribe_Collections.Look(ref modified_spreadMults, "modified_spreadMults");
-                Scribe_Collections.Look(ref modified_empShieldBreakChances, "modified_empShieldBreakChances");
-                Scribe_Collections.Look(ref modified_suppressionFactors, "modified_suppressionFactors");
-                Scribe_Collections.Look(ref modified_dangerFactors, "modified_dangerFactors");
-                Scribe_Collections.Look(ref modified_ai_IsIncendiary, "modified_ai_IsIncendiary");
-                Scribe_Collections.Look(ref modified_applyDamageToExplosionCellsNeighbors, "modified_applyDamageToExplosionCellsNeighbors");
+                //Scribe_Collections.Look(ref modified_damageDefStrings, "modified_damageDefNames", LookMode.Value);
+                Scribe_Collections.Look(ref modified_damageDefs, "modified_damageDefs");
+                Scribe_Collections.Look(ref modified_damages, "modified_damages", LookMode.Value);
+                Scribe_Collections.Look(ref modified_armorPenetrationSharps, "modified_armorPenetrationSharps", LookMode.Value);
+                Scribe_Collections.Look(ref modified_armorPenetrationBlunts, "modified_armorPenetrationBlunts", LookMode.Value);
+                Scribe_Collections.Look(ref modified_speeds, "modified_speeds", LookMode.Value);
+                Scribe_Collections.Look(ref modified_explosionRadii, "modified_explosionRadii", LookMode.Value);
+                Scribe_Collections.Look(ref modified_pelletCounts, "modified_pelletCounts", LookMode.Value);
+                Scribe_Collections.Look(ref modified_spreadMults, "modified_spreadMults", LookMode.Value);
+                Scribe_Collections.Look(ref modified_empShieldBreakChances, "modified_empShieldBreakChances", LookMode.Value);
+                Scribe_Collections.Look(ref modified_suppressionFactors, "modified_suppressionFactors", LookMode.Value);
+                Scribe_Collections.Look(ref modified_dangerFactors, "modified_dangerFactors", LookMode.Value);
+                Scribe_Collections.Look(ref modified_ai_IsIncendiary, "modified_ai_IsIncendiary", LookMode.Value);
+                Scribe_Collections.Look(ref modified_applyDamageToExplosionCellsNeighbors, "modified_applyDamageToExplosionCellsNeighbors", LookMode.Value);
                 //Secondary Damages
-                Scribe_Collections.Look(ref modified_secondaryDamageDefStrings, "modified_secondaryDamageDefStrings");
-                Scribe_Collections.Look(ref modified_secondaryDamageAmounts, "modified_secondaryDamageAmounts");
-                Scribe_Collections.Look(ref modified_secondaryDamageChances, "modified_secondaryDamageChances");
+                //Scribe_Collections.Look(ref modified_secondaryDamageDefStrings, "modified_secondaryDamageDefStrings", LookMode.Value);
+                Scribe_Collections.LookListOfLists(ref modified_secondaryDamageDefs, true, "modified_secondaryDamageDefs", LookMode.Def);
+                Scribe_Collections.Look(ref modified_secondaryDamageAmounts, "modified_secondaryDamageAmounts", LookMode.Value);
+                Scribe_Collections.Look(ref modified_secondaryDamageChances, "modified_secondaryDamageChances", LookMode.Value);
 
                 if (Scribe.mode == LoadSaveMode.LoadingVars)
                 {
-                    Destringify();
+                    modData = APCESettings.modDataDict[weaponDef.modContentPack.PackageId];
+                    //Destringify();
                     Patch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
                 }
             }
@@ -982,7 +981,8 @@ namespace nuff.AutoPatcherCombatExtended
             }
             newProj.graphicData.shaderType = ShaderTypeDefOf.Transparent;
             newProj.graphicData.graphicClass = typeof(Graphic_Single);
-            newProj.graphicData.texPath = oldProj.graphicData.texPath; //TODO modifiable texPath //TODO handle VE's stupid fucking graphicData subclass
+            //grab from weaponDef directly since GetOriginalData isn't run during load, but weaponDef is saved
+            newProj.graphicData.texPath = weaponDef.Verbs[0].defaultProjectile.graphicData.texPath; //TODO modifiable texPath //TODO handle VE's graphicData subclass
             newProj.projectile.explosionDamageFalloff = true;
         }
 
@@ -1132,6 +1132,24 @@ namespace nuff.AutoPatcherCombatExtended
                 modData.defsToPatch[modified_ammoSetDef] = APCEConstants.NeedsPatch.yes; 
                 alreadyRegistered = true;
             }
+        }
+
+        public void AddGenericSecondaryDamage(int i)
+        {
+            modified_secondaryDamageDefs[i].Add(DamageDefOf.Bullet);
+            modified_secondaryDamageAmounts[i].Add(1);
+            modified_secondaryDamageChances[i].Add(1);
+        }
+
+        public void RemoveSecondaryDamage(int i, int j)
+        {
+            if (i >= modified_secondaryDamageDefs.Count || j >= modified_secondaryDamageDefs[i].Count)
+            {
+                return; //todo error
+            }
+            modified_secondaryDamageDefs[i].RemoveAt(j);
+            modified_secondaryDamageAmounts[i].RemoveAt(j);
+            modified_secondaryDamageChances[i].RemoveAt(j);
         }
 
         //It is only after two hours of work that I realize that I don't need to make ThingCategoryDefs since I no longer generate new AmmoDefs, instead assigning generic Ammos.
