@@ -770,7 +770,6 @@ namespace nuff.AutoPatcherCombatExtended
         {
             ammoSetDataHolder = new DefDataHolderAmmoSet(weaponThingDef, gunKind);
             //RegisterSelfInDict, GetOriginalData, and Autocalculate are called by constructor
-            ammoSetDataHolder.Patch();
             this.modified_AmmoSetDef = ammoSetDataHolder.GeneratedAmmoSetDef;
         }
 
