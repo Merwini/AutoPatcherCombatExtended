@@ -59,49 +59,49 @@ namespace nuff.AutoPatcherCombatExtended
         //string modified_catParentName;
 
         //ammosetdef and its serializable data
-        AmmoSetDef modified_ammoSetDef;
+        internal AmmoSetDef modified_ammoSetDef;
 
         public AmmoSetDef GeneratedAmmoSetDef 
         { 
             get => modified_ammoSetDef;
         }
-        List<AmmoLink> modified_ammoLinks = new List<AmmoLink>();
-        string modified_ammoSetDefName;
-        string modified_ammoSetLabel;
-        string modified_ammoSetDescription;
+        internal List<AmmoLink> modified_ammoLinks = new List<AmmoLink>();
+        internal string modified_ammoSetDefName;
+        internal string modified_ammoSetLabel;
+        internal string modified_ammoSetDescription;
 
         // List of ammos and their serializable data
         public List<AmmoDef> modified_ammoDefs = new List<AmmoDef>();
-        List<string> modified_ammoDefStrings = new List<string>(); //used for saving/loading
+        internal List<string> modified_ammoDefStrings = new List<string>(); //used for saving/loading
 
         // List of projectiles and their serializable data
         //ThingDef stuff
-        List<ThingDef> modified_projectiles = new List<ThingDef>();
-        List<string> modified_projectileNames = new List<string>();
-        List<string> modified_projectileLabels = new List<string>();
-        List<APCEConstants.ThingClasses> modified_thingClasses = new List<APCEConstants.ThingClasses>();
+        internal List<ThingDef> modified_projectiles = new List<ThingDef>();
+        internal List<string> modified_projectileNames = new List<string>();
+        internal List<string> modified_projectileLabels = new List<string>();
+        internal List<APCEConstants.ThingClasses> modified_thingClasses = new List<APCEConstants.ThingClasses>();
 
         //projectile stuff
-        List<DamageDef> modified_damageDefs = new List<DamageDef>();
-        List<string> modified_damageDefStrings = new List<string>(); //used for saving/loading
-        List<int> modified_damages = new List<int>();
-        List<float> modified_armorPenetrationSharps = new List<float>();
-        List<float> modified_armorPenetrationBlunts = new List<float>();
-        List<float> modified_speeds = new List<float>();
-        List<float> modified_explosionRadii = new List<float>();
-        List<int> modified_pelletCounts = new List<int>();
-        List<float> modified_spreadMults = new List<float>();
-        List<float> modified_empShieldBreakChances = new List<float>();
-        List<float> modified_suppressionFactors = new List<float>();
-        List<float> modified_dangerFactors = new List<float>();
-        List<bool> modified_ai_IsIncendiary = new List<bool>();
-        List<bool> modified_applyDamageToExplosionCellsNeighbors = new List<bool>();
+        internal List<DamageDef> modified_damageDefs = new List<DamageDef>();
+        internal List<string> modified_damageDefStrings = new List<string>(); //used for saving/loading
+        internal List<int> modified_damages = new List<int>();
+        internal List<float> modified_armorPenetrationSharps = new List<float>();
+        internal List<float> modified_armorPenetrationBlunts = new List<float>();
+        internal List<float> modified_speeds = new List<float>();
+        internal List<float> modified_explosionRadii = new List<float>();
+        internal List<int> modified_pelletCounts = new List<int>();
+        internal List<float> modified_spreadMults = new List<float>();
+        internal List<float> modified_empShieldBreakChances = new List<float>();
+        internal List<float> modified_suppressionFactors = new List<float>();
+        internal List<float> modified_dangerFactors = new List<float>();
+        internal List<bool> modified_ai_IsIncendiary = new List<bool>();
+        internal List<bool> modified_applyDamageToExplosionCellsNeighbors = new List<bool>();
 
-        List<List<SecondaryDamage>> modified_secondaryDamages = new List<List<SecondaryDamage>>();
-        List<List<DamageDef>> modified_secondaryDamageDefs = new List<List<DamageDef>>();
-        List<List<string>> modified_secondaryDamageDefStrings = new List<List<string>>(); //used for saving/loading
-        List<List<int>> modified_secondaryDamageAmounts = new List<List<int>>();
-        List<List<float>> modified_secondaryDamageChances = new List<List<float>>();
+        internal List<List<SecondaryDamage>> modified_secondaryDamages = new List<List<SecondaryDamage>>();
+        internal List<List<DamageDef>> modified_secondaryDamageDefs = new List<List<DamageDef>>();
+        internal List<List<string>> modified_secondaryDamageDefStrings = new List<List<string>>(); //used for saving/loading
+        internal List<List<int>> modified_secondaryDamageAmounts = new List<List<int>>();
+        internal List<List<float>> modified_secondaryDamageChances = new List<List<float>>();
 
         //casings / motes and filth
         //TODO
@@ -1129,6 +1129,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 APCESettings.defDataDict[modified_ammoSetDef] = this;
                 modData.defDict[modified_ammoSetDef] = this;
+                modData.defsToPatch[modified_ammoSetDef] = APCEConstants.NeedsPatch.yes; 
                 alreadyRegistered = true;
             }
         }
