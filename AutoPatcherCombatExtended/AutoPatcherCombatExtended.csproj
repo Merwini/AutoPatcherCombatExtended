@@ -82,6 +82,7 @@
     <Compile Include="Source\APCEController.cs" />
     <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />
     <Compile Include="Source\Comps\CompReplaceMe.cs" />
+    <Compile Include="Source\Windows\Window_ConfirmDeleteSecondary.cs" />
     <Compile Include="Source\Windows\Window_CustomizeAmmoSet.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDef.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDefApparel.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Source\Windows\Window_CustomizeDefPawnKind.cs" />
     <Compile Include="Source\Windows\Window_DefFailure.cs" />
     <Compile Include="Source\Windows\Window_SelectAmmoSet.cs" />
+    <Compile Include="Source\Windows\Window_SelectDamageDef.cs" />
     <Compile Include="TrashFolder\GenerateAmmo.cs" />
     <Compile Include="Source\InjectedDefHasher.cs" />
     <Compile Include="Source\Patchers\PatchGrenade.cs" />
