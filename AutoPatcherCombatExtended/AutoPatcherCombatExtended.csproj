@@ -82,6 +82,7 @@
     <Compile Include="Source\APCEController.cs" />
     <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />
     <Compile Include="Source\Comps\CompReplaceMe.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeAmmoSet.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDef.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDefApparel.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDefBuilding_TurretGun.cs" />

@@ -2,8 +2,6 @@
 TODO Customize AmmoSet window
 TODO fix mod suggest suggest window suggesting to remove mods that are already compatible because they loaded during SaveLoad
 TODO Building_TurretGun not showing up in Deflist
-TODO solution to existing loaded guns breaking if AmmoSet is changed, unable to unload
-TODO look into Index Out oF Range when repatching AmmoSets (in nuff.AutoPatcherCombatExtended.DefDataHolderAmmoSet.BuildOrModifyProjectiles)
 
 
 	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list

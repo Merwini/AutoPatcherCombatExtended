@@ -168,46 +168,56 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void PrePatch()
         {
-            foreach (var entry in defDict)
+            foreach (var entry in defsToPatch)
             {
-                try
+                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
                 {
-                    entry.Value.PrePatch();
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning($"Failed to prepatch def {entry.Value.defName} from mod {entry.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
+                    try
+                    {
+                        ddh.PrePatch();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to prepatch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                    }
                 }
             }
         }
 
         public void PostPatch()
         {
-            foreach (var entry in defDict)
+            foreach (var entry in defsToPatch)
             {
-                try
+                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
                 {
-                    entry.Value.PostPatch();
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning($"Failed to postpatching def {entry.Value.defName} from mod {entry.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
+                    try
+                    {
+                        ddh.PostPatch();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to postpatch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                    }
                 }
             }
         }
 
         public void Patch()
         {
-            foreach (var entry in defDict)
+            foreach (var entry in defsToPatch)
             {
-                try
+                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
                 {
-                    entry.Value.Patch();
+                    try
+                    {
+                        ddh.Patch();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to patch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Log.Warning($"Failed to patch def {entry.Value.defName} from mod {entry.Value.def.modContentPack.Name} due to exception: \n" + ex.ToString());
-                }
+                    
             }
         }
 
@@ -259,6 +269,12 @@ namespace nuff.AutoPatcherCombatExtended
 
             for (int i = 0; i < namesList.Count; i++)
             {
+                //skip ammosets since they won't exist at this point. will register themselves as they are constructed.
+                if (typesList[i] == "CombatExtended.AmmoSetDef")
+                {
+                    continue;
+                }
+
                 Type defType = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
                 .FirstOrDefault(t => t.FullName == typesList[i]);
@@ -278,7 +294,7 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     else
                     {
-                        Log.Warning($"Def not found: {namesList[i]} (Type: {namesList[i]})");
+                        Log.Warning($"Def not found: {namesList[i]} (Type: {typesList[i]})");
                     }
                 }
                 else
