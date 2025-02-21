@@ -308,7 +308,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Window newWindow;
                 if (defDataHolder is DefDataHolderAmmoSet)
                 {
-                    newWindow = new Window_DefFailure(def);
+                    newWindow = new Window_CustomizeAmmoSet(defDataHolder);
                 }
                 else if (defDataHolder is DefDataHolderApparel)
                 {
