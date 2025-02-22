@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="CombatExtended">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2890901044\Assemblies\CombatExtended.dll</HintPath>
       <Private>False</Private>
@@ -76,9 +72,9 @@
       <Version>1.5.4104</Version>
     </PackageReference>
   </ItemGroup>
-    <ItemGroup>
-        <Publicize Include="Assembly-CSharp" />
-    </ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoPatcherCombatExtended\AutoPatcherCombatExtended.csproj">
       <Project>{dc20ad9c-d97a-4c5c-8622-3d9150e37e71}</Project>
