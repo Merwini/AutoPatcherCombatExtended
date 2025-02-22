@@ -46,7 +46,16 @@ namespace nuff.AutoPatcherCombatExtended.VF
 
         public override void GetOriginalData()
         {
-            vehicleDef = def as VehicleDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && vehicleDef == null)
+            {
+                this.vehicleDef = def as VehicleDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (vehicleDef != null && def == null)
+            {
+                def = vehicleDef;
+            }
 
             original_ArmorRatingSharp = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
             original_ArmorRatingBlunt = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
