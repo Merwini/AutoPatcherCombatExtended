@@ -64,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Window_CustomizeDefVehicle.cs" />
     <Compile Include="Window_CustomizeDefVehicleTurret.cs" />
+    <Compile Include="Window_SelectTurretAmmoSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Krafs.Publicizer">
@@ -75,6 +76,9 @@
       <Version>1.5.4104</Version>
     </PackageReference>
   </ItemGroup>
+    <ItemGroup>
+        <Publicize Include="Assembly-CSharp" />
+    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoPatcherCombatExtended\AutoPatcherCombatExtended.csproj">
       <Project>{dc20ad9c-d97a-4c5c-8622-3d9150e37e71}</Project>
