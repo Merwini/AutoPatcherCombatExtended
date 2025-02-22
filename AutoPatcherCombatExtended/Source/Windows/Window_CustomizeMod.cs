@@ -293,11 +293,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void TryOpenDefWindow(Def def, ModDataHolder modData)
         {
-            Log.Warning(def.defName);
-            Log.Warning(def.GetType().ToString());
             DefDataHolder defDataHolder = TryGetDataHolder();
-            Log.Warning($"defDataHolder is null: {(defDataHolder == null).ToString()}");
-            Log.Warning($"defDataHolder type: {defDataHolder.GetType().ToString()}");
             if (defDataHolder == null)
             {
                 Window_DefFailure failureWindow = new Window_DefFailure(def);
