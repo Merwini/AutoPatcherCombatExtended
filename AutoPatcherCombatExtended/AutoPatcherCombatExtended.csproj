@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="APCE Item1" />
-    <Compile Include="ICompat.cs" />
+    <Compile Include="Source\ICompat.cs" />
     <Compile Include="Source\APCEDefOfTwo.cs" />
     <Compile Include="Source\APCELogUtility.cs" />
     <Compile Include="Source\APCESaveLoad.cs" />
