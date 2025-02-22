@@ -19,7 +19,9 @@ namespace nuff.AutoPatcherCombatExtended
             APCESettings.modsToPatch = RebuildModsToPatch();
             InjectedDefHasher.PrepareReflection();
 
-            CompatibilityPatches compat = new CompatibilityPatches();
+            ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId == ("nuff.ceautopatcher"));
+
+            CompatibilityPatches compat = new CompatibilityPatches(thisMod);
             compat.PatchMods();
 
             APCEHarmonyPatches harmony = new APCEHarmonyPatches();
@@ -30,7 +32,6 @@ namespace nuff.AutoPatcherCombatExtended
             //if a nuff.ceautopatcher ModDataHolder wasn't loaded, make one. essential for autocalcs and changing settings
             if (!APCESettings.modDataDict.ContainsKey("nuff.ceautopatcher"))
             {
-                ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId == ("nuff.ceautopatcher"));
                 ModDataHolder apceDefaults = new ModDataHolder(thisMod);
             }
 
@@ -155,7 +156,6 @@ namespace nuff.AutoPatcherCombatExtended
         public static bool DefIsDelegatedType(Def def)
         {
             Type defType = def.GetType();
-
             if (APCESettings.typeHandlerDictionaryCheck.ContainsKey(defType))
             {
                 return true;
@@ -197,7 +197,7 @@ namespace nuff.AutoPatcherCombatExtended
             List<ModContentPack> modsNeedingPatched = new List<ModContentPack>();
             for (int i = 0; i < APCESettings.activeMods.Count; i++)
             {
-                if (APCESettings.activeMods[i].AllDefs.Count() != 0
+                if (APCESettings.activeMods[i].Name != "Combat Extended" && APCESettings.activeMods[i].AllDefs.Count() != 0
                     && CheckIfModNeedsPatched(APCESettings.activeMods[i]))
                 {
                     modsNeedingPatched.Add(APCESettings.activeMods[i]);
