@@ -107,10 +107,12 @@ namespace nuff.AutoPatcherCombatExtended
                     else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
                     {
                         DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Building_TurretGun);
+                        return true;
                     }
                     else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
                     {
-                        //PatchMortarShell(td, log); TODO mortarshell
+                        DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.MortarShell);
+                        return true;
                     }
                 }
                 else if (def is HediffDef hd)
@@ -322,6 +324,7 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     else if (typeof(Pawn).IsAssignableFrom(thingDef.thingClass))
                     {
+                        //can't be sure the Pawn is patched, could be inheriting tools from a patched base
                         if (!thingDef.tools.NullOrEmpty() && thingDef.tools.Any(tool => tool is ToolCE))
                         {
                             needsPatched = APCEConstants.NeedsPatch.unsure;
@@ -330,6 +333,11 @@ namespace nuff.AutoPatcherCombatExtended
                         {
                             needsPatched = APCEConstants.NeedsPatch.yes;
                         }
+                    }
+                    //is the AmmoDef check necessary?
+                    else if (!(thingDef is AmmoDef) && thingDef.projectileWhenLoaded != null)
+                    {
+                        needsPatched = APCEConstants.NeedsPatch.yes;
                     }
                 }
                 else if (def is HediffDef hd)
