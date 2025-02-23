@@ -209,6 +209,9 @@ namespace nuff.AutoPatcherCombatExtended
                 case APCEConstants.DefTypes.RangedWeapon:
                     ddh = new DefDataHolderRangedWeapon(def as ThingDef);
                     break;
+                case APCEConstants.DefTypes.MortarShell:
+                    ddh = new DefDataHolderMortarShell(def as ThingDef);
+                    break;
                 case APCEConstants.DefTypes.Stuff: //TODO Stuff is not a def, figure out a way to work with them
                     break;
             }
