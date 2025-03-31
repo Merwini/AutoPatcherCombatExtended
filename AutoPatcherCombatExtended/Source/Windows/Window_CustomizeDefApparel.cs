@@ -55,6 +55,12 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_MaxHitPointsBuffer = dataHolder.modified_MaxHitPoints.ToString();
             list.TextFieldNumericLabeled("Max Hit Points", ref dataHolder.modified_MaxHitPoints, ref modified_MaxHitPointsBuffer);
 
+            if (!dataHolder.thingDef.stuffCategories.NullOrEmpty())
+            {
+                string modified_StuffEffectMultiplierArmorBuffer = dataHolder.modified_StuffEffectMultiplierArmor.ToString();
+                list.TextFieldNumericLabeled("Stuff Effect Multiplier", ref dataHolder.modified_StuffEffectMultiplierArmor, ref modified_StuffEffectMultiplierArmorBuffer);
+            }
+
             string modified_CarryWeightBuffer = dataHolder.modified_CarryWeight.ToString();
             list.TextFieldNumericLabeled("Carry Weight Offset (load-bearing gear)", ref dataHolder.modified_CarryWeight, ref modified_CarryWeightBuffer);
 
