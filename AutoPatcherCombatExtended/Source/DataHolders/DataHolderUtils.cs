@@ -81,7 +81,7 @@ namespace nuff.AutoPatcherCombatExtended
             return modData;
         }
 
-        public static void CopyFields(object source, object destination)
+        public static void CopyFields(object source, object destination, bool skipDefNameAndHash = false)
         {
             if (source == null || destination == null)
             {
@@ -92,6 +92,11 @@ namespace nuff.AutoPatcherCombatExtended
 
             foreach (FieldInfo sourceField in sourceType.GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
+                if (skipDefNameAndHash && (sourceField.Name == "defName" || sourceField.Name == "shortHash"))
+                {
+                    continue;
+                }
+
                 FieldInfo destField = destType.GetField(sourceField.Name, BindingFlags.Public | BindingFlags.Instance);
                 if (destField != null && destField.FieldType == sourceField.FieldType)
                 {
@@ -254,6 +259,7 @@ namespace nuff.AutoPatcherCombatExtended
             oldThingDef.comps.Add(newComp_ReplaceMe);
             return true;
         }
+
         /*
         public static string ReturnModLabelNoSpaces(string packageID)
         {
