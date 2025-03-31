@@ -940,6 +940,8 @@ namespace nuff.AutoPatcherCombatExtended
                 };
                 DataHolderUtils.SetDamage(newProjProps, modified_damages[i]);
                 ThingDef td = DefDatabase<ThingDef>.GetNamedSilentFail(modified_projectileNames[i]);
+                
+                //todo this is stupid just do if td=null make it with defName and then set values either way
                 if (td != null)
                 {
                     td.label = modified_projectileLabels[i];
@@ -970,6 +972,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void SetProjectileDefaults(ThingDef newProj, ThingDef oldProj)
         {
+            //todo look into why I don't copy these from the original projectile
             newProj.category = ThingCategory.Projectile;
             newProj.tickerType = TickerType.Normal;
             newProj.altitudeLayer = AltitudeLayer.Projectile;

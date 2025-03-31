@@ -22,7 +22,6 @@ namespace nuff.AutoPatcherCombatExtended
             
         }
 
-        //TODO
         public override void DoWindowContents(Rect inRect)
         {
             Listing_Standard list = new Listing_Standard();

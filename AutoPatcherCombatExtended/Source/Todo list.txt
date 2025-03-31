@@ -1,11 +1,11 @@
-﻿
-TODO Customize AmmoSet window
+﻿TODO MortarShell window
 TODO fix mod suggest suggest window suggesting to remove mods that are already compatible because they loaded during SaveLoad
 TODO Building_TurretGun not showing up in Deflist
 
 TODO cache AmmoSetDef name, during patch find when it has changed and search for ranged weapons using it so they can be updated
 TODO DefDataHolderRangedWeapon doesn't look for ammoset if set to not use ammo
 TODO don't bother to save AmmoSet entries in defsToPatch
+TODO combine suggest add and suggest remove mods windows into one
 
 
 	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list

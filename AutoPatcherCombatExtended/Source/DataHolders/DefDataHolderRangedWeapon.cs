@@ -716,6 +716,7 @@ namespace nuff.AutoPatcherCombatExtended
             return;
         }
 
+        //TODO re-implement
         public AmmoDef GenerateGrenadeAmmoDef()
         {
             AmmoDef ammoGrenade = new AmmoDef();
