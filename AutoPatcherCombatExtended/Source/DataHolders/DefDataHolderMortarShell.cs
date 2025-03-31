@@ -23,12 +23,17 @@ namespace nuff.AutoPatcherCombatExtended
 
         ThingDef original_projectile;
         CompProperties_Explosive original_compPropsExplosive;
+        string original_description;
 
 
-        ThingDef new_shell;
+        AmmoDef modified_shell;
         internal string modified_defName;
         internal int modified_stackLimit;
 
+        ThingDef modified_projectile;
+        internal string modified_projectileName;
+
+        ProjectilePropertiesCE modified_ProjectilePropsCE;
         internal DamageDef modified_damageDef;
         internal int modified_damageAmount;
         internal float modified_explosionRadius;
@@ -39,8 +44,19 @@ namespace nuff.AutoPatcherCombatExtended
         //TODO shellingProps
 
         internal bool modified_fragmentsBool;
-        internal int modified_fragmentsLarge;
-        internal int modified_fragmentsSmall;
+        internal List<ThingDef> modified_fragmentDefs = new List<ThingDef>();
+        internal List<int> modified_fragmentsAmount = new List<int>();
+
+        //TODO custom ammo category
+        internal bool modified_CustomAmmoCat;
+        internal AmmoCategoryDef modified_AmmoCategoryDef;
+        internal string modified_AmmoCatDefName;
+        internal string modified_AmmoCatLabel;
+        internal string modified_AmmoCatLabelShort;
+        internal string modified_AmmoCatDescription;
+
+        internal AmmoSetDef modified_AmmoSet;
+        internal AmmoSetDef previous_AmmoSet;
 
         public override void GetOriginalData()
         {
@@ -55,6 +71,7 @@ namespace nuff.AutoPatcherCombatExtended
                 def = thingDef;
             }
 
+            original_description = thingDef.description.ToString();
             original_projectile = thingDef.projectileWhenLoaded;
             original_compPropsExplosive = thingDef.GetCompProperties<CompProperties_Explosive>();
         }
@@ -64,21 +81,23 @@ namespace nuff.AutoPatcherCombatExtended
             modified_defName = "APCE_Shell_" + thingDef.defName;
             modified_stackLimit = 25;
 
-            modified_damageDef = original_projectile.projectile.damageDef;
-            modified_damageAmount = original_projectile.projectile.damageAmountBase;
-            modified_explosionRadius = original_projectile.projectile.explosionRadius;
-            modified_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;
-            modified_applyDamageToExplosionCellNeighbors = original_projectile.projectile.applyDamageToExplosionCellsNeighbors;
-            modified_aimHeightOffset = 0;
-
+            //todo maybe add fragments if damageDef is Bomb
             modified_fragmentsBool = false;
-            modified_fragmentsLarge = 0;
-            modified_fragmentsSmall = 0;
+
+            modified_AmmoSet = APCEDefOf.AmmoSet_81mmMortarShell;
+
+            CalculateMortarAmmoCategoryDef();
+            CalculateMortarProjectileProps();
+            CalculateMortarProjectileThing();
         }
 
         public override void Patch()
         {
-            throw new NotImplementedException();
+            RebuildProjectileProps();
+            RebuildProjectileCE();
+            RebuildAmmo();
+            AddAmmoLink();
+            MarkForReplacement();
         }
 
         public override StringBuilder PrepExport()
@@ -93,93 +112,167 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void ExposeData()
         {
-            Scribe_Defs.Look(ref thingDef, "thingDef");
-
             base.ExposeData();
+            Scribe_Defs.Look(ref thingDef, "thingDef");
+            Scribe_Values.Look(ref modified_defName, "modified_defName");
+            Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit");
+
+            Scribe_Values.Look(ref modified_projectileName, "modified_projectileName");
+
+            Scribe_Deep.Look(ref modified_ProjectilePropsCE, "modified_ProjectilePropsCE");
+            Scribe_Defs.Look(ref modified_damageDef, "modified_damageDef");
+            Scribe_Values.Look(ref modified_damageAmount, "modified_damageAmount");
+            Scribe_Values.Look(ref modified_explosionRadius, "modified_explosionRadius");
+            Scribe_Values.Look(ref modified_ai_IsIncendiary, "modified_ai_IsIncendiary");
+            Scribe_Values.Look(ref modified_applyDamageToExplosionCellNeighbors, "modified_applyDamageToExplosionCellNeighbors");
+            Scribe_Values.Look(ref modified_aimHeightOffset, "modified_aimHeightOffset");
+
+            Scribe_Values.Look(ref modified_fragmentsBool, "modified_fragmentsBool");
+            Scribe_Collections.Look(ref modified_fragmentDefs, "modified_fragmentDefs", LookMode.Def);
+            Scribe_Collections.Look(ref modified_fragmentsAmount, "modified_fragmentsAmount", LookMode.Value);
+
+            Scribe_Defs.Look(ref modified_AmmoSet, "modified_AmmoSet");
         }
 
-        public static AmmoDef MakeNewMortarAmmo(ThingDef def)
+        public void RebuildProjectileProps()
         {
-            AmmoDef newAmmo = new AmmoDef();
-            DataHolderUtils.CopyFields(def, newAmmo);
-            newAmmo.defName = "APCE_Shell_" + def.defName;
-            newAmmo.thingClass = typeof(CombatExtended.AmmoThing);
-            newAmmo.shortHash = 0;
-            newAmmo.modContentPack = APCESettings.thisMod;
+            modified_ProjectilePropsCE = new ProjectilePropertiesCE();
+            DataHolderUtils.CopyFields(original_projectile.projectile, modified_ProjectilePropsCE);
+            modified_ProjectilePropsCE.damageDef = modified_damageDef;
+            modified_ProjectilePropsCE.damageAmountBase = modified_damageAmount;
+            modified_ProjectilePropsCE.explosionRadius = modified_explosionRadius;
+            modified_ProjectilePropsCE.ai_IsIncendiary = modified_ai_IsIncendiary;
+            modified_ProjectilePropsCE.applyDamageToExplosionCellsNeighbors = modified_applyDamageToExplosionCellNeighbors;
+            modified_ProjectilePropsCE.aimHeightOffset = modified_aimHeightOffset;
+        }
 
-            newAmmo.comps = new List<CompProperties>();
-            foreach (CompProperties cp in def.comps) //slightly redundant, but the way CopyFields works causes problems with adding the ReplaceMe CompProp
+        public void RebuildProjectileCE()
+        {
+            bool justBuilt = false;
+            modified_projectile = DefDatabase<ThingDef>.GetNamedSilentFail(modified_projectileName);
+
+            if (modified_projectile == null)
             {
-                newAmmo.comps.Add(cp);
+                modified_projectile = new ThingDef()
+                {
+                    defName = modified_projectileName,
+                    shortHash = 0
+                };
+                DataHolderUtils.CopyFields(original_projectile, modified_projectile, true);
+                modified_projectile.comps = new List<CompProperties>(); //needs to be a separate list, to preserve the original
+                foreach (CompProperties comp in original_projectile.comps)
+                {
+                    modified_projectile.comps.Add(comp);
+                }
+                justBuilt = true;
             }
 
-            ConvertCompProperties_Explosive(newAmmo);
+            modified_projectile.projectile = modified_ProjectilePropsCE;
 
-            /* the mortar shell is not actually the projectile
-            if (newAmmo.projectile != null)
+            if (modified_projectile.shortHash == 0)
             {
-                newAmmo.projectile = ConvertPP(newAmmo.projectile);
+                InjectedDefHasher.GiveShortHashToDef(modified_projectile, typeof(ThingDef));
             }
-            */
-            newAmmo.projectileWhenLoaded = MakeNewMortarProjectile(def.projectileWhenLoaded);
-            newAmmo.projectileWhenLoaded.projectile.speed = 0;
-
-            newAmmo.thingCategories.Add(APCEDefOf.Ammo81mmMortarShells); //TODO maybe remove old categories
-            newAmmo.stackLimit = 25;
-            newAmmo.cookOffFlashScale = 30;
-            newAmmo.cookOffSound = APCEDefOf.MortarBomb_Explode;
-            newAmmo.isMortarAmmo = true;
-            newAmmo.menuHidden = false;
-            newAmmo.ammoClass = MakeMortarAmmoCategoryDef(newAmmo);
-
-            InjectedDefHasher.GiveShortHashToDef(newAmmo, typeof(AmmoDef));
-            DefGenerator.AddImpliedDef<ThingDef>(newAmmo);
-
-            def.description = def.description + "\n This mortar shell should be converted to a CE-compatible one as soon as it spawns in.";
-
-            return newAmmo;
+            if (justBuilt)
+            {
+                DefGenerator.AddImpliedDef<ThingDef>(modified_projectile);
+            }
         }
 
-        public static AmmoCategoryDef MakeMortarAmmoCategoryDef(ThingDef mortarShell)
+        public void RebuildAmmo()
         {
-            AmmoCategoryDef newAmmoCat = new AmmoCategoryDef();
-            newAmmoCat.defName = "APCE_AmmoCatDef_ " + mortarShell.defName;
-            newAmmoCat.label = mortarShell.label;
-            newAmmoCat.description = "Ammo category of " + mortarShell.label;
+            bool justBuilt = false;
 
-            InjectedDefHasher.GiveShortHashToDef(newAmmoCat, typeof(AmmoCategoryDef));
-            DefGenerator.AddImpliedDef<AmmoCategoryDef>(newAmmoCat);
+            modified_shell = DefDatabase<AmmoDef>.GetNamedSilentFail(modified_defName);
 
-            return newAmmoCat;
+            if (modified_shell == null)
+            {
+                modified_shell = new AmmoDef()
+                {
+                    defName = modified_defName,
+                    shortHash = 0 //hash later
+                };
+                DataHolderUtils.CopyFields(thingDef, modified_shell, true);
+                modified_shell.comps = new List<CompProperties>(); //needs to be a separate list, to preserve the original
+                foreach (CompProperties comp in thingDef.comps)
+                {
+                    modified_shell.comps.Add(comp);
+                }
+                modified_shell.modContentPack = APCESettings.thisMod.Content;
+                justBuilt = true;
+            }
+
+            modified_shell.stackLimit = modified_stackLimit;
+            modified_shell.projectile = modified_ProjectilePropsCE;
+
+            //todo let user choose to do this or customize a CompProperties_Explosive
+            modified_shell.detonateProjectile = modified_projectile;
+            modified_shell.comps.RemoveAll(comp => comp is CompProperties_Explosive);
+
+            if (modified_shell.shortHash == 0)
+            {
+                InjectedDefHasher.GiveShortHashToDef(modified_shell, typeof(AmmoDef));
+            }
+            if (justBuilt)
+            {
+                DefGenerator.AddImpliedDef<AmmoDef>(modified_shell);
+            }
         }
 
-        public static ThingDef MakeNewMortarProjectile(ThingDef oldProjectile)
-        {//WIP
-            ThingDef newProjectile = new ThingDef();
-            newProjectile.defName = ("APCE_Bullet_Shell_ " + oldProjectile.defName);
-            newProjectile.label = oldProjectile.label;
-            newProjectile.graphicData = oldProjectile.graphicData;
-            PatchBaseBullet(newProjectile);
-            newProjectile.projectile = ConvertPP(oldProjectile.projectile);
-
-            InjectedDefHasher.GiveShortHashToDef(newProjectile, typeof(ThingDef));
-            DefGenerator.AddImpliedDef<ThingDef>(newProjectile);
-
-            return newProjectile;
-        }
-
-        public static void MakeMortarAmmoLink(AmmoDef ammoDef)
+        public void CalculateMortarAmmoCategoryDef()
         {
-            AmmoLink ammoDefLink = new AmmoLink(ammoDef, ammoDef.projectileWhenLoaded);
-            AmmoSetDef ammoSet81mm = APCEDefOf.AmmoSet_81mmMortarShell;
-            ammoSet81mm.ammoTypes.Add(ammoDefLink);
+            modified_AmmoCatDefName = "APCE_AmmoCatDef_ " + thingDef.defName;
+            modified_AmmoCatLabel = thingDef.label;
+            modified_AmmoCatLabelShort = "Custom";
+            modified_AmmoCatDescription = "Ammo category of " + thingDef.label;
         }
 
-        public static void MarkForReplacement(ThingDef def, AmmoDef newAmmo)
+        public void CalculateMortarProjectileProps()
         {
-            CompProperties_ReplaceMe cp_rm = new CompProperties_ReplaceMe();
-            cp_rm.thingToSpawn = newAmmo;
-            def.comps.Add(cp_rm);
+            modified_damageDef = original_projectile.projectile.damageDef;
+            modified_damageAmount = original_projectile.projectile.damageAmountBase;
+            modified_explosionRadius = original_projectile.projectile.explosionRadius;
+            modified_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;
+            modified_applyDamageToExplosionCellNeighbors = original_projectile.projectile.applyDamageToExplosionCellsNeighbors;
+            modified_aimHeightOffset = 0;
+        }
+
+        public void CalculateMortarProjectileThing()
+        {
+            modified_projectileName = "APCE_Bullet_Shell_" + original_projectile.defName;
+            //todo I think this is it? everything else is either the same as original or calculated in projectile props
+        }
+
+        public void AddAmmoLink()
+        {
+            //check if link already exists for selected AmmoSet, if it does just update the projectile
+            int linkIndex = modified_AmmoSet.ammoTypes.FindIndex(link => link.ammo == modified_shell);
+            if (linkIndex != -1)
+            {
+                modified_AmmoSet.ammoTypes[linkIndex].projectile = modified_projectile;
+            }
+            else
+            {
+                modified_AmmoSet.ammoTypes.Add(new AmmoLink(modified_shell, modified_projectile));
+            }
+
+            //clean up previous AmmoSet, in case it has been reassigned
+            if (previous_AmmoSet != modified_AmmoSet)
+            {
+                previous_AmmoSet.ammoTypes.RemoveAll(link => link.ammo == modified_shell);
+            }
+            previous_AmmoSet = modified_AmmoSet;
+        }
+
+        public void MarkForReplacement()
+        {
+            CompProperties_ReplaceMe cp_rm = new CompProperties_ReplaceMe()
+            {
+                thingToSpawn = modified_shell
+            };
+            thingDef.comps.RemoveAll(comp => comp is CompProperties_ReplaceMe);
+            thingDef.comps.Add(cp_rm);
+            thingDef.description = original_description + "\n\n This mortar shell should be converted to a CE-compatible one as soon as soon as it touches the ground.";
         }
     }
 }
