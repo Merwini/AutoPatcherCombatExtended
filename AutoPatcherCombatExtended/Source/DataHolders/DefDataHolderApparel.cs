@@ -32,6 +32,7 @@ namespace nuff.AutoPatcherCombatExtended
         float original_CarryWeight;
         float original_ShootingAccuracyPawn;
         float original_MaxHitPoints;
+        float original_StuffEffectMultiplierArmor;
 
         //unsaved calculated values
         float apparelTechMult;
@@ -51,6 +52,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal float modified_Mass;
         internal float modified_MaxHitPoints;
         internal float modified_ShootingAccuracyPawn;
+        internal float modified_StuffEffectMultiplierArmor;
 
         //CE bloc
         internal float modified_Bulk;
@@ -80,6 +82,7 @@ namespace nuff.AutoPatcherCombatExtended
             original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
             original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
             original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
+            original_StuffEffectMultiplierArmor = thingDef.statBases.GetStatValueFromList(StatDefOf.StuffEffectMultiplierArmor, 0);
 
             CheckWhatCovers();
         }
@@ -94,6 +97,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             modified_Mass = Math.Min(original_Mass, 50);
             modified_MaxHitPoints = original_MaxHitPoints;
+            modified_StuffEffectMultiplierArmor = original_StuffEffectMultiplierArmor;
 
             CalculateBulk();
             CalculateStatMods();
@@ -149,6 +153,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_CarryBulk, "modified_CarryBulk", 0f);
                 Scribe_Values.Look(ref modified_SmokeSensitivity, "modified_SmokeSensitivity", 0f);
                 Scribe_Values.Look(ref modified_NightVisionEfficiency, "modified_NightVisionEfficiency", 0f);
+                Scribe_Values.Look(ref modified_StuffEffectMultiplierArmor, "modified_StuffEffectMultiplierArmor", 0f);
             }
             base.ExposeData();
         }
