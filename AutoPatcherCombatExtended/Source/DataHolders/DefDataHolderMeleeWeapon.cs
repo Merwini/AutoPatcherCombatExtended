@@ -114,15 +114,10 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            //TODO
+            //todo
             return null;
-        }
-
-        public override void ExportXML()
-        {
-            //TODO
         }
 
         public override void ExposeData()

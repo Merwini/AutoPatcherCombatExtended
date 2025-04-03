@@ -83,14 +83,10 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            //todo
+            return null;
         }
 
         public override void ExposeData()

@@ -225,16 +225,12 @@ namespace nuff.AutoPatcherCombatExtended
             PatchComps();
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            //TODO
+            //todo
             return null;
         }
 
-        public override void ExportXML()
-        {
-            //TODO
-        }
         public override void ExposeData()
         {
             if (Scribe.mode == LoadSaveMode.LoadingVars

@@ -100,14 +100,10 @@ namespace nuff.AutoPatcherCombatExtended
             MarkForReplacement();
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            //todo
+            return null;
         }
 
         public override void ExposeData()

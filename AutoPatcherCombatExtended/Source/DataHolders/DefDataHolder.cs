@@ -107,11 +107,8 @@ namespace nuff.AutoPatcherCombatExtended
         //will use the modified_ fields to edit the def
         public abstract void Patch();
 
-        //will use the modified_ fields to generate an xml patch for the def. Need to change the return type so it can be used for exporting single patches or as part of patching the whole mod
-        public abstract StringBuilder PrepExport();
-
-        //will call PrepExport and allow the user to save the resulting xml patch for just the current def
-        public abstract void ExportXML();
+        //will use the modified_ fields to generate an xml patch for the def
+        public abstract StringBuilder ExportXML();
 
         public virtual void SelfDelete()
         {

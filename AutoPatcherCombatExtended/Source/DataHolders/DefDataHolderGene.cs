@@ -61,15 +61,10 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
             DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
         }
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            //TODO
+            //todo
             return null;
-        }
-
-        public override void ExportXML()
-        {
-            //TODO
         }
 
         public override void ExposeData()

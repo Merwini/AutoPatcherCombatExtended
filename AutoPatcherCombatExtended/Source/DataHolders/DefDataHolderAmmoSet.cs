@@ -823,14 +823,10 @@ namespace nuff.AutoPatcherCombatExtended
             ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            //todo
+            return null;
         }
 
         public override void ExposeData()
