@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Xml;
 using Verse;
 using RimWorld;
 using CombatExtended;
@@ -348,6 +350,47 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             return weaponThickness * strongestIngredientSharpArmor;
+        }
+
+        public static XmlNode GetXmlForDef(Def def)
+        {
+
+            if (def?.modContentPack == null || string.IsNullOrEmpty(def.fileName))
+            {
+                Log.Warning($"Could not find fileName for Def: {def?.defName} while trying to get original XML");
+                return null;
+            }
+
+            LoadableXmlAsset asset = def.modContentPack
+                .LoadDefs(true)
+                .FirstOrDefault(x => x.name == def.fileName);
+
+            if (asset?.xmlDoc == null)
+            {
+                Log.Warning($"Could not load XML document for file: {def.fileName}");
+                return null;
+            }
+
+            XmlDocument xmlDoc = asset.xmlDoc;
+
+            if (xmlDoc != null)
+            {
+                XmlNodeList allDefs = xmlDoc.DocumentElement?.ChildNodes;
+                if (allDefs != null)
+                {
+                    foreach (XmlNode node in allDefs)
+                    {
+                        XmlNode defNameNode = node.SelectSingleNode("defName");
+                        if (defNameNode != null && defNameNode.InnerText == def.defName)
+                        {
+                            return node;
+                        }
+                    }
+                }
+            }
+
+            Log.Warning($"Could not find Def with defName '{def.defName}' in file: {def.fileName}");
+            return null;
         }
     }
 }
