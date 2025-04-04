@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Verse;
 using RimWorld;
 using CombatExtended;
@@ -34,6 +35,10 @@ namespace nuff.AutoPatcherCombatExtended
         public List<float> modified_ToolPowers = new List<float>();
         public List<float> modified_ToolChanceFactors = new List<float>();
         public List<ToolCE> modified_Tools = new List<ToolCE>();
+
+        internal XmlNode xml;
+        internal StringBuilder patch;
+        internal List<string> patchOps;
 
         public DefDataHolder()
         {
@@ -108,7 +113,18 @@ namespace nuff.AutoPatcherCombatExtended
         public abstract void Patch();
 
         //will use the modified_ fields to generate an xml patch for the def
-        public abstract StringBuilder ExportXML();
+        public virtual StringBuilder ExportXML()
+        {
+            patch = new StringBuilder();
+
+            APCEPatchExport.CleanPatchOpsList(ref patchOps);
+
+            APCEPatchExport.AddPatchHeader(def, patch);
+            APCEPatchExport.AddNecessaryNodes(xml, def, patch, patchOps);
+            APCEPatchExport.AddPatchOps(xml, def, patch, patchOps);
+
+            return patch;
+        }
 
         public virtual void SelfDelete()
         {
