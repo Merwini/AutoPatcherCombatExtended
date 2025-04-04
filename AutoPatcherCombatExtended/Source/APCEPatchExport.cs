@@ -13,7 +13,30 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public static class APCEPatchExport
     {
+        public static void ExportPatchesForMod(ModDataHolder modData)
+        {
+            StringBuilder masterPatch = new StringBuilder();
+            masterPatch.AppendLine("<Patch>\n\n");
 
+            foreach (var entry in modData.defsToPatch)
+            {
+                if (entry.value == APCEConstants.NeedsPatch.yes && modData.defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                {
+                    try
+                    {
+                        masterPatch.Append(ddh.ExportXML());
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to export patch for def {ddh.def.defName} from mod {modData.mod.Name} due to exception: \n" + ex.ToString());
+                    }
+                }
+            }
+
+            masterPatch.AppendLine("\n</Patch>");
+
+            Log.Warning(masterPatch.ToString());
+        }
 
         public static string GeneratePatchOperationFor(XmlNode node, string targetNode, string targetStat, float value)
         {
@@ -56,7 +79,6 @@ namespace nuff.AutoPatcherCombatExtended
                     return null;
                 }
 
-                // Remove the node by replacing it with nothing
                 patch = $@"<Operation Class=""PatchOperationReplace"">
     <xpath>{xpath}/{targetStat}</xpath>
     <value />
@@ -89,10 +111,82 @@ namespace nuff.AutoPatcherCombatExtended
             string patch = GeneratePatchOperationFor(node, targetNode, targetStat, value);
             if (patch != null)
             {
-                patch = patch + "\n";
+                patch = patch + "\n\n";
             }
 
             return patch;
+        }
+
+        public static void CleanPatchOpsList(ref List<string> patchOps)
+        {
+            if (patchOps == null)
+            {
+                patchOps = new List<string>();
+                return;
+            }
+
+            patchOps = patchOps.Where(p => p != null).ToList();
+        }
+
+        public static void AddPatchHeader(Def def, StringBuilder patch)
+        {
+            patch.Append($"<!-- === {def.label} === -->\n");
+        }
+
+        public static void AddNecessaryNodes(XmlNode node, Def def, StringBuilder patch, List<string> patchOps)
+        {
+            bool hasStatBases = node.SelectSingleNode("statBases") != null;
+            bool hasEquippedStatOffsets = node.SelectSingleNode("equippedStatOffsets") != null;
+            bool hasComps = node.SelectSingleNode("comps") != null;
+
+            bool needsStatBases = false;
+            bool needsEquippedStatOffsets = false;
+            bool needsComps = false;
+
+            foreach (string patchOp in patchOps)
+            {
+                if (patchOp.Contains("PatchOperationAdd"))
+                {
+                    if (patchOp.Contains("statBases"))
+                        needsStatBases = true;
+                    else if (patchOp.Contains("equippedStatOffsets"))
+                        needsEquippedStatOffsets = true;
+                    else if (patchOp.Contains("comps"))
+                        needsComps = true;
+                }
+            }
+
+            if (needsStatBases && !hasStatBases)
+            {
+                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
+                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t<value><statBases></statBases></value>");
+                patch.AppendLine($"</Operation>");
+            }
+
+            if (needsEquippedStatOffsets && !hasEquippedStatOffsets)
+            {
+                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
+                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t<value><equippedStatOffsets></equippedStatOffsets></value>");
+                patch.AppendLine($"</Operation>");
+            }
+
+            if (needsComps && !hasComps)
+            {
+                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
+                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t<value><comps></comps></value>");
+                patch.AppendLine($"</Operation>");
+            }
+        }
+
+        public static void AddPatchOps(XmlNode node, Def def, StringBuilder patch, List<string> patchOps)
+        {
+            foreach (string op in patchOps)
+            {
+                patch.Append(op);
+            }
         }
     }
 }
