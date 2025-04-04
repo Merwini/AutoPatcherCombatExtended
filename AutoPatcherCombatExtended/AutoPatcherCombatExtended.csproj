@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="APCE Item1" />
+    <Compile Include="Source\APCEPatchExport.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderMortarShell.cs" />
     <Compile Include="Source\ICompat.cs" />
     <Compile Include="Source\APCEDefOfTwo.cs" />
