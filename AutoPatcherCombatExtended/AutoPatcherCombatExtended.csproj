@@ -101,6 +101,7 @@
     <Compile Include="Source\Windows\Window_CustomizeDefPawnKind.cs" />
     <Compile Include="Source\Windows\Window_DefFailure.cs" />
     <Compile Include="Source\Windows\Window_SelectAmmoSet.cs" />
+    <Compile Include="Source\Windows\Window_SelectBodyPartsNaturalArmor.cs" />
     <Compile Include="Source\Windows\Window_SelectDamageDef.cs" />
     <Compile Include="Source\Windows\Window_SelectLinkedBodyPartGroupDef.cs" />
     <Compile Include="Source\Windows\Window_SelectToolCapacityDef.cs" />
