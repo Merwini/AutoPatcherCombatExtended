@@ -72,6 +72,8 @@ namespace nuff.AutoPatcherCombatExtended
 
             //TODO modified_BodyShape
 
+            //TODO covered by natural armor
+
             list.End();
         }
     }

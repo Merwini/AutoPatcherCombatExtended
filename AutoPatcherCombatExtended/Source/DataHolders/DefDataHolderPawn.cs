@@ -45,8 +45,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal float modified_CarryWeight;
         internal float modified_CarryBulk;
 
-        internal BodyShapeDef modified_BodyShape;
-        internal string modified_BodyShapeDefString;
+        internal BodyShapeDef modified_BodyShapeDef;
 
         public override void GetOriginalData()
         {
@@ -77,9 +76,6 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.pawnArmorBluntMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
-            modified_MeleeDodgeChance = 1;
-            modified_MeleeParryChance = 1;
-            modified_MeleeCritChance = 1;
 
             modified_SmokeSensitivity = 1;
             modified_Suppressability = 1;
@@ -98,11 +94,19 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (pawnDef.race.Humanlike)
             {
-                modified_BodyShape = CE_BodyShapeDefOf.Humanoid;
+                modified_BodyShapeDef = CE_BodyShapeDefOf.Humanoid;
+
+                modified_MeleeDodgeChance = 1f;
+                modified_MeleeParryChance = 1f;
+                modified_MeleeCritChance = 1f;
             }
             else
             {//todo too lazy to make any sort of guessing algorithm
-                modified_BodyShape = CE_BodyShapeDefOf.Quadruped;
+                modified_BodyShapeDef = CE_BodyShapeDefOf.Quadruped;
+
+                modified_MeleeDodgeChance = 0.1f;
+                modified_MeleeParryChance = 0.1f;
+                modified_MeleeCritChance = 0.1f;
             }
         }
 
@@ -127,8 +131,48 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            //todo
-            return null;
+            xml = DataHolderUtils.GetXmlForDef(pawnDef);
+
+            patchOps = new List<string>();
+
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat));
+
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeDodgeChance", modified_MeleeDodgeChance));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeParryChance", modified_MeleeParryChance));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeCritChance", modified_MeleeCritChance));
+
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "SmokeSensitivity", modified_SmokeSensitivity));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Suppressability", modified_Suppressability));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "NightVisionEfficiency", modified_NightVisionEfficiency));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ReloadSpeed", modified_ReloadSpeed));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
+
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "CarryWeight", modified_CarryWeight));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "CarryBulk", modified_CarryBulk));
+
+            patchOps.Add(MakeModExtensionPatch());
+
+            patchOps.Add(GenerateToolPatchXML());
+
+            base.ExportXML();
+
+            return patch;
+
+            string MakeModExtensionPatch()
+            {
+                string xpath = $"/Defs/ThingDef[defName=\"{defName}\"]";
+
+                return $@" <Operation Class = ""PatchOperationAddModExtension"">
+    <xpath>{xpath}</xpath>
+    <value>
+        <li Class=""CombatExtended.RacePropertiesExtensionCE"">
+            <bodyShape>{modified_BodyShapeDef}</bodyShape>
+        </li>
+    </value>
+</Operation>" + "\n\n";
+            }
         }
 
         public override void ExposeData()
@@ -136,11 +180,6 @@ namespace nuff.AutoPatcherCombatExtended
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
-                if (Scribe.mode == LoadSaveMode.Saving && modified_BodyShape != null)
-                {
-                    modified_BodyShapeDefString = modified_BodyShape.ToString();
-                }
-
                 Scribe_Defs.Look(ref pawnDef, "def");
 
                 // Modified Armor Ratings
@@ -164,17 +203,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_CarryWeight, "modified_CarryWeight");
                 Scribe_Values.Look(ref modified_CarryBulk, "modified_CarryBulk");
 
-                Scribe_Values.Look(ref modified_BodyShapeDefString, "modified_BodyShapeDefString");
-
-                if (Scribe.mode == LoadSaveMode.LoadingVars && modified_BodyShapeDefString != null)
-                {
-                    modified_BodyShape = DefDatabase<BodyShapeDef>.AllDefsListForReading.First(bsd => bsd.defName.Equals(modified_BodyShapeDefString));
-                    if (modified_BodyShape == null)
-                    {
-                        Log.Warning("Failed to find BodyShapeDef for race " + pawnDef.label + ". Defaulting to quadruped.");
-                        modified_BodyShape = CE_BodyShapeDefOf.Quadruped;
-                    }
-                }
+                Scribe_Defs.Look(ref modified_BodyShapeDef, "modified_BodyShapeDef");
             }
             base.ExposeData();
         }
@@ -210,7 +239,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             RacePropertiesExtensionCE racePropsExt = new RacePropertiesExtensionCE()
             {
-                bodyShape = modified_BodyShape
+                bodyShape = modified_BodyShapeDef
             };
             DataHolderUtils.AddOrReplaceExtension(pawnDef, racePropsExt);
         }

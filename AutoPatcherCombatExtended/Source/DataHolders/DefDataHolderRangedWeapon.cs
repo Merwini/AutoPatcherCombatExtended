@@ -657,11 +657,12 @@ namespace nuff.AutoPatcherCombatExtended
         public void CalculateGrenade()
         {
             
-            if (modified_toolIds.NullOrEmpty())
+            if (modified_ToolIds.NullOrEmpty())
             {
-                modified_toolIds.Add("APCE_Tool_" + weaponThingDef.defName);
+                modified_ToolIds.Add("APCE_Tool_" + weaponThingDef.defName);
+                modified_ToolLabels.Add("Body");
                 modified_ToolCapacityDefs.Add(new List<ToolCapacityDef>() { APCEDefOf.Blunt });
-                modified_ToolLinkedBodyPartsGroupDefs.Add(APCEDefOf.Base);
+                modified_ToolLinkedBodyPartGroupDefs.Add(APCEDefOf.Base);
                 modified_ToolCooldownTimes.Add(1.75f);
                 modified_ToolArmorPenetrationSharps.Add(0f);
                 modified_ToolArmorPenetrationBlunts.Add(1f);

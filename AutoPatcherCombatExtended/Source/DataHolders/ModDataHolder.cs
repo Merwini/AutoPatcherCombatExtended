@@ -217,7 +217,6 @@ namespace nuff.AutoPatcherCombatExtended
                         Log.Warning($"Failed to patch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
                     }
                 }
-                    
             }
         }
 
