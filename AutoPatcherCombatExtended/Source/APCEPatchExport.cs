@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.IO;
 using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
@@ -35,7 +36,15 @@ namespace nuff.AutoPatcherCombatExtended
 
             masterPatch.AppendLine("\n</Patch>");
 
-            Log.Warning(masterPatch.ToString());
+            string modFolderPath = CreatePatchesFolderForMod(modData);
+
+            if (modFolderPath == null)
+            {
+                //error already thrown in CreatePatchesFolderForMod
+                return;
+            }
+
+            WritePatchToFile(modFolderPath, masterPatch, modData);
         }
 
         public static string GeneratePatchOperationFor(XmlNode node, string targetNode, string targetStat, float value)
@@ -138,10 +147,12 @@ namespace nuff.AutoPatcherCombatExtended
             bool hasStatBases = node.SelectSingleNode("statBases") != null;
             bool hasEquippedStatOffsets = node.SelectSingleNode("equippedStatOffsets") != null;
             bool hasComps = node.SelectSingleNode("comps") != null;
+            bool hasModExtensions = node.SelectSingleNode("modExtensions") != null;
 
             bool needsStatBases = false;
             bool needsEquippedStatOffsets = false;
             bool needsComps = false;
+            bool needsModExtensions = false;
 
             foreach (string patchOp in patchOps)
             {
@@ -153,6 +164,8 @@ namespace nuff.AutoPatcherCombatExtended
                         needsEquippedStatOffsets = true;
                     else if (patchOp.Contains("comps"))
                         needsComps = true;
+                    else if (patchOp.Contains("ModExtension"))
+                        needsModExtensions = true;
                 }
             }
 
@@ -179,6 +192,14 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t<value><comps></comps></value>");
                 patch.AppendLine($"</Operation>");
             }
+
+            if (needsModExtensions && !hasModExtensions)
+            {
+                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
+                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t<value><modExtensions></modExtensions></value>");
+                patch.AppendLine($"</Operation>");
+            }
         }
 
         public static void AddPatchOps(XmlNode node, Def def, StringBuilder patch, List<string> patchOps)
@@ -186,6 +207,52 @@ namespace nuff.AutoPatcherCombatExtended
             foreach (string op in patchOps)
             {
                 patch.Append(op);
+            }
+        }
+
+        public static string CreatePatchesFolderForMod(ModDataHolder mdh)
+        {
+            //these folders are created by APCESaveLoad, which will have already run
+            string folderPath = Path.Combine(GenFilePaths.SaveDataFolderPath, "NuffsAutoPatcher");
+            string exportedPatchesPath = Path.Combine(folderPath, "ExportedPatches");
+
+            string modFolderPath = Path.Combine(exportedPatchesPath, mdh.packageId);
+
+            try
+            {
+                if (!Directory.Exists(modFolderPath))
+                {
+                    Directory.CreateDirectory(modFolderPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error while making folders to save exported patches for mod {mdh.mod.Name}: \n {ex.ToString()}");
+            }
+
+            if (Directory.Exists(modFolderPath))
+            {
+                return modFolderPath;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static void WritePatchToFile(string folderPath, StringBuilder patch, ModDataHolder modData)
+        {
+            string filePath = Path.Combine(folderPath, "Patches.xml");
+
+            try
+            {
+                File.WriteAllText(filePath, patch.ToString());
+
+                Log.Message($"Patch successfully written to {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to write patch to {filePath}: {ex.Message}");
             }
         }
     }
