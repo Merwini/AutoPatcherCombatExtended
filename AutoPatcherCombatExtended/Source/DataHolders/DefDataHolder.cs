@@ -24,11 +24,9 @@ namespace nuff.AutoPatcherCombatExtended
         public float techMult;
 
         public List<Tool> original_Tools = new List<Tool>();
-        public List<string> modified_toolIds = new List<string>();
+        public List<string> modified_ToolIds = new List<string>();
         public List<List<ToolCapacityDef>> modified_ToolCapacityDefs = new List<List<ToolCapacityDef>>();
-        public List<List<string>> modified_ToolCapacityStrings = new List<List<string>>(); //for save/load purposes
-        public List<BodyPartGroupDef> modified_ToolLinkedBodyPartsGroupDefs = new List<BodyPartGroupDef>();
-        public List<string> modified_ToolLinkedBPGStrings = new List<string>();
+        public List<BodyPartGroupDef> modified_ToolLinkedBodyPartGroupDefs = new List<BodyPartGroupDef>();
         public List<float> modified_ToolCooldownTimes = new List<float>();
         public List<float> modified_ToolArmorPenetrationSharps = new List<float>();
         public List<float> modified_ToolArmorPenetrationBlunts = new List<float>();
@@ -62,15 +60,15 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (Scribe.mode == LoadSaveMode.Saving)
                 {
-                    StringifyTool();
+                    //StringifyTool();
                 }
                 Scribe_Values.Look(ref defName, "defName");
                 Scribe_Values.Look(ref parentModPackageId, "parentModPackageId");
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
 
-                Scribe_Collections.Look(ref modified_toolIds, "toolIds", LookMode.Value);
-                Scribe_Collections.Look(ref modified_ToolCapacityStrings, "toolCapacityStrings", LookMode.Value);
-                Scribe_Collections.Look(ref modified_ToolLinkedBPGStrings, "toolLinkedBPGStrings", LookMode.Value);
+                Scribe_Collections.Look(ref modified_ToolIds, "toolIds", LookMode.Value);
+                Scribe_Collections.LookListOfLists(ref modified_ToolCapacityDefs, true, "toolCapacityDefs", LookMode.Def);
+                Scribe_Collections.Look(ref modified_ToolLinkedBodyPartGroupDefs, true, "toolLinkedBodyPartGroupDefs", LookMode.Def);
                 Scribe_Collections.Look(ref modified_ToolCooldownTimes, "toolCooldownTimes", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ToolArmorPenetrationSharps, "toolArmorPenetrationSharps", LookMode.Value);
                 Scribe_Collections.Look(ref modified_ToolArmorPenetrationBlunts, "toolArmorPenetrationBlunts", LookMode.Value);
@@ -80,9 +78,10 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                DestringifyTool();
+                //DestringifyTool();
                 GetOriginalData();
                 RegisterSelfInDicts();
+                FixLinkedBPGList();
             }
         }
 
@@ -135,11 +134,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void ClearModdedTools()
         {
-            modified_toolIds.Clear();
+            modified_ToolIds.Clear();
             modified_ToolCapacityDefs.Clear();
-            modified_ToolCapacityStrings.Clear();
-            modified_ToolLinkedBodyPartsGroupDefs.Clear();
-            modified_ToolLinkedBPGStrings.Clear();
+            modified_ToolLinkedBodyPartGroupDefs.Clear();
             modified_ToolCooldownTimes.Clear();
             modified_ToolArmorPenetrationSharps.Clear();
             modified_ToolArmorPenetrationBlunts.Clear();
@@ -151,14 +148,14 @@ namespace nuff.AutoPatcherCombatExtended
         public virtual void ModToolAtIndex(int i)
         {
             Tool tool = original_Tools[i];
-            modified_toolIds.Add("APCE_Tool_" + tool.id);
+            modified_ToolIds.Add("APCE_Tool_" + tool.id);
             List<ToolCapacityDef> toolCapacityDefs = new List<ToolCapacityDef>();
             for (int j = 0; j < tool.capacities.Count; j++)
             {
                 toolCapacityDefs.Add(tool.capacities[j]);
             }
             modified_ToolCapacityDefs.Add(toolCapacityDefs);
-            modified_ToolLinkedBodyPartsGroupDefs.Add(tool.linkedBodyPartsGroup);
+            modified_ToolLinkedBodyPartGroupDefs.Add(tool.linkedBodyPartsGroup);
             modified_ToolCooldownTimes.Add(tool.cooldownTime);
             modified_ToolArmorPenetrationSharps.Add(tool.armorPenetration); //will be multiplied in overrides
             modified_ToolArmorPenetrationBlunts.Add(tool.armorPenetration); //will be multiplied in overrides
@@ -169,13 +166,13 @@ namespace nuff.AutoPatcherCombatExtended
         public void BuildTools()
         {
             modified_Tools.Clear();
-            for (int i = 0; i < modified_toolIds.Count; i++)
+            for (int i = 0; i < modified_ToolIds.Count; i++)
             {
                 ToolCE newTool = new ToolCE()
                 {
-                    id = modified_toolIds[i],
+                    id = modified_ToolIds[i],
                     capacities = modified_ToolCapacityDefs[i],
-                    linkedBodyPartsGroup = modified_ToolLinkedBodyPartsGroupDefs[i],
+                    linkedBodyPartsGroup = modified_ToolLinkedBodyPartGroupDefs[i],
                     cooldownTime = modified_ToolCooldownTimes[i],
                     armorPenetrationSharp = modified_ToolArmorPenetrationSharps[i],
                     armorPenetrationBlunt = modified_ToolArmorPenetrationBlunts[i],
@@ -186,65 +183,65 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void StringifyTool()
-        {
-            modified_ToolCapacityStrings.Clear();
-            for (int i = 0; i < modified_ToolCapacityDefs.Count; i++)
-            {
-                modified_ToolCapacityStrings.Add(new List<string>());
-                if (modified_ToolCapacityDefs[i].NullOrEmpty())
-                    continue;
-                for (int j = 0; j < modified_ToolCapacityDefs[i].Count; j++)
-                {
-                    modified_ToolCapacityStrings[i].Add(modified_ToolCapacityDefs[i][j].ToString());
-                }
-            }
+        //public void StringifyTool()
+        //{
+        //    modified_ToolCapacityStrings.Clear();
+        //    for (int i = 0; i < modified_ToolCapacityDefs.Count; i++)
+        //    {
+        //        modified_ToolCapacityStrings.Add(new List<string>());
+        //        if (modified_ToolCapacityDefs[i].NullOrEmpty())
+        //            continue;
+        //        for (int j = 0; j < modified_ToolCapacityDefs[i].Count; j++)
+        //        {
+        //            modified_ToolCapacityStrings[i].Add(modified_ToolCapacityDefs[i][j].ToString());
+        //        }
+        //    }
 
-            modified_ToolLinkedBPGStrings.Clear();
-            for (int i = 0; i < modified_ToolLinkedBodyPartsGroupDefs.Count; i++)
-            {
-                modified_ToolLinkedBPGStrings.Add(modified_ToolLinkedBodyPartsGroupDefs[i]?.ToString() ?? "null"); //TODO maybe add actual null instead of the word "null"?
-            }
-        }
+        //    modified_ToolLinkedBPGStrings.Clear();
+        //    for (int i = 0; i < modified_ToolLinkedBodyPartsGroupDefs.Count; i++)
+        //    {
+        //        modified_ToolLinkedBPGStrings.Add(modified_ToolLinkedBodyPartsGroupDefs[i]?.ToString() ?? "null"); //TODO maybe add actual null instead of the word "null"?
+        //    }
+        //}
 
-        public void DestringifyTool()
-        {
-            modified_ToolCapacityDefs.Clear();
-            for (int i = 0; i < modified_ToolCapacityStrings.Count; i++)
-            {
-                modified_ToolCapacityDefs.Add(new List<ToolCapacityDef>());
-                if (modified_ToolCapacityStrings[i].NullOrEmpty())
-                    continue;
-                for (int j = 0; j < modified_ToolCapacityStrings[i].Count; j++)
-                {
-                    ToolCapacityDef tcd = DefDatabase<ToolCapacityDef>.GetNamed(modified_ToolCapacityStrings[i][j]);
-                    if (tcd == null)
-                    {
-                        Log.Warning("Warning: " + def.defName + (" has a ToolCapacityDef not in the DefDatabase. Might have been assigned one from a mod that is currently inactive. Substituting with Poke"));
-                        tcd = APCEDefOf.Poke;
-                    }
-                    modified_ToolCapacityDefs[i].Add(tcd);
-                }
-            }
+        //public void DestringifyTool()
+        //{
+        //    modified_ToolCapacityDefs.Clear();
+        //    for (int i = 0; i < modified_ToolCapacityStrings.Count; i++)
+        //    {
+        //        modified_ToolCapacityDefs.Add(new List<ToolCapacityDef>());
+        //        if (modified_ToolCapacityStrings[i].NullOrEmpty())
+        //            continue;
+        //        for (int j = 0; j < modified_ToolCapacityStrings[i].Count; j++)
+        //        {
+        //            ToolCapacityDef tcd = DefDatabase<ToolCapacityDef>.GetNamed(modified_ToolCapacityStrings[i][j]);
+        //            if (tcd == null)
+        //            {
+        //                Log.Warning("Warning: " + def.defName + (" has a ToolCapacityDef not in the DefDatabase. Might have been assigned one from a mod that is currently inactive. Substituting with Poke"));
+        //                tcd = APCEDefOf.Poke;
+        //            }
+        //            modified_ToolCapacityDefs[i].Add(tcd);
+        //        }
+        //    }
 
-            modified_ToolLinkedBodyPartsGroupDefs.Clear();
-            for (int i = 0; i < modified_ToolLinkedBPGStrings.Count; i++)
-            {
-                if (modified_ToolLinkedBPGStrings[i] == "null") //TODO see todo in Stringify about null vs "null"
-                {
-                    modified_ToolLinkedBodyPartsGroupDefs.Add(null);
-                    continue;
-                }
+        //    modified_ToolLinkedBodyPartsGroupDefs.Clear();
+        //    for (int i = 0; i < modified_ToolLinkedBPGStrings.Count; i++)
+        //    {
+        //        if (modified_ToolLinkedBPGStrings[i] == "null") //TODO see todo in Stringify about null vs "null"
+        //        {
+        //            modified_ToolLinkedBodyPartsGroupDefs.Add(null);
+        //            continue;
+        //        }
 
-                BodyPartGroupDef bpgd = DefDatabase<BodyPartGroupDef>.GetNamed(modified_ToolLinkedBPGStrings[i]);
-                if (bpgd == null)
-                {
-                    Log.Warning("Warning: " + def.defName + (" has a BodyPartGroupDef not in the DefDatabase. Might have been assigned one from a mod that is currently inactive. Substituting with RightHand"));
-                    bpgd = BodyPartGroupDefOf.RightHand;
-                }
-                modified_ToolLinkedBodyPartsGroupDefs.Add(bpgd);
-            }
-        }
+        //        BodyPartGroupDef bpgd = DefDatabase<BodyPartGroupDef>.GetNamed(modified_ToolLinkedBPGStrings[i]);
+        //        if (bpgd == null)
+        //        {
+        //            Log.Warning("Warning: " + def.defName + (" has a BodyPartGroupDef not in the DefDatabase. Might have been assigned one from a mod that is currently inactive. Substituting with RightHand"));
+        //            bpgd = BodyPartGroupDefOf.RightHand;
+        //        }
+        //        modified_ToolLinkedBodyPartsGroupDefs.Add(bpgd);
+        //    }
+        //}
 
         public virtual void RegisterSelfInDicts()
         {
@@ -256,6 +253,56 @@ namespace nuff.AutoPatcherCombatExtended
         public virtual void DelayedRegister()
         {
             modData.delayedRegistrations.Add(this);
+        }
+
+        public void RemoveTool(int i)
+        {
+            modified_ToolIds.RemoveAt(i);
+            modified_ToolCapacityDefs.RemoveAt(i);
+            modified_ToolLinkedBodyPartGroupDefs.RemoveAt(i);
+            modified_ToolCooldownTimes.RemoveAt(i);
+            modified_ToolArmorPenetrationSharps.RemoveAt(i);
+            modified_ToolArmorPenetrationBlunts.RemoveAt(i);
+            modified_ToolPowers.RemoveAt(i);
+            modified_ToolChanceFactors.RemoveAt(i);
+        }
+
+        public void RemoveCapacity(int i, int j)
+        {
+            modified_ToolCapacityDefs[i].RemoveAt(j);
+        }
+
+        public void AddNewTool()
+        {
+            Random rnd = new Random();
+            modified_ToolIds.Add($"APCE_Tool_{rnd.Next(10000,99999)}");
+            modified_ToolCapacityDefs.Add(new List<ToolCapacityDef>()
+            {
+                APCEDefOf.Poke
+            });
+            modified_ToolLinkedBodyPartGroupDefs.Add(null);
+            modified_ToolCooldownTimes.Add(1);
+            modified_ToolArmorPenetrationSharps.Add(1);
+            modified_ToolArmorPenetrationBlunts.Add(1);
+            modified_ToolPowers.Add(1);
+            modified_ToolChanceFactors.Add(1);
+        }
+
+        public void AddNewToolCapacity(int i)
+        {
+            modified_ToolCapacityDefs[i].Add(APCEDefOf.Poke);
+        }
+
+        public void FixLinkedBPGList()
+        {
+            if (modified_ToolLinkedBodyPartGroupDefs.NullOrEmpty())
+            {
+                modified_ToolLinkedBodyPartGroupDefs = new List<BodyPartGroupDef>();
+            }
+            for (int i = 0; i < modified_ToolPowers.Count; i++)
+            {
+                modified_ToolLinkedBodyPartGroupDefs.Add(null);
+            }
         }
     }
 }
