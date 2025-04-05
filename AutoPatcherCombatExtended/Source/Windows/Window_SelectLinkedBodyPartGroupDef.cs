@@ -4,33 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using RimWorld;
 using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class Window_SelectDamageDef : Window
+    class Window_SelectLinkedBodyPartGroupDef : Window
     {
         string searchTerm = "";
         Vector2 leftScrollPosition = new Vector2();
-        DamageDef selectedDef = null;
+        BodyPartGroupDef selectedDef = null;
 
-        List<DamageDef> defList;
+        List<BodyPartGroupDef> defList;
         int index;
-        bool isListMode = false;
 
-        private DamageDef originalDef;
-
-        public Window_SelectDamageDef(List<DamageDef> defList, int index)
+        public Window_SelectLinkedBodyPartGroupDef(List<BodyPartGroupDef> defList, int index)
         {
             this.defList = defList;
             this.index = index;
             this.selectedDef = defList[index];
-            this.isListMode = true;
-        }
-
-        public Window_SelectDamageDef(ref DamageDef damageDef)
-        {
-            this.originalDef = damageDef;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -39,7 +31,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select DamageDef");
+            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select BodyPartGroupDef");
             Text.Font = GameFont.Small;
             list.End();
             list.Gap(45);  // Added gap to separate elements
@@ -54,13 +46,13 @@ namespace nuff.AutoPatcherCombatExtended
             Rect listArea = new Rect(inRect.x + 10, listTop, inRect.width - 20, inRect.height - listTop - listBottomPadding);
             GUI.BeginGroup(listArea, new GUIStyle(GUI.skin.box));
 
-            List<DamageDef> tempList = new List<DamageDef>();
+            List<BodyPartGroupDef> tempList = new List<BodyPartGroupDef>();
 
-            tempList = DefDatabase<DamageDef>.AllDefsListForReading
+            tempList = DefDatabase<BodyPartGroupDef>.AllDefsListForReading
                 .Where(item => item.defName.ToLower().Contains(searchTerm.ToLower()))
                 .OrderBy(def => def.defName)
                 .ToList();
-            
+
 
             float num = 3f;
             Rect viewRect = new Rect(0f, 0f, listArea.width - 16f, tempList.Count * 32f);
@@ -68,7 +60,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (!tempList.NullOrEmpty())
             {
-                foreach (DamageDef def in tempList)
+                foreach (BodyPartGroupDef def in tempList)
                 {
                     Rect rowRect = new Rect(x: 5, y: num, width: listArea.width - 6, height: 30);
                     Widgets.DrawHighlightIfMouseover(rowRect);
@@ -77,7 +69,7 @@ namespace nuff.AutoPatcherCombatExtended
                         Widgets.DrawHighlightSelected(rowRect);
                     }
 
-                    
+
                     Widgets.Label(rowRect, def.defName);
 
                     if (Widgets.ButtonInvisible(rowRect))
@@ -92,25 +84,25 @@ namespace nuff.AutoPatcherCombatExtended
             Widgets.EndScrollView();
             GUI.EndGroup();
 
-            float buttonWidth = (inRect.width - 30) / 2;
+            float buttonWidth = (inRect.width - 30) / 3;
             Rect acceptButtonRect = new Rect(inRect.x + 10, inRect.yMax - 40, buttonWidth, 30);
             Rect cancelButtonRect = new Rect(inRect.x + 20 + buttonWidth, inRect.yMax - 40, buttonWidth, 30);
+            Rect nullButtonRect = new Rect(inRect.x + 20 + buttonWidth + buttonWidth, inRect.yMax - 40, buttonWidth, 30);
 
             if (Widgets.ButtonText(acceptButtonRect, "Accept", true, false, Color.green) && selectedDef != null)
             {
-                if (isListMode)
-                {
-                    defList[index] = selectedDef;
-                }
-                else
-                {
-                    originalDef = selectedDef;
-                }
+                defList[index] = selectedDef;
                 Close();
             }
 
             if (Widgets.ButtonText(cancelButtonRect, "Cancel", true, false, Color.red))
             {
+                Close();
+            }
+
+            if (Widgets.ButtonText(cancelButtonRect, "Select Null", true, false, Color.blue))
+            {
+                defList[index] = null;
                 Close();
             }
         }

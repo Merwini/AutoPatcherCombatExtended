@@ -8,29 +8,20 @@ using UnityEngine;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class Window_SelectDamageDef : Window
+    class Window_SelectToolCapacityDef : Window
     {
         string searchTerm = "";
         Vector2 leftScrollPosition = new Vector2();
-        DamageDef selectedDef = null;
+        ToolCapacityDef selectedDef = null;
 
-        List<DamageDef> defList;
+        List<ToolCapacityDef> defList;
         int index;
-        bool isListMode = false;
 
-        private DamageDef originalDef;
-
-        public Window_SelectDamageDef(List<DamageDef> defList, int index)
+        public Window_SelectToolCapacityDef(List<ToolCapacityDef> defList, int index)
         {
             this.defList = defList;
             this.index = index;
             this.selectedDef = defList[index];
-            this.isListMode = true;
-        }
-
-        public Window_SelectDamageDef(ref DamageDef damageDef)
-        {
-            this.originalDef = damageDef;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -39,7 +30,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select DamageDef");
+            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select ToolCapacityDef");
             Text.Font = GameFont.Small;
             list.End();
             list.Gap(45);  // Added gap to separate elements
@@ -54,13 +45,13 @@ namespace nuff.AutoPatcherCombatExtended
             Rect listArea = new Rect(inRect.x + 10, listTop, inRect.width - 20, inRect.height - listTop - listBottomPadding);
             GUI.BeginGroup(listArea, new GUIStyle(GUI.skin.box));
 
-            List<DamageDef> tempList = new List<DamageDef>();
+            List<ToolCapacityDef> tempList = new List<ToolCapacityDef>();
 
-            tempList = DefDatabase<DamageDef>.AllDefsListForReading
+            tempList = DefDatabase<ToolCapacityDef>.AllDefsListForReading
                 .Where(item => item.defName.ToLower().Contains(searchTerm.ToLower()))
                 .OrderBy(def => def.defName)
                 .ToList();
-            
+
 
             float num = 3f;
             Rect viewRect = new Rect(0f, 0f, listArea.width - 16f, tempList.Count * 32f);
@@ -68,7 +59,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (!tempList.NullOrEmpty())
             {
-                foreach (DamageDef def in tempList)
+                foreach (ToolCapacityDef def in tempList)
                 {
                     Rect rowRect = new Rect(x: 5, y: num, width: listArea.width - 6, height: 30);
                     Widgets.DrawHighlightIfMouseover(rowRect);
@@ -77,7 +68,7 @@ namespace nuff.AutoPatcherCombatExtended
                         Widgets.DrawHighlightSelected(rowRect);
                     }
 
-                    
+
                     Widgets.Label(rowRect, def.defName);
 
                     if (Widgets.ButtonInvisible(rowRect))
@@ -98,14 +89,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (Widgets.ButtonText(acceptButtonRect, "Accept", true, false, Color.green) && selectedDef != null)
             {
-                if (isListMode)
-                {
-                    defList[index] = selectedDef;
-                }
-                else
-                {
-                    originalDef = selectedDef;
-                }
+                defList[index] = selectedDef;
                 Close();
             }
 
