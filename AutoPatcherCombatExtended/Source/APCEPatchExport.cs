@@ -79,7 +79,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             string xpath = $"/Defs/{node.Name}[defName=\"{defName}\"]/{targetNode}";
-            string patch;
+            StringBuilder patch = new StringBuilder();
 
             if (value == 0)
             {
@@ -88,31 +88,31 @@ namespace nuff.AutoPatcherCombatExtended
                     return null;
                 }
 
-                patch = $@"<Operation Class=""PatchOperationReplace"">
-    <xpath>{xpath}/{targetStat}</xpath>
-    <value />
-</Operation>";
+                patch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}/{targetStat}</xpath>");
+                patch.AppendLine("\t\t<value />");
+                patch.AppendLine("\t</Operation>");
             }
             else if (statExists)
             {
-                patch = $@"<Operation Class=""PatchOperationReplace"">
-    <xpath>{xpath}/{targetStat}</xpath>
-    <value>
-        <{targetStat}>{value}</{targetStat}>
-    </value>
-</Operation>";
+                patch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}/{targetStat}</xpath>");
+                patch.AppendLine("\t\t<value>");
+                patch.AppendLine($"\t\t\t<{targetStat}>{value}</{targetStat}>");
+                patch.AppendLine("\t\t</value>");
+                patch.AppendLine("\t</Operation>");
             }
             else
             {
-                patch = $@"<Operation Class=""PatchOperationAdd"">
-    <xpath>{xpath}</xpath>
-    <value>
-        <{targetStat}>{value}</{targetStat}>
-    </value>
-</Operation>";
+                patch.AppendLine("\t<Operation Class=\"PatchOperationAdd\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                patch.AppendLine("\t\t<value>");
+                patch.AppendLine($"\t\t\t<{targetStat}>{value}</{targetStat}>");
+                patch.AppendLine("\t\t</value>");
+                patch.AppendLine("\t</Operation>");
             }
 
-            return patch;
+            return patch.ToString();
         }
 
         public static string AddOrReplaceXmlNodeWhitespace(XmlNode node, string targetNode, string targetStat, float value)
@@ -148,11 +148,13 @@ namespace nuff.AutoPatcherCombatExtended
             bool hasEquippedStatOffsets = node.SelectSingleNode("equippedStatOffsets") != null;
             bool hasComps = node.SelectSingleNode("comps") != null;
             bool hasModExtensions = node.SelectSingleNode("modExtensions") != null;
+            bool hasTools = node.SelectSingleNode("tools") != null;
 
             bool needsStatBases = false;
             bool needsEquippedStatOffsets = false;
             bool needsComps = false;
             bool needsModExtensions = false;
+            bool needsTools = false;
 
             foreach (string patchOp in patchOps)
             {
@@ -166,39 +168,49 @@ namespace nuff.AutoPatcherCombatExtended
                         needsComps = true;
                     else if (patchOp.Contains("ModExtension"))
                         needsModExtensions = true;
+                    else if (patchOp.Contains("tools"))
+                        needsModExtensions = true;
                 }
             }
 
             if (needsStatBases && !hasStatBases)
             {
-                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
-                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
-                patch.AppendLine($"\t<value><statBases></statBases></value>");
-                patch.AppendLine($"</Operation>");
+                patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
+                patch.AppendLine($"\t\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t\t<value><statBases></statBases></value>");
+                patch.AppendLine($"\t</Operation>");
             }
 
             if (needsEquippedStatOffsets && !hasEquippedStatOffsets)
             {
-                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
-                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
-                patch.AppendLine($"\t<value><equippedStatOffsets></equippedStatOffsets></value>");
-                patch.AppendLine($"</Operation>");
+                patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
+                patch.AppendLine($"\t\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t\t<value><equippedStatOffsets></equippedStatOffsets></value>");
+                patch.AppendLine($"\t</Operation>");
             }
 
             if (needsComps && !hasComps)
             {
-                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
-                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
-                patch.AppendLine($"\t<value><comps></comps></value>");
-                patch.AppendLine($"</Operation>");
+                patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
+                patch.AppendLine($"\t\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t\t<value><comps></comps></value>");
+                patch.AppendLine($"\t</Operation>");
             }
 
             if (needsModExtensions && !hasModExtensions)
             {
-                patch.AppendLine($@"<Operation Class=""PatchOperationAdd"">");
-                patch.AppendLine($"\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
-                patch.AppendLine($"\t<value><modExtensions></modExtensions></value>");
-                patch.AppendLine($"</Operation>");
+                patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
+                patch.AppendLine($"\t\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t\t<value><modExtensions></modExtensions></value>");
+                patch.AppendLine($"\t</Operation>");
+            }
+
+            if (needsTools && !hasTools)
+            {
+                patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
+                patch.AppendLine($"\t\t<xpath>/Defs/{node.Name}[defName='{def.defName}']</xpath>");
+                patch.AppendLine($"\t\t<value><tools></tools></value>");
+                patch.AppendLine($"\t</Operation>");
             }
         }
 
