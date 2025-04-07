@@ -85,8 +85,48 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            //todo
-            return null;
+            xml = DataHolderUtils.GetXmlForDef(thingDef);
+
+            patchOps = new List<string>();
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
+            patchOps.Add(MakeFillPercentPatch());
+            patchOps.Add(MakeTurretBurstCoolDownTimePatch());
+
+            base.ExportXML();
+
+            return patch;
+
+            string MakeFillPercentPatch()
+            {
+                string xpath = $"/Defs/ThingDef[defName=\"{defName}\"]/FillPercent";
+                StringBuilder patch = new StringBuilder();
+
+                patch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                patch.AppendLine("\t\t<value>");
+                patch.AppendLine($"\t\t\t<FillPercent>{modified_FillPercent}</FillPercent>");
+                patch.AppendLine("\t\t</value>");
+                patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
+
+                return patch.ToString();
+            }
+
+            string MakeTurretBurstCoolDownTimePatch()
+            {
+                string xpath = $"/Defs/ThingDef[defName=\"{defName}\"]/building/turretBurstCooldownTime";
+                StringBuilder patch = new StringBuilder();
+
+                patch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                patch.AppendLine("\t\t<value>");
+                patch.AppendLine($"\t\t\t<turretBurstCooldownTime>{modified_TurretBurstCooldownTime}</turretBurstCooldownTime>");
+                patch.AppendLine("\t\t</value>");
+                patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
+
+                return patch.ToString();
+            }
         }
 
         public override void ExposeData()
