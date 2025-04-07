@@ -79,11 +79,6 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else if (def is ThingDef td)
                 {
-                    if (td.defName == "Turret_HighCaliberHMGTurret")
-                    {
-                        Log.Warning(td.thingClass.ToString());
-                    }
-;
                     if (td.IsApparel)
                     {
                         DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Apparel);
@@ -107,13 +102,11 @@ namespace nuff.AutoPatcherCombatExtended
                     else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
                     {
                         DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Pawn);
-                        Log.Warning("pawn");
                         return true;
                     }
                     else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
                     {
                         DataHolderUtils.GenerateDefDataHolder(def, APCEConstants.DefTypes.Building_TurretGun);
-                        Log.Warning("turretGun");
                         return true;
                     }
                     else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
