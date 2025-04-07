@@ -163,15 +163,19 @@ namespace nuff.AutoPatcherCombatExtended
             string MakeModExtensionPatch()
             {
                 string xpath = $"/Defs/ThingDef[defName=\"{defName}\"]";
+                StringBuilder patch = new StringBuilder();
 
-                return $@" <Operation Class = ""PatchOperationAddModExtension"">
-    <xpath>{xpath}</xpath>
-    <value>
-        <li Class=""CombatExtended.RacePropertiesExtensionCE"">
-            <bodyShape>{modified_BodyShapeDef}</bodyShape>
-        </li>
-    </value>
-</Operation>" + "\n\n";
+                patch.AppendLine("\t<Operation Class=\"PatchOperationAddModExtension\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                patch.AppendLine("\t\t<value>");
+                patch.AppendLine("\t\t\t<li Class=\"CombatExtended.RacePropertiesExtensionCE\">");
+                patch.AppendLine($"\t\t\t\t<bodyShape>{modified_BodyShapeDef}</bodyShape>");
+                patch.AppendLine("\t\t\t</li>");
+                patch.AppendLine("\t\t</value>");
+                patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
+
+                return patch.ToString();
             }
         }
 
