@@ -262,12 +262,6 @@ namespace nuff.AutoPatcherCombatExtended
         {
             string filePath = Path.Combine(folderPath, "Patches.xml");
 
-            if (string.IsNullOrWhiteSpace(patch.ToString()))
-            {
-                Log.Warning("WritePatchToFile aborted: patch content is null or empty.");
-                return;
-            }
-
             try
             {
                 File.WriteAllText(filePath, patch.ToString());
