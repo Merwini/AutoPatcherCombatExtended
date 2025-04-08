@@ -334,10 +334,21 @@ namespace nuff.AutoPatcherCombatExtended
                 return null;
             }
 
+            string xPath;
+
+            if (this is DefDataHolderHediff)
+            {
+                xPath = $"\t\t<xpath>Defs/HediffDef[defName=\"{defName}\"]/comps/li[@Class=\"HediffCompProperties_VerbGiver\"]/tools</xpath>";
+            }
+            else
+            {
+                xPath = $"\t\t<xpath>Defs/ThingDef[defName=\"{defName}\"]/tools</xpath>";
+            }
+
             StringBuilder patch = new StringBuilder();
 
             patch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
-            patch.AppendLine($"\t\t<xpath>Defs/ThingDef[defName=\"{defName}\"]/tools</xpath>");
+            patch.AppendLine(xPath);
             patch.AppendLine("\t\t<value>");
             patch.AppendLine("\t\t\t<tools>");
 
