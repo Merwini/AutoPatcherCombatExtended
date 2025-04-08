@@ -53,6 +53,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.geneArmorSharpMult;
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.geneArmorBluntMult;
+            modified_ArmorRatingHeat = original_ArmorRatingHeat;
         }
 
         public override void Patch()
@@ -63,8 +64,16 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public override StringBuilder ExportXML()
         {
-            //todo
-            return null;
+            xml = DataHolderUtils.GetXmlForDef(geneDef);
+
+            patchOps = new List<string>();
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Sharp", modified_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Blunt", modified_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Heat", modified_ArmorRatingHeat));
+
+            base.ExportXML();
+
+            return patch;
         }
 
         public override void ExposeData()
