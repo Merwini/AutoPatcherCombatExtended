@@ -17,7 +17,6 @@ namespace nuff.AutoPatcherCombatExtended
         public static void ExportPatchesForMod(ModDataHolder modData)
         {
             StringBuilder masterPatch = new StringBuilder();
-            masterPatch.AppendLine("<Patch>\n\n");
 
             foreach (var entry in modData.defsToPatch)
             {
@@ -34,6 +33,13 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(masterPatch.ToString()))
+            {
+                Log.Warning($"ExportPatchesForMod {modData.mod.Name} aborted: no patches were generated. Make sure to select some defs to patch first.");
+                return;
+            }
+
+            masterPatch.Insert(0, "<Patch>\n\n");
             masterPatch.AppendLine("\n</Patch>");
 
             string modFolderPath = CreatePatchesFolderForMod(modData);
@@ -255,6 +261,12 @@ namespace nuff.AutoPatcherCombatExtended
         public static void WritePatchToFile(string folderPath, StringBuilder patch, ModDataHolder modData)
         {
             string filePath = Path.Combine(folderPath, "Patches.xml");
+
+            if (string.IsNullOrWhiteSpace(patch.ToString()))
+            {
+                Log.Warning("WritePatchToFile aborted: patch content is null or empty.");
+                return;
+            }
 
             try
             {
