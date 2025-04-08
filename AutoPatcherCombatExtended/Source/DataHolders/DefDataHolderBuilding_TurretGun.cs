@@ -24,13 +24,10 @@ namespace nuff.AutoPatcherCombatExtended
 
         float original_FillPercent;
         float original_TurretBurstCooldownTime;
-        //ConceptDef original_SpawnedConcentLearnOpportunity;
 
         internal float modified_FillPercent = 0.85f;
         internal float modified_TurretBurstCooldownTime;
         internal float modified_AimingAccuracy;
-        //ConceptDef modified_SpawnedConceptLearnOpportunity;
-        //string modified_SpawnedConceptLearnOpportunityString;
 
         public override void GetOriginalData()
         {
@@ -47,9 +44,6 @@ namespace nuff.AutoPatcherCombatExtended
 
             original_FillPercent = thingDef.fillPercent;
             original_TurretBurstCooldownTime = thingDef.building.turretBurstCooldownTime;
-
-            //all this does is give you a Learning Helper lesson when you build one, not worth patching
-            //original_SpawnedConcentLearnOpportunity = turretBase.building.spawnedConceptLearnOpportunity;
         }
 
         public override void AutoCalculate()
@@ -63,19 +57,15 @@ namespace nuff.AutoPatcherCombatExtended
             if (!(thingDef.weaponTags == null) && (thingDef.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0)))
             {
                 modified_TurretBurstCooldownTime = 2;
-                //modified_SpawnedConceptLearnOpportunity = CE_ConceptDefOf.CE_MortarDirectFire;
             }
             else
             {
                 modified_TurretBurstCooldownTime = original_TurretBurstCooldownTime * 0.5f;
-                //modified_SpawnedConceptLearnOpportunity = original_SpawnedConcentLearnOpportunity;
             }
 
             modified_AimingAccuracy = 1f;
-
         }
 
-        //TODO
         public override void Patch()
         {
             thingDef.fillPercent = modified_FillPercent;
