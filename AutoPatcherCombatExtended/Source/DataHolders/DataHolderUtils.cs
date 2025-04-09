@@ -371,6 +371,7 @@ namespace nuff.AutoPatcherCombatExtended
                 return null;
             }
 
+            string defType = def.GetType().Name;
             XmlDocument xmlDoc = asset.xmlDoc;
 
             if (xmlDoc != null)
@@ -380,6 +381,9 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     foreach (XmlNode node in allDefs)
                     {
+                        if (node.Name != defType)
+                            continue;
+
                         XmlNode defNameNode = node.SelectSingleNode("defName");
                         if (defNameNode != null && defNameNode.InnerText == def.defName)
                         {
