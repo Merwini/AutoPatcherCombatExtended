@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Verse;
 using RimWorld;
 using CombatExtended;
@@ -30,7 +31,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal List<float> modified_ArmorRatingSharp = new List<float>();
         internal List<float> modified_ArmorRatingBlunt = new List<float>();
         internal List<float> modified_ArmorRatingHeat = new List<float>();
-
+        
         public override void GetOriginalData()
         {
             //constructed by APCEController, def assigned by constructor
@@ -115,9 +116,147 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            //todo
-            return null;
+            xml = DataHolderUtils.GetXmlForDef(hediffDef);
+
+            //for keeping track of whether any of the patchOps for armor values have had to add a statOffets node for a given <stages> index, so it isn't re-added by one of the others
+            List<bool> addedStatOffsets = new List<bool>();
+            for (int i = 0; i < modified_ArmorRatingSharp.Count; i++)
+            {
+                addedStatOffsets.Add(false);
+            }
+
+            patchOps = new List<string>();
+            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Sharp", modified_ArmorRatingSharp));
+            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Blunt", modified_ArmorRatingBlunt));
+            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Heat", modified_ArmorRatingHeat));
+
+            base.ExportXML(); //tool-building handled in base
+
+            return patch;
+
+            //based on APCEPatchExport.GeneratePatchOperationFor()
+            string GenerateHediffStagesArmorPatch(XmlNode node, string targetStat, List<float> values)
+            {
+                //no need for warning/error, as hediffs with VerbGivers don't usually have stages but this will run anyway
+                if (values.NullOrEmpty())
+                {
+                    return null;
+                }
+
+                if (node == null)
+                {
+                    Log.Warning("Cannot generate patch: XML node is null.");
+                    return null;
+                }
+
+                XmlNode defNameNode = node.SelectSingleNode("defName");
+                if (defNameNode == null)
+                {
+                    Log.Warning("Cannot generate patch: defName not found in XML node.");
+                    return null;
+                }
+
+                string defName = defNameNode.InnerText;
+
+                XmlNode stagesNode = node.SelectSingleNode("stages");
+                if (stagesNode == null)
+                {
+                    Log.Warning($"Cannot generate patch: could not find <stages> node for {defName}");
+                    return null;
+                }
+
+                XmlNodeList stageNodes = stagesNode.SelectNodes("li");
+                if (stageNodes == null || stageNodes.Count == 0)
+                {
+                    Log.Warning($"Cannot generate patch: No <stages> found for HediffDef '{defName}'");
+                    return null;
+                }
+
+                StringBuilder stagesPatch = new StringBuilder();
+
+                for (int i = 0; i < values.Count; i++)
+                {
+                    float value = values[i];
+
+                    //try to find matching stage node
+                    if (i >= stageNodes.Count)
+                    {
+                        Log.Warning($"HediffDef '{defName}' has fewer stages than expected (index {i}). Skipping extra values.");
+                        break;
+                    }
+
+                    XmlNode stage = stageNodes.Item(i);
+                    bool targetExists = false;
+
+                    XmlNode statOffsets = stage.SelectSingleNode("statOffsets");
+                    if (statOffsets != null)
+                    {
+                        foreach (XmlNode child in statOffsets.ChildNodes)
+                        {
+                            if (child.Name == targetStat)
+                            {
+                                targetExists = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    string baseXPath = $"/Defs/HediffDef[defName=\"{defName}\"]/stages/li[{i + 1}]";
+                    string xpath = $"{baseXPath}/statOffsets";
+
+                    //add statOffsets node if it is missing and not already added
+                    if (statOffsets == null && value != 0 && !addedStatOffsets[i])
+                    {
+                        stagesPatch.AppendLine("\t<Operation Class=\"PatchOperationAdd\">");
+                        stagesPatch.AppendLine($"\t\t<xpath>{baseXPath}</xpath>");
+                        stagesPatch.AppendLine("\t\t<value>");
+                        stagesPatch.AppendLine("\t\t\t<statOffsets></statOffsets>"); //can I just do <statOffsets /> ?
+                        stagesPatch.AppendLine("\t\t</value>");
+                        stagesPatch.AppendLine("\t</Operation>");
+                        addedStatOffsets[i] = true;
+                    }
+
+                    if (value == 0)
+                    {
+                        if (targetExists)
+                        {
+                            //remove node
+                            stagesPatch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                            stagesPatch.AppendLine($"\t\t<xpath>{xpath}/{targetStat}</xpath>");
+                            stagesPatch.AppendLine("\t\t<value />");
+                            stagesPatch.AppendLine("\t</Operation>");
+                        }
+                        // else: no need to add or remove what doesn't exist
+                    }
+                    else
+                    {
+                        if (targetExists)
+                        {
+                            //replace value
+                            stagesPatch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                            stagesPatch.AppendLine($"\t\t<xpath>{xpath}/{targetStat}</xpath>");
+                            stagesPatch.AppendLine("\t\t<value>");
+                            stagesPatch.AppendLine($"\t\t\t<{targetStat}>{value}</{targetStat}>");
+                            stagesPatch.AppendLine("\t\t</value>");
+                            stagesPatch.AppendLine("\t</Operation>");
+                        }
+                        else
+                        {
+                            // Add new node
+                            stagesPatch.AppendLine("\t<Operation Class=\"PatchOperationAdd\">");
+                            stagesPatch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                            stagesPatch.AppendLine("\t\t<value>");
+                            stagesPatch.AppendLine($"\t\t\t<{targetStat}>{value}</{targetStat}>");
+                            stagesPatch.AppendLine("\t\t</value>");
+                            stagesPatch.AppendLine("\t</Operation>");
+                        }
+                    }
+                }
+
+                return stagesPatch.ToString();
+            }
         }
+
 
         public override void ModToolAtIndex(int i)
         {
