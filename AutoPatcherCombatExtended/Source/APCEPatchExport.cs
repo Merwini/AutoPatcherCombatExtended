@@ -91,6 +91,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (!statExists)
                 {
+                    Log.Warning($"Failed to make patch for {defName}, AddNecessaryNodes did not do its job");
                     return null;
                 }
 
