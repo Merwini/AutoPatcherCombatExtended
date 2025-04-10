@@ -59,14 +59,14 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_weaponToughnessBuffer = dataHolder.modified_WeaponToughness.ToString();
             list.TextFieldNumericLabeled("Weapon Toughness", ref dataHolder.modified_WeaponToughness, ref modified_weaponToughnessBuffer);
 
-            string modified_rangeBuffer = dataHolder.modified_Range.ToString();
-            list.TextFieldNumericLabeled("Range", ref dataHolder.modified_Range, ref modified_rangeBuffer);
+            string modified_rangeBuffer = dataHolder.modified_range.ToString();
+            list.TextFieldNumericLabeled("Range", ref dataHolder.modified_range, ref modified_rangeBuffer);
 
             string modified_rangedWeaponCooldownBuffer = dataHolder.modified_RangedWeaponCooldown.ToString();
             list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_RangedWeaponCooldown, ref modified_rangedWeaponCooldownBuffer);
 
-            string modified_burstShotCountBuffer = dataHolder.modified_BurstShotCount.ToString();
-            list.TextFieldNumericLabeled("Burst Shot Count", ref dataHolder.modified_BurstShotCount, ref modified_burstShotCountBuffer);
+            string modified_burstShotCountBuffer = dataHolder.modified_burstShotCount.ToString();
+            list.TextFieldNumericLabeled("Burst Shot Count", ref dataHolder.modified_burstShotCount, ref modified_burstShotCountBuffer);
 
             string modified_aimedBurstShotCountBuffer = dataHolder.modified_aimedBurstShotCount.ToString();
             list.TextFieldNumericLabeled("Aimed Burst Shot Count", ref dataHolder.modified_aimedBurstShotCount, ref modified_aimedBurstShotCountBuffer);
@@ -84,8 +84,8 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_magazineSizeBuffer = dataHolder.modified_magazineSize.ToString();
             list.TextFieldNumericLabeled("Magazine Size", ref dataHolder.modified_magazineSize, ref modified_magazineSizeBuffer);
 
-            string modified_ammoGenPerMagOverrideBuffer = dataHolder.modified_ammoGenPerMagOverride.ToString();
-            list.TextFieldNumericLabeled("Ammo Gen Per Mag Override", ref dataHolder.modified_ammoGenPerMagOverride, ref modified_ammoGenPerMagOverrideBuffer);
+            string modified_ammoGenPerMagOverrideBuffer = dataHolder.modified_AmmoGenPerMagOverride.ToString();
+            list.TextFieldNumericLabeled("Ammo Gen Per Mag Override", ref dataHolder.modified_AmmoGenPerMagOverride, ref modified_ammoGenPerMagOverrideBuffer);
 
             string modified_reloadTimeBuffer = dataHolder.modified_reloadTime.ToString();
             list.TextFieldNumericLabeled("Reload Time", ref dataHolder.modified_reloadTime, ref modified_reloadTimeBuffer);
@@ -93,16 +93,16 @@ namespace nuff.AutoPatcherCombatExtended
             list.CheckboxLabeled("Throw Mote", ref dataHolder.modified_throwMote);
             list.CheckboxLabeled("Reload One At A Time", ref dataHolder.modified_reloadOneAtATime);
 
-            string modified_loadedAmmoBulkFactorBuffer = dataHolder.modified_loadedAmmoBulkFactor.ToString();
-            list.TextFieldNumericLabeled("Loaded Ammo Bulk Factor", ref dataHolder.modified_loadedAmmoBulkFactor, ref modified_loadedAmmoBulkFactorBuffer);
+            string modified_loadedAmmoBulkFactorBuffer = dataHolder.modified_LoadedAmmoBulkFactor.ToString();
+            list.TextFieldNumericLabeled("Loaded Ammo Bulk Factor", ref dataHolder.modified_LoadedAmmoBulkFactor, ref modified_loadedAmmoBulkFactorBuffer);
 
             // Aimed Burst & AI Settings
             list.CheckboxLabeled("AI Use Burst Mode", ref dataHolder.modified_aiUseBurstMode);
             list.CheckboxLabeled("No Single Shot", ref dataHolder.modified_noSingleShot);
             list.CheckboxLabeled("No Snap Shot", ref dataHolder.modified_noSnapShot);
-            list.CheckboxLabeled("Uses Ammo", ref dataHolder.modified_usesAmmo);
+            list.CheckboxLabeled("Uses Ammo", ref dataHolder.modified_UsesAmmo);
 
-            if (dataHolder.modified_usesAmmo)
+            if (dataHolder.modified_UsesAmmo)
             {
                 list.Gap();
                 list.Label("AmmoSet to use:");

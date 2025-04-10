@@ -49,23 +49,23 @@ namespace nuff.AutoPatcherCombatExtended
         internal float modified_WeaponToughness;
 
         //modified verbprops stuff
-        internal Type modified_VerbClass;
+        internal Type modified_verbClass;
         internal float modified_muzzleFlashScale;
-        internal int modified_TicksBetweenBurstShots;
-        internal float modified_WarmupTime = 1;
-        internal int modified_BurstShotCount = 1;
+        internal int modified_ticksBetweenBurstShots;
+        internal float modified_warmupTime = 1;
+        internal int modified_burstShotCount = 1;
         internal float modified_RecoilAmount;
-        internal float modified_Range; //TODO
-        internal RecoilPattern modified_RecoilPattern = RecoilPattern.None;
+        internal float modified_range; //TODO
+        internal RecoilPattern modified_recoilPattern = RecoilPattern.None;
 
         //modified comp stuff
-        internal bool modified_usesAmmo = true;
+        internal bool modified_UsesAmmo = true;
         internal int modified_magazineSize;
-        internal int modified_ammoGenPerMagOverride;
+        internal int modified_AmmoGenPerMagOverride;
         internal float modified_reloadTime;
         internal bool modified_throwMote;
         internal bool modified_reloadOneAtATime;
-        internal float modified_loadedAmmoBulkFactor;
+        internal float modified_LoadedAmmoBulkFactor;
         internal AmmoSetDef modified_AmmoSetDef;
         internal string modified_AmmoSetDefString;
         internal DefDataHolderAmmoSet ammoSetDataHolder;
@@ -146,7 +146,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (gunKind == APCEConstants.gunKinds.BeamGun)
             {
-                modified_usesAmmo = false;
+                modified_UsesAmmo = false;
                 return;
             }
 
@@ -262,22 +262,22 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_SwayFactor, "modified_swayFactor");
                 Scribe_Values.Look(ref modified_WeaponToughness, "modified_weaponToughness");
 
-                string verbClassName = modified_VerbClass?.AssemblyQualifiedName;
+                string verbClassName = modified_verbClass?.AssemblyQualifiedName;
                 Scribe_Values.Look(ref verbClassName, "modified_VerbClass");
                 Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale");
-                Scribe_Values.Look(ref modified_TicksBetweenBurstShots, "modified_ticksBetweenBurstShots");
-                Scribe_Values.Look(ref modified_WarmupTime, "modified_warmupTime");
-                Scribe_Values.Look(ref modified_BurstShotCount, "modified_burstShotCount");
+                Scribe_Values.Look(ref modified_ticksBetweenBurstShots, "modified_ticksBetweenBurstShots");
+                Scribe_Values.Look(ref modified_warmupTime, "modified_warmupTime");
+                Scribe_Values.Look(ref modified_burstShotCount, "modified_burstShotCount");
                 Scribe_Values.Look(ref modified_RecoilAmount, "modified_recoilAmount");
-                Scribe_Values.Look(ref modified_RecoilPattern, "modified_recoilPattern", RecoilPattern.None);
-                Scribe_Values.Look(ref modified_Range, "modified_range");
+                Scribe_Values.Look(ref modified_recoilPattern, "modified_recoilPattern", RecoilPattern.None);
+                Scribe_Values.Look(ref modified_range, "modified_range");
 
                 Scribe_Values.Look(ref modified_magazineSize, "modified_magazineSize", 1);
-                Scribe_Values.Look(ref modified_ammoGenPerMagOverride, "modified_ammoGenPerMagOverride");
+                Scribe_Values.Look(ref modified_AmmoGenPerMagOverride, "modified_ammoGenPerMagOverride");
                 Scribe_Values.Look(ref modified_reloadTime, "modified_reloadTime");
                 Scribe_Values.Look(ref modified_throwMote, "modified_throwMote");
                 Scribe_Values.Look(ref modified_reloadOneAtATime, "modified_reloadOneAtATime");
-                Scribe_Values.Look(ref modified_loadedAmmoBulkFactor, "modified_loadedAmmoBulkFactor");
+                Scribe_Values.Look(ref modified_LoadedAmmoBulkFactor, "modified_loadedAmmoBulkFactor");
                 Scribe_Values.Look(ref modified_AmmoSetDefString, "modified_AmmoSetDefString");
 
                 Scribe_Values.Look(ref modified_aimedBurstShotCount, "modified_aimedBurstShotCount");
@@ -294,9 +294,9 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     if (!string.IsNullOrEmpty(verbClassName))
                     {
-                        modified_VerbClass = Type.GetType(verbClassName);
+                        modified_verbClass = Type.GetType(verbClassName);
 
-                        if (modified_VerbClass == null)
+                        if (modified_verbClass == null)
                         {
                             Log.Warning($"Failed to load modified_VerbClass: {verbClassName}. Type not found.");
                         }
@@ -417,7 +417,7 @@ namespace nuff.AutoPatcherCombatExtended
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_SightsEfficiency);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_ShotSpread);
             DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_SwayFactor);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_BurstShotCount);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_burstShotCount);
             if (stuffed)
             {
                 DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
@@ -452,7 +452,7 @@ namespace nuff.AutoPatcherCombatExtended
             //remove existing CompProperties_AmmoUser
             weaponThingDef.comps.RemoveAll(c => c is CompProperties_AmmoUser);
 
-            if (modified_usesAmmo)
+            if (modified_UsesAmmo)
             {
                 CompProperties_AmmoUser newComp_AmmoUser = new CompProperties_AmmoUser()
                 {
@@ -491,12 +491,13 @@ namespace nuff.AutoPatcherCombatExtended
             VerbPropertiesCE newVerbPropsCE = new VerbPropertiesCE();
             DataHolderUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
 
-            newVerbPropsCE.ticksBetweenBurstShots = modified_TicksBetweenBurstShots;
-            newVerbPropsCE.range = modified_Range;
-            newVerbPropsCE.warmupTime = modified_WarmupTime;
-            newVerbPropsCE.burstShotCount = modified_BurstShotCount;
-            newVerbPropsCE.recoilPattern = modified_RecoilPattern;
-            newVerbPropsCE.verbClass = modified_VerbClass;
+            newVerbPropsCE.ticksBetweenBurstShots = modified_ticksBetweenBurstShots;
+            newVerbPropsCE.range = modified_range;
+            newVerbPropsCE.warmupTime = modified_warmupTime;
+            newVerbPropsCE.burstShotCount = modified_burstShotCount;
+            newVerbPropsCE.recoilPattern = modified_recoilPattern;
+            newVerbPropsCE.verbClass = modified_verbClass;
+            newVerbPropsCE.muzzleFlashScale = modified_muzzleFlashScale;
             //newVerbPropsCE.ejectsCasings //TODO
             //newVerbPropsCE.indirectFirePenalty //TODO
             newVerbPropsCE.defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
@@ -512,36 +513,36 @@ namespace nuff.AutoPatcherCombatExtended
                 return;
             }
 
-            modified_TicksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
+            modified_ticksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
 
-            modified_Range = original_VerbProperties.range;
+            modified_range = original_VerbProperties.range;
 
             //if warmupTime is too low, some weapons will get stuck permanently unable to fire, since it fires when the timer ticks from 1 to 0, not when it is AT 0
-            modified_WarmupTime = original_VerbProperties.warmupTime;
-            if (modified_WarmupTime < 0.07)
-                modified_WarmupTime = 0.07f;
+            modified_warmupTime = original_VerbProperties.warmupTime;
+            if (modified_warmupTime < 0.07)
+                modified_warmupTime = 0.07f;
 
             //burst sizes are usually doubled, but need to account for single-shot weapons
-            modified_BurstShotCount = original_BurstShotCount;
-            if (modified_BurstShotCount != 1)
-                modified_BurstShotCount *= 2;
+            modified_burstShotCount = original_BurstShotCount;
+            if (modified_burstShotCount != 1)
+                modified_burstShotCount *= 2;
 
             if (gunKind == APCEConstants.gunKinds.Turret || gunKind == APCEConstants.gunKinds.MachineGun)
-                modified_RecoilPattern = RecoilPattern.Mounted;
+                modified_recoilPattern = RecoilPattern.Mounted;
             else
-                modified_RecoilPattern = RecoilPattern.Regular;
+                modified_recoilPattern = RecoilPattern.Regular;
 
             if (original_VerbProperties.verbClass == typeof(Verb_Shoot))
-                modified_VerbClass = typeof(Verb_ShootCE);
+                modified_verbClass = typeof(Verb_ShootCE);
             else if (original_VerbProperties.verbClass == typeof(Verb_LaunchProjectile)
                 || (original_VerbProperties.verbClass == typeof(Verb_ShootOneUse)))
-                modified_VerbClass = typeof(Verb_ShootCEOneUse);
+                modified_verbClass = typeof(Verb_ShootCEOneUse);
             else if (original_VerbProperties.verbClass == typeof(Verb_SpewFire))
-                modified_VerbClass = typeof(Verb_SpewFire);
+                modified_verbClass = typeof(Verb_SpewFire);
             else
             {
                 if (APCESettings.patchCustomVerbs)
-                    modified_VerbClass = typeof(Verb_ShootCE);
+                    modified_verbClass = typeof(Verb_ShootCE);
                 else
                     throw new Exception($"Unable to patch {weaponThingDef.label} due to unrecognized and/or custom verbClass: {original_VerbProperties.verbClass}");
             }
@@ -549,8 +550,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void CalculateCompFireModesValues()
         {
-            if (modified_BurstShotCount > 1)
-                modified_aimedBurstShotCount = (int)(modified_BurstShotCount / 2);
+            if (modified_burstShotCount > 1)
+                modified_aimedBurstShotCount = (int)(modified_burstShotCount / 2);
             else
                 modified_aimedBurstShotCount = 1;
 
@@ -572,7 +573,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void CalculateCompAmmoUserValues()
         {
-            modified_loadedAmmoBulkFactor = 0;
+            modified_LoadedAmmoBulkFactor = 0;
             modified_throwMote = true;
 
             if (gunKind == APCEConstants.gunKinds.Bow)
@@ -591,12 +592,12 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else if (gunKind == APCEConstants.gunKinds.MachineGun)
             {
-                modified_magazineSize = modified_BurstShotCount * 10;
+                modified_magazineSize = modified_burstShotCount * 10;
                 modified_reloadTime = Mathf.Clamp(modified_magazineSize * 0.09f, 0.1f, 12f);
             }
             else
             {
-                modified_magazineSize = modified_BurstShotCount * 5;
+                modified_magazineSize = modified_burstShotCount * 5;
                 modified_reloadTime = 4f;
             }
 
@@ -654,8 +655,8 @@ namespace nuff.AutoPatcherCombatExtended
             modified_AmmoSetDef = APCEDefOf.AmmoSet_81mmMortarShell;
 
             //verb
-            modified_VerbClass = typeof(Verb_ShootMortarCE);
-            modified_WarmupTime = original_VerbProperties.warmupTime;
+            modified_verbClass = typeof(Verb_ShootMortarCE);
+            modified_warmupTime = original_VerbProperties.warmupTime;
         }
 
         #region Grenade
