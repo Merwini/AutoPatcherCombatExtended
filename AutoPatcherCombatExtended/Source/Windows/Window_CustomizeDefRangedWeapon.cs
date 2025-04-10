@@ -47,38 +47,38 @@ namespace nuff.AutoPatcherCombatExtended
             list.Begin(viewRect);
 
             // List of fields
-            string modified_massBuffer = dataHolder.modified_mass.ToString();
-            list.TextFieldNumericLabeled("Mass", ref dataHolder.modified_mass, ref modified_massBuffer);
+            string modified_massBuffer = dataHolder.modified_Mass.ToString();
+            list.TextFieldNumericLabeled("Mass", ref dataHolder.modified_Mass, ref modified_massBuffer);
 
-            string modified_bulkBuffer = dataHolder.modified_bulk.ToString();
-            list.TextFieldNumericLabeled("Bulk", ref dataHolder.modified_bulk, ref modified_bulkBuffer);
+            string modified_bulkBuffer = dataHolder.modified_Bulk.ToString();
+            list.TextFieldNumericLabeled("Bulk", ref dataHolder.modified_Bulk, ref modified_bulkBuffer);
 
-            string modified_workToMakeBuffer = dataHolder.modified_workToMake.ToString();
-            list.TextFieldNumericLabeled("Work To Make", ref dataHolder.modified_workToMake, ref modified_workToMakeBuffer);
+            string modified_workToMakeBuffer = dataHolder.modified_WorkToMake.ToString();
+            list.TextFieldNumericLabeled("Work To Make", ref dataHolder.modified_WorkToMake, ref modified_workToMakeBuffer);
 
-            string modified_weaponToughnessBuffer = dataHolder.modified_weaponToughness.ToString();
-            list.TextFieldNumericLabeled("Weapon Toughness", ref dataHolder.modified_weaponToughness, ref modified_weaponToughnessBuffer);
+            string modified_weaponToughnessBuffer = dataHolder.modified_WeaponToughness.ToString();
+            list.TextFieldNumericLabeled("Weapon Toughness", ref dataHolder.modified_WeaponToughness, ref modified_weaponToughnessBuffer);
 
-            string modified_rangeBuffer = dataHolder.modified_range.ToString();
-            list.TextFieldNumericLabeled("Range", ref dataHolder.modified_range, ref modified_rangeBuffer);
+            string modified_rangeBuffer = dataHolder.modified_Range.ToString();
+            list.TextFieldNumericLabeled("Range", ref dataHolder.modified_Range, ref modified_rangeBuffer);
 
-            string modified_rangedWeaponCooldownBuffer = dataHolder.modified_rangedWeaponCooldown.ToString();
-            list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_rangedWeaponCooldown, ref modified_rangedWeaponCooldownBuffer);
+            string modified_rangedWeaponCooldownBuffer = dataHolder.modified_RangedWeaponCooldown.ToString();
+            list.TextFieldNumericLabeled("Ranged Weapon Cooldown", ref dataHolder.modified_RangedWeaponCooldown, ref modified_rangedWeaponCooldownBuffer);
 
-            string modified_burstShotCountBuffer = dataHolder.modified_burstShotCount.ToString();
-            list.TextFieldNumericLabeled("Burst Shot Count", ref dataHolder.modified_burstShotCount, ref modified_burstShotCountBuffer);
+            string modified_burstShotCountBuffer = dataHolder.modified_BurstShotCount.ToString();
+            list.TextFieldNumericLabeled("Burst Shot Count", ref dataHolder.modified_BurstShotCount, ref modified_burstShotCountBuffer);
 
             string modified_aimedBurstShotCountBuffer = dataHolder.modified_aimedBurstShotCount.ToString();
             list.TextFieldNumericLabeled("Aimed Burst Shot Count", ref dataHolder.modified_aimedBurstShotCount, ref modified_aimedBurstShotCountBuffer);
 
-            string modified_sightsEfficiencyBuffer = dataHolder.modified_sightsEfficiency.ToString();
-            list.TextFieldNumericLabeled("Sights Efficiency", ref dataHolder.modified_sightsEfficiency, ref modified_sightsEfficiencyBuffer);
+            string modified_sightsEfficiencyBuffer = dataHolder.modified_SightsEfficiency.ToString();
+            list.TextFieldNumericLabeled("Sights Efficiency", ref dataHolder.modified_SightsEfficiency, ref modified_sightsEfficiencyBuffer);
 
-            string modified_shotSpreadBuffer = dataHolder.modified_shotSpread.ToString();
-            list.TextFieldNumericLabeled("Shot Spread", ref dataHolder.modified_shotSpread, ref modified_shotSpreadBuffer);
+            string modified_shotSpreadBuffer = dataHolder.modified_ShotSpread.ToString();
+            list.TextFieldNumericLabeled("Shot Spread", ref dataHolder.modified_ShotSpread, ref modified_shotSpreadBuffer);
 
-            string modified_swayFactorBuffer = dataHolder.modified_swayFactor.ToString();
-            list.TextFieldNumericLabeled("Sway Factor", ref dataHolder.modified_swayFactor, ref modified_swayFactorBuffer);
+            string modified_swayFactorBuffer = dataHolder.modified_SwayFactor.ToString();
+            list.TextFieldNumericLabeled("Sway Factor", ref dataHolder.modified_SwayFactor, ref modified_swayFactorBuffer);
 
             // Magazine & Reload
             string modified_magazineSizeBuffer = dataHolder.modified_magazineSize.ToString();

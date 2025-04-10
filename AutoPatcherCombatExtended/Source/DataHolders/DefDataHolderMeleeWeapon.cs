@@ -121,7 +121,7 @@ namespace nuff.AutoPatcherCombatExtended
             patchOps = new List<string>();
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Mass", modified_Mass, original_Mass));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Bulk", modified_Bulk));
-            //patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ToughnessRating", modified_WeaponToughness));
+            //patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ToughnessRating", modified_WeaponToughness)); //let weapon toughness autopatcher do its thing
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeCounterParryBonus", modified_MeleeCounterParryBonus));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "MeleeDodgeChance", modified_MeleeDodgeChance));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "MeleeParryChance", modified_MeleeParryChance));

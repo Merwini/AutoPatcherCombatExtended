@@ -26,9 +26,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         //original statbase stuff
         float original_Mass;
-        float original_rangedWeaponCooldown;
-        float original_workToMake;
-        int original_burstShotCount;
+        float original_RangedWeaponCooldown;
+        float original_WorkToMake;
+        int original_BurstShotCount;
 
         bool stuffed;
 
@@ -39,24 +39,24 @@ namespace nuff.AutoPatcherCombatExtended
         APCEConstants.gunKinds gunKind;
 
         //modified statbase stuff
-        internal float modified_mass;
-        internal float modified_bulk;
-        internal float modified_rangedWeaponCooldown;
-        internal float modified_workToMake;
-        internal float modified_sightsEfficiency;
-        internal float modified_shotSpread;
-        internal float modified_swayFactor;
-        internal float modified_weaponToughness;
+        internal float modified_Mass;
+        internal float modified_Bulk;
+        internal float modified_RangedWeaponCooldown;
+        internal float modified_WorkToMake;
+        internal float modified_SightsEfficiency;
+        internal float modified_ShotSpread;
+        internal float modified_SwayFactor;
+        internal float modified_WeaponToughness;
 
         //modified verbprops stuff
         internal Type modified_VerbClass;
         internal float modified_muzzleFlashScale;
-        internal int modified_ticksBetweenBurstShots;
-        internal float modified_warmupTime = 1;
-        internal int modified_burstShotCount = 1;
-        internal float modified_recoilAmount;
-        internal float modified_range; //TODO
-        internal RecoilPattern modified_recoilPattern = RecoilPattern.None;
+        internal int modified_TicksBetweenBurstShots;
+        internal float modified_WarmupTime = 1;
+        internal int modified_BurstShotCount = 1;
+        internal float modified_RecoilAmount;
+        internal float modified_Range; //TODO
+        internal RecoilPattern modified_RecoilPattern = RecoilPattern.None;
 
         //modified comp stuff
         internal bool modified_usesAmmo = true;
@@ -113,9 +113,9 @@ namespace nuff.AutoPatcherCombatExtended
             }
             original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
             original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
-            original_rangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
-            original_workToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
-            original_burstShotCount = original_VerbProperties.burstShotCount;
+            original_RangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
+            original_WorkToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
+            original_BurstShotCount = original_VerbProperties.burstShotCount;
             stuffed = weaponThingDef.MadeFromStuff;
         }
         public override void AutoCalculate()
@@ -227,7 +227,12 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            //todo
+            xml = DataHolderUtils.GetXmlForDef(weaponThingDef);
+
+            patchOps = new List<string>();
+
+
+
             return null;
         }
 
@@ -248,24 +253,24 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Defs.Look(ref weaponThingDef, "def");
                 Scribe_Values.Look(ref gunKind, "gunKind");
 
-                Scribe_Values.Look(ref modified_mass, "modified_mass");
-                Scribe_Values.Look(ref modified_bulk, "modified_bulk");
-                Scribe_Values.Look(ref modified_rangedWeaponCooldown, "modified_rangedWeaponCooldown");
-                Scribe_Values.Look(ref modified_workToMake, "modified_workToMake");
-                Scribe_Values.Look(ref modified_sightsEfficiency, "modified_sightsEfficiency");
-                Scribe_Values.Look(ref modified_shotSpread, "modified_shotSpread");
-                Scribe_Values.Look(ref modified_swayFactor, "modified_swayFactor");
-                Scribe_Values.Look(ref modified_weaponToughness, "modified_weaponToughness");
+                Scribe_Values.Look(ref modified_Mass, "modified_mass");
+                Scribe_Values.Look(ref modified_Bulk, "modified_bulk");
+                Scribe_Values.Look(ref modified_RangedWeaponCooldown, "modified_rangedWeaponCooldown");
+                Scribe_Values.Look(ref modified_WorkToMake, "modified_workToMake");
+                Scribe_Values.Look(ref modified_SightsEfficiency, "modified_sightsEfficiency");
+                Scribe_Values.Look(ref modified_ShotSpread, "modified_shotSpread");
+                Scribe_Values.Look(ref modified_SwayFactor, "modified_swayFactor");
+                Scribe_Values.Look(ref modified_WeaponToughness, "modified_weaponToughness");
 
                 string verbClassName = modified_VerbClass?.AssemblyQualifiedName;
                 Scribe_Values.Look(ref verbClassName, "modified_VerbClass");
                 Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale");
-                Scribe_Values.Look(ref modified_ticksBetweenBurstShots, "modified_ticksBetweenBurstShots");
-                Scribe_Values.Look(ref modified_warmupTime, "modified_warmupTime");
-                Scribe_Values.Look(ref modified_burstShotCount, "modified_burstShotCount");
-                Scribe_Values.Look(ref modified_recoilAmount, "modified_recoilAmount");
-                Scribe_Values.Look(ref modified_recoilPattern, "modified_recoilPattern", RecoilPattern.None);
-                Scribe_Values.Look(ref modified_range, "modified_range");
+                Scribe_Values.Look(ref modified_TicksBetweenBurstShots, "modified_ticksBetweenBurstShots");
+                Scribe_Values.Look(ref modified_WarmupTime, "modified_warmupTime");
+                Scribe_Values.Look(ref modified_BurstShotCount, "modified_burstShotCount");
+                Scribe_Values.Look(ref modified_RecoilAmount, "modified_recoilAmount");
+                Scribe_Values.Look(ref modified_RecoilPattern, "modified_recoilPattern", RecoilPattern.None);
+                Scribe_Values.Look(ref modified_Range, "modified_range");
 
                 Scribe_Values.Look(ref modified_magazineSize, "modified_magazineSize", 1);
                 Scribe_Values.Look(ref modified_ammoGenPerMagOverride, "modified_ammoGenPerMagOverride");
@@ -315,111 +320,111 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 //calc new stat bases
                 case APCEConstants.gunKinds.Bow:
-                    modified_sightsEfficiency = 0.6f;
-                    modified_shotSpread = 1f;
-                    modified_swayFactor = 2f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(2f * original_Mass, 20f);
-                    modified_recoilAmount = 2f * recoilTechMod;
+                    modified_SightsEfficiency = 0.6f;
+                    modified_ShotSpread = 1f;
+                    modified_SwayFactor = 2f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_RecoilAmount = 2f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Handgun:
-                    modified_shotSpread = (0.2f - ssAccuracyMod) * gunTechModMult;
-                    modified_sightsEfficiency = 0.7f + gunTechModAdd;
-                    modified_swayFactor = 1f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(1f * original_Mass, 20f);
+                    modified_ShotSpread = (0.2f - ssAccuracyMod) * gunTechModMult;
+                    modified_SightsEfficiency = 0.7f + gunTechModAdd;
+                    modified_SwayFactor = 1f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(1f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.SMG:
-                    modified_shotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
-                    modified_sightsEfficiency = 0.7f + gunTechModAdd;
-                    modified_swayFactor = 2f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(1f * original_Mass, 20f);
+                    modified_ShotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
+                    modified_SightsEfficiency = 0.7f + gunTechModAdd;
+                    modified_SwayFactor = 2f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(1f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.Shotgun:
-                    modified_shotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
-                    modified_sightsEfficiency = 1f + gunTechModAdd;
-                    modified_swayFactor = 1.2f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_ShotSpread = (0.17f - ssAccuracyMod) * gunTechModMult;
+                    modified_SightsEfficiency = 1f + gunTechModAdd;
+                    modified_SwayFactor = 1.2f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(2f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.assaultRifle:
-                    modified_shotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
-                    modified_sightsEfficiency = 1f + gunTechModAdd;
-                    modified_swayFactor = 1.33f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(2f * original_Mass, 20f);
-                    modified_recoilAmount = 1.8f * recoilTechMod;
+                    modified_ShotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
+                    modified_SightsEfficiency = 1f + gunTechModAdd;
+                    modified_SwayFactor = 1.33f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_RecoilAmount = 1.8f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.MachineGun:
-                    modified_shotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
-                    modified_sightsEfficiency = 1f + gunTechModAdd;
-                    modified_swayFactor = 1.4f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(1.5f * original_Mass, 20f);
-                    modified_recoilAmount = 2.3f * recoilTechMod;
+                    modified_ShotSpread = (0.13f - ssAccuracyMod) * gunTechModMult;
+                    modified_SightsEfficiency = 1f + gunTechModAdd;
+                    modified_SwayFactor = 1.4f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(1.5f * original_Mass, 20f);
+                    modified_RecoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.precisionRifle:
-                    modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
-                    modified_sightsEfficiency = 2.6f + gunTechModAdd;
-                    modified_swayFactor = 1.35f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_ShotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
+                    modified_SightsEfficiency = 2.6f + gunTechModAdd;
+                    modified_SwayFactor = 1.35f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(2f * original_Mass, 20f);
                     break;
                 case APCEConstants.gunKinds.ExplosiveLauncher:
-                    modified_shotSpread = 0.122f + (weaponThingDef.Verbs[0].ForcedMissRadius * 0.02f);
-                    modified_sightsEfficiency = 1f + gunTechModAdd;
-                    modified_swayFactor = 1.8f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(2f * original_Mass, 20f);
-                    modified_recoilAmount = 2.3f * recoilTechMod;
+                    modified_ShotSpread = 0.122f + (weaponThingDef.Verbs[0].ForcedMissRadius * 0.02f);
+                    modified_SightsEfficiency = 1f + gunTechModAdd;
+                    modified_SwayFactor = 1.8f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_RecoilAmount = 2.3f * recoilTechMod;
                     break;
                 case APCEConstants.gunKinds.Turret:
-                    modified_shotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
-                    modified_sightsEfficiency = 1f;
-                    modified_swayFactor = 1.5f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(2f * original_Mass, 20f);
-                    modified_recoilAmount = 1f;
+                    modified_ShotSpread = (0.1f - ssAccuracyMod) * gunTechModMult;
+                    modified_SightsEfficiency = 1f;
+                    modified_SwayFactor = 1.5f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_RecoilAmount = 1f;
                     break;
                 case APCEConstants.gunKinds.Grenade:
-                    modified_sightsEfficiency = 1.00f;
-                    modified_bulk = 0.87f;
-                    modified_mass = 0.7f;
+                    modified_SightsEfficiency = 1.00f;
+                    modified_Bulk = 0.87f;
+                    modified_Mass = 0.7f;
                     break;
                 default:
-                    modified_shotSpread = modified_shotSpread = (0.15f - ssAccuracyMod) * gunTechModMult; //somewhere between an SMG and assault rifle
-                    modified_sightsEfficiency = 1f + gunTechModAdd;
-                    modified_swayFactor = 2.0f;
-                    modified_mass = Math.Min(original_Mass, 30);
-                    modified_bulk = Math.Min(2f * original_Mass, 20f);
-                    modified_recoilAmount = 1f;
+                    modified_ShotSpread = modified_ShotSpread = (0.15f - ssAccuracyMod) * gunTechModMult; //somewhere between an SMG and assault rifle
+                    modified_SightsEfficiency = 1f + gunTechModAdd;
+                    modified_SwayFactor = 2.0f;
+                    modified_Mass = Math.Min(original_Mass, 30);
+                    modified_Bulk = Math.Min(2f * original_Mass, 20f);
+                    modified_RecoilAmount = 1f;
                     break;
             }
 
-            modified_weaponToughness = DataHolderUtils.WeaponToughnessAutocalc(weaponThingDef, modified_bulk);
-            modified_workToMake = original_workToMake;
-            modified_rangedWeaponCooldown = original_rangedWeaponCooldown;
+            modified_WeaponToughness = DataHolderUtils.WeaponToughnessAutocalc(weaponThingDef, modified_Bulk);
+            modified_WorkToMake = original_WorkToMake;
+            modified_RangedWeaponCooldown = original_RangedWeaponCooldown;
         }
         public void PatchStatBases()
         {
             RemoveVanillaStatBases();
 
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.Mass, modified_mass);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_bulk);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_rangedWeaponCooldown);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.WorkToMake, modified_workToMake);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_sightsEfficiency);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_shotSpread);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_swayFactor);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_burstShotCount);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.Mass, modified_Mass);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_RangedWeaponCooldown);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.WorkToMake, modified_WorkToMake);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_SightsEfficiency);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_ShotSpread);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_SwayFactor);
+            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_BurstShotCount);
             if (stuffed)
             {
-                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_weaponToughness);
+                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
             }
             else
             {
-                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_weaponToughness);
+                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
             }
         }
         public void PatchComps()
@@ -486,11 +491,11 @@ namespace nuff.AutoPatcherCombatExtended
             VerbPropertiesCE newVerbPropsCE = new VerbPropertiesCE();
             DataHolderUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
 
-            newVerbPropsCE.ticksBetweenBurstShots = modified_ticksBetweenBurstShots;
-            newVerbPropsCE.range = modified_range;
-            newVerbPropsCE.warmupTime = modified_warmupTime;
-            newVerbPropsCE.burstShotCount = modified_burstShotCount;
-            newVerbPropsCE.recoilPattern = modified_recoilPattern;
+            newVerbPropsCE.ticksBetweenBurstShots = modified_TicksBetweenBurstShots;
+            newVerbPropsCE.range = modified_Range;
+            newVerbPropsCE.warmupTime = modified_WarmupTime;
+            newVerbPropsCE.burstShotCount = modified_BurstShotCount;
+            newVerbPropsCE.recoilPattern = modified_RecoilPattern;
             newVerbPropsCE.verbClass = modified_VerbClass;
             //newVerbPropsCE.ejectsCasings //TODO
             //newVerbPropsCE.indirectFirePenalty //TODO
@@ -507,24 +512,24 @@ namespace nuff.AutoPatcherCombatExtended
                 return;
             }
 
-            modified_ticksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
+            modified_TicksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
 
-            modified_range = original_VerbProperties.range;
+            modified_Range = original_VerbProperties.range;
 
             //if warmupTime is too low, some weapons will get stuck permanently unable to fire, since it fires when the timer ticks from 1 to 0, not when it is AT 0
-            modified_warmupTime = original_VerbProperties.warmupTime;
-            if (modified_warmupTime < 0.07)
-                modified_warmupTime = 0.07f;
+            modified_WarmupTime = original_VerbProperties.warmupTime;
+            if (modified_WarmupTime < 0.07)
+                modified_WarmupTime = 0.07f;
 
             //burst sizes are usually doubled, but need to account for single-shot weapons
-            modified_burstShotCount = original_burstShotCount;
-            if (modified_burstShotCount != 1)
-                modified_burstShotCount *= 2;
+            modified_BurstShotCount = original_BurstShotCount;
+            if (modified_BurstShotCount != 1)
+                modified_BurstShotCount *= 2;
 
             if (gunKind == APCEConstants.gunKinds.Turret || gunKind == APCEConstants.gunKinds.MachineGun)
-                modified_recoilPattern = RecoilPattern.Mounted;
+                modified_RecoilPattern = RecoilPattern.Mounted;
             else
-                modified_recoilPattern = RecoilPattern.Regular;
+                modified_RecoilPattern = RecoilPattern.Regular;
 
             if (original_VerbProperties.verbClass == typeof(Verb_Shoot))
                 modified_VerbClass = typeof(Verb_ShootCE);
@@ -544,8 +549,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void CalculateCompFireModesValues()
         {
-            if (modified_burstShotCount > 1)
-                modified_aimedBurstShotCount = (int)(modified_burstShotCount / 2);
+            if (modified_BurstShotCount > 1)
+                modified_aimedBurstShotCount = (int)(modified_BurstShotCount / 2);
             else
                 modified_aimedBurstShotCount = 1;
 
@@ -586,12 +591,12 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else if (gunKind == APCEConstants.gunKinds.MachineGun)
             {
-                modified_magazineSize = modified_burstShotCount * 10;
+                modified_magazineSize = modified_BurstShotCount * 10;
                 modified_reloadTime = Mathf.Clamp(modified_magazineSize * 0.09f, 0.1f, 12f);
             }
             else
             {
-                modified_magazineSize = modified_burstShotCount * 5;
+                modified_magazineSize = modified_BurstShotCount * 5;
                 modified_reloadTime = 4f;
             }
 
@@ -641,7 +646,7 @@ namespace nuff.AutoPatcherCombatExtended
         public void CalculateMortar()
         {
             //statbases
-            modified_sightsEfficiency = 0.5f;
+            modified_SightsEfficiency = 0.5f;
 
             //comps
             modified_magazineSize = 1;
@@ -650,7 +655,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             //verb
             modified_VerbClass = typeof(Verb_ShootMortarCE);
-            modified_warmupTime = original_VerbProperties.warmupTime;
+            modified_WarmupTime = original_VerbProperties.warmupTime;
         }
 
         #region Grenade
