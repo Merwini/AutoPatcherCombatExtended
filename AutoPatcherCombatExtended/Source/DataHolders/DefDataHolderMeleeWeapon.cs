@@ -127,6 +127,8 @@ namespace nuff.AutoPatcherCombatExtended
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "MeleeParryChance", modified_MeleeParryChance));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "MeleeCritChance", modified_MeleeCritChance));
 
+            patchOps.Add(GenerateToolPatchXML());
+
             base.ExportXML();
 
             return patch;

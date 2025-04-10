@@ -331,6 +331,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_ToolPowers.NullOrEmpty() ||
                 modified_ToolChanceFactors.NullOrEmpty())
             {
+                Log.Warning($"Unable to generate Tools patch for {def.defName}, one of the modified value lists was either null or empty.");
                 return null;
             }
 
