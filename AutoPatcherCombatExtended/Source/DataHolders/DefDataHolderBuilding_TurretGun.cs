@@ -96,13 +96,21 @@ namespace nuff.AutoPatcherCombatExtended
 
             string MakeFillPercentPatch()
             {
-                string xpath = $"/Defs/ThingDef[defName=\"{defName}\"]/FillPercent";
+                if (modified_FillPercent == original_FillPercent)
+                {
+                    return null;
+                }
+
                 StringBuilder patch = new StringBuilder();
 
-                patch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                bool nodeExists = xml.SelectSingleNode("fillPercent") != null;
+
+                string xpath = $"Defs/ThingDef[defName=\"{defName}\"]{(nodeExists ? "/fillPercent" : "")}";
+
+                patch.AppendLine($"\t<Operation Class=\"{(nodeExists ? "PatchOperationReplace" : "PatchOperationAdd")}\">");
                 patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
                 patch.AppendLine("\t\t<value>");
-                patch.AppendLine($"\t\t\t<FillPercent>{modified_FillPercent}</FillPercent>");
+                patch.AppendLine($"\t\t\t<fillPercent>{modified_FillPercent}</fillPercent>");
                 patch.AppendLine("\t\t</value>");
                 patch.AppendLine("\t</Operation>");
                 patch.AppendLine();
@@ -112,10 +120,18 @@ namespace nuff.AutoPatcherCombatExtended
 
             string MakeTurretBurstCoolDownTimePatch()
             {
-                string xpath = $"/Defs/ThingDef[defName=\"{defName}\"]/building/turretBurstCooldownTime";
+                if (modified_TurretBurstCooldownTime == original_TurretBurstCooldownTime)
+                {
+                    return null;
+                }
+
                 StringBuilder patch = new StringBuilder();
 
-                patch.AppendLine("\t<Operation Class=\"PatchOperationReplace\">");
+                bool nodeExists = xml.SelectSingleNode("building")?.SelectSingleNode("turretBurstCooldownTime") != null;
+
+                string xpath = $"Defs/ThingDef[defName=\"{defName}\"]/building{(nodeExists ? "/turretBurstCooldownTime" : "")}";
+
+                patch.AppendLine($"\t<Operation Class=\"{(nodeExists ? "PatchOperationReplace" : "PatchOperationAdd")}\">");
                 patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
                 patch.AppendLine("\t\t<value>");
                 patch.AppendLine($"\t\t\t<turretBurstCooldownTime>{modified_TurretBurstCooldownTime}</turretBurstCooldownTime>");
