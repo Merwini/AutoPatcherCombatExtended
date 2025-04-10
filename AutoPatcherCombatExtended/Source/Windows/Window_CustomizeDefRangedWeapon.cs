@@ -93,13 +93,13 @@ namespace nuff.AutoPatcherCombatExtended
             list.CheckboxLabeled("Throw Mote", ref dataHolder.modified_throwMote);
             list.CheckboxLabeled("Reload One At A Time", ref dataHolder.modified_reloadOneAtATime);
 
-            string modified_loadedAmmoBulkFactorBuffer = dataHolder.modified_LoadedAmmoBulkFactor.ToString();
-            list.TextFieldNumericLabeled("Loaded Ammo Bulk Factor", ref dataHolder.modified_LoadedAmmoBulkFactor, ref modified_loadedAmmoBulkFactorBuffer);
+            string modified_loadedAmmoBulkFactorBuffer = dataHolder.modified_loadedAmmoBulkFactor.ToString();
+            list.TextFieldNumericLabeled("Loaded Ammo Bulk Factor", ref dataHolder.modified_loadedAmmoBulkFactor, ref modified_loadedAmmoBulkFactorBuffer);
 
             // Aimed Burst & AI Settings
             list.CheckboxLabeled("AI Use Burst Mode", ref dataHolder.modified_aiUseBurstMode);
             list.CheckboxLabeled("No Single Shot", ref dataHolder.modified_noSingleShot);
-            list.CheckboxLabeled("No Snap Shot", ref dataHolder.modified_noSnapShot);
+            list.CheckboxLabeled("No Snap Shot", ref dataHolder.modified_noSnapshot);
             list.CheckboxLabeled("Uses Ammo", ref dataHolder.modified_UsesAmmo);
 
             if (dataHolder.modified_UsesAmmo)
