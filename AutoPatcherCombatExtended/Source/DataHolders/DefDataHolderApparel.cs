@@ -12,6 +12,11 @@ namespace nuff.AutoPatcherCombatExtended
     public class DefDataHolderApparel : DefDataHolder
     {
         //TODO: headgear layers
+        public DefDataHolderApparel()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderApparel(ThingDef def) : base(def)
         {
         }
@@ -27,6 +32,7 @@ namespace nuff.AutoPatcherCombatExtended
         float original_CarryWeight;
         float original_ShootingAccuracyPawn;
         float original_MaxHitPoints;
+        float original_StuffEffectMultiplierArmor;
 
         //unsaved calculated values
         float apparelTechMult;
@@ -40,24 +46,34 @@ namespace nuff.AutoPatcherCombatExtended
 
         //saved modified values
         //vanilla bloc
-        float modified_ArmorRatingSharp;
-        float modified_ArmorRatingBlunt;
-        float modified_ArmorRatingHeat;
-        float modified_Mass;
-        float modified_MaxHitPoints;
-        float modified_ShootingAccuracyPawn;
+        internal float modified_ArmorRatingSharp;
+        internal float modified_ArmorRatingBlunt;
+        internal float modified_ArmorRatingHeat;
+        internal float modified_Mass;
+        internal float modified_MaxHitPoints;
+        internal float modified_ShootingAccuracyPawn;
+        internal float modified_StuffEffectMultiplierArmor;
 
         //CE bloc
-        float modified_Bulk;
-        float modified_WornBulk;
-        float modified_CarryWeight;
-        float modified_CarryBulk;
-        float modified_SmokeSensitivity;
-        float modified_NightVisionEfficiency;
+        internal float modified_Bulk;
+        internal float modified_WornBulk;
+        internal float modified_CarryWeight;
+        internal float modified_CarryBulk;
+        internal float modified_SmokeSensitivity;
+        internal float modified_NightVisionEfficiency;
 
         public override void GetOriginalData()
         {
-            thingDef = def as ThingDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && thingDef == null)
+            {
+                this.thingDef = def as ThingDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (thingDef != null && def == null)
+            {
+                def = thingDef;
+            }
 
             original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
             original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
@@ -66,19 +82,22 @@ namespace nuff.AutoPatcherCombatExtended
             original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
             original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
             original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
+            original_StuffEffectMultiplierArmor = thingDef.statBases.GetStatValueFromList(StatDefOf.StuffEffectMultiplierArmor, 0);
 
-            CalculateApparelTechMult();
             CheckWhatCovers();
         }
 
         public override void AutoCalculate()
         {
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;;
+            CalculateApparelTechMult();
+
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.apparelBluntMult * apparelTechMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
             modified_Mass = Math.Min(original_Mass, 50);
             modified_MaxHitPoints = original_MaxHitPoints;
+            modified_StuffEffectMultiplierArmor = original_StuffEffectMultiplierArmor;
 
             CalculateBulk();
             CalculateStatMods();
@@ -96,6 +115,11 @@ namespace nuff.AutoPatcherCombatExtended
                 DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
                 DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
 
+                if (!thingDef.stuffCategories.NullOrEmpty())
+                {
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor);
+                }
+
                 DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
                 DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
                 DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
@@ -105,23 +129,37 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            //todo
-            return null;
-        }
+            xml = DataHolderUtils.GetXmlForDef(thingDef);
 
-        public override void ExportXML()
-        {
-            //todo
+            patchOps = new List<string>();
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Mass", modified_Mass, original_Mass));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Bulk", modified_Bulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "WornBulk", modified_WornBulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MaxHitPoints", modified_MaxHitPoints, original_MaxHitPoints));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "StuffEffectMultiplierArmor", modified_StuffEffectMultiplierArmor, original_StuffEffectMultiplierArmor));
+
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryBulk", modified_CarryBulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryWeight", modified_CarryWeight, original_CarryWeight));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "ShootingAccuracyPawn", modified_ShootingAccuracyPawn, original_ShootingAccuracyPawn));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "SmokeSensitivity", modified_SmokeSensitivity));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "NightVisionEfficiency", modified_NightVisionEfficiency));
+
+            base.ExportXML();
+
+            return patch;
         }
 
         public override void ExposeData()
         {
-            base.ExposeData();
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
+                Scribe_Defs.Look(ref thingDef, "def");
                 Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0);
                 Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
                 Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
@@ -134,7 +172,9 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_CarryBulk, "modified_CarryBulk", 0f);
                 Scribe_Values.Look(ref modified_SmokeSensitivity, "modified_SmokeSensitivity", 0f);
                 Scribe_Values.Look(ref modified_NightVisionEfficiency, "modified_NightVisionEfficiency", 0f);
+                Scribe_Values.Look(ref modified_StuffEffectMultiplierArmor, "modified_StuffEffectMultiplierArmor", 0f);
             }
+            base.ExposeData();
         }
 
         public void CalculateApparelTechMult()

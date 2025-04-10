@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using HarmonyLib;
 using System.Reflection;
+using CombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -28,6 +29,12 @@ namespace nuff.AutoPatcherCombatExtended
             MethodInfo DoMainMenuControlsMethod = typeof(MainMenuDrawer).GetMethod(nameof(MainMenuDrawer.DoMainMenuControls));
             MethodInfo DoMainMenuControlsPostfix = typeof(APCEMainMenuPatch).GetMethod(nameof(APCEMainMenuPatch.Postfix));
             harmony.Patch(DoMainMenuControlsMethod, postfix: new HarmonyMethod(DoMainMenuControlsPostfix));
+            #endregion
+
+            #region CompAmmoUserInit
+            MethodInfo CompAmmoUserPostExposeDataMethod = typeof(CompAmmoUser).GetMethod(nameof(CompAmmoUser.PostExposeData));
+            MethodInfo CompAmmoUserPostfix = typeof(CompAmmoUserPostExposeDataPatch).GetMethod(nameof(CompAmmoUserPostExposeDataPatch.Postfix));
+            harmony.Patch(CompAmmoUserPostExposeDataMethod, postfix: new HarmonyMethod(CompAmmoUserPostfix));
             #endregion
 
             #region VFPatches
@@ -67,6 +74,23 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 Find.WindowStack.Add(new Window_SuggestPatchMods());
                 APCESettings.suggestionWindowOpened = true;
+            }
+        }
+    }
+
+    public class CompAmmoUserPostExposeDataPatch
+    {
+        public static void Postfix(CompAmmoUser __instance)
+        {
+            if (__instance.UseAmmo && !__instance.Props.ammoSet.ammoTypes.Any(link => link.ammo == __instance.CurrentAmmo))
+            {
+                __instance.CurrentAmmo = __instance.Props.ammoSet.ammoTypes[0].ammo;
+                __instance.selectedAmmo = __instance.Props.ammoSet.ammoTypes[0].ammo;
+            }
+
+            if (__instance.curMagCountInt > __instance.Props.magazineSize)
+            {
+                __instance.curMagCountInt = __instance.Props.magazineSize;
             }
         }
     }

@@ -7,11 +7,16 @@ using Verse;
 using RimWorld;
 using Vehicles;
 using System.Reflection;
+using CombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended.VF
 {
     public class DefDataHolderVehicleTurretDef : DefDataHolder
     {
+        public DefDataHolderVehicleTurretDef()
+        {
+        }
+
         public DefDataHolderVehicleTurretDef(Def def) : base(def)
         {
         }
@@ -33,27 +38,33 @@ namespace nuff.AutoPatcherCombatExtended.VF
         List<ThingDef> original_ammunitions = new List<ThingDef>();
 
         //modified values
-        ThingDef modified_Projectile;
-        float modified_WarmUpTimer;
-        float modified_ReloadTimer;
-        float modified_MinRange;
-        float modified_MaxRange;
-        int modified_MagazineCapacity;
-        float modified_ChargePerAmmoCount;
+        internal float modified_WarmUpTimer;
+        internal float modified_ReloadTimer;
+        internal float modified_MinRange;
+        internal float modified_MaxRange;
+        internal int modified_MagazineCapacity;
+        internal float modified_ChargePerAmmoCount;
 
         //CETurretDataDefModExtension values
-        float modified_Speed;
-        float modified_Sway;
-        float modified_Spread;
-        float modified_Recoil;
-        float modified_ShotHeight;
-        string modified_AmmoSetString;
+        internal float modified_Speed;
+        internal float modified_Sway;
+        internal float modified_Spread;
+        internal float modified_Recoil;
+        internal float modified_ShotHeight;
+        internal string modified_AmmoSetString;
 
         DefDataHolderAmmoSet ammoSetDataHolder;
 
         public override void GetOriginalData()
         {
-            turretDef = def as VehicleTurretDef;
+            if (def != null && turretDef == null)
+            {
+                this.turretDef = def as VehicleTurretDef;
+            }
+            else if (turretDef != null && def == null)
+            {
+                def = turretDef;
+            }
 
             original_Projectile = turretDef.projectile;
             original_WarmUpTimer = turretDef.warmUpTimer;
@@ -104,31 +115,41 @@ namespace nuff.AutoPatcherCombatExtended.VF
             turretDef.magazineCapacity = modified_MagazineCapacity;
             turretDef.chargePerAmmoCount = modified_ChargePerAmmoCount;
             turretDef.genericAmmo = false;
-            turretDef.projectile = ammoSetDataHolder.GeneratedAmmoSetDef.ammoTypes[0].projectile;
+            turretDef.projectile = ammoSetDataHolder?.GeneratedAmmoSetDef.ammoTypes[0].projectile ?? DefDatabase<AmmoSetDef>.AllDefsListForReading.First(def => def.defName == modified_AmmoSetString).ammoTypes[0].projectile;
             
             turretDef.projectileSpeed = modified_Speed;
             
             //This needs to be cleared. In vanilla, these shifts are just visual, but with CE they cause every shot to miss.
             turretDef.projectileShifting = new List<float>();
 
-
             PatchCEExtension();
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            Log.Warning("Patch export for Vehicle Turret Defs not yet implemented");
+            return null;
         }
 
         public override void ExposeData()
         {
+            Scribe_Defs.Look(ref turretDef, "turretDef");
+
+            Scribe_Values.Look(ref modified_WarmUpTimer, "modified_WarmUpTimer");
+            Scribe_Values.Look(ref modified_ReloadTimer, "modified_ReloadTimer");
+            Scribe_Values.Look(ref modified_MinRange, "modified_MinRange");
+            Scribe_Values.Look(ref modified_MaxRange, "modified_MaxRange");
+            Scribe_Values.Look(ref modified_MagazineCapacity, "modified_MagazineCapacity");
+            Scribe_Values.Look(ref modified_ChargePerAmmoCount, "modified_ChargePerAmmoCount");
+
+            Scribe_Values.Look(ref modified_Speed, "modified_Speed");
+            Scribe_Values.Look(ref modified_Sway, "modified_Sway");
+            Scribe_Values.Look(ref modified_Spread, "modified_Spread");
+            Scribe_Values.Look(ref modified_Recoil, "modified_Recoil");
+            Scribe_Values.Look(ref modified_ShotHeight, "modified_ShotHeight");
+            Scribe_Values.Look(ref modified_AmmoSetString, "modified_AmmoSetString");
+
             base.ExposeData();
-            //TODO
         }
 
         public void PatchCEExtension()

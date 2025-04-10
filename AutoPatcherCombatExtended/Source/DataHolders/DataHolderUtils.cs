@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Xml;
 using Verse;
 using RimWorld;
 using CombatExtended;
@@ -76,12 +78,12 @@ namespace nuff.AutoPatcherCombatExtended
             ModDataHolder modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId);
             if (modData == null)
             {
-                modData = APCESettings.modDataDict.TryGetValue("nuff.apcedefaults");
+                modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
             }
             return modData;
         }
 
-        public static void CopyFields(object source, object destination)
+        public static void CopyFields(object source, object destination, bool skipDefNameAndHash = false)
         {
             if (source == null || destination == null)
             {
@@ -92,6 +94,11 @@ namespace nuff.AutoPatcherCombatExtended
 
             foreach (FieldInfo sourceField in sourceType.GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
+                if (skipDefNameAndHash && (sourceField.Name == "defName" || sourceField.Name == "shortHash"))
+                {
+                    continue;
+                }
+
                 FieldInfo destField = destType.GetField(sourceField.Name, BindingFlags.Public | BindingFlags.Instance);
                 if (destField != null && destField.FieldType == sourceField.FieldType)
                 {
@@ -209,6 +216,9 @@ namespace nuff.AutoPatcherCombatExtended
                 case APCEConstants.DefTypes.RangedWeapon:
                     ddh = new DefDataHolderRangedWeapon(def as ThingDef);
                     break;
+                case APCEConstants.DefTypes.MortarShell:
+                    ddh = new DefDataHolderMortarShell(def as ThingDef);
+                    break;
                 case APCEConstants.DefTypes.Stuff: //TODO Stuff is not a def, figure out a way to work with them
                     break;
             }
@@ -251,6 +261,7 @@ namespace nuff.AutoPatcherCombatExtended
             oldThingDef.comps.Add(newComp_ReplaceMe);
             return true;
         }
+
         /*
         public static string ReturnModLabelNoSpaces(string packageID)
         {
@@ -268,9 +279,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             // Approximate weapon thickness with the bulk of the weapon.
             // Longswords get about 2.83mm, knives get 1mm, spears get about 3.162mm
-            float weaponThickness = def.statBases
-                .Find(statMod => statMod.stat == CE_StatDefOf.Bulk)?.value
-                ?? 0f;
+            float weaponThickness = bulk;
                 
             weaponThickness = Mathf.Sqrt(weaponThickness);
 
@@ -341,6 +350,51 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             return weaponThickness * strongestIngredientSharpArmor;
+        }
+
+        public static XmlNode GetXmlForDef(Def def)
+        {
+
+            if (def?.modContentPack == null || string.IsNullOrEmpty(def.fileName))
+            {
+                Log.Warning($"Could not find fileName for Def: {def?.defName} while trying to get original XML");
+                return null;
+            }
+
+            LoadableXmlAsset asset = def.modContentPack
+                .LoadDefs(true)
+                .FirstOrDefault(x => x.name == def.fileName);
+
+            if (asset?.xmlDoc == null)
+            {
+                Log.Warning($"Could not load XML document for file: {def.fileName}");
+                return null;
+            }
+
+            string defType = def.GetType().Name;
+            XmlDocument xmlDoc = asset.xmlDoc;
+
+            if (xmlDoc != null)
+            {
+                XmlNodeList allDefs = xmlDoc.DocumentElement?.ChildNodes;
+                if (allDefs != null)
+                {
+                    foreach (XmlNode node in allDefs)
+                    {
+                        if (node.Name != defType)
+                            continue;
+
+                        XmlNode defNameNode = node.SelectSingleNode("defName");
+                        if (defNameNode != null && defNameNode.InnerText == def.defName)
+                        {
+                            return node;
+                        }
+                    }
+                }
+            }
+
+            Log.Warning($"Could not find Def with defName '{def.defName}' in file: {def.fileName}");
+            return null;
         }
     }
 }

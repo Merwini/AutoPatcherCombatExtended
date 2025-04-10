@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using System.Reflection;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -165,7 +166,7 @@ namespace nuff.AutoPatcherCombatExtended
 			SOFTWARE.
 		 */
 		#endregion
-		public static void ListControl(this Listing_Standard listingStandard, Rect inRect, ref List<ModContentPack> leftList, ref List<ModContentPack> rightList,
+		public static void ListControlMods(this Listing_Standard listingStandard, Rect inRect, ref List<ModContentPack> leftList, ref List<ModContentPack> rightList, 
 										ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition, ref ModContentPack leftSelectedObject, ref ModContentPack rightSelectedObject,
 										string columnLabel, float rectPCT)
 		{
@@ -266,5 +267,250 @@ namespace nuff.AutoPatcherCombatExtended
 			listingStandard.EndSection(listingStandard);
 		}
 
+
+		public static void ListControlDefs(this Listing_Standard listingStandard, Rect inRect,
+										ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition, ref Def leftSelectedObject, ref Def rightSelectedObject,
+										string columnLabel, float rectPCT, ModDataHolder modDataHolder)
+		{
+			string tempString = searchTerm;
+
+			Rect listControlRect = new Rect(0, 0, inRect.width * 0.9f, inRect.height * rectPCT);
+			listingStandard.BeginSection(inRect.height * rectPCT);
+			Rect topRect = listControlRect.TopPart(pct: 0.05f / rectPCT);
+			searchTerm = Widgets.TextField(rect: topRect.RightPart(pct: 0.95f).LeftPart(pct: 0.95f), text: searchTerm);
+			float topPartF = 0.1f / rectPCT;
+			Rect labelRect = listControlRect.TopPart(pct: topPartF).BottomHalf();
+			Rect bottomRect = listControlRect.BottomPart(pct: 1 - topPartF);
+
+			#region leftSide
+
+			Rect leftRect = bottomRect.LeftHalf().RightPart(pct: 0.9f).LeftPart(pct: 0.9f);
+			GUI.BeginGroup(position: leftRect, style: new GUIStyle(other: GUI.skin.box));
+			List<Def> tempLeftList = modDataHolder.defsToPatch
+				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.no && kvp.Key.label != null && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
+				.Select(kvp => kvp.Key)
+				.OrderBy(def => def.label)
+				.ToList();
+			List<Def> tempRightList = modDataHolder.defsToPatch
+				.Where(kvp => kvp.Value == APCEConstants.NeedsPatch.yes && kvp.Key.label != null && kvp.Key.label.ToLower().Contains(tempString.ToLower()))
+				.Select(kvp => kvp.Key)
+				.OrderBy(def => def.label)
+				.ToList();
+			float num = 3f;
+			Widgets.BeginScrollView(outRect: leftRect.AtZero(), scrollPosition: ref leftScrollPosition,
+									viewRect: new Rect(x: 0f, y: 0f, width: leftRect.width / 10 * 9, height: tempRightList.Count * 32f));
+			if (!tempLeftList.NullOrEmpty())
+			{
+				foreach (Def def in tempLeftList)
+				{
+					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
+					Widgets.DrawHighlightIfMouseover(rect: rowRect);
+					if (def == leftSelectedObject)
+						Widgets.DrawHighlightSelected(rect: rowRect);
+					Widgets.Label(rect: rowRect, label: def.label + $" ({def.GetType().Name})");
+					if (Widgets.ButtonInvisible(butRect: rowRect))
+						leftSelectedObject = def;
+
+					num += 32f;
+				}
+			}
+			Widgets.EndScrollView();
+			GUI.EndGroup();
+
+			#endregion
+
+
+			#region rightSide
+
+			Widgets.Label(rect: labelRect.RightHalf().RightPart(pct: 0.9f), label: columnLabel);
+			Rect rightRect = bottomRect.RightHalf().RightPart(pct: 0.9f).LeftPart(pct: 0.9f);
+			GUI.BeginGroup(position: rightRect, style: GUI.skin.box);
+			num = 6f;
+			Widgets.BeginScrollView(outRect: rightRect.AtZero(), scrollPosition: ref rightScrollPosition,
+									viewRect: new Rect(x: 0f, y: 0f, width: rightRect.width / 10 * 9, height: tempRightList.Count * 32f));
+			if (!tempRightList.NullOrEmpty())
+			{
+				foreach (Def def in tempRightList)
+				{
+					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
+					Widgets.DrawHighlightIfMouseover(rect: rowRect);
+					if (def == rightSelectedObject)
+						Widgets.DrawHighlightSelected(rect: rowRect);
+					Widgets.Label(rect: rowRect, label: def.label + $" ({def.GetType().Name})");
+					if (Widgets.ButtonInvisible(butRect: rowRect))
+						rightSelectedObject = def;
+
+					num += 32f;
+				}
+			}
+			Widgets.EndScrollView();
+			GUI.EndGroup();
+
+			#endregion
+
+
+			#region buttons
+
+			if (Widgets.ButtonImage(butRect: bottomRect.BottomPart(pct: 0.6f).TopPart(pct: 0.1f).RightPart(pct: 0.525f).LeftPart(pct: 0.1f), tex: TexUI.ArrowTexRight) &&
+				leftSelectedObject != null)
+			{
+				modDataHolder.defsToPatch[leftSelectedObject] = APCEConstants.NeedsPatch.yes;
+
+				//rightList = rightList.OrderBy(keySelector: def => def.label).ToList();
+				rightSelectedObject = leftSelectedObject;
+				leftSelectedObject = null;
+			}
+
+			if (Widgets.ButtonImage(butRect: bottomRect.BottomPart(pct: 0.4f).TopPart(pct: 0.15f).RightPart(pct: 0.525f).LeftPart(pct: 0.1f), tex: TexUI.ArrowTexLeft) &&
+				rightSelectedObject != null)
+			{
+				modDataHolder.defsToPatch[rightSelectedObject] = APCEConstants.NeedsPatch.no;
+				//rightList.Remove(item: rightSelectedObject);
+				leftSelectedObject = rightSelectedObject;
+				rightSelectedObject = null;
+			}
+			#endregion
+
+
+			listingStandard.EndSection(listingStandard);
+		}
+
+		/*
+		public static void ListControlDynamic(this Listing_Standard listingStandard, Rect inRect, ref List<T> leftList, ref List<object> rightList,
+								ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition,
+								ref dynamic leftSelectedObject, ref dynamic rightSelectedObject,
+								string columnLabel, float rectPCT, string nameField, Delegate addDelegate = null, Delegate removeDelegate = null)
+		{
+			string tempString = searchTerm;
+
+			Rect listControlRect = new Rect(0, 0, inRect.width * 0.9f, inRect.height * rectPCT);
+			listingStandard.BeginSection(inRect.height * rectPCT);
+			Rect topRect = listControlRect.TopPart(pct: 0.05f / rectPCT);
+			searchTerm = Widgets.TextField(rect: topRect.RightPart(pct: 0.95f).LeftPart(pct: 0.95f), text: searchTerm);
+			float topPartF = 0.1f / rectPCT;
+			Rect labelRect = listControlRect.TopPart(pct: topPartF).BottomHalf();
+			Rect bottomRect = listControlRect.BottomPart(pct: 1 - topPartF);
+
+			#region leftSide
+
+			Rect leftRect = bottomRect.LeftHalf().RightPart(pct: 0.9f).LeftPart(pct: 0.9f);
+			GUI.BeginGroup(position: leftRect, style: new GUIStyle(other: GUI.skin.box));
+			List<dynamic> tempList2 = rightList;
+			List<dynamic> tempList = leftList.Where(mcp =>
+			{
+				var nameFieldInfo = mcp.GetType().GetField(nameField);
+				if (nameFieldInfo == null)
+				{
+					return false;
+				}
+				string name = nameFieldInfo.GetValue(mcp) as string;
+				return name != null && name.ToLower().Contains(tempString.ToLower()) && !tempList2.Contains(mcp);
+			}).ToList();
+
+			float num = 3f;
+			Widgets.BeginScrollView(outRect: leftRect.AtZero(), scrollPosition: ref leftScrollPosition,
+									viewRect: new Rect(x: 0f, y: 0f, width: leftRect.width / 10 * 9, height: tempList.Count * 32f));
+			if (!tempList.NullOrEmpty())
+			{
+				foreach (dynamic mcp in tempList)
+				{
+					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
+					Widgets.DrawHighlightIfMouseover(rect: rowRect);
+					if (mcp == leftSelectedObject)
+						Widgets.DrawHighlightSelected(rect: rowRect);
+
+					var nameFieldInfo = mcp.GetType().GetField(nameField);
+					string displayName = nameFieldInfo != null ? nameFieldInfo.GetValue(mcp) as string : "Unknown";
+					Widgets.Label(rect: rowRect, label: displayName);
+					if (Widgets.ButtonInvisible(butRect: rowRect))
+						leftSelectedObject = mcp;
+
+					num += 32f;
+				}
+			}
+			Widgets.EndScrollView();
+			GUI.EndGroup();
+
+			#endregion
+
+
+			#region rightSide
+
+			Widgets.Label(rect: labelRect.RightHalf().RightPart(pct: 0.9f), label: columnLabel);
+			Rect rightRect = bottomRect.RightHalf().RightPart(pct: 0.9f).LeftPart(pct: 0.9f);
+			GUI.BeginGroup(position: rightRect, style: GUI.skin.box);
+			num = 6f;
+			Widgets.BeginScrollView(outRect: rightRect.AtZero(), scrollPosition: ref rightScrollPosition,
+									viewRect: new Rect(x: 0f, y: 0f, width: rightRect.width / 10 * 9, height: rightList.Count * 32f));
+			if (!rightList.NullOrEmpty())
+			{
+				foreach (dynamic mcp in rightList.Where(mcp =>
+				{
+					var nameFieldInfo = mcp.GetType().GetField(nameField);
+					if (nameFieldInfo == null)
+					{
+						return false;
+					}
+					string name = nameFieldInfo.GetValue(mcp) as string;
+					return name != null && name.Contains(tempString);
+				}))
+				{
+					Rect rowRect = new Rect(x: 5, y: num, width: leftRect.width - 6, height: 30);
+					Widgets.DrawHighlightIfMouseover(rect: rowRect);
+					if (mcp == rightSelectedObject)
+						Widgets.DrawHighlightSelected(rect: rowRect);
+
+					var nameFieldInfo = mcp.GetType().GetField(nameField);
+					string displayName = nameFieldInfo != null ? nameFieldInfo.GetValue(mcp) as string : "Unknown";
+					Widgets.Label(rect: rowRect, label: displayName);
+					if (Widgets.ButtonInvisible(butRect: rowRect))
+						rightSelectedObject = mcp;
+
+					num += 32f;
+				}
+			}
+			Widgets.EndScrollView();
+			GUI.EndGroup();
+
+			#endregion
+
+
+			#region buttons
+
+			if (Widgets.ButtonImage(butRect: bottomRect.BottomPart(pct: 0.6f).TopPart(pct: 0.1f).RightPart(pct: 0.525f).LeftPart(pct: 0.1f), tex: TexUI.ArrowTexRight) &&
+				leftSelectedObject != null)
+			{
+				rightList.Add(item: leftSelectedObject);
+				if (addDelegate != null)
+                {
+					addDelegate.DynamicInvoke(leftSelectedObject);
+                }
+
+				rightList = rightList.OrderBy(mcp =>
+				{
+					var nameFieldInfo = mcp.GetType().GetField(nameField);
+					return nameFieldInfo != null ? nameFieldInfo.GetValue(mcp) as string : "Unknown";
+				}).ToList();
+				rightSelectedObject = leftSelectedObject;
+				leftSelectedObject = null;
+			}
+
+			if (Widgets.ButtonImage(butRect: bottomRect.BottomPart(pct: 0.4f).TopPart(pct: 0.15f).RightPart(pct: 0.525f).LeftPart(pct: 0.1f), tex: TexUI.ArrowTexLeft) &&
+				rightSelectedObject != null)
+			{
+				rightList.Remove(item: rightSelectedObject);
+				leftSelectedObject = rightSelectedObject;
+				if (removeDelegate != null)
+				{
+					removeDelegate.DynamicInvoke(leftSelectedObject);
+				}
+				rightSelectedObject = null;
+			}
+			#endregion
+
+
+			listingStandard.EndSection(listingStandard);
+		}
+		*/
 	}
 }

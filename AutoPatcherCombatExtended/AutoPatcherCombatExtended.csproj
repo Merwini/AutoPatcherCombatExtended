@@ -20,7 +20,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\RimWorld\Mods\APCE\Assemblies\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\RimWorld\Mods\APCE\1.5\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,9 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-	<PropertyGroup>
-		<PublicizeAll>true</PublicizeAll>
-	</PropertyGroup>
+  <PropertyGroup>
+    <PublicizeAll>true</PublicizeAll>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="0CombatExtendedLoader">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2890901044\Assemblies\0CombatExtendedLoader.dll</HintPath>
@@ -57,9 +57,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="APCE Item1" />
+    <Compile Include="Source\APCEPatchExport.cs" />
+    <Compile Include="Source\DataHolders\DefDataHolderMortarShell.cs" />
+    <Compile Include="Source\ICompat.cs" />
+    <Compile Include="Source\APCEDefOfTwo.cs" />
     <Compile Include="Source\APCELogUtility.cs" />
+    <Compile Include="Source\APCESaveLoad.cs" />
     <Compile Include="Source\CompatibilityPatches.cs" />
     <Compile Include="Source\APCEHarmonyPatches.cs" />
+    <Compile Include="Source\Comps\CompGunAmmoFixer.cs" />
+    <Compile Include="Source\Comps\CompProperties_GunAmmoFixer.cs" />
     <Compile Include="Source\DataHolders\DefDataHolder.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderAmmoSet.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderApparel.cs" />
@@ -78,6 +85,26 @@
     <Compile Include="Source\APCEController.cs" />
     <Compile Include="Source\Comps\CompProperties_ReplaceMe.cs" />
     <Compile Include="Source\Comps\CompReplaceMe.cs" />
+    <Compile Include="Source\Windows\Window_ConfirmDeleteCapacity.cs" />
+    <Compile Include="Source\Windows\Window_ConfirmDeleteSecondary.cs" />
+    <Compile Include="Source\Windows\Window_ConfirmDeleteTool.cs" />
+    <Compile Include="Source\Windows\Window_CusomizeMortarShell.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeAmmoSet.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDef.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefApparel.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefBuilding_TurretGun.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefGene.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefHediff.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefMeleeWeapon.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefPawn.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefRangedWeapon.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeDefPawnKind.cs" />
+    <Compile Include="Source\Windows\Window_DefFailure.cs" />
+    <Compile Include="Source\Windows\Window_SelectAmmoSet.cs" />
+    <Compile Include="Source\Windows\Window_SelectBodyPartsNaturalArmor.cs" />
+    <Compile Include="Source\Windows\Window_SelectDamageDef.cs" />
+    <Compile Include="Source\Windows\Window_SelectLinkedBodyPartGroupDef.cs" />
+    <Compile Include="Source\Windows\Window_SelectToolCapacityDef.cs" />
     <Compile Include="TrashFolder\GenerateAmmo.cs" />
     <Compile Include="Source\InjectedDefHasher.cs" />
     <Compile Include="Source\Patchers\PatchGrenade.cs" />
@@ -118,6 +145,7 @@
     <None Include="Source\MigrationBackup\54523a5f\AutoPatcherCombatExtended\packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assemblies\" />
     <Folder Include="Defs\" />
     <Folder Include="Source\bin\Debug\" />
     <Folder Include="Source\bin\Release\" />
@@ -132,8 +160,8 @@
       <Version>1.5.4104</Version>
     </PackageReference>
   </ItemGroup>
-	<ItemGroup>
-		<Publicize Include="Assembly-CSharp" />
-	</ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

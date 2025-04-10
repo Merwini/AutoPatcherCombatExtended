@@ -12,11 +12,10 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class APCESettings : ModSettings
     {
+        //TODO can probably move these into the window classes
         public static APCEConstants.SettingsTabs settingsTabs = APCEConstants.SettingsTabs.General_Settings;
         public static APCEConstants.BalanceTabs balanceTabs = APCEConstants.BalanceTabs.Apparel;
         public static APCEConstants.BalanceWeaponTabs balanceWeaponTabs = APCEConstants.BalanceWeaponTabs.Ranged;
-
-        public static APCEConstants.ModSettingsTabs modSettingsTabs = APCEConstants.ModSettingsTabs.General_Settings;
 
         //Modlist Settings
         public static List<ModContentPack> activeMods = new List<ModContentPack>(); //will not be saved. will be gotten at startup
@@ -28,7 +27,6 @@ namespace nuff.AutoPatcherCombatExtended
         public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
         public static ModContentPack thisModContent;
         public static Mod thisMod;
-        public static HashSet<ModContentPack> modsAlreadyPatched = new HashSet<ModContentPack>(); //set of patched mods, to keep track so added mods can be patched when closing the settings window
         public static bool suggestionWindowOpened = false;
 
         public string searchTerm = "";
@@ -37,12 +35,19 @@ namespace nuff.AutoPatcherCombatExtended
         public ModContentPack leftSelectedObject = null;
         public ModContentPack rightSelectedObject = null;
 
-        public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>(); //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded
-        public static Dictionary<Def, DefDataHolder> defDataDict = new Dictionary<Def, DefDataHolder>(); //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
-                                                                                                         //TODO on save, go through these dicts, for isCustomized dataholders, add them to a collection which will be saved
+        //when mods are being checked for whether they need patching, defs that can be patched e.g. weapons, armor, are added to this to prevent having to iterate through them a second time later
+        public static Dictionary<Def, APCEConstants.NeedsPatch> patchableDefs = new Dictionary<Def, APCEConstants.NeedsPatch>();
 
-        public static Dictionary<Type, Func<Def, bool>> typeHandlerDictionaryCheck = new Dictionary<Type, Func<Def, bool>>();
+        //ModDataHolders stored here. Not saved, instead ModDataHolders will register themselves as they are loaded. String is the packageID of the mod
+        public static Dictionary<string, ModDataHolder> modDataDict = new Dictionary<string, ModDataHolder>();
+
+        //DefDataHolders stored here. Not saved, instead DefDataHolders will register themselves as they are loaded
+        public static Dictionary<Def, DefDataHolder> defDataDict = new Dictionary<Def, DefDataHolder>(); 
+
+        public static Dictionary<Type, Func<Def, APCEConstants.NeedsPatch>> typeHandlerDictionaryCheck = new Dictionary<Type, Func<Def, APCEConstants.NeedsPatch>>();
         public static Dictionary<Type, Delegate> typeHandlerDictionaryGenerate = new Dictionary<Type, Delegate>();
+
+        public static Dictionary<Type, Type> defCustomizationWindowDictionary = new Dictionary<Type, Type>();
         
         //public static Dictionary<string, ThingCategoryDef> modAmmoThingCategoryDict = new Dictionary<string, ThingCategoryDef>(); //not saved, populated if/when ammos are made for that mod
 

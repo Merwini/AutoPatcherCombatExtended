@@ -11,11 +11,15 @@ namespace nuff.AutoPatcherCombatExtended.VF
 {
     public class DefDataHolderVehicleDef : DefDataHolder
     {
-        public DefDataHolderVehicleDef(ThingDef def) : base(def)
+        public DefDataHolderVehicleDef()
         {
         }
 
-        VehicleDef vehicleDef;
+        public DefDataHolderVehicleDef(VehicleDef def) : base(def)
+        {
+        }
+
+        internal VehicleDef vehicleDef;
 
         //original values
         float original_ArmorRatingSharp;
@@ -30,19 +34,28 @@ namespace nuff.AutoPatcherCombatExtended.VF
         int cargoIndex;
 
         //modified values
-        float modified_ArmorRatingSharp;
-        float modified_ArmorRatingBlunt;
-        float modified_ArmorRatingHeat;
+        internal float modified_ArmorRatingSharp;
+        internal float modified_ArmorRatingBlunt;
+        internal float modified_ArmorRatingHeat;
 
-        List<float> modified_ComponentArmorSharps = new List<float>();
-        List<float> modified_ComponentArmorBlunts = new List<float>();
-        List<int> modified_ComponentHealths = new List<int>();
+        internal List<float> modified_ComponentArmorSharps = new List<float>();
+        internal List<float> modified_ComponentArmorBlunts = new List<float>();
+        internal List<int> modified_ComponentHealths = new List<int>();
 
-        float modified_CargoCapacity;
+        internal float modified_CargoCapacity;
 
         public override void GetOriginalData()
         {
-            vehicleDef = def as VehicleDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && vehicleDef == null)
+            {
+                this.vehicleDef = def as VehicleDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (vehicleDef != null && def == null)
+            {
+                def = vehicleDef;
+            }
 
             original_ArmorRatingSharp = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
             original_ArmorRatingBlunt = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
@@ -96,19 +109,15 @@ namespace nuff.AutoPatcherCombatExtended.VF
             PatchVehicleStats();
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            Log.Warning("Patch export for Vehicle Defs not yet implemented");
+            return null;
         }
 
         public override void ExposeData()
         {
-            base.ExposeData();
+            Scribe_Defs.Look(ref vehicleDef, "vehicleDef");
             Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0f);
             Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
             Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
@@ -118,6 +127,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
             Scribe_Collections.Look(ref modified_ComponentHealths, "modified_ComponentHealths", LookMode.Value);
 
             Scribe_Values.Look(ref modified_CargoCapacity, "modified_CargoCapacity", 0f);
+            base.ExposeData();
         }
 
         internal void PatchVehicleStatBases()

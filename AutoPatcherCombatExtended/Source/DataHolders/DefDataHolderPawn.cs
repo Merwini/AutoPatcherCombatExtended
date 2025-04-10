@@ -6,50 +6,68 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using CombatExtended;
+using UnityEngine;
 
 
 namespace nuff.AutoPatcherCombatExtended
 {
     public class DefDataHolderPawn : DefDataHolder
     {
+        public DefDataHolderPawn()
+        {
+            //empty constructor for use by SaveLoad
+        }
+
         public DefDataHolderPawn(ThingDef def) : base(def)
         {
         }
 
-        ThingDef pawn;
+        ThingDef pawnDef;
 
         float original_ArmorRatingSharp;
         float original_ArmorRatingBlunt;
         float original_ArmorRatingHeat;
 
-        float modified_ArmorRatingSharp;
-        float modified_ArmorRatingBlunt;
-        float modified_ArmorRatingHeat;
+        internal float modified_ArmorRatingSharp;
+        internal float modified_ArmorRatingBlunt;
+        internal float modified_ArmorRatingHeat;
 
-        float modified_MeleeDodgeChance;
-        float modified_MeleeParryChance;
-        float modified_MeleeCritChance;
+        internal float modified_MeleeDodgeChance;
+        internal float modified_MeleeParryChance;
+        internal float modified_MeleeCritChance;
 
-        float modified_SmokeSensitivity;
-        float modified_Suppressability;
-        float modified_NightVisionEfficiency;
-        float modified_ReloadSpeed;
-        float modified_AimingAccuracy;
+        internal float modified_SmokeSensitivity;
+        internal float modified_Suppressability;
+        internal float modified_NightVisionEfficiency;
+        internal float modified_ReloadSpeed;
+        internal float modified_AimingAccuracy;
 
-        float modified_CarryWeight;
-        float modified_CarryBulk;
+        internal float modified_CarryWeight;
+        internal float modified_CarryBulk;
 
-        BodyShapeDef modified_BodyShape;
-        string modified_BodyShapeDefString;
+        internal BodyShapeDef modified_BodyShapeDef;
 
         public override void GetOriginalData()
         {
-            pawn = def as ThingDef;
-            original_Tools = pawn.tools;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && pawnDef == null)
+            {
+                this.pawnDef = def as ThingDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (pawnDef != null && def == null)
+            {
+                def = pawnDef;
+            }
 
-            original_ArmorRatingSharp = pawn.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            original_ArmorRatingBlunt = pawn.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-            original_ArmorRatingHeat = pawn.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            if (!pawnDef.tools.NullOrEmpty())
+            {
+                original_Tools = pawnDef.tools.ToList();
+            }
+
+            original_ArmorRatingSharp = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+            original_ArmorRatingBlunt = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+            original_ArmorRatingHeat = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
         }
 
         public override void AutoCalculate()
@@ -58,9 +76,6 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.pawnArmorBluntMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
-            modified_MeleeDodgeChance = 1;
-            modified_MeleeParryChance = 1;
-            modified_MeleeCritChance = 1;
 
             modified_SmokeSensitivity = 1;
             modified_Suppressability = 1;
@@ -71,18 +86,27 @@ namespace nuff.AutoPatcherCombatExtended
             modified_CarryWeight = 40;
             modified_CarryBulk = 20;
 
+            ClearModdedTools();
             for (int i = 0; i < original_Tools.Count; i++)
             {
                 ModToolAtIndex(i);
             }
 
-            if (pawn.race.Humanlike)
+            if (pawnDef.race.Humanlike)
             {
-                modified_BodyShape = CE_BodyShapeDefOf.Humanoid;
+                modified_BodyShapeDef = CE_BodyShapeDefOf.Humanoid;
+
+                modified_MeleeDodgeChance = 1f;
+                modified_MeleeParryChance = 1f;
+                modified_MeleeCritChance = 1f;
             }
             else
             {//todo too lazy to make any sort of guessing algorithm
-                modified_BodyShape = CE_BodyShapeDefOf.Quadruped;
+                modified_BodyShapeDef = CE_BodyShapeDefOf.Quadruped;
+
+                modified_MeleeDodgeChance = 0.1f;
+                modified_MeleeParryChance = 0.1f;
+                modified_MeleeCritChance = 0.1f;
             }
         }
 
@@ -91,11 +115,11 @@ namespace nuff.AutoPatcherCombatExtended
         {
             PatchStatBases();
 
-            pawn.tools.Clear();
+            pawnDef.tools.Clear();
             BuildTools();
             for (int i = 0; i < modified_Tools.Count; i++)
             {
-                pawn.tools.Add(modified_Tools[i]);
+                pawnDef.tools.Add(modified_Tools[i]);
             }
 
             PatchModExtensions();
@@ -105,26 +129,62 @@ namespace nuff.AutoPatcherCombatExtended
             PatchITabs();
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
+            xml = DataHolderUtils.GetXmlForDef(pawnDef);
 
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            patchOps = new List<string>();
+
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat));
+
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MeleeDodgeChance", modified_MeleeDodgeChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MeleeParryChance", modified_MeleeParryChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MeleeCritChance", modified_MeleeCritChance));
+
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "SmokeSensitivity", modified_SmokeSensitivity));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Suppressability", modified_Suppressability));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "NightVisionEfficiency", modified_NightVisionEfficiency));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ReloadSpeed", modified_ReloadSpeed));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
+
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "CarryWeight", modified_CarryWeight));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "CarryBulk", modified_CarryBulk));
+
+            patchOps.Add(GenerateModExtensionPatch());
+
+            patchOps.Add(GenerateToolPatchXML());
+
+            base.ExportXML();
+
+            return patch;
+
+            string GenerateModExtensionPatch()
+            {
+                string xpath = $"Defs/ThingDef[defName=\"{defName}\"]";
+                StringBuilder patch = new StringBuilder();
+
+                patch.AppendLine("\t<Operation Class=\"PatchOperationAddModExtension\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                patch.AppendLine("\t\t<value>");
+                patch.AppendLine("\t\t\t<li Class=\"CombatExtended.RacePropertiesExtensionCE\">");
+                patch.AppendLine($"\t\t\t\t<bodyShape>{modified_BodyShapeDef}</bodyShape>");
+                patch.AppendLine("\t\t\t</li>");
+                patch.AppendLine("\t\t</value>");
+                patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
+
+                return patch.ToString();
+            }
         }
 
         public override void ExposeData()
         {
-            base.ExposeData();
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
-                if (Scribe.mode == LoadSaveMode.Saving && modified_BodyShape != null)
-                {
-                    modified_BodyShapeDefString = modified_BodyShape.ToString();
-                }
+                Scribe_Defs.Look(ref pawnDef, "def");
 
                 // Modified Armor Ratings
                 Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp");
@@ -147,81 +207,71 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_CarryWeight, "modified_CarryWeight");
                 Scribe_Values.Look(ref modified_CarryBulk, "modified_CarryBulk");
 
-                Scribe_Values.Look(ref modified_BodyShapeDefString, "modified_BodyShapeDefString");
-
-                if (Scribe.mode == LoadSaveMode.LoadingVars && modified_BodyShapeDefString != null)
-                {
-                    modified_BodyShape = DefDatabase<BodyShapeDef>.AllDefsListForReading.First(bsd => bsd.defName.Equals(modified_BodyShapeDefString));
-                    if (modified_BodyShape == null)
-                    {
-                        Log.Warning("Failed to find BodyShapeDef for race " + pawn.label + ". Defaulting to quadruped.");
-                        modified_BodyShape = CE_BodyShapeDefOf.Quadruped;
-                    }
-                }
+                Scribe_Defs.Look(ref modified_BodyShapeDef, "modified_BodyShapeDef");
             }
-               
+            base.ExposeData();
         }
 
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= modData.pawnToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] *= modData.pawnToolSharpPenetration * techMult;
-            modified_ToolArmorPenetrationBlunts[i] *= modData.pawnToolBluntPenetration * techMult;
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.pawnToolSharpPenetration, 0, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * modData.pawnToolBluntPenetration, 0, 99999);
         }
 
         public void PatchStatBases()
         {
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
 
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
 
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.Suppressability, modified_Suppressability);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.Suppressability, modified_Suppressability);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
 
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-            DataHolderUtils.AddOrChangeStat(pawn.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight);
+            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk);
         }
         public void PatchModExtensions()
         {
             RacePropertiesExtensionCE racePropsExt = new RacePropertiesExtensionCE()
             {
-                bodyShape = modified_BodyShape
+                bodyShape = modified_BodyShapeDef
             };
-            DataHolderUtils.AddOrReplaceExtension(pawn, racePropsExt);
+            DataHolderUtils.AddOrReplaceExtension(pawnDef, racePropsExt);
         }
 
         public void PatchComps()
         {
             CompProperties_Inventory cp_inv = new CompProperties_Inventory();
-            DataHolderUtils.AddOrReplaceCompProps(pawn, cp_inv);
+            DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_inv);
 
             CompProperties_TacticalManager cp_tm = new CompProperties_TacticalManager();
-            DataHolderUtils.AddOrReplaceCompProps(pawn, cp_tm);
+            DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_tm);
 
-            if (pawn.race.intelligence != Intelligence.Animal)
+            if (pawnDef.race.intelligence != Intelligence.Animal)
             {
                 CompProperties_Suppressable cp_sup = new CompProperties_Suppressable();
-                DataHolderUtils.AddOrReplaceCompProps(pawn, cp_sup);
+                DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_sup);
 
                 CompProperties cp_ag = new CompProperties()
                 {
                     compClass = typeof(CompAmmoGiver)
                 };
-                DataHolderUtils.AddOrReplaceCompProps(pawn, cp_ag);
+                DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_ag);
 
                 CompProperties cp_pg = new CompProperties()
                 {
                     compClass = typeof(CompPawnGizmo)
                 };
-                DataHolderUtils.AddOrReplaceCompProps(pawn, cp_pg);
+                DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_pg);
 
                 //TODO CompArmorDurability
             }
@@ -229,19 +279,19 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void PatchITabs()
         {
-            if (pawn.inspectorTabs == null)
+            if (pawnDef.inspectorTabs == null)
             {
-                pawn.inspectorTabs = new List<Type>();
+                pawnDef.inspectorTabs = new List<Type>();
             }
-            int index = pawn.inspectorTabs.FindIndex(t => t.GetType() == typeof(ITab_Pawn_Gear));
+            int index = pawnDef.inspectorTabs.FindIndex(t => t.GetType() == typeof(ITab_Pawn_Gear));
 
             if (index != -1)
             {
-                pawn.inspectorTabs[index] = typeof(ITab_Inventory);
+                pawnDef.inspectorTabs[index] = typeof(ITab_Inventory);
             }
             else
             {
-                pawn.inspectorTabs.Add(typeof(ITab_Inventory));
+                pawnDef.inspectorTabs.Add(typeof(ITab_Inventory));
             }
         }
 

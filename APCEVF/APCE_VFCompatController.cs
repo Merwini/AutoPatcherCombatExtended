@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using Vehicles;
+using nuff.AutoPatcherCombatExtended;
 
 namespace nuff.AutoPatcherCombatExtended.VF
 {
-    [StaticConstructorOnStartup]
-    public static class APCE_VFCompatController
+    public class APCE_VFCompatController : ICompat
     {
         //TODO 
-        static APCE_VFCompatController()
+        public APCE_VFCompatController()
         {
             Log.Message("APCE Vehicle Compatibility Controller Constructed");
             RegisterCheckDelegates();
             RegisterGenerateDelegates();
+            RegisterWindowDicts();
         }
 
         internal static void RegisterGenerateDelegates()
@@ -32,8 +33,8 @@ namespace nuff.AutoPatcherCombatExtended.VF
 
         internal static void RegisterCheckDelegates()
         {
-            Func<Def, bool> vehicleFunc = new Func<Def, bool>(CheckIfVehicleNeedsPatch);
-            Func<Def, bool> vehicleTurretFunc = new Func<Def, bool>(CheckIfVehicleTurretNeedsPatch);
+            Func<Def, APCEConstants.NeedsPatch> vehicleFunc = new Func<Def, APCEConstants.NeedsPatch>(CheckIfVehicleNeedsPatch);
+            Func<Def, APCEConstants.NeedsPatch> vehicleTurretFunc = new Func<Def, APCEConstants.NeedsPatch>(CheckIfVehicleTurretNeedsPatch);
 
             APCESettings.typeHandlerDictionaryCheck.Add(typeof(VehicleDef), vehicleFunc);
             APCESettings.typeHandlerDictionaryCheck.Add(typeof(VehicleTurretDef), vehicleTurretFunc);
@@ -41,7 +42,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
 
         public static void GenerateDefDataHolderVehicle(Def def)
         {
-            ThingDef td = def as ThingDef;
+            VehicleDef td = def as VehicleDef;
             DefDataHolder ddhv = new DefDataHolderVehicleDef(td);
         }
 
@@ -50,18 +51,24 @@ namespace nuff.AutoPatcherCombatExtended.VF
             DefDataHolder ddhv = new DefDataHolderVehicleTurretDef(def);
         }
 
-        public static bool CheckIfVehicleNeedsPatch(Def def)
+        public static APCEConstants.NeedsPatch CheckIfVehicleNeedsPatch(Def def)
         {
-            //TODO check if vehicle needs patch - no good way to do this
-            return false;
+            return APCEConstants.NeedsPatch.yes;
         }
 
-        public static bool CheckIfVehicleTurretNeedsPatch(Def def)
+        public static APCEConstants.NeedsPatch CheckIfVehicleTurretNeedsPatch(Def def)
         {
             VehicleTurretDef vtd = def as VehicleTurretDef;
-            if (!vtd.HasModExtension<CETurretDataDefModExtension>())
-                return true;
-            return false;
+            if (vtd.HasModExtension<CETurretDataDefModExtension>())
+                return APCEConstants.NeedsPatch.no;
+            return APCEConstants.NeedsPatch.yes;
+        }
+
+        //TODO customization windows, register them in APCESettings.defCustomizationWindowDictionary
+        public static void RegisterWindowDicts()
+        {
+            APCESettings.defCustomizationWindowDictionary[typeof(DefDataHolderVehicleDef)] = typeof(Window_CustomizeDefVehicle);
+            APCESettings.defCustomizationWindowDictionary[typeof(DefDataHolderVehicleTurretDef)] = typeof(Window_CustomizeDefVehicleTurret);
         }
     }
 }

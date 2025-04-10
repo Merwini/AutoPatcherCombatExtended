@@ -14,23 +14,24 @@ namespace nuff.AutoPatcherCombatExtended
 
         public string packageId;
         public bool isCustomized = false;
+        //TODO methods to change values instead of modifying them directly, need this to flip isCustomized to true
+        //Also TODO write a method that resets all values to match those in apceDefaults. Call this before running autocalcs or patches. This is so that, if the player changes the defaults, they don't have to restart to get those changes to permeate down to the ModDataHolders
 
-        //saved as strings so they don't have issues if the mods updates and defs are added/removed/renamed
-        public List<string> defsByName;
-        public List<string> defsToPatch;
-        public List<string> defsToIgnore; //need to save this so we can notify if new defs are added
+        public Dictionary<Def, APCEConstants.NeedsPatch> defsToPatch = new Dictionary<Def, APCEConstants.NeedsPatch>();
+        //for saving and loading so def names can be validated
+        public List<string> defsToPatchNames = new List<string>();
+        public List<string> defsToPatchTypes = new List<string>();
+
+        //
+        public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
+
+        //for storing Implied Defs to be added to dictionary after a foreach is finished, so it doesn't modify the collection
+        public List<DefDataHolder> delayedRegistrations = new List<DefDataHolder>();
 
         //toggles //todo remove
-        public bool patchWeapons = true;
         public bool patchCustomVerbs = false;
         public bool limitWeaponMass = false;
-        public bool patchApparels = true;
-        public bool patchPawns = true;
-        public bool patchPawnKinds = true;
-        public bool patchGenes = true;
-        public bool patchHediffs = true;
         public bool patchHeadgearLayers = true;
-        public bool patchVehicles = true;
 
         //apparel values
         public float apparelSharpMult = 10f;
@@ -95,9 +96,221 @@ namespace nuff.AutoPatcherCombatExtended
         public float vehicleSharpMult = 15;
         public float vehicleBluntMult = 15;
         public float vehicleHealthMult = 3;
+
+        public ModDataHolder()
+        {
+            //for being constructed by SaveLoad
+        }
+
+        public ModDataHolder(ModContentPack mcp)
+        {
+            this.mod = mcp;
+            this.packageId = mcp.PackageId;
+            RegisterSelfInDict();
+            SelectDefsToPatch();
+        }
+
+        public void GetModContentPack()
+        {
+            if (packageId == null)
+            {
+                Log.Error("ModDataHolder tried to get ModContentPack but PackageId was null");
+            }
+            mod = LoadedModManager.RunningMods.FirstOrDefault(m => m.PackageId == packageId);
+            if (mod == null)
+            {
+                Log.Error($"ModDataHolder tried to get ModContentPack, but found none with PackageId {packageId}");
+            }
+        }
+
         public void Reset()
         {
-            //TODO reset values to those of nuff.ceautopatcher
+            //TODO reset values to those of nuff.apcedefaults. Maybe just construct a new one?
+        }
+
+        public void SelectDefsToPatch()
+        {
+            foreach (Def def in mod.AllDefs)
+            {
+                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                if (need == APCEConstants.NeedsPatch.yes)
+                {
+                    defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
+                }
+                else if (need == APCEConstants.NeedsPatch.no || need == APCEConstants.NeedsPatch.unsure)
+                {
+                    defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
+                }
+            }
+        }
+
+        public void GenerateDefDataHolders()
+        {
+            foreach (var entry in defsToPatch)
+            {
+                if (entry.value == APCEConstants.NeedsPatch.yes && !defDict.ContainsKey(entry.Key))
+                {
+                    APCEController.TryGenerateDataHolderForDef(entry.Key);
+                }
+            }
+        }
+
+        public void ReCalc()
+        {
+            foreach (var entry in defDict)
+            {
+                if (!entry.Value.isCustomized)
+                {
+                    entry.Value.AutoCalculate();
+                }
+            }
+        }
+
+        public void PrePatch()
+        {
+            foreach (var entry in defsToPatch)
+            {
+                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                {
+                    try
+                    {
+                        ddh.PrePatch();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to prepatch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                    }
+                }
+            }
+        }
+
+        public void PostPatch()
+        {
+            foreach (var entry in defsToPatch)
+            {
+                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                {
+                    try
+                    {
+                        ddh.PostPatch();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to postpatch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                    }
+                }
+            }
+        }
+
+        public void Patch()
+        {
+            foreach (var entry in defsToPatch)
+            {
+                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                {
+                    try
+                    {
+                        ddh.Patch();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to patch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                    }
+                }
+            }
+        }
+
+        //this is for Implied defs like AmmoSets to register themselves late so they don't break the 'foreach entry in Dictionary' methods by modifying the collection
+        public void RegisterDelayedHolders()
+        {
+            if (!delayedRegistrations.NullOrEmpty())
+            {
+                foreach (DefDataHolder ddh in delayedRegistrations)
+                {
+                    ddh.RegisterSelfInDicts();
+                }
+            }
+        }
+
+        //returns true if new entry is added to dict. returns false if value is replaced.
+        public bool RegisterSelfInDict()
+        {
+            if (!APCESettings.modDataDict.TryAdd(packageId, this))
+            {
+                APCESettings.modDataDict[packageId] = this;
+                return false;
+            }
+            return true;
+        }
+
+        public void RebuildDefsToPatchDict(List<string> namesList, List<string> typesList)
+        {
+            //populate the dictionary with all patchable defs as "no", will be flipped the "yes" further below if appropriate
+            foreach (Def def in mod.AllDefs)
+            {
+                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                if (need != APCEConstants.NeedsPatch.ignore)
+                {
+                    defsToPatch[def] = APCEConstants.NeedsPatch.no;
+                }
+            }
+
+            if (namesList.NullOrEmpty() || typesList.NullOrEmpty())
+            {
+                return;
+            }
+
+            if (namesList.Count != typesList.Count)
+            {
+                Log.Warning("Error in loading list of defs to patch, names list and types list are not the same length");
+                return;
+            }
+
+            for (int i = 0; i < namesList.Count; i++)
+            {
+                //skip ammosets since they won't exist at this point. will register themselves as they are constructed.
+                if (typesList[i] == "CombatExtended.AmmoSetDef")
+                {
+                    continue;
+                }
+
+                Type defType = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .FirstOrDefault(t => t.FullName == typesList[i]);
+                if (defType == null || !typeof(Def).IsAssignableFrom(defType))
+                {
+                    Log.Warning($"Skipping invalid or missing Def with name {namesList[i]} and type {defType}");
+                    continue;
+                }
+
+                var method = typeof(DefDatabase<>).MakeGenericType(defType).GetMethod("GetNamedSilentFail", new Type[] { typeof(string) });
+                if (method != null)
+                {
+                    Def foundDef = method.Invoke(null, new object[] { namesList[i] }) as Def;
+                    if (foundDef != null)
+                    {
+                        defsToPatch[foundDef] = APCEConstants.NeedsPatch.yes;
+                    }
+                    else
+                    {
+                        Log.Warning($"Def not found: {namesList[i]} (Type: {typesList[i]})");
+                    }
+                }
+                else
+                {
+                    Log.Warning($"Could not find DefDatabase<T> for type: {defType}");
+                }
+            }
+
+            //populate the rest of the dictionary for defs NOT to patch
+            foreach (Def def in mod.AllDefs)
+            {
+                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                if (need != APCEConstants.NeedsPatch.ignore && !defsToPatch.ContainsKey(def))
+                {
+                    defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
+                }
+            }
         }
 
         public void ExposeData()
@@ -106,20 +319,30 @@ namespace nuff.AutoPatcherCombatExtended
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
+                //turn the defsToPatch dictionary into a list of strings
+                if (Scribe.mode == LoadSaveMode.Saving)
+                {
+                    defsToPatchNames = new List<string>();
+                    defsToPatchTypes = new List<string>();
+                    foreach (var entry in defsToPatch)
+                    {
+                        if (entry.Value == APCEConstants.NeedsPatch.yes)
+                        {
+                            defsToPatchNames.Add(entry.key.defName);
+                            defsToPatchTypes.Add(entry.key.GetType().ToString());
+                        }
+                    }
+                }
+
                 Scribe_Values.Look(ref packageId, "packageId");
                 Scribe_Values.Look(ref isCustomized, "isCustomized");
+                Scribe_Collections.Look(ref defsToPatchNames, "defsToPatchNames");
+                Scribe_Collections.Look(ref defsToPatchTypes, "defsToPatchTypes");
 
                 //toggles
-                Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);
                 Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
                 Scribe_Values.Look(ref limitWeaponMass, "limitWeaponMass", false);
-                Scribe_Values.Look(ref patchApparels, "patchApparels", true);
-                Scribe_Values.Look(ref patchPawns, "patchPawns", true);
-                Scribe_Values.Look(ref patchPawnKinds, "patchPawnKinds", true);
-                Scribe_Values.Look(ref patchGenes, "patchGenes", true);
-                Scribe_Values.Look(ref patchHediffs, "patchHediffs", true);
                 Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers", true);
-                Scribe_Values.Look(ref patchVehicles, "patchVehicles", true);
 
                 // Apparel values
                 Scribe_Values.Look(ref apparelSharpMult, "apparelSharpMult", 10);
@@ -174,7 +397,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref patchBackpacks, "patchBackpacks", true);
 
                 Scribe_Values.Look(ref geneArmorSharpMult, "geneArmorSharpMult", 10f);
-                Scribe_Values.Look(ref geneArmorBluntMult, "geneArmorBluntMult", 40f);
+                Scribe_Values.Look(ref geneArmorBluntMult, "geneArmorBluntMult", 10f);
 
                 // Hediff settings
                 Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult", 10f);
@@ -189,7 +412,15 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 APCESettings.modDataDict.Add(packageId, this);
                 mod = LoadedModManager.RunningMods.First(m => m.PackageId == packageId);
+
+                //turn the list of defName strings back into a dictionary
+                if (defsToPatchNames == null)
+                {
+                    defsToPatchNames = new List<string>();
+                }
+                RebuildDefsToPatchDict(defsToPatchNames, defsToPatchTypes);
             }
         }
+
     }
 }

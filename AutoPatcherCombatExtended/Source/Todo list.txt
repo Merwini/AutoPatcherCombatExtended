@@ -1,54 +1,26 @@
-﻿	DONE popup window on game start recommending player to add mods related to defs found by above to the patch list
-TODO buttons to reset numbers to defaults
+﻿TODO finish MortarShell / window
+TODO MortarShell select fragment defs and amounts
+TODO fix mod suggest suggest window suggesting to remove mods that are already compatible because they loaded during SaveLoad
+TODO bipod for ranged weapons
+TODO window popup during Patch Export showing any patches that didn't export and why
+
+TODO cache AmmoSetDef name, during patch find when it has changed and search for ranged weapons using it so they can be updated
+TODO DefDataHolderRangedWeapon doesn't look for ammoset if set to not use ammo
+TODO don't bother to save AmmoSet entries in defsToPatch
+TODO combine suggest add and suggest remove mods windows into one
+
+
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases
 TODO verbs on apparel
 TODO headgear layers
-	DONE force disable CE autopatchers
-	DONE redo explosive launcher to use ammo types from generic LauncherGrenade - HE, HEDP, EMP, Smoke
-	DONE Change Generic weapons to use CE's generic ammos, to get them past the AmmoInjector. Disable unused ones myself. Remember to remove the weapon recipes this time
 TODO ThingDef tags
 TODO add logic to GetOriginalData to allow re-patching of already compatible defs
-TODO remove settings to enable/disable patching of certain defTypes, is just bloat at this point
-TODO make stringify/destringify virtual methods in base DefDataHolder, with overrides in the various subclasses
-TODO alreadyGenerated bool, so that repatching grenades, mortars, ammosets does not keep generating new ones 
 TODO in customization page, if user changes a weapon from burst 1 to multi, suggest to add recoil
-TODO each DefDataHolder needs to set their def subclass reference at the end of loading (i.e. ThingDef td = def as ThingDef). Class base loads the def itself
-	DONE redo Vehicle compat by sorting using a Type, Func dictionary that the compat code can just add to
 TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon Studios folder
-TODO double check that ModDataHolder mults are being applied to all relevant autocalculations
-	DONE handle patch failures in a way that doesn't cause the Window_SuggestMods to fail to close
-	DONE window that adds/removes mods from the patch list should WriteSettings
-TODO option to check all defs from a mod to see if they need patching, instead of stopping when the first one is found
-TODO check for genes that add verbs
-	DONE fix scrollview for showModsToRemove
 TODO search for "orphan" defs without an associated modContentPack, usually caused by adding defs via PatchOperation. Popup asking player if they want to assign these to an active mod.
+TODO Property for returning modified mass and bulk that checks if a limiter is set
 
-
-TODO basic:
-	Apparel
-	Genes
-	Hediff
-	Melee weapon
-MortarShell
-	Ranged Weapon
-Turret
-	Pawn
-PawnKind
-	Vehicle
-	Vehicle Turret
-
-TODO export: 
-Apparel
-Genes
-Hediff
-Melee weapon
-MortarShell
-Ranged Weapon
-Turret
-Pawn
-PawnKind
-Vehicle
-Vehicle Turret
+TODO export for vehicle stuff
 
 DataHolder flow:
 Load saved DataHolders

@@ -11,21 +11,24 @@ namespace nuff.AutoPatcherCombatExtended
 {
     public class DefDataHolderAmmoSet : DefDataHolder
     {
+        public DefDataHolderAmmoSet()
+        {
+            //empty constructor for use by SaveLoad
+
+        }
+
         public DefDataHolderAmmoSet(ThingDef def) : base(def)
         {
         }
 
-        //constructor for use by VehicleTurrets
         public DefDataHolderAmmoSet(ThingDef def, APCEConstants.gunKinds gunKind) : base()
         {
             this.def = def;
-            defName = def.defName;
             this.gunKind = gunKind;
             parentModPackageId = def.modContentPack.PackageId;
             modData = DataHolderUtils.ReturnModDataOrDefault(def);
-            //needs to not register self, so that .Patch() isn't re-run
-            //RegisterSelfInDict();
             GetOriginalData();
+            //Needs to call AutoCalculate and Patch during construction because it is usually instantiated by a RangedWeapon that needs the AmmoDef immediately afterward
             AutoCalculate();
             Patch();
         }
@@ -56,49 +59,49 @@ namespace nuff.AutoPatcherCombatExtended
         //string modified_catParentName;
 
         //ammosetdef and its serializable data
-        AmmoSetDef modified_ammoSetDef;
+        internal AmmoSetDef modified_ammoSetDef;
 
         public AmmoSetDef GeneratedAmmoSetDef 
         { 
             get => modified_ammoSetDef;
         }
-        List<AmmoLink> modified_ammoLinks = new List<AmmoLink>();
-        string modified_ammoSetDefName;
-        string modified_ammoSetLabel;
-        string modified_ammoSetDescription;
+        internal List<AmmoLink> modified_ammoLinks = new List<AmmoLink>();
+        internal string modified_ammoSetDefName;
+        internal string modified_ammoSetLabel;
+        internal string modified_ammoSetDescription;
 
         // List of ammos and their serializable data
         public List<AmmoDef> modified_ammoDefs = new List<AmmoDef>();
-        List<string> modified_ammoDefStrings = new List<string>(); //used for saving/loading
+        internal List<string> modified_ammoDefStrings = new List<string>(); //used for saving/loading
 
         // List of projectiles and their serializable data
         //ThingDef stuff
-        List<ThingDef> modified_projectiles = new List<ThingDef>();
-        List<string> modified_projectileNames = new List<string>();
-        List<string> modified_projectileLabels = new List<string>();
-        List<APCEConstants.ThingClasses> modified_thingClasses = new List<APCEConstants.ThingClasses>();
+        internal List<ThingDef> modified_projectiles = new List<ThingDef>();
+        internal List<string> modified_projectileNames = new List<string>();
+        internal List<string> modified_projectileLabels = new List<string>();
+        internal List<APCEConstants.ThingClasses> modified_thingClasses = new List<APCEConstants.ThingClasses>();
 
         //projectile stuff
-        List<DamageDef> modified_damageDefs = new List<DamageDef>();
-        List<string> modified_damageDefStrings = new List<string>(); //used for saving/loading
-        List<int> modified_damages = new List<int>();
-        List<float> modified_armorPenetrationSharps = new List<float>();
-        List<float> modified_armorPenetrationBlunts = new List<float>();
-        List<float> modified_speeds = new List<float>();
-        List<float> modified_explosionRadii = new List<float>();
-        List<int> modified_pelletCounts = new List<int>();
-        List<float> modified_spreadMults = new List<float>();
-        List<float> modified_empShieldBreakChances = new List<float>();
-        List<float> modified_suppressionFactors = new List<float>();
-        List<float> modified_dangerFactors = new List<float>();
-        List<bool> modified_ai_IsIncendiary = new List<bool>();
-        List<bool> modified_applyDamageToExplosionCellsNeighbors = new List<bool>();
+        internal List<DamageDef> modified_damageDefs = new List<DamageDef>();
+        internal List<string> modified_damageDefStrings = new List<string>(); //used for saving/loading
+        internal List<int> modified_damages = new List<int>();
+        internal List<float> modified_armorPenetrationSharps = new List<float>();
+        internal List<float> modified_armorPenetrationBlunts = new List<float>();
+        internal List<float> modified_speeds = new List<float>();
+        internal List<float> modified_explosionRadii = new List<float>();
+        internal List<int> modified_pelletCounts = new List<int>();
+        internal List<float> modified_spreadMults = new List<float>();
+        internal List<float> modified_empShieldBreakChances = new List<float>();
+        internal List<float> modified_suppressionFactors = new List<float>();
+        internal List<float> modified_dangerFactors = new List<float>();
+        internal List<bool> modified_ai_IsIncendiary = new List<bool>();
+        internal List<bool> modified_applyDamageToExplosionCellsNeighbors = new List<bool>();
 
-        List<List<SecondaryDamage>> modified_secondaryDamages = new List<List<SecondaryDamage>>();
-        List<List<DamageDef>> modified_secondaryDamageDefs = new List<List<DamageDef>>();
-        List<List<string>> modified_secondaryDamageDefStrings = new List<List<string>>(); //used for saving/loading
-        List<List<int>> modified_secondaryDamageAmounts = new List<List<int>>();
-        List<List<float>> modified_secondaryDamageChances = new List<List<float>>();
+        internal List<List<SecondaryDamage>> modified_secondaryDamages = new List<List<SecondaryDamage>>();
+        internal List<List<DamageDef>> modified_secondaryDamageDefs = new List<List<DamageDef>>();
+        internal List<List<string>> modified_secondaryDamageDefStrings = new List<List<string>>(); //used for saving/loading
+        internal List<List<int>> modified_secondaryDamageAmounts = new List<List<int>>();
+        internal List<List<float>> modified_secondaryDamageChances = new List<List<float>>();
 
         //casings / motes and filth
         //TODO
@@ -117,7 +120,17 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void GetOriginalData()
         {
-            weaponDef = def as ThingDef;
+            //constructed by APCEController, def assigned by constructor
+            if (def != null && weaponDef == null)
+            {
+                this.weaponDef = def as ThingDef;
+            }
+            //constructed by SaveLoad, thingDef loaded from xml
+            else if (weaponDef != null && def == null)
+            {
+                def = weaponDef;
+            }
+
             if (gunKind == APCEConstants.gunKinds.Default)
             {
                 gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
@@ -152,21 +165,23 @@ namespace nuff.AutoPatcherCombatExtended
                 original_damage = 50;
             }
 
+            ClearLists();
+
             switch (gunKind)
             {
                 case APCEConstants.gunKinds.Bow:
                     {
-                        GenerateAmmoBow();
+                        CalculateAmmoBow();
                         break;
                     }
                 case APCEConstants.gunKinds.Shotgun:
                     {
-                        GenerateAmmoShotgun();
+                        CalculateAmmoShotgun();
                         break;
                     }
                 case APCEConstants.gunKinds.ExplosiveLauncher:
                     {
-                        GenerateAmmoExplosiveLauncher();
+                        CalculateAmmoExplosiveLauncher();
                         break;
                     }
                 case APCEConstants.gunKinds.Turret:
@@ -175,36 +190,60 @@ namespace nuff.AutoPatcherCombatExtended
                             || (weaponDef.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_Explosive>() != null)
                             || (weaponDef.Verbs[0].defaultProjectile.thingClass == typeof(Projectile_Explosive)))
                         {
-                            GenerateAmmoExplosiveLauncher();
+                            CalculateAmmoExplosiveLauncher();
                         }
                         else
                         {
-                            GenerateAmmoIndustrial();
+                            CalculateAmmoIndustrial();
                         }
                         break;
                     }
                 case APCEConstants.gunKinds.Grenade:
                     {
-                        GenerateAmmoGrenade();
+                        CalculateAmmoGrenade();
                         break;
                     }
                 default:
                     {
                         if ((weaponDef.techLevel == TechLevel.Spacer) || (weaponDef.techLevel == TechLevel.Ultra) || (weaponDef.techLevel == TechLevel.Archotech))
                         {
-                            GenerateAmmoSpacer();
+                            CalculateAmmoSpacer();
 
                         }
                         else
                         {
-                            GenerateAmmoIndustrial();
+                            CalculateAmmoIndustrial();
                         }
                         break;
                     }
             }
         }
 
-        public void GenerateAmmoBow()
+        private void ClearLists()
+        {
+            modified_thingClasses.Clear();
+            modified_secondaryDamages.Clear();
+            modified_projectileNames.Clear();
+            modified_projectileLabels.Clear();
+            modified_damageDefs.Clear();
+            modified_damageDefStrings.Clear();
+            modified_damages.Clear();
+            modified_armorPenetrationSharps.Clear();
+            modified_armorPenetrationBlunts.Clear();
+            modified_speeds.Clear();
+            modified_explosionRadii.Clear();
+            modified_pelletCounts.Clear();
+            modified_spreadMults.Clear();
+            modified_empShieldBreakChances.Clear();
+            modified_suppressionFactors.Clear();
+            modified_dangerFactors.Clear();
+            modified_ai_IsIncendiary.Clear();
+            modified_applyDamageToExplosionCellsNeighbors.Clear();
+
+            modified_ammoDefs.Clear();
+        }
+
+        public void CalculateAmmoBow()
         {
             for (int i = 0; i < 5; i++)
             {
@@ -305,7 +344,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoShotgun()
+        public void CalculateAmmoShotgun()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -394,7 +433,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoExplosiveLauncher()
+        public void CalculateAmmoExplosiveLauncher()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -523,7 +562,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoIndustrial()
+        public void CalculateAmmoIndustrial()
         {
             for (int i = 0; i < 6; i++)
             {
@@ -625,7 +664,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoSpacer()
+        public void CalculateAmmoSpacer()
         {
             for (int i = 0; i < 3; i++)
             {
@@ -691,7 +730,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void GenerateAmmoGrenade()
+        public void CalculateAmmoGrenade()
         {
             //TODO
             List<DamageDef> secondaryDamageDefs = new List<DamageDef>();
@@ -721,11 +760,6 @@ namespace nuff.AutoPatcherCombatExtended
             modified_secondaryDamageChances.Add(secondaryDamageChances);
 
             modified_ammoDefs.Add(null);
-        }
-
-        public void SetBasePenetrations()
-        {
-            //todo I think I moved this into autocalculate
         }
 
         public void CalculateWeaponTechMult()
@@ -773,43 +807,30 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
 
-            modified_secondaryDamageDefs.Add(secondaryDamageDefs);
-            modified_secondaryDamageAmounts.Add(secondaryDamageAmounts);
-            modified_secondaryDamageChances.Add(secondaryDamageChances);
-
             return;
         }
 
         public override void Patch()
         {
-            //construct secondaryDamages
-            //construct projectiles
-            //construct AmmoLinks
-            //construct AmmoSet
-
             BuildSecondaryDamages();
 
-            BuildProjectiles();
+            BuildOrModifyProjectiles();
 
             BuildAmmoLinks();
 
-            BuildAmmoSet();
+            BuildOrModifyAmmoSet();
+
+            ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            //todo
+            return null;
         }
 
         public override void ExposeData()
         {
-            base.ExposeData();
-
             if (Scribe.mode == LoadSaveMode.LoadingVars
                 || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
             {
@@ -817,6 +838,10 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     Stringify();
                 }
+
+                Scribe_Defs.Look(ref weaponDef, "def");
+                Scribe_Values.Look(ref gunKind, "gunKind");
+
                 // Strings related to AmmoSetDef
                 Scribe_Values.Look(ref modified_ammoSetDefName, "modified_ammoSetDefName");
                 Scribe_Values.Look(ref modified_ammoSetLabel, "modified_ammoSetLabel");
@@ -826,35 +851,39 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Collections.Look(ref modified_ammoDefs, "modified_ammoDefs");
 
                 //Projectile things
-                Scribe_Collections.Look(ref modified_projectileNames, "modified_projectileNames");
-                Scribe_Collections.Look(ref modified_projectileLabels, "modified_projectileLabels");
-                Scribe_Collections.Look(ref modified_thingClasses, "modified_thingClasses");
+                Scribe_Collections.Look(ref modified_projectileNames, "modified_projectileNames", LookMode.Value);
+                Scribe_Collections.Look(ref modified_projectileLabels, "modified_projectileLabels", LookMode.Value);
+                Scribe_Collections.Look(ref modified_thingClasses, "modified_thingClasses", LookMode.Value);
 
                 //Projectile Properties
-                Scribe_Collections.Look(ref modified_damageDefStrings, "modified_damageDefNames");
-                Scribe_Collections.Look(ref modified_damages, "modified_damages");
-                Scribe_Collections.Look(ref modified_armorPenetrationSharps, "modified_armorPenetrationSharps");
-                Scribe_Collections.Look(ref modified_armorPenetrationBlunts, "modified_armorPenetrationBlunts");
-                Scribe_Collections.Look(ref modified_speeds, "modified_speeds");
-                Scribe_Collections.Look(ref modified_explosionRadii, "modified_explosionRadii");
-                Scribe_Collections.Look(ref modified_pelletCounts, "modified_pelletCounts");
-                Scribe_Collections.Look(ref modified_spreadMults, "modified_spreadMults");
-                Scribe_Collections.Look(ref modified_empShieldBreakChances, "modified_empShieldBreakChances");
-                Scribe_Collections.Look(ref modified_suppressionFactors, "modified_suppressionFactors");
-                Scribe_Collections.Look(ref modified_dangerFactors, "modified_dangerFactors");
-                Scribe_Collections.Look(ref modified_ai_IsIncendiary, "modified_ai_IsIncendiary");
-                Scribe_Collections.Look(ref modified_applyDamageToExplosionCellsNeighbors, "modified_applyDamageToExplosionCellsNeighbors");
+                //Scribe_Collections.Look(ref modified_damageDefStrings, "modified_damageDefNames", LookMode.Value);
+                Scribe_Collections.Look(ref modified_damageDefs, "modified_damageDefs");
+                Scribe_Collections.Look(ref modified_damages, "modified_damages", LookMode.Value);
+                Scribe_Collections.Look(ref modified_armorPenetrationSharps, "modified_armorPenetrationSharps", LookMode.Value);
+                Scribe_Collections.Look(ref modified_armorPenetrationBlunts, "modified_armorPenetrationBlunts", LookMode.Value);
+                Scribe_Collections.Look(ref modified_speeds, "modified_speeds", LookMode.Value);
+                Scribe_Collections.Look(ref modified_explosionRadii, "modified_explosionRadii", LookMode.Value);
+                Scribe_Collections.Look(ref modified_pelletCounts, "modified_pelletCounts", LookMode.Value);
+                Scribe_Collections.Look(ref modified_spreadMults, "modified_spreadMults", LookMode.Value);
+                Scribe_Collections.Look(ref modified_empShieldBreakChances, "modified_empShieldBreakChances", LookMode.Value);
+                Scribe_Collections.Look(ref modified_suppressionFactors, "modified_suppressionFactors", LookMode.Value);
+                Scribe_Collections.Look(ref modified_dangerFactors, "modified_dangerFactors", LookMode.Value);
+                Scribe_Collections.Look(ref modified_ai_IsIncendiary, "modified_ai_IsIncendiary", LookMode.Value);
+                Scribe_Collections.Look(ref modified_applyDamageToExplosionCellsNeighbors, "modified_applyDamageToExplosionCellsNeighbors", LookMode.Value);
                 //Secondary Damages
-                Scribe_Collections.Look(ref modified_secondaryDamageDefStrings, "modified_secondaryDamageDefStrings");
-                Scribe_Collections.Look(ref modified_secondaryDamageAmounts, "modified_secondaryDamageAmounts");
-                Scribe_Collections.Look(ref modified_secondaryDamageChances, "modified_secondaryDamageChances");
+                //Scribe_Collections.Look(ref modified_secondaryDamageDefStrings, "modified_secondaryDamageDefStrings", LookMode.Value);
+                Scribe_Collections.LookListOfLists(ref modified_secondaryDamageDefs, true, "modified_secondaryDamageDefs", LookMode.Def);
+                Scribe_Collections.Look(ref modified_secondaryDamageAmounts, "modified_secondaryDamageAmounts", LookMode.Value);
+                Scribe_Collections.Look(ref modified_secondaryDamageChances, "modified_secondaryDamageChances", LookMode.Value);
 
                 if (Scribe.mode == LoadSaveMode.LoadingVars)
                 {
-                    Destringify();
+                    modData = APCESettings.modDataDict[weaponDef.modContentPack.PackageId];
+                    //Destringify();
                     Patch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
                 }
             }
+            base.ExposeData();
         }
 
         public void BuildSecondaryDamages()
@@ -882,9 +911,10 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void BuildProjectiles()
+        public void BuildOrModifyProjectiles()
         {
             modified_projectiles.Clear();
+
             for (int i = 0; i < modified_projectileNames.Count; i++)
             {
                 ProjectilePropertiesCE newProjProps = new ProjectilePropertiesCE()
@@ -904,28 +934,41 @@ namespace nuff.AutoPatcherCombatExtended
 
                     secondaryDamage = modified_secondaryDamages[i] //this should have been populated already at this point
                 };
-
                 DataHolderUtils.SetDamage(newProjProps, modified_damages[i]);
-
-                ThingDef newProj = new ThingDef()
+                ThingDef td = DefDatabase<ThingDef>.GetNamedSilentFail(modified_projectileNames[i]);
+                
+                //todo this is stupid just do if td=null make it with defName and then set values either way
+                if (td != null)
                 {
-                    defName = modified_projectileNames[i],
-                    label = modified_projectileLabels[i],
-                    thingClass = GetProjectileThingClass(i),
-                    projectile = newProjProps
-                };
+                    td.label = modified_projectileLabels[i];
+                    td.thingClass = GetProjectileThingClass(i);
+                    td.projectile = newProjProps;
 
-                SetProjectileDefaults(newProj, original_projectile);
+                    modified_projectiles.Add(td);
+                }
+                else
+                {
+                    ThingDef newProj = new ThingDef()
+                    {
+                        defName = modified_projectileNames[i],
+                        label = modified_projectileLabels[i],
+                        thingClass = GetProjectileThingClass(i),
+                        projectile = newProjProps
+                    };
 
-                InjectedDefHasher.GiveShortHashToDef(newProj, typeof(ThingDef));
-                DefGenerator.AddImpliedDef<ThingDef>(newProj);
+                    SetProjectileDefaults(newProj, original_projectile);
 
-                modified_projectiles.Add(newProj);
+                    InjectedDefHasher.GiveShortHashToDef(newProj, typeof(ThingDef));
+                    DefGenerator.AddImpliedDef<ThingDef>(newProj);
+
+                    modified_projectiles.Add(newProj);
+                }
             }
         }
 
         public void SetProjectileDefaults(ThingDef newProj, ThingDef oldProj)
         {
+            //todo look into why I don't copy these from the original projectile
             newProj.category = ThingCategory.Projectile;
             newProj.tickerType = TickerType.Normal;
             newProj.altitudeLayer = AltitudeLayer.Projectile;
@@ -937,7 +980,8 @@ namespace nuff.AutoPatcherCombatExtended
             }
             newProj.graphicData.shaderType = ShaderTypeDefOf.Transparent;
             newProj.graphicData.graphicClass = typeof(Graphic_Single);
-            newProj.graphicData.texPath = oldProj.graphicData.texPath; //TODO modifiable texPath //TODO handle VE's stupid fucking graphicData subclass
+            //grab from weaponDef directly since GetOriginalData isn't run during load, but weaponDef is saved
+            newProj.graphicData.texPath = weaponDef.Verbs[0].defaultProjectile.graphicData.texPath; //TODO modifiable texPath //TODO handle VE's graphicData subclass
             newProj.projectile.explosionDamageFalloff = true;
         }
 
@@ -973,18 +1017,30 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void BuildAmmoSet()
+        public void BuildOrModifyAmmoSet()
         {
-            AmmoSetDef ammoSet = new AmmoSetDef()
+            AmmoSetDef asd = DefDatabase<AmmoSetDef>.GetNamedSilentFail(modified_ammoSetDefName);
+            if (asd != null)
             {
-                defName = modified_ammoSetDefName,
-                label = modified_ammoSetLabel,
-                ammoTypes = modified_ammoLinks
-            };
-            InjectedDefHasher.GiveShortHashToDef(ammoSet, typeof(AmmoSetDef));
-            DefGenerator.AddImpliedDef<AmmoSetDef>(ammoSet);
+                asd.label = modified_ammoSetLabel;
+                asd.ammoTypes = modified_ammoLinks;
+                modified_ammoSetDef = asd;
+            }
+            else
+            {
+                AmmoSetDef newAmmoSet = new AmmoSetDef()
+                {
+                    defName = modified_ammoSetDefName,
+                    label = modified_ammoSetLabel,
+                    ammoTypes = modified_ammoLinks
+                };
+                InjectedDefHasher.GiveShortHashToDef(newAmmoSet, typeof(AmmoSetDef));
+                DefGenerator.AddImpliedDef<AmmoSetDef>(newAmmoSet);
 
-            modified_ammoSetDef = ammoSet;
+                modified_ammoSetDef = newAmmoSet;
+            }
+
+            DelayedRegister();
         }
 
         public void Stringify()
@@ -1059,6 +1115,40 @@ namespace nuff.AutoPatcherCombatExtended
                     modified_secondaryDamageDefs[i].Add(dam2);
                 }
             }
+        }
+
+        public override void RegisterSelfInDicts()
+        {
+            RegisterOnce(false);
+        }
+
+        public void RegisterOnce(bool forceReregister)
+        {
+            if (!alreadyRegistered || forceReregister)
+            {
+                APCESettings.defDataDict[modified_ammoSetDef] = this;
+                modData.defDict[modified_ammoSetDef] = this;
+                modData.defsToPatch[modified_ammoSetDef] = APCEConstants.NeedsPatch.yes; 
+                alreadyRegistered = true;
+            }
+        }
+
+        public void AddGenericSecondaryDamage(int i)
+        {
+            modified_secondaryDamageDefs[i].Add(DamageDefOf.Bullet);
+            modified_secondaryDamageAmounts[i].Add(1);
+            modified_secondaryDamageChances[i].Add(1);
+        }
+
+        public void RemoveSecondaryDamage(int i, int j)
+        {
+            if (i >= modified_secondaryDamageDefs.Count || j >= modified_secondaryDamageDefs[i].Count)
+            {
+                return; //todo error
+            }
+            modified_secondaryDamageDefs[i].RemoveAt(j);
+            modified_secondaryDamageAmounts[i].RemoveAt(j);
+            modified_secondaryDamageChances[i].RemoveAt(j);
         }
 
         //It is only after two hours of work that I realize that I don't need to make ThingCategoryDefs since I no longer generate new AmmoDefs, instead assigning generic Ammos.

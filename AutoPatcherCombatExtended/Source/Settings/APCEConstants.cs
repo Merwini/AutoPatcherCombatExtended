@@ -57,6 +57,15 @@ namespace nuff.AutoPatcherCombatExtended
             Flamethrower,
             Other
         }
+
+        public enum NeedsPatch
+        {
+            yes,
+            no,
+            ignore,
+            unsure
+        }
+
         public enum VanillaStatBases //StatModifiers used by vanilla and not CE
         {
             AccuracyTouch,
@@ -112,6 +121,12 @@ namespace nuff.AutoPatcherCombatExtended
             Stuff,
             Vehicle,
             VehicleTurret
+        }
+
+        public enum DefNameOrLabel
+        {
+            defName,
+            label
         }
     }
 }
