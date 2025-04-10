@@ -152,7 +152,7 @@ namespace nuff.AutoPatcherCombatExtended
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "CarryWeight", modified_CarryWeight));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "CarryBulk", modified_CarryBulk));
 
-            patchOps.Add(MakeModExtensionPatch());
+            patchOps.Add(GenerateModExtensionPatch());
 
             patchOps.Add(GenerateToolPatchXML());
 
@@ -160,7 +160,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             return patch;
 
-            string MakeModExtensionPatch()
+            string GenerateModExtensionPatch()
             {
                 string xpath = $"Defs/ThingDef[defName=\"{defName}\"]";
                 StringBuilder patch = new StringBuilder();

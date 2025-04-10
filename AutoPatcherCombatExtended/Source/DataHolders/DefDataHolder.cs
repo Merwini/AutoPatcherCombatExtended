@@ -398,6 +398,7 @@ namespace nuff.AutoPatcherCombatExtended
             patch.AppendLine("\t\t\t</tools>");
             patch.AppendLine("\t\t</value>");
             patch.AppendLine("\t</Operation>");
+            patch.AppendLine();
 
             return patch.ToString();
         }
