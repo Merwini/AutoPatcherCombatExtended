@@ -103,6 +103,7 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t\t<xpath>{xpath}/{targetStat}</xpath>");
                 patch.AppendLine("\t\t<value />");
                 patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
             }
             else if (statExists)
             {
@@ -112,6 +113,7 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t\t\t<{targetStat}>{value}</{targetStat}>");
                 patch.AppendLine("\t\t</value>");
                 patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
             }
             else
             {
@@ -121,21 +123,23 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t\t\t<{targetStat}>{value}</{targetStat}>");
                 patch.AppendLine("\t\t</value>");
                 patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
             }
 
             return patch.ToString();
         }
 
-        public static string AddOrReplaceXmlNodeWhitespace(XmlNode node, string targetNode, string targetStat, float value, float originalValue = -55555.55555f)
-        {
-            string patch = GeneratePatchOperationFor(node, targetNode, targetStat, value, originalValue);
-            if (patch != null)
-            {
-                patch = patch + "\n\n";
-            }
+        //redundant
+        //public static string AddOrReplaceXmlNodeWhitespace(XmlNode node, string targetNode, string targetStat, float value, float originalValue = -55555.55555f)
+        //{
+        //    string patch = GeneratePatchOperationFor(node, targetNode, targetStat, value, originalValue);
+        //    if (patch != null)
+        //    {
+        //        patch = patch + "\n\n";
+        //    }
 
-            return patch;
-        }
+        //    return patch;
+        //}
 
         public static string RemoveXmlNode(XmlNode node, string targetParent, string targetStat)
         {
@@ -238,7 +242,8 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
                 patch.AppendLine($"\t\t<xpath>Defs/{node.Name}[defName='{def.defName}']</xpath>");
                 patch.AppendLine($"\t\t<value><statBases></statBases></value>");
-                patch.AppendLine($"\t</Operation>\n");
+                patch.AppendLine($"\t</Operation>");
+                patch.AppendLine();
             }
 
             if (needsEquippedStatOffsets && !hasEquippedStatOffsets)
@@ -246,7 +251,8 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
                 patch.AppendLine($"\t\t<xpath>Defs/{node.Name}[defName='{def.defName}']</xpath>");
                 patch.AppendLine($"\t\t<value><equippedStatOffsets></equippedStatOffsets></value>");
-                patch.AppendLine($"\t</Operation>\n");
+                patch.AppendLine($"\t</Operation>");
+                patch.AppendLine();
             }
 
             if (needsComps && !hasComps)
@@ -254,7 +260,8 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
                 patch.AppendLine($"\t\t<xpath>Defs/{node.Name}[defName='{def.defName}']</xpath>");
                 patch.AppendLine($"\t\t<value><comps></comps></value>");
-                patch.AppendLine($"\t</Operation>\n");
+                patch.AppendLine($"\t</Operation>");
+                patch.AppendLine();
             }
 
             if (needsModExtensions && !hasModExtensions)
@@ -262,7 +269,8 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
                 patch.AppendLine($"\t\t<xpath>Defs/{node.Name}[defName='{def.defName}']</xpath>");
                 patch.AppendLine($"\t\t<value><modExtensions></modExtensions></value>");
-                patch.AppendLine($"\t</Operation>\n");
+                patch.AppendLine($"\t</Operation>");
+                patch.AppendLine();
             }
 
             if (needsTools && !hasTools)
@@ -270,7 +278,8 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t<Operation Class=\"PatchOperationAdd\">");
                 patch.AppendLine($"\t\t<xpath>Defs/{node.Name}[defName='{def.defName}']</xpath>");
                 patch.AppendLine($"\t\t<value><tools></tools></value>");
-                patch.AppendLine($"\t</Operation>\n");
+                patch.AppendLine($"\t</Operation>");
+                patch.AppendLine();
             }
         }
 

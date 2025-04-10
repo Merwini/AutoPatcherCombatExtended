@@ -135,22 +135,22 @@ namespace nuff.AutoPatcherCombatExtended
 
             patchOps = new List<string>();
 
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat));
 
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeDodgeChance", modified_MeleeDodgeChance));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeParryChance", modified_MeleeParryChance));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeCritChance", modified_MeleeCritChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MeleeDodgeChance", modified_MeleeDodgeChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MeleeParryChance", modified_MeleeParryChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MeleeCritChance", modified_MeleeCritChance));
 
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "SmokeSensitivity", modified_SmokeSensitivity));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Suppressability", modified_Suppressability));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "NightVisionEfficiency", modified_NightVisionEfficiency));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ReloadSpeed", modified_ReloadSpeed));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "SmokeSensitivity", modified_SmokeSensitivity));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Suppressability", modified_Suppressability));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "NightVisionEfficiency", modified_NightVisionEfficiency));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ReloadSpeed", modified_ReloadSpeed));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
 
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "CarryWeight", modified_CarryWeight));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "CarryBulk", modified_CarryBulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "CarryWeight", modified_CarryWeight));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "CarryBulk", modified_CarryBulk));
 
             patchOps.Add(GenerateModExtensionPatch());
 

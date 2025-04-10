@@ -134,20 +134,20 @@ namespace nuff.AutoPatcherCombatExtended
             xml = DataHolderUtils.GetXmlForDef(thingDef);
 
             patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Mass", modified_Mass, original_Mass));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Bulk", modified_Bulk));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "WornBulk", modified_WornBulk));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MaxHitPoints", modified_MaxHitPoints, original_MaxHitPoints));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "StuffEffectMultiplierArmor", modified_StuffEffectMultiplierArmor, original_StuffEffectMultiplierArmor));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Mass", modified_Mass, original_Mass));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Bulk", modified_Bulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "WornBulk", modified_WornBulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MaxHitPoints", modified_MaxHitPoints, original_MaxHitPoints));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "StuffEffectMultiplierArmor", modified_StuffEffectMultiplierArmor, original_StuffEffectMultiplierArmor));
 
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "CarryBulk", modified_CarryBulk));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "CarryWeight", modified_CarryWeight, original_CarryWeight));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "ShootingAccuracyPawn", modified_ShootingAccuracyPawn, original_ShootingAccuracyPawn));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "SmokeSensitivity", modified_SmokeSensitivity));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "NightVisionEfficiency", modified_NightVisionEfficiency));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryBulk", modified_CarryBulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryWeight", modified_CarryWeight, original_CarryWeight));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "ShootingAccuracyPawn", modified_ShootingAccuracyPawn, original_ShootingAccuracyPawn));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "SmokeSensitivity", modified_SmokeSensitivity));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "NightVisionEfficiency", modified_NightVisionEfficiency));
 
             base.ExportXML();
 

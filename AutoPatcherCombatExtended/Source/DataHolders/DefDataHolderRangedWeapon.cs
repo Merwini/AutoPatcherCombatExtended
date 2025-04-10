@@ -236,14 +236,14 @@ namespace nuff.AutoPatcherCombatExtended
             xml = DataHolderUtils.GetXmlForDef(weaponThingDef);
 
             patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Mass", modified_Mass, original_Mass));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Bulk", modified_Bulk));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "RangedWeaponCooldown", modified_RangedWeaponCooldown, original_RangedWeaponCooldown));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "WorkToMake", modified_WorkToMake, original_WorkToMake));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "SightsEfficiency", modified_SightsEfficiency));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ShotSpread", modified_ShotSpread));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "SwayFactor", modified_SwayFactor));
-            //patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "WeaponToughness", modified_WeaponToughness)); //let weapon toughness autopatcher do its thing
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Mass", modified_Mass, original_Mass));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Bulk", modified_Bulk));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "RangedWeaponCooldown", modified_RangedWeaponCooldown, original_RangedWeaponCooldown));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "WorkToMake", modified_WorkToMake, original_WorkToMake));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "SightsEfficiency", modified_SightsEfficiency));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ShotSpread", modified_ShotSpread));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "SwayFactor", modified_SwayFactor));
+            //patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "WeaponToughness", modified_WeaponToughness)); //let weapon toughness autopatcher do its thing
 
             patchOps.Add(APCEPatchExport.RemoveXmlNode(xml, "statBases", "AccuracyTouch"));
             patchOps.Add(APCEPatchExport.RemoveXmlNode(xml, "statBases", "AccuracyShort"));

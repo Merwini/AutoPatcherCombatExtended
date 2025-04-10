@@ -119,13 +119,13 @@ namespace nuff.AutoPatcherCombatExtended
             xml = DataHolderUtils.GetXmlForDef(thingDef);
 
             patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Mass", modified_Mass, original_Mass));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Bulk", modified_Bulk));
-            //patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ToughnessRating", modified_WeaponToughness)); //let weapon toughness autopatcher do its thing
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MeleeCounterParryBonus", modified_MeleeCounterParryBonus));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "MeleeDodgeChance", modified_MeleeDodgeChance));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "MeleeParryChance", modified_MeleeParryChance));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "MeleeCritChance", modified_MeleeCritChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Mass", modified_Mass, original_Mass));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Bulk", modified_Bulk));
+            //patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ToughnessRating", modified_WeaponToughness)); //let weapon toughness autopatcher do its thing
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MeleeCounterParryBonus", modified_MeleeCounterParryBonus));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "MeleeDodgeChance", modified_MeleeDodgeChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "MeleeParryChance", modified_MeleeParryChance));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "MeleeCritChance", modified_MeleeCritChance));
 
             patchOps.Add(GenerateToolPatchXML());
 

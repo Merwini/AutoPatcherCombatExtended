@@ -78,7 +78,7 @@ namespace nuff.AutoPatcherCombatExtended
             xml = DataHolderUtils.GetXmlForDef(thingDef);
 
             patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
 
             if (modified_FillPercent != original_FillPercent)
             {
