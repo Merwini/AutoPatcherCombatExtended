@@ -79,8 +79,16 @@ namespace nuff.AutoPatcherCombatExtended
 
             patchOps = new List<string>();
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
-            patchOps.Add(MakeFillPercentPatch());
-            patchOps.Add(MakeTurretBurstCoolDownTimePatch());
+
+            if (modified_FillPercent != original_FillPercent)
+            {
+                patchOps.Add(MakeFillPercentPatch());
+            }
+
+            if (modified_TurretBurstCooldownTime != original_TurretBurstCooldownTime)
+            {
+                patchOps.Add(MakeTurretBurstCoolDownTimePatch());
+            }
 
             base.ExportXML();
 

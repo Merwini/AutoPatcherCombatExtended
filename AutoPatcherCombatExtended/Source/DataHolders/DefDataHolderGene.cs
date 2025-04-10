@@ -67,9 +67,9 @@ namespace nuff.AutoPatcherCombatExtended
             xml = DataHolderUtils.GetXmlForDef(geneDef);
 
             patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Sharp", modified_ArmorRatingSharp));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Blunt", modified_ArmorRatingBlunt));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Heat", modified_ArmorRatingHeat));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statOffsets", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
 
             base.ExportXML();
 

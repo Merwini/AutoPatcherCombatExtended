@@ -126,16 +126,16 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             patchOps = new List<string>();
-            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Sharp", modified_ArmorRatingSharp));
-            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Blunt", modified_ArmorRatingBlunt));
-            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Heat", modified_ArmorRatingHeat));
+            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
+            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
+            patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
 
             base.ExportXML(); //tool-building handled in base
 
             return patch;
 
             //based on APCEPatchExport.GeneratePatchOperationFor()
-            string GenerateHediffStagesArmorPatch(XmlNode node, string targetStat, List<float> values)
+            string GenerateHediffStagesArmorPatch(XmlNode node, string targetStat, List<float> values, List<float> original_values)
             {
                 //no need for warning/error, as hediffs with VerbGivers don't usually have stages but this will run anyway
                 if (values.NullOrEmpty())
@@ -176,6 +176,12 @@ namespace nuff.AutoPatcherCombatExtended
 
                 for (int i = 0; i < values.Count; i++)
                 {
+                    //skip making a patch for a value that is unchanged
+                    if (values[i] == original_values[i])
+                    {
+                        continue;
+                    }
+
                     float value = values[i];
 
                     //try to find matching stage node

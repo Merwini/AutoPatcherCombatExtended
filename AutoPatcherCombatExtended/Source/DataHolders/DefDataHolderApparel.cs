@@ -115,6 +115,11 @@ namespace nuff.AutoPatcherCombatExtended
                 DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
                 DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
 
+                if (!thingDef.stuffCategories.NullOrEmpty())
+                {
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor);
+                }
+
                 DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
                 DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
                 DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
@@ -129,17 +134,18 @@ namespace nuff.AutoPatcherCombatExtended
             xml = DataHolderUtils.GetXmlForDef(thingDef);
 
             patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Mass", modified_Mass));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Mass", modified_Mass, original_Mass));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "Bulk", modified_Bulk));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "WornBulk", modified_WornBulk));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MaxHitPoints", modified_MaxHitPoints));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "MaxHitPoints", modified_MaxHitPoints, original_MaxHitPoints));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "statBases", "StuffEffectMultiplierArmor", modified_StuffEffectMultiplierArmor, original_StuffEffectMultiplierArmor));
 
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "CarryBulk", modified_CarryBulk));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "CarryWeight", modified_CarryWeight));
-            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "ShootingAccuracyPawn", modified_ShootingAccuracyPawn));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "CarryWeight", modified_CarryWeight, original_CarryWeight));
+            patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "ShootingAccuracyPawn", modified_ShootingAccuracyPawn, original_ShootingAccuracyPawn));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "SmokeSensitivity", modified_SmokeSensitivity));
             patchOps.Add(APCEPatchExport.AddOrReplaceXmlNodeWhitespace(xml, "equippedStatOffsets", "NightVisionEfficiency", modified_NightVisionEfficiency));
 

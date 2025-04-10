@@ -53,8 +53,13 @@ namespace nuff.AutoPatcherCombatExtended
             WritePatchToFile(modFolderPath, masterPatch, modData);
         }
 
-        public static string GeneratePatchOperationFor(XmlNode node, string targetNode, string targetStat, float value)
+        public static string GeneratePatchOperationFor(XmlNode node, string targetNode, string targetStat, float value, float originalValue = -55555.55555f)
         {
+            if (value == originalValue)
+            {
+                return null;
+            }
+
             if (node == null)
             {
                 Log.Warning("Cannot generate patch: XML node is null.");
@@ -122,9 +127,9 @@ namespace nuff.AutoPatcherCombatExtended
             return patch.ToString();
         }
 
-        public static string AddOrReplaceXmlNodeWhitespace(XmlNode node, string targetNode, string targetStat, float value)
+        public static string AddOrReplaceXmlNodeWhitespace(XmlNode node, string targetNode, string targetStat, float value, float originalValue = -55555.55555f)
         {
-            string patch = GeneratePatchOperationFor(node, targetNode, targetStat, value);
+            string patch = GeneratePatchOperationFor(node, targetNode, targetStat, value, originalValue);
             if (patch != null)
             {
                 patch = patch + "\n\n";
