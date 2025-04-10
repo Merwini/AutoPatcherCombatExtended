@@ -207,7 +207,7 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                     }
 
-                    string baseXPath = $"/Defs/HediffDef[defName=\"{defName}\"]/stages/li[{i + 1}]";
+                    string baseXPath = $"Defs/HediffDef[defName=\"{defName}\"]/stages/li[{i + 1}]";
                     string xpath = $"{baseXPath}/statOffsets";
 
                     //add statOffsets node if it is missing and not already added
