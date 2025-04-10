@@ -137,6 +137,55 @@ namespace nuff.AutoPatcherCombatExtended
             return patch;
         }
 
+        public static string RemoveXmlNode(XmlNode node, string targetParent, string targetStat)
+        {
+            if (node == null)
+            {
+                Log.Warning($"Cannot generate patch to remove {targetStat}: XML node is null.");
+                return null;
+            }
+
+            XmlNode defNameNode = node.SelectSingleNode("defName");
+            if (defNameNode == null)
+            {
+                Log.Warning($"Cannot generate patch to remove {targetStat}: defName not found in the XML node.");
+                return null;
+            }
+
+            string defName = defNameNode.InnerText;
+
+            XmlNode parentNode = node.SelectSingleNode(targetParent);
+            if (parentNode == null)
+            {
+                return null;
+            }
+
+            bool targetExists = false;
+            foreach (XmlNode child in parentNode.ChildNodes)
+            {
+                if (child.Name == targetStat)
+                {
+                    targetExists = true;
+                    break;
+                }
+            }
+
+            if (!targetExists)
+            {
+                return null;
+            }
+
+            string xpath = $"Defs/{node.Name}[defName=\"{defName}\"]/{targetParent}/{targetStat}";
+
+            StringBuilder patch = new StringBuilder();
+            patch.AppendLine("\t<Operation Class=\"PatchOperationRemove\">");
+            patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+            patch.AppendLine("\t</Operation>");
+            patch.AppendLine();
+
+            return patch.ToString();
+        }
+
         public static void CleanPatchOpsList(ref List<string> patchOps)
         {
             if (patchOps == null)
