@@ -162,7 +162,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             string MakeModExtensionPatch()
             {
-                string xpath = $"/Defs/ThingDef[defName=\"{defName}\"]";
+                string xpath = $"Defs/ThingDef[defName=\"{defName}\"]";
                 StringBuilder patch = new StringBuilder();
 
                 patch.AppendLine("\t<Operation Class=\"PatchOperationAddModExtension\">");
