@@ -37,6 +37,9 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_MaxMagsBuffer = dataHolder.modified_MaxMags.ToString();
             list.TextFieldNumericLabeled("Max Mags", ref dataHolder.modified_MaxMags, ref modified_MaxMagsBuffer);
 
+            string modified_CombatPowerBuffer = dataHolder.modified_CombatPower.ToString();
+            list.TextFieldNumericLabeled("Combat Power (threat point cost for raids)", ref dataHolder.modified_CombatPower, ref modified_CombatPowerBuffer);
+
             //TODO modified_ApparelTags
             //TODO modified_WeaponTags
 

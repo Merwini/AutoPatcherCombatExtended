@@ -285,13 +285,13 @@ namespace nuff.AutoPatcherCombatExtended
                         TryOpenDefWindow(rightSelectedObject, modData);
                     }
                 }
-
-                if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).BottomPart(0.5f).LeftPart(0.3f).LeftPart(0.5f), "Export Patches"))
-                {
-                    APCEPatchExport.ExportPatchesForMod(modData);
-                }
-
             }
+
+            if (Widgets.ButtonText(rect: inRect.BottomPart(0.15f).BottomPart(0.5f).LeftPart(0.3f).LeftPart(0.5f), "Export Patches"))
+            {
+                APCEPatchExport.ExportPatchesForMod(modData);
+            }
+
 
             list.End();
         }
