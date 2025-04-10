@@ -125,14 +125,10 @@ namespace nuff.AutoPatcherCombatExtended.VF
             PatchCEExtension();
         }
 
-        public override StringBuilder PrepExport()
+        public override StringBuilder ExportXML()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void ExportXML()
-        {
-            throw new NotImplementedException();
+            Log.Warning("Patch export for Vehicle Turret Defs not yet implemented");
+            return null;
         }
 
         public override void ExposeData()
