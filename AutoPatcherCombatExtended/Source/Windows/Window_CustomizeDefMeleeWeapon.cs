@@ -47,14 +47,14 @@ namespace nuff.AutoPatcherCombatExtended
 
             string buffer;
 
-            buffer = dataHolder.modified_mass.ToString();
-            list.TextFieldNumericLabeled("Mass", ref dataHolder.modified_mass, ref buffer);
+            buffer = dataHolder.modified_Mass.ToString();
+            list.TextFieldNumericLabeled("Mass", ref dataHolder.modified_Mass, ref buffer);
 
-            buffer = dataHolder.modified_bulk.ToString();
-            list.TextFieldNumericLabeled("Bulk", ref dataHolder.modified_bulk, ref buffer);
+            buffer = dataHolder.modified_Bulk.ToString();
+            list.TextFieldNumericLabeled("Bulk", ref dataHolder.modified_Bulk, ref buffer);
 
-            buffer = dataHolder.modified_weaponToughness.ToString();
-            list.TextFieldNumericLabeled("Weapon Toughness", ref dataHolder.modified_weaponToughness, ref buffer);
+            buffer = dataHolder.modified_WeaponToughness.ToString();
+            list.TextFieldNumericLabeled("Weapon Toughness", ref dataHolder.modified_WeaponToughness, ref buffer);
 
             buffer = dataHolder.modified_MeleeCounterParryBonus.ToString();
             list.TextFieldNumericLabeled("Melee Counter Parry Bonus", ref dataHolder.modified_MeleeCounterParryBonus, ref buffer);
