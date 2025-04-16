@@ -43,6 +43,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal int modified_aimHeightOffset;
         //TODO shellingProps
 
+        CompProperties_Fragments modified_fragmentsComp;
         internal bool modified_fragmentsBool;
         internal List<ThingDef> modified_fragmentDefs = new List<ThingDef>();
         internal List<int> modified_fragmentsAmount = new List<int>();
@@ -94,6 +95,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void Patch()
         {
             RebuildProjectileProps();
+            RebuildFragmentsComp();
             RebuildProjectileCE();
             RebuildAmmo();
             AddAmmoLink();
@@ -172,6 +174,28 @@ namespace nuff.AutoPatcherCombatExtended
             if (justBuilt)
             {
                 DefGenerator.AddImpliedDef<ThingDef>(modified_projectile);
+            }
+        }
+
+        public void RebuildFragmentsComp()
+        {
+            modified_projectile.comps.RemoveAll(c => c is CompProperties_Fragments);
+
+            if (modified_fragmentsBool && !modified_fragmentDefs.NullOrEmpty() && modified_fragmentsAmount.NullOrEmpty())
+            {
+                CompProperties_Fragments newComp_Fragments = new CompProperties_Fragments();
+                for (int i = 0; i < modified_fragmentDefs.Count; i++)
+                {
+                    ThingDefCountClass tdcc = new ThingDefCountClass()
+                    {
+                        thingDef = modified_fragmentDefs[i],
+                        count = modified_fragmentsAmount[i] > 0 ? modified_fragmentsAmount[i] : 1
+                    };
+
+                    newComp_Fragments.fragments.Add(tdcc);
+                }
+
+                modified_projectile.comps.Add(newComp_Fragments);
             }
         }
 
