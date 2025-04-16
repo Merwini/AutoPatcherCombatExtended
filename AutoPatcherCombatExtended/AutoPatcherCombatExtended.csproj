@@ -88,7 +88,7 @@
     <Compile Include="Source\Windows\Window_ConfirmDeleteCapacity.cs" />
     <Compile Include="Source\Windows\Window_ConfirmDeleteSecondary.cs" />
     <Compile Include="Source\Windows\Window_ConfirmDeleteTool.cs" />
-    <Compile Include="Source\Windows\Window_CusomizeMortarShell.cs" />
+    <Compile Include="Source\Windows\Window_CustomizeMortarShell.cs" />
     <Compile Include="Source\Windows\Window_CustomizeAmmoSet.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDef.cs" />
     <Compile Include="Source\Windows\Window_CustomizeDefApparel.cs" />
