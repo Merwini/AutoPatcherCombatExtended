@@ -42,15 +42,14 @@ namespace nuff.AutoPatcherCombatExtended
             Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select DamageDef");
             Text.Font = GameFont.Small;
             list.End();
-            list.Gap(45);  // Added gap to separate elements
+            list.Gap(45);
 
             float searchBoxHeight = 25f;
             Rect searchBoxRect = new Rect(inRect.x + 10, 60, inRect.width - 20, searchBoxHeight);
             searchTerm = Widgets.TextField(searchBoxRect, searchTerm);
 
-            // Adjusted list area to fill available space
-            float listTop = searchBoxRect.yMax + 10; // Position list below search box
-            float listBottomPadding = 50f; // Space reserved for buttons
+            float listTop = searchBoxRect.yMax + 10;
+            float listBottomPadding = 50f;
             Rect listArea = new Rect(inRect.x + 10, listTop, inRect.width - 20, inRect.height - listTop - listBottomPadding);
             GUI.BeginGroup(listArea, new GUIStyle(GUI.skin.box));
 

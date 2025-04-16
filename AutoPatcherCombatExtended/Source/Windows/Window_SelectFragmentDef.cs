@@ -3,25 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Verse;
+using CombatExtended;
 using UnityEngine;
+using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class Window_SelectToolCapacityDef : Window
+    class Window_SelectFragmentDef : Window
     {
         string searchTerm = "";
         Vector2 leftScrollPosition = new Vector2();
-        ToolCapacityDef selectedDef = null;
+        ThingDef selectedDef = null;
 
-        List<ToolCapacityDef> defList;
+        List<ThingDef> fragList;
         int index;
 
-        public Window_SelectToolCapacityDef(List<ToolCapacityDef> defList, int index)
+        private ThingDef originalDef;
+
+        public Window_SelectFragmentDef(List<ThingDef> fragList, int index)
         {
-            this.defList = defList;
+            this.fragList = fragList;
             this.index = index;
-            this.selectedDef = defList[index];
+            this.selectedDef = fragList[index];
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -30,7 +33,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select ToolCapacityDef");
+            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select DamageDef");
             Text.Font = GameFont.Small;
             list.End();
             list.Gap(45);
@@ -44,21 +47,24 @@ namespace nuff.AutoPatcherCombatExtended
             Rect listArea = new Rect(inRect.x + 10, listTop, inRect.width - 20, inRect.height - listTop - listBottomPadding);
             GUI.BeginGroup(listArea, new GUIStyle(GUI.skin.box));
 
-            List<ToolCapacityDef> tempList = new List<ToolCapacityDef>();
+            List<ThingDef> tempList = DefDatabase<ThingDef>.AllDefsListForReading
+                .Where(item => item.projectile != null && item.projectile is ProjectilePropertiesCE).ToList();
 
-            tempList = DefDatabase<ToolCapacityDef>.AllDefsListForReading
+            List<ThingDef> tempList2 = new List<ThingDef>();
+
+            tempList2 = tempList
                 .Where(item => item.defName.ToLower().Contains(searchTerm.ToLower()))
                 .OrderBy(def => def.defName)
                 .ToList();
 
 
             float num = 3f;
-            Rect viewRect = new Rect(0f, 0f, listArea.width - 16f, tempList.Count * 32f);
+            Rect viewRect = new Rect(0f, 0f, listArea.width - 16f, tempList2.Count * 32f);
             Widgets.BeginScrollView(listArea.AtZero(), ref leftScrollPosition, viewRect);
 
-            if (!tempList.NullOrEmpty())
+            if (!tempList2.NullOrEmpty())
             {
-                foreach (ToolCapacityDef def in tempList)
+                foreach (ThingDef def in tempList2)
                 {
                     Rect rowRect = new Rect(x: 5, y: num, width: listArea.width - 6, height: 30);
                     Widgets.DrawHighlightIfMouseover(rowRect);
@@ -88,7 +94,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (Widgets.ButtonText(acceptButtonRect, "Accept", true, false, Color.green) && selectedDef != null)
             {
-                defList[index] = selectedDef;
+                fragList[index] = selectedDef;
                 Close();
             }
 
