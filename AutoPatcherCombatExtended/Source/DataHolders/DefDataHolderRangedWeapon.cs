@@ -49,6 +49,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal float modified_WeaponToughness;
 
         //modified verbprops stuff
+        internal bool usingCustomVerb;
         internal Type modified_verbClass;
         internal float modified_muzzleFlashScale;
         internal int modified_ticksBetweenBurstShots;
@@ -120,7 +121,6 @@ namespace nuff.AutoPatcherCombatExtended
         }
         public override void AutoCalculate()
         {
-            //TODO may need to allow user to override gunKind for better recalculating
             gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
             if (APCESettings.printLogs)
             {
@@ -214,7 +214,10 @@ namespace nuff.AutoPatcherCombatExtended
             if (gunKind == APCEConstants.gunKinds.BeamGun)
                 return;
 
-            PatchVerb();
+            if (!usingCustomVerb)
+            {
+                PatchVerb();
+            }
 
             if (gunKind == APCEConstants.gunKinds.Grenade)
             {
@@ -395,6 +398,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_SwayFactor, "modified_swayFactor");
                 Scribe_Values.Look(ref modified_WeaponToughness, "modified_weaponToughness");
 
+                Scribe_Values.Look(ref usingCustomVerb, "usingCustomVerb");
                 string verbClassName = modified_verbClass?.AssemblyQualifiedName;
                 Scribe_Values.Look(ref verbClassName, "modified_VerbClass");
                 Scribe_Values.Look(ref modified_muzzleFlashScale, "modified_muzzleFlashScale");
@@ -674,10 +678,17 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_verbClass = typeof(Verb_SpewFire);
             else
             {
-                if (APCESettings.patchCustomVerbs)
+                if (modData.patchCustomVerbs)
+                {
                     modified_verbClass = typeof(Verb_ShootCE);
+                    usingCustomVerb = false;
+                }
                 else
-                    throw new Exception($"Unable to patch {weaponThingDef.label} due to unrecognized and/or custom verbClass: {original_VerbProperties.verbClass}");
+                {
+                    Log.Error($"Trying to patch {weaponThingDef.label} with unrecognized and/or custom verbClass: {original_VerbProperties.verbClass}. Might not work correctly. If it doesn't, enable Patch Custom Verbs in mod settings.");
+                    modified_verbClass = original_VerbProperties.verbClass;
+                    usingCustomVerb = true;
+                }
             }
         }
 
