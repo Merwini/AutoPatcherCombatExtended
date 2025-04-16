@@ -34,9 +34,8 @@ namespace nuff.AutoPatcherCombatExtended
 
             Rect outerRect = new Rect(inRect.x, inRect.y + 45f, inRect.width, inRect.height - 60f);
 
-            // Dynamically calculate view height
             float lineHeight = 30f;
-            float estimatedLines = 20 + dataHolder.modified_Tools.Count * 20 + dataHolder.modified_ToolCapacityDefs.Count * 10; // tweak multiplier based on number of fields per tool
+            float estimatedLines = 20 + dataHolder.modified_Tools.Count * 20 + dataHolder.modified_ToolCapacityDefs.Count * 10;
             float viewHeight = estimatedLines * lineHeight;
 
             Rect viewRect = new Rect(0f, 0f, outerRect.width - 16f, viewHeight);
@@ -87,31 +86,26 @@ namespace nuff.AutoPatcherCombatExtended
                 float powers = dataHolder.modified_ToolPowers[i];
                 list.TextFieldNumericLabeled($"Tool {i + 1} power (damage): ", ref powers, ref modified_toolPowersBuffer);
                 dataHolder.modified_ToolPowers[i] = powers;
-                list.Gap(20f);
 
                 string modified_ToolCooldownTimesBuffer = dataHolder.modified_ToolCooldownTimes[i].ToString();
                 float cooldowns = dataHolder.modified_ToolCooldownTimes[i];
                 list.TextFieldNumericLabeled($"Tool {i + 1} cooldown time: ", ref cooldowns, ref modified_ToolCooldownTimesBuffer);
                 dataHolder.modified_ToolCooldownTimes[i] = cooldowns;
-                list.Gap(20f);
 
                 string modified_ToolArmorPenetrationSharpsBuffer = dataHolder.modified_ToolArmorPenetrationSharps[i].ToString();
                 float apsharps = dataHolder.modified_ToolArmorPenetrationSharps[i];
                 list.TextFieldNumericLabeled($"Tool {i + 1} sharp penetration: ", ref apsharps, ref modified_ToolArmorPenetrationSharpsBuffer);
                 dataHolder.modified_ToolArmorPenetrationSharps[i] = apsharps;
-                list.Gap(20f);
 
                 string modified_ToolArmorPenetrationBluntsBuffer = dataHolder.modified_ToolArmorPenetrationBlunts[i].ToString();
                 float apblunts = dataHolder.modified_ToolArmorPenetrationBlunts[i];
                 list.TextFieldNumericLabeled($"Tool {i + 1} blunt penetration: ", ref apblunts, ref modified_ToolArmorPenetrationBluntsBuffer);
                 dataHolder.modified_ToolArmorPenetrationBlunts[i] = apblunts;
-                list.Gap(20f);
 
                 string modified_ToolChanceFactorsBuffer = dataHolder.modified_ToolChanceFactors[i].ToString();
                 float chances = dataHolder.modified_ToolChanceFactors[i];
                 list.TextFieldNumericLabeled($"Tool {i + 1} chance factor: ", ref chances, ref modified_ToolChanceFactorsBuffer);
                 dataHolder.modified_ToolChanceFactors[i] = chances;
-                list.Gap(20f);
 
                 list.Label("Linked Body Part Group:");
                 if (Widgets.ButtonText(list.GetRect(30f), dataHolder.modified_ToolLinkedBodyPartGroupDefs[i]?.defName ?? "null"))
@@ -147,7 +141,7 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
 
-                list.Gap(10f); // Add spacing between capacity buttons and tool remove
+                list.Gap(10f);
 
                 if (Widgets.ButtonText(list.GetRect(30f), "REMOVE TOOL"))
                 {
