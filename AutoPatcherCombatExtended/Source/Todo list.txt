@@ -3,6 +3,8 @@ TODO MortarShell select fragment defs and amounts
 TODO fix mod suggest suggest window suggesting to remove mods that are already compatible because they loaded during SaveLoad
 TODO bipod for ranged weapons
 TODO window popup during Patch Export showing any patches that didn't export and why
+TODO if ranged weapon is set to not use ammo, select projectile
+TODO autocalc muzzleFlashScale
 
 TODO cache AmmoSetDef name, during patch find when it has changed and search for ranged weapons using it so they can be updated
 TODO DefDataHolderRangedWeapon doesn't look for ammoset if set to not use ammo

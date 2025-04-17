@@ -18,8 +18,6 @@ namespace nuff.AutoPatcherCombatExtended
         List<ThingDef> fragList;
         int index;
 
-        private ThingDef originalDef;
-
         public Window_SelectFragmentDef(List<ThingDef> fragList, int index)
         {
             this.fragList = fragList;

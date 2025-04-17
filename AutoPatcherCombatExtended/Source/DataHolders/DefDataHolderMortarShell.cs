@@ -43,7 +43,6 @@ namespace nuff.AutoPatcherCombatExtended
         internal int modified_aimHeightOffset;
         //TODO shellingProps
 
-        CompProperties_Fragments modified_fragmentsComp;
         internal bool modified_fragmentsBool;
         internal List<ThingDef> modified_fragmentDefs = new List<ThingDef>();
         internal List<int> modified_fragmentsAmount = new List<int>();
@@ -95,8 +94,8 @@ namespace nuff.AutoPatcherCombatExtended
         public override void Patch()
         {
             RebuildProjectileProps();
-            RebuildFragmentsComp();
             RebuildProjectileCE();
+            RebuildFragmentsComp();
             RebuildAmmo();
             AddAmmoLink();
             MarkForReplacement();
@@ -110,14 +109,12 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void ExposeData()
         {
-            base.ExposeData();
-            Scribe_Defs.Look(ref thingDef, "thingDef");
+            Scribe_Defs.Look(ref thingDef, "def");
             Scribe_Values.Look(ref modified_defName, "modified_defName");
             Scribe_Values.Look(ref modified_stackLimit, "modified_stackLimit");
 
             Scribe_Values.Look(ref modified_projectileName, "modified_projectileName");
 
-            Scribe_Deep.Look(ref modified_ProjectilePropsCE, "modified_ProjectilePropsCE");
             Scribe_Defs.Look(ref modified_damageDef, "modified_damageDef");
             Scribe_Values.Look(ref modified_damageAmount, "modified_damageAmount");
             Scribe_Values.Look(ref modified_explosionRadius, "modified_explosionRadius");
@@ -130,6 +127,8 @@ namespace nuff.AutoPatcherCombatExtended
             Scribe_Collections.Look(ref modified_fragmentsAmount, "modified_fragmentsAmount", LookMode.Value);
 
             Scribe_Defs.Look(ref modified_AmmoSet, "modified_AmmoSet");
+
+            base.ExposeData();
         }
 
         public void RebuildProjectileProps()
@@ -179,7 +178,10 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void RebuildFragmentsComp()
         {
-            modified_projectile.comps.RemoveAll(c => c is CompProperties_Fragments);
+            if (!modified_projectile.comps.NullOrEmpty())
+            {
+                modified_projectile.comps.RemoveAll(c => c is CompProperties_Fragments);
+            }
 
             if (modified_fragmentsBool && !modified_fragmentDefs.NullOrEmpty() && modified_fragmentsAmount.NullOrEmpty())
             {
@@ -265,6 +267,11 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void AddAmmoLink()
         {
+            Log.Warning(modified_AmmoSet.defName + "before");
+            foreach (AmmoLink link in modified_AmmoSet.ammoTypes)
+            {
+                Log.Warning(link.ammo.defName);
+            }
             //check if link already exists for selected AmmoSet, if it does just update the projectile
             int linkIndex = modified_AmmoSet.ammoTypes.FindIndex(link => link.ammo == modified_shell);
             if (linkIndex != -1)
@@ -276,12 +283,24 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_AmmoSet.ammoTypes.Add(new AmmoLink(modified_shell, modified_projectile));
             }
 
+            Log.Warning(modified_AmmoSet.defName + "middle");
+            foreach (AmmoLink link in modified_AmmoSet.ammoTypes)
+            {
+                Log.Warning(link.ammo.defName);
+            }
+
             //clean up previous AmmoSet, in case it has been reassigned
-            if (previous_AmmoSet != modified_AmmoSet)
+            if (previous_AmmoSet != null && previous_AmmoSet != modified_AmmoSet)
             {
                 previous_AmmoSet.ammoTypes.RemoveAll(link => link.ammo == modified_shell);
             }
             previous_AmmoSet = modified_AmmoSet;
+
+            Log.Warning(modified_AmmoSet.defName + "after");
+            foreach (AmmoLink link in modified_AmmoSet.ammoTypes)
+            {
+                Log.Warning(link.ammo.defName);
+            }
         }
 
         public void MarkForReplacement()
@@ -294,5 +313,18 @@ namespace nuff.AutoPatcherCombatExtended
             thingDef.comps.Add(cp_rm);
             thingDef.description = original_description + "\n\n This mortar shell should be converted to a CE-compatible one as soon as soon as it touches the ground.";
         }
+
+        public void AddNewFragment()
+        {
+            modified_fragmentDefs.Add(APCEDefOf.Fragment_Small);
+            modified_fragmentsAmount.Add(1);
+        }
+
+        public void RemoveFragment(int i)
+        {
+            modified_fragmentDefs.RemoveAt(i);
+            modified_fragmentsAmount.RemoveAt(i);
+        }
+
     }
 }

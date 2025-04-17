@@ -331,6 +331,10 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     newWindow = new Window_CustomizeDefMeleeWeapon(defDataHolder);
                 }
+                else if (defDataHolder is DefDataHolderMortarShell)
+                {
+                    newWindow = new Window_CustomizeMortarShell(defDataHolder);
+                }
                 else if (defDataHolder is DefDataHolderPawn)
                 {
                     newWindow = new Window_CustomizeDefPawn(defDataHolder);
