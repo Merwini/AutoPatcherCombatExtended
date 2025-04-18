@@ -61,9 +61,9 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_explosionRadiusBuffer = dataHolder.modified_explosionRadius.ToString();
             list.TextFieldNumericLabeled("Explosion Radius", ref dataHolder.modified_explosionRadius, ref modified_explosionRadiusBuffer);
 
-            list.CheckboxLabeled("Explosion creates fragments", ref dataHolder.modified_fragmentsBool);
-
             list.Label("TODO ability select what ammo set to add the mortar shell to (currently just uses 81mm)");
+
+            list.CheckboxLabeled("Explosion creates fragments", ref dataHolder.modified_fragmentsBool);
 
             if (dataHolder.modified_fragmentsBool)
             {

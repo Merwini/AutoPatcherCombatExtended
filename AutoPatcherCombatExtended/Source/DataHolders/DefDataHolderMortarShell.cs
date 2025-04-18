@@ -273,11 +273,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void AddAmmoLink()
         {
-            Log.Warning(modified_AmmoSet.defName + "before");
-            foreach (AmmoLink link in modified_AmmoSet.ammoTypes)
-            {
-                Log.Warning(link.ammo.defName);
-            }
             //check if link already exists for selected AmmoSet, if it does just update the projectile
             int linkIndex = modified_AmmoSet.ammoTypes.FindIndex(link => link.ammo == modified_shell);
             if (linkIndex != -1)
@@ -289,24 +284,12 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_AmmoSet.ammoTypes.Add(new AmmoLink(modified_shell, modified_projectile));
             }
 
-            Log.Warning(modified_AmmoSet.defName + "middle");
-            foreach (AmmoLink link in modified_AmmoSet.ammoTypes)
-            {
-                Log.Warning(link.ammo.defName);
-            }
-
             //clean up previous AmmoSet, in case it has been reassigned
             if (previous_AmmoSet != null && previous_AmmoSet != modified_AmmoSet)
             {
                 previous_AmmoSet.ammoTypes.RemoveAll(link => link.ammo == modified_shell);
             }
             previous_AmmoSet = modified_AmmoSet;
-
-            Log.Warning(modified_AmmoSet.defName + "after");
-            foreach (AmmoLink link in modified_AmmoSet.ammoTypes)
-            {
-                Log.Warning(link.ammo.defName);
-            }
         }
 
         public void MarkForReplacement()
