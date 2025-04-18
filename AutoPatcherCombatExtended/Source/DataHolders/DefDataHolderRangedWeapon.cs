@@ -58,6 +58,7 @@ namespace nuff.AutoPatcherCombatExtended
         internal float modified_recoilAmount;
         internal float modified_range;
         internal RecoilPattern modified_recoilPattern = RecoilPattern.None;
+        internal ThingDef modified_defaultProjectile;
 
         //modified comp stuff
         internal bool modified_UsesAmmo = true;
@@ -637,7 +638,7 @@ namespace nuff.AutoPatcherCombatExtended
             newVerbPropsCE.muzzleFlashScale = modified_muzzleFlashScale;
             //newVerbPropsCE.ejectsCasings //TODO
             //newVerbPropsCE.indirectFirePenalty //TODO
-            newVerbPropsCE.defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
+            newVerbPropsCE.defaultProjectile = modified_defaultProjectile;
 
             weaponThingDef.Verbs[0] = newVerbPropsCE;
         }
@@ -919,6 +920,7 @@ namespace nuff.AutoPatcherCombatExtended
             ammoSetDataHolder = new DefDataHolderAmmoSet(weaponThingDef, gunKind);
             //RegisterSelfInDict, GetOriginalData, and Autocalculate are called by constructor
             this.modified_AmmoSetDef = ammoSetDataHolder.GeneratedAmmoSetDef;
+            this.modified_defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
         }
 
         public void RemoveVanillaStatBases()

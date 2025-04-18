@@ -52,7 +52,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (Widgets.ButtonText(list.GetRect(30f), dataHolder.modified_damageDef.defName))
             {
-                Find.WindowStack.Add(new Window_SelectDamageDef(ref dataHolder.modified_damageDef));
+                Find.WindowStack.Add(new Window_SelectDamageDef(ref dataHolder.modified_damageDef, newDef => dataHolder.modified_damageDef = newDef));
             }
 
             string modified_damageAmountBuffer = dataHolder.modified_damageAmount.ToString();
@@ -72,7 +72,7 @@ namespace nuff.AutoPatcherCombatExtended
                     list.Label("Fragment to spawn:");
                     if (Widgets.ButtonText(list.GetRect(30f), dataHolder.modified_fragmentDefs[i].defName ?? "null"))
                     {
-                        Find.WindowStack.Add(new Window_SelectFragmentDef(dataHolder.modified_fragmentDefs, i));
+                        Find.WindowStack.Add(new Window_SelectProjectileDef(dataHolder.modified_fragmentDefs, i));
                     }
 
                     string modified_fragmentsAmountBuffer = dataHolder.modified_fragmentsAmount[i].ToString();

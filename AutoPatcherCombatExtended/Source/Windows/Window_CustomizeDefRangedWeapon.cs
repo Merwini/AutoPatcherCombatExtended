@@ -112,11 +112,19 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 list.Gap(35f);
             }
+            else
+            {
+                list.Gap();
+                list.Label("Projectile to use:");
+                if (Widgets.ButtonText(new Rect(list.curX, list.curY, 400f, 30f), dataHolder.modified_defaultProjectile.defName))
+                {
+                    Find.WindowStack.Add(new Window_SelectProjectileDef(ref dataHolder.modified_defaultProjectile, newDef => dataHolder.modified_defaultProjectile = newDef));
+                }
+            }
 
             list.End();
 
-            // Update the actual scrollHeight after layout
-            scrollHeight = list.CurHeight + 20f; // Add padding to prevent clipping
+            scrollHeight = list.CurHeight + 20f;
             viewRect.height = scrollHeight;
 
             Widgets.EndScrollView();

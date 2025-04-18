@@ -19,6 +19,7 @@ namespace nuff.AutoPatcherCombatExtended
         bool isListMode = false;
 
         private DamageDef originalDef;
+        private Action<DamageDef> onAccept;
 
         public Window_SelectDamageDef(List<DamageDef> defList, int index)
         {
@@ -28,9 +29,11 @@ namespace nuff.AutoPatcherCombatExtended
             this.isListMode = true;
         }
 
-        public Window_SelectDamageDef(ref DamageDef damageDef)
+        public Window_SelectDamageDef(ref DamageDef damageDef, Action<DamageDef> onAccept)
         {
             this.originalDef = damageDef;
+            this.onAccept = onAccept;
+            selectedDef = originalDef;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -103,7 +106,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
                 else
                 {
-                    originalDef = selectedDef;
+                    onAccept?.Invoke(selectedDef);
                 }
                 Close();
             }

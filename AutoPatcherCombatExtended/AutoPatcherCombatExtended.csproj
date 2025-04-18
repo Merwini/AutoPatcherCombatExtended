@@ -103,7 +103,7 @@
     <Compile Include="Source\Windows\Window_SelectAmmoSet.cs" />
     <Compile Include="Source\Windows\Window_SelectBodyPartsNaturalArmor.cs" />
     <Compile Include="Source\Windows\Window_SelectDamageDef.cs" />
-    <Compile Include="Source\Windows\Window_SelectFragmentDef.cs" />
+    <Compile Include="Source\Windows\Window_SelectProjectileDef.cs" />
     <Compile Include="Source\Windows\Window_SelectLinkedBodyPartGroupDef.cs" />
     <Compile Include="Source\Windows\Window_SelectToolCapacityDef.cs" />
     <Compile Include="TrashFolder\GenerateAmmo.cs" />
@@ -115,7 +115,7 @@
     <Compile Include="Source\Settings\APCEConstants.cs" />
     <Compile Include="Source\Settings\Listing_StandardExtensions.cs" />
     <Compile Include="Source\Settings\APCESettings.cs" />
-    <Compile Include="Source\DetermineGunKind.cs" />
+    <Compile Include="TrashFolder\DetermineGunKind.cs" />
     <Compile Include="TrashFolder\MiscMethods.cs" />
     <Compile Include="Source\Patchers\PatchApparels.cs" />
     <Compile Include="Source\Patchers\PatchHediffs.cs" />

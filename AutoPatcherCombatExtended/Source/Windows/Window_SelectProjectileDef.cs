@@ -9,20 +9,32 @@ using Verse;
 
 namespace nuff.AutoPatcherCombatExtended
 {
-    class Window_SelectFragmentDef : Window
+    class Window_SelectProjectileDef : Window
     {
         string searchTerm = "";
         Vector2 leftScrollPosition = new Vector2();
         ThingDef selectedDef = null;
 
-        List<ThingDef> fragList;
+        List<ThingDef> projList;
         int index;
+        bool isListMode = false;
 
-        public Window_SelectFragmentDef(List<ThingDef> fragList, int index)
+        private ThingDef originalDef;
+        private Action<ThingDef> onAccept;
+
+        public Window_SelectProjectileDef(List<ThingDef> projList, int index)
         {
-            this.fragList = fragList;
+            this.projList = projList;
             this.index = index;
-            this.selectedDef = fragList[index];
+            this.selectedDef = projList[index];
+            isListMode = true;
+        }
+
+        public Window_SelectProjectileDef(ref ThingDef thingDef, Action<ThingDef> onAccept)
+        {
+            this.originalDef = thingDef;
+            this.onAccept = onAccept;
+            selectedDef = originalDef;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -31,7 +43,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select DamageDef");
+            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select Projectile");
             Text.Font = GameFont.Small;
             list.End();
             list.Gap(45);
@@ -92,7 +104,14 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (Widgets.ButtonText(acceptButtonRect, "Accept", true, false, Color.green) && selectedDef != null)
             {
-                fragList[index] = selectedDef;
+                if (isListMode)
+                {
+                    projList[index] = selectedDef;
+                }
+                else
+                {
+                    onAccept?.Invoke(selectedDef);
+                }
                 Close();
             }
 
