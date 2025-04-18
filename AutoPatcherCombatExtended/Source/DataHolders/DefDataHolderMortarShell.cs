@@ -22,6 +22,7 @@ namespace nuff.AutoPatcherCombatExtended
         ThingDef thingDef;
 
         ThingDef original_projectile;
+        int original_damage;
         CompProperties_Explosive original_compPropsExplosive;
         string original_description;
 
@@ -73,6 +74,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             original_description = thingDef.description.ToString();
             original_projectile = thingDef.projectileWhenLoaded;
+            original_damage = original_projectile.projectile.damageAmountBase != -1 ? original_projectile.projectile.damageAmountBase : original_projectile.projectile.damageDef.defaultDamage;
             original_compPropsExplosive = thingDef.GetCompProperties<CompProperties_Explosive>();
         }
 
@@ -104,6 +106,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override StringBuilder ExportXML()
         {
             //todo
+            Log.Error("XML export for mortar shells not implemented yet");
             return null;
         }
 
@@ -231,6 +234,9 @@ namespace nuff.AutoPatcherCombatExtended
             modified_shell.detonateProjectile = modified_projectile;
             modified_shell.comps.RemoveAll(comp => comp is CompProperties_Explosive);
 
+            //TODO allow user to select or create their own AmmoCat
+            modified_shell.ammoClass = APCEDefOf.GrenadeHE;
+
             if (modified_shell.shortHash == 0)
             {
                 InjectedDefHasher.GiveShortHashToDef(modified_shell, typeof(AmmoDef));
@@ -252,7 +258,7 @@ namespace nuff.AutoPatcherCombatExtended
         public void CalculateMortarProjectileProps()
         {
             modified_damageDef = original_projectile.projectile.damageDef;
-            modified_damageAmount = original_projectile.projectile.damageAmountBase;
+            modified_damageAmount = original_damage;
             modified_explosionRadius = original_projectile.projectile.explosionRadius;
             modified_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;
             modified_applyDamageToExplosionCellNeighbors = original_projectile.projectile.applyDamageToExplosionCellsNeighbors;
