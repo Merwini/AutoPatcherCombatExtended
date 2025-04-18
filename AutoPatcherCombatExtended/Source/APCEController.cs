@@ -234,7 +234,7 @@ namespace nuff.AutoPatcherCombatExtended
             List<Def> defsNeedingPatched = new List<Def>();
             List<Def> defsNotNeedingPatched = new List<Def>();
 
-            if (mod.AllDefs == null || mod.AllDefs.Count() == 0 || APCESettings.modDataDict.ContainsKey(mod.PackageId))
+            if (mod.AllDefs == null || mod.AllDefs.Count() == 0)
                 return false;
 
             //iteration does not break when a 'no' is found, so that it can still checks partially-patched mods
@@ -251,6 +251,7 @@ namespace nuff.AutoPatcherCombatExtended
                     defsNotNeedingPatched.Add(def);
                     needsPatched = false;
                 }
+                //if unsure, added to either list
             }
 
             if (defsNeedingPatched.Count != 0)
