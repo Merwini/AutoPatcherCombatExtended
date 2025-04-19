@@ -106,6 +106,7 @@
     <Compile Include="Source\Windows\Window_SelectProjectileDef.cs" />
     <Compile Include="Source\Windows\Window_SelectLinkedBodyPartGroupDef.cs" />
     <Compile Include="Source\Windows\Window_SelectToolCapacityDef.cs" />
+    <Compile Include="Source\Windows\Window_ShowPatchInfo.cs" />
     <Compile Include="TrashFolder\GenerateAmmo.cs" />
     <Compile Include="Source\InjectedDefHasher.cs" />
     <Compile Include="Source\Patchers\PatchGrenade.cs" />

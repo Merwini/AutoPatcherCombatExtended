@@ -1,14 +1,10 @@
 ﻿TODO finish MortarShell / window
-TODO MortarShell select fragment defs and amounts
 TODO bipod for ranged weapons
-TODO window popup during Patch Export showing any patches that didn't export and why
 TODO autocalc muzzleFlashScale
 
 TODO cache AmmoSetDef name, during patch find when it has changed and search for ranged weapons using it so they can be updated
 TODO DefDataHolderRangedWeapon doesn't look for ammoset if set to not use ammo
 TODO don't bother to save AmmoSet entries in defsToPatch
-TODO combine suggest add and suggest remove mods windows into one
-
 
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases
 TODO verbs on apparel
@@ -16,7 +12,6 @@ TODO headgear layers
 TODO ThingDef tags
 TODO add logic to GetOriginalData to allow re-patching of already compatible defs
 TODO in customization page, if user changes a weapon from burst 1 to multi, suggest to add recoil
-TODO implement saving DataHolders to their own folder, in the RimWorld by Ludeon Studios folder
 TODO search for "orphan" defs without an associated modContentPack, usually caused by adding defs via PatchOperation. Popup asking player if they want to assign these to an active mod.
 TODO Property for returning modified mass and bulk that checks if a limiter is set
 

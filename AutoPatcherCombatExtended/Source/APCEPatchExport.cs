@@ -17,25 +17,36 @@ namespace nuff.AutoPatcherCombatExtended
         public static void ExportPatchesForMod(ModDataHolder modData)
         {
             StringBuilder masterPatch = new StringBuilder();
+            StringBuilder patchLog = new StringBuilder();
+
+            patchLog.AppendLine($"Patch info for mod {modData.mod.Name}");
+            patchLog.AppendLine();
 
             foreach (var entry in modData.defsToPatch)
             {
                 if (entry.value == APCEConstants.NeedsPatch.yes && modData.defDict.TryGetValue(entry.key, out DefDataHolder ddh))
                 {
+                    patchLog.AppendLine($"Patch info for {ddh.def.defName}:");
                     try
                     {
                         masterPatch.Append(ddh.ExportXML());
+                        patchLog.AppendLine("Patch exported successfully.");
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning($"Failed to export patch for def {ddh.def.defName} from mod {modData.mod.Name} due to exception: \n" + ex.ToString());
+                        patchLog.AppendLine("Patch failed to export due to issue:");
+                        patchLog.AppendLine(ex.ToString());
+                    }
+                    finally
+                    {
+                        patchLog.AppendLine();
                     }
                 }
             }
 
             if (string.IsNullOrWhiteSpace(masterPatch.ToString()))
             {
-                Log.Warning($"ExportPatchesForMod {modData.mod.Name} aborted: no patches were generated. Make sure to select some defs to patch first.");
+                patchLog.AppendLine($"ExportPatchesForMod {modData.mod.Name} aborted: no patches were generated. Make sure to select some defs to patch first.");
                 return;
             }
 
@@ -50,7 +61,9 @@ namespace nuff.AutoPatcherCombatExtended
                 return;
             }
 
-            WritePatchToFile(modFolderPath, masterPatch, modData);
+            WritePatchToFile(modFolderPath, masterPatch);
+
+            Find.WindowStack.Add(new Window_ShowPatchInfo(patchLog, modFolderPath, modData.mod.Name));
         }
 
         public static string GeneratePatchOperationFor(XmlNode node, string targetNode, string targetStat, float value, float originalValue = -55555.55555f)
@@ -321,7 +334,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public static void WritePatchToFile(string folderPath, StringBuilder patch, ModDataHolder modData)
+        public static void WritePatchToFile(string folderPath, StringBuilder patch)
         {
             string filePath = Path.Combine(folderPath, "Patches.xml");
 
