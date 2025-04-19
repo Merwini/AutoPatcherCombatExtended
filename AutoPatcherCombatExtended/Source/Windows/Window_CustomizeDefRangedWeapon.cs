@@ -36,17 +36,14 @@ namespace nuff.AutoPatcherCombatExtended
             list.End();
             list.Gap(45);
 
-            // Define innerRect and scrolling parameters
             Rect outerRect = new Rect(inRect.x, inRect.y + 45f, inRect.width, inRect.height - 145f);
-            Rect innerRect = outerRect.ContractedBy(10f); // Add some padding
-            float scrollHeight = 9999f; // Temporarily large to measure actual content height
+            Rect innerRect = outerRect.ContractedBy(10f);
+            float scrollHeight = 9999f;
             Rect viewRect = new Rect(0, 0, innerRect.width - 16f, scrollHeight);
 
-            // Begin measuring scroll height
             Widgets.BeginScrollView(innerRect, ref scrollPosition, viewRect);
             list.Begin(viewRect);
 
-            // List of fields
             string modified_massBuffer = dataHolder.modified_Mass.ToString();
             list.TextFieldNumericLabeled("Mass", ref dataHolder.modified_Mass, ref modified_massBuffer);
 
@@ -80,7 +77,7 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_swayFactorBuffer = dataHolder.modified_SwayFactor.ToString();
             list.TextFieldNumericLabeled("Sway Factor", ref dataHolder.modified_SwayFactor, ref modified_swayFactorBuffer);
 
-            // Magazine & Reload
+            // AmmoUser stuff
             string modified_magazineSizeBuffer = dataHolder.modified_magazineSize.ToString();
             list.TextFieldNumericLabeled("Magazine Size", ref dataHolder.modified_magazineSize, ref modified_magazineSizeBuffer);
 
@@ -96,7 +93,7 @@ namespace nuff.AutoPatcherCombatExtended
             string modified_loadedAmmoBulkFactorBuffer = dataHolder.modified_loadedAmmoBulkFactor.ToString();
             list.TextFieldNumericLabeled("Loaded Ammo Bulk Factor", ref dataHolder.modified_loadedAmmoBulkFactor, ref modified_loadedAmmoBulkFactorBuffer);
 
-            // Aimed Burst & AI Settings
+            // FireModes stuff
             list.CheckboxLabeled("AI Use Burst Mode", ref dataHolder.modified_aiUseBurstMode);
             list.CheckboxLabeled("No Single Shot", ref dataHolder.modified_noSingleShot);
             list.CheckboxLabeled("No Snap Shot", ref dataHolder.modified_noSnapshot);
