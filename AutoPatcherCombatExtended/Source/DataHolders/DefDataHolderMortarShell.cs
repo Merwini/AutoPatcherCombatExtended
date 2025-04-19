@@ -105,9 +105,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            //todo
-            Log.Error("XML export for mortar shells not implemented yet");
-            return null;
+            throw new Exception("Mortar shell xml export not yet implemented.");
         }
 
         public override void ExposeData()

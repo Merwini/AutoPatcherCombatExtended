@@ -2,9 +2,7 @@
 TODO bipod for ranged weapons
 TODO autocalc muzzleFlashScale
 
-TODO cache AmmoSetDef name, during patch find when it has changed and search for ranged weapons using it so they can be updated
-TODO DefDataHolderRangedWeapon doesn't look for ammoset if set to not use ammo
-TODO don't bother to save AmmoSet entries in defsToPatch
+TODO button in Window for Ranged Weapons to let user input real-world gun values, run them through formulas in gun google doc
 
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases
 TODO verbs on apparel
@@ -16,17 +14,6 @@ TODO search for "orphan" defs without an associated modContentPack, usually caus
 TODO Property for returning modified mass and bulk that checks if a limiter is set
 
 TODO export for vehicle stuff
-
-DataHolder flow:
-Load saved DataHolders
-If DataHolder def field != null (would be null if mod source is not currently active) register the DataHolder in the dict
-Generate DataHolders for selected mods, unless one already exists in dict
-Run patches on all DataHolders in the dict
-
-
-
-
-
 
 Swayfactor
 =(IF('Weapon Data'!L2="Cannon",(('Length/1000)+'EmptyWeight)/370,IF('Weapon Data'!I2="Fixed",SQRT((('Weapon Data'!B2/100)+'Weapon Data'!F2)/27),IF('Weapon Data'!I2="OneHanded",(('Weapon Data'!B2/100)+'Weapon Data'!F2)/3,(('Weapon Data'!B2/100)+'Weapon Data'!F2)/10))) + MIN('Weapon Data'!K2 / 100,0.12)) * IF('Weapon Data'!I2="Bipod",0.7,1) * IF('Weapon Data'!I2="HipFired",1.15,1)
