@@ -16,6 +16,9 @@ namespace nuff.AutoPatcherCombatExtended
     {
         public static void ExportPatchesForMod(ModDataHolder modData)
         {
+            //I keep forgetting to close the mod settings window before closing the game.
+            APCESettings.thisMod.WriteSettings();
+
             StringBuilder masterPatch = new StringBuilder();
             StringBuilder patchLog = new StringBuilder();
 
@@ -62,6 +65,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             WritePatchToFile(modFolderPath, masterPatch);
+            WritePatchLogToFile(modFolderPath, patchLog);
 
             Find.WindowStack.Add(new Window_ShowPatchInfo(patchLog, modFolderPath, modData.mod.Name));
         }
@@ -347,6 +351,22 @@ namespace nuff.AutoPatcherCombatExtended
             catch (Exception ex)
             {
                 Log.Error($"Failed to write patch to {filePath}: {ex.Message}");
+            }
+        }
+
+        public static void WritePatchLogToFile(string folderPath, StringBuilder patchLog)
+        {
+            string filePath = Path.Combine(folderPath, "PatchLog.txt");
+
+            try
+            {
+                File.WriteAllText(filePath, patchLog.ToString());
+
+                Log.Message($"Patch log successfully written to {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to write patch log to {filePath}: {ex.Message}");
             }
         }
     }
