@@ -104,6 +104,10 @@ namespace nuff.AutoPatcherCombatExtended
 
             if (dataHolder.modified_UsesAmmo)
             {
+                if (dataHolder.modified_AmmoSetDef == null)
+                {
+                    dataHolder.FixAmmoSet();
+                }
                 list.Gap();
                 list.Label("AmmoSet to use:");
                 if (Widgets.ButtonText(new Rect(list.curX, list.curY, 400f, 30f), dataHolder.modified_AmmoSetDef.defName))
@@ -114,6 +118,10 @@ namespace nuff.AutoPatcherCombatExtended
             }
             else
             {
+                if (dataHolder.modified_defaultProjectile == null)
+                {
+                    dataHolder.FixDefaultProjectile();
+                }
                 list.Gap();
                 list.Label("Projectile to use:");
                 if (Widgets.ButtonText(new Rect(list.curX, list.curY, 400f, 30f), dataHolder.modified_defaultProjectile.defName))
