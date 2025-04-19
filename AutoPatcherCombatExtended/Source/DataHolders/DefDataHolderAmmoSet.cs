@@ -759,7 +759,7 @@ namespace nuff.AutoPatcherCombatExtended
             modified_secondaryDamageAmounts.Add(secondaryDamageAmounts);
             modified_secondaryDamageChances.Add(secondaryDamageChances);
 
-            modified_ammoDefs.Add(null);
+            modified_ammoDefs.Add(null); //TODO why did I do this?
         }
 
         public void CalculateWeaponTechMult()

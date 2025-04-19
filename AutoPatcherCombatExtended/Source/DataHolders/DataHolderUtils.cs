@@ -149,8 +149,10 @@ namespace nuff.AutoPatcherCombatExtended
                 else if ((thingDef.techLevel.CompareTo(TechLevel.Medieval) <= 0) && (thingDef.Verbs[0].burstShotCount == 1))
                     return APCEConstants.gunKinds.Bow;
                 //a grenade uses a different verb from most weapons
+                //TODO switch this back to grenade after I actually implement grenade-patching
                 else if (thingDef.Verbs[0].verbClass == typeof(Verb_LaunchProjectile))
-                    return APCEConstants.gunKinds.Grenade;
+                    //return APCEConstants.gunKinds.Grenade;
+                    return APCEConstants.gunKinds.ExplosiveLauncher;
                 //explosive launchers
                 else if ((thingDef.Verbs[0].CausesExplosion))
                     return APCEConstants.gunKinds.ExplosiveLauncher;
