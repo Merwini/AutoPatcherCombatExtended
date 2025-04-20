@@ -328,12 +328,12 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
 
-            APCESettings.thisMod.WriteSettings();
         }
 
         public override void PostClose()
         {
             base.PostClose();
+            APCESettings.thisMod.WriteSettings();
         }
     }
 }

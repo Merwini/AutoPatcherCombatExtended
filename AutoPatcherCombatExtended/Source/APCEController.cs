@@ -19,7 +19,8 @@ namespace nuff.AutoPatcherCombatExtended
             APCESettings.modsToPatch = RebuildModsToPatch();
             InjectedDefHasher.PrepareReflection();
 
-            ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId == ("nuff.ceautopatcher"));
+
+            ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId.Contains("nuff.ceautopatcher"));
 
             CompatibilityPatches compat = new CompatibilityPatches(thisMod);
             compat.PatchMods();
@@ -47,13 +48,20 @@ namespace nuff.AutoPatcherCombatExtended
 
             foreach (var holder in APCESettings.modDataDict)
             {
-                //note this is the ModDataHolder. It then decided which DefDataHolders to patch based on its defDict
-                holder.value.GenerateDefDataHolders();
-                holder.value.ReCalc();
-                holder.Value.PrePatch();
-                holder.Value.Patch();
-                holder.Value.PostPatch();
-                holder.value.RegisterDelayedHolders();
+                try
+                {
+                    //note this is the ModDataHolder. It then decided which DefDataHolders to patch based on its defDict
+                    holder.value.GenerateDefDataHolders();
+                    holder.value.ReCalc();
+                    holder.Value.PrePatch();
+                    holder.Value.Patch();
+                    holder.Value.PostPatch();
+                    holder.value.RegisterDelayedHolders();
+                }
+                catch(Exception ex)
+                {
+                    Log.Error($"Exception while trying to run patches for {holder.Value.mod.Name}. Exception is: \n{ex.ToString()}");
+                }
             }
 
             AmmoInjector.Inject();
