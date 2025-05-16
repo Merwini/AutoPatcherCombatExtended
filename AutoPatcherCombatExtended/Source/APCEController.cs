@@ -396,7 +396,7 @@ namespace nuff.AutoPatcherCombatExtended
                         }
                         else
                         {
-                            needsPatched = APCEConstants.NeedsPatch.yes;
+                            needsPatched = APCEConstants.NeedsPatch.unsure;
                         }
                     }
                 }
