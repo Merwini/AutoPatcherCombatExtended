@@ -14,14 +14,17 @@ namespace nuff.AutoPatcherCombatExtended
     {
         public static void LogDefsCause(List<Def> defs)
         {
+            FormatDefsCauseList(defs);
+
             if (APCESettings.printLogs)
             {
                 StringBuilder causeString = new StringBuilder("");
-                causeString.Append($"Mod {defs[0].modContentPack.Name} was suggested to patch due to defs: ");
-                foreach (Def def in defs)
-                {
-                    causeString.Append($"\n{def.defName}");
-                }
+                causeString.AppendLine($"Mod {defs[0].modContentPack.Name} was suggested to patch due to defs: ");
+                APCESettings.modUnpatchedDefsDict.TryGetValue(defs[0].modContentPack, out string str);
+
+                causeString.Append(str);
+
+
                 Log.Message(causeString.ToString());
             }
         }
@@ -40,5 +43,16 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        public static void FormatDefsCauseList(List<Def> defs)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (Def def in defs)
+            {
+                sb.AppendLine($"\nlabel:{def.label}   defName:{def.defName}   type:{def.GetType()}");
+            }
+
+            APCESettings.modUnpatchedDefsDict[defs[0].modContentPack] = sb.ToString();
+        }
     }
 }

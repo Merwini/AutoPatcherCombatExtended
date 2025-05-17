@@ -24,6 +24,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static List<ModContentPack> modsToRecommendRemove = new List<ModContentPack>();
         public static Dictionary<ModContentPack, bool> modsToRecommendAddDict = new Dictionary<ModContentPack, bool>();
         public static Dictionary<ModContentPack, bool> modsToRecommendRemoveDict = new Dictionary<ModContentPack, bool>();
+        public static Dictionary<ModContentPack, string> modUnpatchedDefsDict = new Dictionary<ModContentPack, string>();
         public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
         public static ModContentPack thisModContent;
         public static Mod thisMod;

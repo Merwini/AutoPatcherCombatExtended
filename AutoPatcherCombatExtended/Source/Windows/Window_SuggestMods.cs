@@ -51,8 +51,17 @@ namespace nuff.AutoPatcherCombatExtended
                     bool checkBool = mod.Value;
 
                     Widgets.Checkbox(checkboxRect.position, ref checkBool);
-                    Rect labelRect = new Rect(checkboxRect.xMax + 10f, checkboxRect.y, viewRect.width - checkboxRect.width - 10f, 30f);
+
+                    float labelX = checkboxRect.xMax + 10f;
+                    float infoWidth = 24f;
+                    float labelWidth = viewRect.width - checkboxRect.width - infoWidth - 20f;
+                    Rect labelRect = new Rect(labelX, checkboxRect.y, labelWidth, 30f);
                     Widgets.Label(labelRect, mod.Key.Name);
+
+                    Rect infoRect = new Rect(labelRect.xMax + 5f, checkboxRect.y + 6f, infoWidth, 24f);
+                    APCESettings.modUnpatchedDefsDict.TryGetValue(mod.Key, out string str);
+                    TooltipHandler.TipRegion(infoRect, $"Suggested due to: \n{str}");
+                    GUI.DrawTexture(infoRect, TexButton.Info);
 
                     if (checkBool != mod.Value)
                     {
@@ -164,72 +173,6 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 this.Close();
             }
-
-            ////TODO remove the below after rewrite
-            //if (noMods)
-            //{
-            //    list.Label("The auto-patcher has detected no mods in need of patching, or all mods are already on the patch list.");
-            //}
-            //else
-            //{
-            //    list.Label("The auto-patcher has detected mods that it thinks need patching.");
-            //    list.Label("Please click the red \"X\" to select mods that you want patched, or click \"Select All\" down below. Once a mod is selected, the auto-patcher will not ask about it next time you open the game.");
-                
-            //}
-            //list.Label("Mods can be manually added and removed from the patching list through Mod Options. Removing mods requires a game restart afterward, as they cannot be un-patched.");
-            //if (!noMods)
-            //{
-            //    Rect scrollViewRect = new Rect(0f, 0f, inRect.width, inRect.height);
-            //    Rect checkboxRect = new Rect(0f, 200f, 30f, 30f);
-            //    List<ModContentPack> checksToChange = new List<ModContentPack>();
-            //    Widgets.BeginScrollView(inRect, ref scrollPosition, scrollViewRect, true);
-            //    foreach (var mod in APCESettings.modsToRecommendAddDict)
-            //    {
-            //        bool checkBool = mod.Value;
-
-            //        Widgets.Checkbox(checkboxRect.position, ref checkBool);
-            //        Rect labelRect = new Rect(checkboxRect.xMax + 10f, checkboxRect.y, inRect.width - checkboxRect.width - 10f, 30f);
-            //        Widgets.Label(labelRect, mod.Key.Name);
-
-            //        if (checkBool != mod.Value)
-            //        {
-            //            checksToChange.Add(mod.Key);
-            //        }
-
-            //        checkboxRect.y += 35f;
-            //    }
-            //    Widgets.EndScrollView();
-                
-
-            //    Rect selectAllRect = new Rect(inRect.width / 2 - 70f, inRect.height - 60f, 120f, 30f);
-            //    if (Widgets.ButtonText(selectAllRect, "Select All"))
-            //    {
-            //        selectAll = true;
-            //    }
-
-            //    if (selectAll)
-            //    {
-            //        foreach (var mod in APCESettings.modsToRecommendAdd)
-            //        {
-            //            APCESettings.modsToRecommendAddDict[mod] = true;
-            //            selectAll = false;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        foreach (ModContentPack mod in checksToChange)
-            //        {
-            //            APCESettings.modsToRecommendAddDict[mod] = !APCESettings.modsToRecommendAddDict[mod];
-            //        }
-            //    }
-
-            //    // Continue Button
-            //    Rect continueRect = new Rect(inRect.width - 130f, inRect.height - 60f, 120f, 30f);
-            //    if (Widgets.ButtonText(continueRect, "Continue"))
-            //    {
-            //        this.Close();
-            //    }
-            //}
 
             list.End();
         }
