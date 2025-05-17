@@ -37,10 +37,12 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 list.Label("The auto-patcher has detected new mods that it thinks need patching, that are not on the list of mods to patch.");
                 list.Label("Please click the red \"X\" to select mods that you want patched, or click \"Select All\" down below.");
+                list.Label("Hover over the \"i\" icon to see what defs caused that mod to be selected. Click \"Ignore\" to not suggest that mod again.");
                 list.Gap(20);
-                Rect scrollViewRect = new Rect(0f, 90f, inRect.width, inRect.height-200);
+                Rect scrollViewRect = new Rect(0f, 115f, inRect.width, inRect.height - 200);
                 Rect viewRect = new Rect(0f, 0f, scrollViewRect.width - 20f, APCESettings.modsToRecommendAddDict.Count * 35f);
                 List<ModContentPack> checksToChange = new List<ModContentPack>();
+                List<ModContentPack> modsToIgnore = new List<ModContentPack>();
 
                 GUI.BeginGroup(scrollViewRect, style: GUI.skin.box);
                 Widgets.BeginScrollView(scrollViewRect.AtZero(), ref scrollPosition, viewRect, true);
@@ -54,14 +56,25 @@ namespace nuff.AutoPatcherCombatExtended
 
                     float labelX = checkboxRect.xMax + 10f;
                     float infoWidth = 24f;
-                    float labelWidth = viewRect.width - checkboxRect.width - infoWidth - 20f;
+                    float ignoreWidth = 90f;
+                    float labelWidth = viewRect.width - checkboxRect.width - infoWidth - ignoreWidth - 20f;
                     Rect labelRect = new Rect(labelX, checkboxRect.y, labelWidth, 30f);
                     Widgets.Label(labelRect, mod.Key.Name);
 
-                    Rect infoRect = new Rect(labelRect.xMax + 5f, checkboxRect.y + 6f, infoWidth, 24f);
+                    Rect infoRect = new Rect(labelRect.xMax + 5f, checkboxRect.y, infoWidth, 24f);
                     APCESettings.modUnpatchedDefsDict.TryGetValue(mod.Key, out string str);
                     TooltipHandler.TipRegion(infoRect, $"Suggested due to: \n{str}");
                     GUI.DrawTexture(infoRect, TexButton.Info);
+
+                    Rect ignoreButtonRect = new Rect(infoRect.xMax + 5f, checkboxRect.y, ignoreWidth, 30f);
+                    if (Widgets.ButtonText(ignoreButtonRect, "Ignore"))
+                    {
+                        if (!APCESettings.modIgnoreList.Contains(mod.Key.PackageId))
+                        {
+                            APCESettings.modIgnoreList.Add(mod.Key.PackageId);
+                            modsToIgnore.Add(mod.Key);
+                        }
+                    }
 
                     if (checkBool != mod.Value)
                     {
@@ -96,7 +109,11 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
 
-                // Continue Button
+                foreach (ModContentPack mod in modsToIgnore)
+                {
+                    APCESettings.modsToRecommendAddDict.Remove(mod);
+                }
+
                 Rect continueRect = new Rect(inRect.width - 130f, inRect.height - 60f, 120f, 30f);
                 if (Widgets.ButtonText(continueRect, "Continue"))
                 {
@@ -160,7 +177,6 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                 }
 
-                // Continue Button
                 Rect continueRect = new Rect(inRect.width - 130f, inRect.height - 60f, 120f, 30f);
                 if (Widgets.ButtonText(continueRect, "Continue"))
                 {
@@ -196,7 +212,10 @@ namespace nuff.AutoPatcherCombatExtended
                 showModsToAdd = true;
                 for (int i = 0; i < APCESettings.modsToRecommendAdd.Count; i++)
                 {
-                    APCESettings.modsToRecommendAddDict.Add(APCESettings.modsToRecommendAdd[i], false);
+                    if (!APCESettings.modIgnoreList.Contains(APCESettings.modsToRecommendAdd[i].PackageId))
+                    {
+                        APCESettings.modsToRecommendAddDict.Add(APCESettings.modsToRecommendAdd[i], false);
+                    }
                 }
             }
             if (!APCESettings.modsToRecommendRemove.NullOrEmpty())

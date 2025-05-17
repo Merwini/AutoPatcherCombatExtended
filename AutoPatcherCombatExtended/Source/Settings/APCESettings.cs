@@ -26,6 +26,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static Dictionary<ModContentPack, bool> modsToRecommendRemoveDict = new Dictionary<ModContentPack, bool>();
         public static Dictionary<ModContentPack, string> modUnpatchedDefsDict = new Dictionary<ModContentPack, string>();
         public static List<string> modsByPackageId = new List<string>(); //this is the list that will be used to rebuild the modsToPatch list on startup
+        public static List<string> modIgnoreList = new List<string>();
         public static ModContentPack thisModContent;
         public static Mod thisMod;
         public static bool suggestionWindowOpened = false;
@@ -169,7 +170,12 @@ namespace nuff.AutoPatcherCombatExtended
 
             //Modlist Settings
             Scribe_Collections.Look(ref modsByPackageId, "modsByPackageId", LookMode.Value);
+            Scribe_Collections.Look(ref modIgnoreList, "modIgnoreList", LookMode.Value);
 
+            if (modIgnoreList == null)
+            {
+                modIgnoreList = new List<string>();
+            }
 
             //Balance Control Settings
             //armor
