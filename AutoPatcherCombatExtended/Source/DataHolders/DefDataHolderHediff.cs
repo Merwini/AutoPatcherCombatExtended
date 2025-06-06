@@ -130,7 +130,9 @@ namespace nuff.AutoPatcherCombatExtended
             patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
             patchOps.Add(GenerateHediffStagesArmorPatch(xml, "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
 
-            base.ExportXML(); //tool-building handled in base
+            patchOps.Add(GenerateToolPatchXML());
+
+            base.ExportXML();
 
             return patch;
 
