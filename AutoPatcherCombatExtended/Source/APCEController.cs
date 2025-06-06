@@ -48,19 +48,22 @@ namespace nuff.AutoPatcherCombatExtended
 
             foreach (var holder in APCESettings.modDataDict)
             {
-                try
+                if (APCESettings.modsToPatch.Contains(holder.Value.mod))
                 {
-                    //note this is the ModDataHolder. It then decided which DefDataHolders to patch based on its defDict
-                    holder.value.GenerateDefDataHolders();
-                    holder.value.ReCalc();
-                    holder.Value.PrePatch();
-                    holder.Value.Patch();
-                    holder.Value.PostPatch();
-                    holder.value.RegisterDelayedHolders();
-                }
-                catch(Exception ex)
-                {
-                    Log.Error($"Exception while trying to run patches for {holder.Value.mod.Name}. Exception is: \n{ex.ToString()}");
+                    try
+                    {
+                        //note this is the ModDataHolder. It then decided which DefDataHolders to patch based on its defDict
+                        holder.value.GenerateDefDataHolders();
+                        holder.value.ReCalc();
+                        holder.Value.PrePatch();
+                        holder.Value.Patch();
+                        holder.Value.PostPatch();
+                        holder.value.RegisterDelayedHolders();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Exception while trying to run patches for {holder.Value.mod.Name}. Exception is: \n{ex}");
+                    }
                 }
             }
 
