@@ -24,10 +24,13 @@ namespace nuff.AutoPatcherCombatExtended
 
         float original_FillPercent;
         float original_TurretBurstCooldownTime;
+        bool original_HasCompRefuelable;
 
         internal float modified_FillPercent = 0.85f;
         internal float modified_TurretBurstCooldownTime;
         internal float modified_AimingAccuracy;
+        internal float modified_NightVisionEfficiency;
+        internal float modified_ShootingAccuracyTurret;
 
         public override void GetOriginalData()
         {
@@ -44,6 +47,9 @@ namespace nuff.AutoPatcherCombatExtended
 
             original_FillPercent = thingDef.fillPercent;
             original_TurretBurstCooldownTime = thingDef.building.turretBurstCooldownTime;
+
+            CompProperties_Refuelable compR = thingDef.GetCompProperties<CompProperties_Refuelable>();
+            original_HasCompRefuelable = compR != null;
         }
 
         public override void AutoCalculate()
@@ -63,14 +69,21 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_TurretBurstCooldownTime = original_TurretBurstCooldownTime * 0.5f;
             }
 
+            //TODO formula for calculating these
             modified_AimingAccuracy = 1f;
+            modified_NightVisionEfficiency = 0.5f;
+            modified_ShootingAccuracyTurret = 1f;
         }
 
         public override void Patch()
         {
+            thingDef.thingClass = typeof(Building_TurretGunCE);
             thingDef.fillPercent = modified_FillPercent;
             thingDef.building.turretBurstCooldownTime = modified_TurretBurstCooldownTime;
             DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
+            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy);
+            DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret);
+            thingDef.comps.RemoveAll(c => c is CompProperties_Refuelable);
         }
 
         public override StringBuilder ExportXML()
@@ -79,6 +92,8 @@ namespace nuff.AutoPatcherCombatExtended
 
             patchOps = new List<string>();
             patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "NightVisionEfficiency", modified_NightVisionEfficiency));
+            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ShootingAccuracyTurret", modified_ShootingAccuracyTurret));
 
             if (modified_FillPercent != original_FillPercent)
             {
@@ -88,6 +103,11 @@ namespace nuff.AutoPatcherCombatExtended
             if (modified_TurretBurstCooldownTime != original_TurretBurstCooldownTime)
             {
                 patchOps.Add(MakeTurretBurstCoolDownTimePatch());
+            }
+
+            if (original_HasCompRefuelable)
+            {
+                patchOps.Add(MakeCompRefuelablePatch());
             }
 
             base.ExportXML();
@@ -120,11 +140,6 @@ namespace nuff.AutoPatcherCombatExtended
 
             string MakeTurretBurstCoolDownTimePatch()
             {
-                if (modified_TurretBurstCooldownTime == original_TurretBurstCooldownTime)
-                {
-                    return null;
-                }
-
                 StringBuilder patch = new StringBuilder();
 
                 bool nodeExists = xml.SelectSingleNode("building")?.SelectSingleNode("turretBurstCooldownTime") != null;
@@ -141,6 +156,35 @@ namespace nuff.AutoPatcherCombatExtended
 
                 return patch.ToString();
             }
+
+            string MakeCompRefuelablePatch()
+            {
+                StringBuilder patch = new StringBuilder();
+
+                string xpath = $"Defs/ThingDef[defName=\"{defName}\"]/comps/li[@Class=\"CompProperties_Refuelable\"]";
+
+                patch.AppendLine($"\t<Operation Class=\"PatchOperationRemove\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                patch.AppendLine("\t</Operation>");
+
+                return patch.ToString();
+            }
+
+            string MakeThingClassPatch()
+            {
+                StringBuilder patch = new StringBuilder();
+
+                string xpath = $"Defs/ThingDef[defName=\"{defName}\"]/thingClass";
+
+                patch.AppendLine($"\t<Operation Class=\"PatchOperationReplace\">");
+                patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
+                patch.AppendLine("\t\t<value>");
+                patch.AppendLine($"\t\t\t<thingClass>CombatExtended.Building_TurretGunCE</thingClass>");
+                patch.AppendLine("\t\t</value>");
+                patch.AppendLine("\t</Operation>");
+
+                return patch.ToString();
+            }
         }
 
         public override void ExposeData()
@@ -152,6 +196,8 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref modified_FillPercent, "modified_FillPercent", original_FillPercent);
                 Scribe_Values.Look(ref modified_TurretBurstCooldownTime, "modified_TurretBurstCooldownTime", original_TurretBurstCooldownTime);
                 Scribe_Values.Look(ref modified_AimingAccuracy, "modified_AimingAccuracy", 1);
+                Scribe_Values.Look(ref modified_NightVisionEfficiency, "modified_NightVisionEfficiency", 0.5f);
+                Scribe_Values.Look(ref modified_ShootingAccuracyTurret, "modified_ShootingAccuracyTurret", 1);
             }
             base.ExposeData();
         }
