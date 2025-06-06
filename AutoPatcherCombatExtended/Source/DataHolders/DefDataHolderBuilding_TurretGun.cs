@@ -110,6 +110,8 @@ namespace nuff.AutoPatcherCombatExtended
                 patchOps.Add(MakeCompRefuelablePatch());
             }
 
+            patchOps.Add(MakeThingClassPatch());
+
             base.ExportXML();
 
             return patch;
@@ -166,6 +168,7 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t<Operation Class=\"PatchOperationRemove\">");
                 patch.AppendLine($"\t\t<xpath>{xpath}</xpath>");
                 patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
 
                 return patch.ToString();
             }
@@ -182,6 +185,7 @@ namespace nuff.AutoPatcherCombatExtended
                 patch.AppendLine($"\t\t\t<thingClass>CombatExtended.Building_TurretGunCE</thingClass>");
                 patch.AppendLine("\t\t</value>");
                 patch.AppendLine("\t</Operation>");
+                patch.AppendLine();
 
                 return patch.ToString();
             }
