@@ -138,8 +138,8 @@ namespace nuff.AutoPatcherCombatExtended
             original_projectile = weaponDef.Verbs[0].defaultProjectile;
             if (original_projectile != null)
             {
-                original_damage = original_projectile.projectile.GetDamageAmount(1);
-                original_armorPenetration = original_projectile.projectile.GetArmorPenetration(1);
+                original_damage = original_projectile.projectile.GetDamageAmount(1, null);
+                original_armorPenetration = original_projectile.projectile.GetArmorPenetration();
                 original_speed = original_projectile.projectile.speed;
                 original_explosionRadius = original_projectile.projectile.explosionRadius;
                 original_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;

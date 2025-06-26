@@ -974,7 +974,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             modified_stackLimit = 75;
             modified_recipeCount = 10;
-            modified_grenadeDamage = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1);
+            modified_grenadeDamage = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.GetDamageAmount(1, null);
             modified_explosionRadius = modified_AmmoSetDef.ammoTypes[0].projectile.projectile.explosionRadius;
             //CompProperties_ExplosiveCE (for if the Thing is damaged)
             //CompProperties_Fragments 

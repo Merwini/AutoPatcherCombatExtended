@@ -27,7 +27,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             foreach (var entry in modData.defsToPatch)
             {
-                if (entry.value == APCEConstants.NeedsPatch.yes && modData.defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                if (entry.Value == APCEConstants.NeedsPatch.yes && modData.defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
                 {
                     patchLog.AppendLine($"Patch info for {ddh.def.defName}:");
                     try

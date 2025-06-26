@@ -149,7 +149,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (var entry in APCESettings.modDataDict)
             {
-                ModDataHolder mdh = entry.value;
+                ModDataHolder mdh = entry.Value;
                 if (!mdh.isCustomized)
                 {
                     //TODO remove this message, only here for debugging
@@ -250,7 +250,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                 foreach (var entry in mdh.defDict)
                 {
-                    DefDataHolder ddh = entry.value;
+                    DefDataHolder ddh = entry.Value;
                     if (!ddh.isCustomized)
                     {
                         continue;

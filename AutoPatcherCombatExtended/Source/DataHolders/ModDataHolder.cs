@@ -148,7 +148,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (var entry in defsToPatch)
             {
-                if (entry.value == APCEConstants.NeedsPatch.yes && !defDict.ContainsKey(entry.Key))
+                if (entry.Value == APCEConstants.NeedsPatch.yes && !defDict.ContainsKey(entry.Key))
                 {
                     APCEController.TryGenerateDataHolderForDef(entry.Key);
                 }
@@ -170,7 +170,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (var entry in defsToPatch)
             {
-                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
                 {
                     try
                     {
@@ -178,7 +178,7 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning($"Failed to prepatch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                        Log.Warning($"Failed to prepatch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
                     }
                 }
             }
@@ -188,7 +188,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (var entry in defsToPatch)
             {
-                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
                 {
                     try
                     {
@@ -196,7 +196,7 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning($"Failed to postpatch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                        Log.Warning($"Failed to postpatch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
                     }
                 }
             }
@@ -206,7 +206,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (var entry in defsToPatch)
             {
-                if (entry.value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.key, out DefDataHolder ddh))
+                if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
                 {
                     try
                     {
@@ -214,7 +214,7 @@ namespace nuff.AutoPatcherCombatExtended
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning($"Failed to patch def {entry.key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
+                        Log.Warning($"Failed to patch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
                     }
                 }
             }
@@ -328,8 +328,8 @@ namespace nuff.AutoPatcherCombatExtended
                     {
                         if (entry.Value == APCEConstants.NeedsPatch.yes)
                         {
-                            defsToPatchNames.Add(entry.key.defName);
-                            defsToPatchTypes.Add(entry.key.GetType().ToString());
+                            defsToPatchNames.Add(entry.Key.defName);
+                            defsToPatchTypes.Add(entry.Key.GetType().ToString());
                         }
                     }
                 }
