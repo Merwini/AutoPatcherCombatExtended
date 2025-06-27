@@ -19,7 +19,6 @@ namespace nuff.AutoPatcherCombatExtended
             APCESettings.modsToPatch = RebuildModsToPatch();
             InjectedDefHasher.PrepareReflection();
 
-
             ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId.Contains("nuff.ceautopatcher"));
 
             CompatibilityPatches compat = new CompatibilityPatches(thisMod);
@@ -33,10 +32,17 @@ namespace nuff.AutoPatcherCombatExtended
             //if a nuff.ceautopatcher ModDataHolder wasn't loaded, make one. essential for autocalcs and changing settings
             if (!APCESettings.modDataDict.ContainsKey("nuff.ceautopatcher"))
             {
-                ModDataHolder apceDefaults = new ModDataHolder(thisMod);
+                CreateAPCEModDataHolder();
             }
 
             Log.Message("APCE Controller constructed");
+        }
+
+        internal static void CreateAPCEModDataHolder()
+        {
+            ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId.Contains("nuff.ceautopatcher"));
+            ModDataHolder apceDefaults = new ModDataHolder(thisMod);
+            Log.Message("APCE Controller created default ModDataHolder");
         }
 
         public static void APCEPatchController()

@@ -83,10 +83,18 @@ namespace nuff.AutoPatcherCombatExtended
             if (Current.Game != null)
             {
                 list.Label("SETTINGS MUST BE CHANGED FROM THE MAIN MENU.");
+                APCESettings.shouldRunController = false;
             }
             else
             {
                 ModDataHolder auto = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
+
+                if (auto == null)
+                {
+                    APCEController.CreateAPCEModDataHolder();
+                }
+
+                APCESettings.shouldRunController = true;
 
                 list.EnumSelector(ref APCESettings.settingsTabs, "", "", "select settings page");
 
@@ -376,7 +384,10 @@ namespace nuff.AutoPatcherCombatExtended
         public override void WriteSettings()
         {
             APCEController.RemoveListDuplicates(APCESettings.modsByPackageId);
-            APCEController.APCEPatchController();
+            if (APCESettings.shouldRunController)
+            {
+                APCEController.APCEPatchController();
+            }
             base.WriteSettings();
         }
 
