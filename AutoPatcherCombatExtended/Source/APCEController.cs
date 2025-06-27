@@ -53,12 +53,12 @@ namespace nuff.AutoPatcherCombatExtended
                     try
                     {
                         //note this is the ModDataHolder. It then decided which DefDataHolders to patch based on its defDict
-                        holder.value.GenerateDefDataHolders();
-                        holder.value.ReCalc();
+                        holder.Value.GenerateDefDataHolders();
+                        holder.Value.ReCalc();
                         holder.Value.PrePatch();
                         holder.Value.Patch();
                         holder.Value.PostPatch();
-                        holder.value.RegisterDelayedHolders();
+                        holder.Value.RegisterDelayedHolders();
                     }
                     catch (Exception ex)
                     {
