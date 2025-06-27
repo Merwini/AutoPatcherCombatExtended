@@ -232,14 +232,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        //returns true if new entry is added to dict. returns false if value is replaced.
+        //returns true if new entry is added to dict or value was null. returns false if value is replaced.
         public bool RegisterSelfInDict()
         {
-            if (!APCESettings.modDataDict.TryAdd(packageId, this))
+            if (APCESettings.modDataDict.TryGetValue(packageId, out var existing))
             {
+                if (existing == null)
+                {
+                    APCESettings.modDataDict[packageId] = this;
+                    return true;
+                }
+
                 APCESettings.modDataDict[packageId] = this;
                 return false;
             }
+
+            APCESettings.modDataDict[packageId] = this;
             return true;
         }
 
