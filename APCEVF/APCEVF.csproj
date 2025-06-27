@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CombatExtended">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2890901044\Assemblies\CombatExtended.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CombatExtended\Assemblies\CombatExtended.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -69,11 +69,15 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Krafs.Rimworld.Ref">
-      <Version>1.5.4104</Version>
+      <Version>1.5.*-*</Version>
     </PackageReference>
   </ItemGroup>
+    <PropertyGroup>
+	    <PublicizerClearCacheOnClean>true</PublicizerClearCacheOnClean>
+    </PropertyGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp" />
+	<Publicize Include="CombatExtended" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoPatcherCombatExtended\AutoPatcherCombatExtended.csproj">

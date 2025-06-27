@@ -19,7 +19,6 @@ namespace nuff.AutoPatcherCombatExtended
             APCESettings.modsToPatch = RebuildModsToPatch();
             InjectedDefHasher.PrepareReflection();
 
-
             ModContentPack thisMod = LoadedModManager.runningMods.First(mod => mod.PackageId.Contains("nuff.ceautopatcher"));
 
             CompatibilityPatches compat = new CompatibilityPatches(thisMod);
