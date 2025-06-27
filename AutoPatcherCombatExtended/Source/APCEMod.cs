@@ -91,6 +91,11 @@ namespace nuff.AutoPatcherCombatExtended
 
                 if (auto == null)
                 {
+                    auto = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher_steam");
+                    APCEController.CreateAPCEModDataHolder();
+                }
+                if (auto == null)
+                {
                     APCEController.CreateAPCEModDataHolder();
                 }
 
