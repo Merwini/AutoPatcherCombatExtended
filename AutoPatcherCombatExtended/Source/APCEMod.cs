@@ -87,6 +87,10 @@ namespace nuff.AutoPatcherCombatExtended
             else
             {
                 ModDataHolder auto = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
+                if (auto == null)
+                {
+                    APCEController.CreateAPCEModDataHolder();
+                }
 
                 list.EnumSelector(ref APCESettings.settingsTabs, "", "", "select settings page");
 
