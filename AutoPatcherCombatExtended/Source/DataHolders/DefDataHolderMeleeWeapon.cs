@@ -168,10 +168,10 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_ToolPowers[i] *= modData.weaponToolPowerMult;
+            modified_ToolPowers[i] *= ModData.weaponToolPowerMult;
             CalculateMinimumPenetrations(i);
-            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolSharpPenetration * techMult, floorArmorPenetrationSharp, 99999);
-            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * modData.weaponToolBluntPenetration * techMult, floorArmorPenetrationBlunt, 99999);
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * ModData.weaponToolSharpPenetration * techMult, floorArmorPenetrationSharp, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * ModData.weaponToolBluntPenetration * techMult, floorArmorPenetrationBlunt, 99999);
         }
 
         public void CalculateMinimumPenetrations(int i)
@@ -201,25 +201,25 @@ namespace nuff.AutoPatcherCombatExtended
             switch (thingDef.techLevel)
             {
                 case TechLevel.Animal:
-                    techMult *= modData.weaponToolTechMultAnimal;
+                    techMult *= ModData.weaponToolTechMultAnimal;
                     break;
                 case TechLevel.Neolithic:
-                    techMult *= modData.weaponToolTechMultNeolithic;
+                    techMult *= ModData.weaponToolTechMultNeolithic;
                     break;
                 case TechLevel.Medieval:
-                    techMult *= modData.weaponToolTechMultMedieval;
+                    techMult *= ModData.weaponToolTechMultMedieval;
                     break;
                 case TechLevel.Industrial:
-                    techMult *= modData.weaponToolTechMultIndustrial;
+                    techMult *= ModData.weaponToolTechMultIndustrial;
                     break;
                 case TechLevel.Spacer:
-                    techMult *= modData.weaponToolTechMultSpacer;
+                    techMult *= ModData.weaponToolTechMultSpacer;
                     break;
                 case TechLevel.Ultra:
-                    techMult *= modData.weaponToolTechMultUltratech;
+                    techMult *= ModData.weaponToolTechMultUltratech;
                     break;
                 case TechLevel.Archotech:
-                    techMult *= modData.weaponToolTechMultArchotech;
+                    techMult *= ModData.weaponToolTechMultArchotech;
                     break;
                 default:
                     break;

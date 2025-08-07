@@ -51,8 +51,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void AutoCalculate()
         {
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.geneArmorSharpMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.geneArmorBluntMult;
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
+            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.geneArmorBluntMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
         }
 

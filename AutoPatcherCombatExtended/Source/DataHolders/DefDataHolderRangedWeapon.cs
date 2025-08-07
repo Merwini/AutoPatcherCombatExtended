@@ -830,7 +830,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_verbClass = typeof(Verb_SpewFire);
             else
             {
-                if (modData.patchCustomVerbs)
+                if (ModData.patchCustomVerbs)
                 {
                     modified_verbClass = typeof(Verb_ShootCE);
                     usingCustomVerb = false;
@@ -905,25 +905,25 @@ namespace nuff.AutoPatcherCombatExtended
             switch (weaponThingDef.techLevel)
             {
                 case TechLevel.Animal:
-                    techMult *= modData.gunTechMultAnimal;
+                    techMult *= ModData.gunTechMultAnimal;
                     break;
                 case TechLevel.Neolithic:
-                    techMult *= modData.gunTechMultNeolithic;
+                    techMult *= ModData.gunTechMultNeolithic;
                     break;
                 case TechLevel.Medieval:
-                    techMult *= modData.gunTechMultMedieval;
+                    techMult *= ModData.gunTechMultMedieval;
                     break;
                 case TechLevel.Industrial:
-                    techMult *= modData.gunTechMultIndustrial;
+                    techMult *= ModData.gunTechMultIndustrial;
                     break;
                 case TechLevel.Spacer:
-                    techMult *= modData.gunTechMultSpacer;
+                    techMult *= ModData.gunTechMultSpacer;
                     break;
                 case TechLevel.Ultra:
-                    techMult *= modData.gunTechMultUltratech;
+                    techMult *= ModData.gunTechMultUltratech;
                     break;
                 case TechLevel.Archotech:
-                    techMult *= modData.gunTechMultArchotech;
+                    techMult *= ModData.gunTechMultArchotech;
                     break;
                 default:
                     break;
@@ -934,10 +934,10 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_ToolPowers[i] *= modData.weaponToolPowerMult;
+            modified_ToolPowers[i] *= ModData.weaponToolPowerMult;
             //TODO - I think gun tools should not use techMult? Will weaken things with intended weapons like bayonets, but be better for most cases
-            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.weaponToolSharpPenetration, 0, 99999);
-            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * modData.weaponToolBluntPenetration, 0, 99999);
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * ModData.weaponToolSharpPenetration, 0, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * ModData.weaponToolBluntPenetration, 0, 99999);
         }
 
         public void CalculateMortar()

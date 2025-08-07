@@ -26,7 +26,6 @@ namespace nuff.AutoPatcherCombatExtended
             this.def = def;
             this.gunKind = gunKind;
             parentModPackageId = def.modContentPack.PackageId;
-            modData = DataHolderUtils.ReturnModDataOrDefault(def);
             GetOriginalData();
             //Needs to call AutoCalculate and Patch during construction because it is usually instantiated by a RangedWeapon that needs the AmmoDef immediately afterward
             AutoCalculate();
@@ -157,8 +156,8 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ammoSetLabel = "Ammo set for " + weaponDef.label;
             modified_ammoSetDescription = "A procedurally generated ammo set for the " + weaponDef.label;
 
-            armorPenSharpModded = original_armorPenetration * modData.gunSharpPenMult * original_techMult;
-            armorPenBluntModded = original_armorPenetration * modData.gunBluntPenMult * original_techMult;
+            armorPenSharpModded = original_armorPenetration * ModData.gunSharpPenMult * original_techMult;
+            armorPenBluntModded = original_armorPenetration * ModData.gunBluntPenMult * original_techMult;
 
             if (original_damageDef == DamageDefOf.Bomb && original_damage == 635)
             {//since CE changes the default damage of Bomb from 50 to 635, projectiles relying on the default value will do unintended levels of damage
@@ -768,25 +767,25 @@ namespace nuff.AutoPatcherCombatExtended
             switch (weaponDef.techLevel)
             {
                 case TechLevel.Animal:
-                    techMult *= modData.gunTechMultAnimal;
+                    techMult *= ModData.gunTechMultAnimal;
                     break;
                 case TechLevel.Neolithic:
-                    techMult *= modData.gunTechMultNeolithic;
+                    techMult *= ModData.gunTechMultNeolithic;
                     break;
                 case TechLevel.Medieval:
-                    techMult *= modData.gunTechMultMedieval;
+                    techMult *= ModData.gunTechMultMedieval;
                     break;
                 case TechLevel.Industrial:
-                    techMult *= modData.gunTechMultIndustrial;
+                    techMult *= ModData.gunTechMultIndustrial;
                     break;
                 case TechLevel.Spacer:
-                    techMult *= modData.gunTechMultSpacer;
+                    techMult *= ModData.gunTechMultSpacer;
                     break;
                 case TechLevel.Ultra:
-                    techMult *= modData.gunTechMultUltratech;
+                    techMult *= ModData.gunTechMultUltratech;
                     break;
                 case TechLevel.Archotech:
-                    techMult *= modData.gunTechMultArchotech;
+                    techMult *= ModData.gunTechMultArchotech;
                     break;
                 default:
                     break;
@@ -878,7 +877,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                 if (Scribe.mode == LoadSaveMode.LoadingVars)
                 {
-                    modData = APCESettings.modDataDict[weaponDef.modContentPack.PackageId];
+                    ModData = APCESettings.modDataDict[weaponDef.modContentPack.PackageId];
                     //Destringify();
                     Patch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
                 }
@@ -1127,8 +1126,8 @@ namespace nuff.AutoPatcherCombatExtended
             if (!alreadyRegistered || forceReregister)
             {
                 APCESettings.defDataDict[modified_ammoSetDef] = this;
-                modData.defDict[modified_ammoSetDef] = this;
-                modData.defsToPatch[modified_ammoSetDef] = APCEConstants.NeedsPatch.yes; 
+                ModData.defDict[modified_ammoSetDef] = this;
+                ModData.defsToPatch[modified_ammoSetDef] = APCEConstants.NeedsPatch.yes; 
                 alreadyRegistered = true;
             }
         }

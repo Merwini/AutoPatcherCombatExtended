@@ -86,8 +86,8 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 for (int i = 0; i < hediffDef.stages.Count; i++)
                 {
-                    modified_ArmorRatingSharp.Add(original_ArmorRatingSharp[i] * modData.hediffSharpMult);
-                    modified_ArmorRatingBlunt.Add(original_ArmorRatingBlunt[i] * modData.hediffBluntMult);
+                    modified_ArmorRatingSharp.Add(original_ArmorRatingSharp[i] * ModData.hediffSharpMult);
+                    modified_ArmorRatingBlunt.Add(original_ArmorRatingBlunt[i] * ModData.hediffBluntMult);
                     modified_ArmorRatingHeat.Add(original_ArmorRatingHeat[i]);
                 }
             }
@@ -269,9 +269,9 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_ToolPowers[i] *= modData.pawnToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] *= modData.pawnToolSharpPenetration;
-            modified_ToolArmorPenetrationSharps[i] *= modData.pawnToolBluntPenetration;
+            modified_ToolPowers[i] *= ModData.pawnToolPowerMult;
+            modified_ToolArmorPenetrationSharps[i] *= ModData.pawnToolSharpPenetration;
+            modified_ToolArmorPenetrationSharps[i] *= ModData.pawnToolBluntPenetration;
         }
 
         //TODO

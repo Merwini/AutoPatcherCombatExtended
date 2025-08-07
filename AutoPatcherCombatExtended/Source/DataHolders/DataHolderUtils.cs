@@ -73,12 +73,20 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public static ModDataHolder ReturnModDataOrDefault(Def def)
+        public static ModDataHolder ReturnModDataWithFallbacks(Def def)
         {
             ModDataHolder modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId);
             if (modData == null)
             {
+                modData = APCESettings.modDataDict.TryGetValue(def.modContentPack.PackageId + "_steam");
+            }
+            if (modData == null)
+            {
                 modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher");
+            }
+            if (modData == null)
+            {
+                modData = APCESettings.modDataDict.TryGetValue("nuff.ceautopatcher_steam");
             }
             return modData;
         }

@@ -91,8 +91,8 @@ namespace nuff.AutoPatcherCombatExtended
         {
             CalculateApparelTechMult();
 
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.apparelSharpMult * apparelTechMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.apparelBluntMult * apparelTechMult;
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.apparelSharpMult * apparelTechMult;
+            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.apparelBluntMult * apparelTechMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
             modified_Mass = Math.Min(original_Mass, 50);
@@ -183,25 +183,25 @@ namespace nuff.AutoPatcherCombatExtended
             switch (thingDef.techLevel)
             {
                 case TechLevel.Animal:
-                    techMult *= modData.apparelTechMultAnimal;
+                    techMult *= ModData.apparelTechMultAnimal;
                     break;
                 case TechLevel.Neolithic:
-                    techMult *= modData.apparelTechMultNeolithic;
+                    techMult *= ModData.apparelTechMultNeolithic;
                     break;
                 case TechLevel.Medieval:
-                    techMult *= modData.apparelTechMultMedieval;
+                    techMult *= ModData.apparelTechMultMedieval;
                     break;
                 case TechLevel.Industrial:
-                    techMult *= modData.apparelTechMultIndustrial;
+                    techMult *= ModData.apparelTechMultIndustrial;
                     break;
                 case TechLevel.Spacer:
-                    techMult *= modData.apparelTechMultSpacer;
+                    techMult *= ModData.apparelTechMultSpacer;
                     break;
                 case TechLevel.Ultra:
-                    techMult *= modData.apparelTechMultUltratech;
+                    techMult *= ModData.apparelTechMultUltratech;
                     break;
                 case TechLevel.Archotech:
-                    techMult *= modData.apparelTechMultArchotech;
+                    techMult *= ModData.apparelTechMultArchotech;
                     break;
                 default:
                     break;

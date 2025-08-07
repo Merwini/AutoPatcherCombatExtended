@@ -72,8 +72,8 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void AutoCalculate()
         {
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.pawnArmorSharpMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.pawnArmorBluntMult;
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.pawnArmorSharpMult;
+            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.pawnArmorBluntMult;
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
 
@@ -215,9 +215,9 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
-            modified_ToolPowers[i] *= modData.pawnToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * modData.pawnToolSharpPenetration, 0, 99999);
-            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * modData.pawnToolBluntPenetration, 0, 99999);
+            modified_ToolPowers[i] *= ModData.pawnToolPowerMult;
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * ModData.pawnToolSharpPenetration, 0, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * ModData.pawnToolBluntPenetration, 0, 99999);
         }
 
         public void PatchStatBases()

@@ -30,7 +30,7 @@ namespace nuff.AutoPatcherCombatExtended
             APCESaveLoad.LoadDataHolders();
 
             //if a nuff.ceautopatcher ModDataHolder wasn't loaded, make one. essential for autocalcs and changing settings
-            if (!APCESettings.modDataDict.ContainsKey("nuff.ceautopatcher"))
+            if (!APCESettings.modDataDict.ContainsKey("nuff.ceautopatcher") && !APCESettings.modDataDict.ContainsKey("nuff.ceautopatcher_steam"))
             {
                 CreateAPCEModDataHolder();
             }
@@ -432,6 +432,7 @@ namespace nuff.AutoPatcherCombatExtended
             List<ModContentPack> activeMods = new List<ModContentPack>(LoadedModManager.RunningMods.Where(mod => !mod.IsOfficialMod
                                                                                                               && !(mod.AllDefs.Count() == 0)
                                                                                                               && !(mod.PackageId == "ceteam.combatextended")
+                                                                                                              && !(mod.PackageId == "ceteam.combatextended_steam")
                                                                                                               && !(mod.PackageId == "nuff.ceautopatcher")
                                                                                                               ).OrderBy(mod => mod.Name).ToList());
             return activeMods;

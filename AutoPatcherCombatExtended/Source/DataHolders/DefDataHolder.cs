@@ -19,7 +19,22 @@ namespace nuff.AutoPatcherCombatExtended
 
         public Def def;
 
-        public ModDataHolder modData;
+        private ModDataHolder modData;
+        public ModDataHolder ModData
+        {
+            get
+            {
+                if (modData == null)
+                {
+                    modData = DataHolderUtils.ReturnModDataWithFallbacks(def);
+                }
+                return modData;
+            }
+            set
+            {
+                modData = value;
+            }
+        }
 
         public float techMult;
 
@@ -130,7 +145,7 @@ namespace nuff.AutoPatcherCombatExtended
         public virtual void SelfDelete()
         {
             APCESettings.defDataDict.Remove(def);
-            modData.defDict.Remove(def);
+            ModData.defDict.Remove(def);
             //TODO
         }
 
@@ -251,13 +266,12 @@ namespace nuff.AutoPatcherCombatExtended
         public virtual void RegisterSelfInDicts()
         {
             APCESettings.defDataDict[def] = this;
-            modData = DataHolderUtils.ReturnModDataOrDefault(def);
-            modData.defDict[def] = this;
+            ModData.defDict[def] = this;
         }
 
         public virtual void DelayedRegister()
         {
-            modData.delayedRegistrations.Add(this);
+            ModData.delayedRegistrations.Add(this);
         }
 
         public void RemoveTool(int i)
