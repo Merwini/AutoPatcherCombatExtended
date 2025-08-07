@@ -31,7 +31,7 @@ namespace nuff.AutoPatcherCombatExtended
         public void BeginPatch()
         {
             stopwatch.Start();
-            if (APCESettings.printLogs)
+            if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
             {
                 Log.Message($"Attempting to patch defs from {currentMod.Name}");
             }
@@ -54,7 +54,7 @@ namespace nuff.AutoPatcherCombatExtended
         public void EndPatch()
         {
             stopwatch.Stop();
-            if (APCESettings.printLogs)
+            if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
             {
                 Log.Message(EndPatchString());
                 if (defsFailed != 0)

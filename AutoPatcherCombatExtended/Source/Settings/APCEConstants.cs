@@ -128,5 +128,12 @@ namespace nuff.AutoPatcherCombatExtended
             defName,
             label
         }
+
+        public enum LoggingLevel
+        {
+            None,
+            Normal,
+            Verbose
+        }
     }
 }

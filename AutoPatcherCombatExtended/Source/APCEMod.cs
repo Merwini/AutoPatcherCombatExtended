@@ -122,7 +122,9 @@ namespace nuff.AutoPatcherCombatExtended
                     //list.CheckboxLabeled("Patch hediffs from selected mods: ", ref APCESettings.patchHediffs);
                     //list.CheckboxLabeled("Patch vehicles from selected mods: ", ref APCESettings.patchVehicles);
                     list.Gap();
-                    list.CheckboxLabeled("Show patch logs: ", ref APCESettings.printLogs);
+                    //list.CheckboxLabeled("Show patch logs: ", ref APCESettings.printLogs);
+                    list.Label("Logging level: ");
+                    list.EnumSelector(ref APCESettings.loggingLevel, "", "", "logging level:");
                     list.CheckboxLabeled("Enable Debug Mode (print errors): ", ref APCESettings.printPatchErrors);
                     list.CheckboxLabeled("Stop checking mod after first unpatched def is found: ", ref APCESettings.stopAfterOneDefCheckFails);
 

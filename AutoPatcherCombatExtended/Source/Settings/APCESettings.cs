@@ -68,6 +68,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static bool printLogs = false;
         public static bool printPatchErrors = false;
         public static bool stopAfterOneDefCheckFails = false;
+        public static APCEConstants.LoggingLevel loggingLevel = APCEConstants.LoggingLevel.Normal;
 
         //Balance Control Settings
 
@@ -155,6 +156,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ExposeData()
         {
             //General Settings
+            Scribe_Values.Look(ref loggingLevel, "loggingLevel", APCEConstants.LoggingLevel.Normal);
             Scribe_Values.Look(ref printLogs, "printLogs", false);
             Scribe_Values.Look(ref printPatchErrors, "printPatchErrors", false);
             Scribe_Values.Look(ref patchWeapons, "patchWeapons", true);

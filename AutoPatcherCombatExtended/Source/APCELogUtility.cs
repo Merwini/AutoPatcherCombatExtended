@@ -16,7 +16,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             FormatDefsCauseList(defs);
 
-            if (APCESettings.printLogs)
+            if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
             {
                 StringBuilder causeString = new StringBuilder("");
                 causeString.AppendLine($"Mod {defs[0].modContentPack.Name} was suggested to patch due to defs: ");
@@ -31,7 +31,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public static void LogDefsCauseNotSuggested(List<Def> defs)
         {
-            if (APCESettings.printLogs)
+            if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
             {
                 StringBuilder causeString = new StringBuilder("");
                 causeString.Append($"Mod {defs[0].modContentPack.Name} has some defs that need patching, but was not suggested due to the following defs that appear already patched: ");
