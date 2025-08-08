@@ -60,73 +60,97 @@ namespace nuff.AutoPatcherCombatExtended
                 def = pawnDef;
             }
 
-            if (!pawnDef.tools.NullOrEmpty())
+            try
             {
-                original_Tools = pawnDef.tools.ToList();
-            }
+                if (!pawnDef.tools.NullOrEmpty())
+                {
+                    original_Tools = pawnDef.tools.ToList();
+                }
 
-            original_ArmorRatingSharp = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            original_ArmorRatingBlunt = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-            original_ArmorRatingHeat = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+                original_ArmorRatingSharp = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+                original_ArmorRatingBlunt = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+                original_ArmorRatingHeat = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void AutoCalculate()
         {
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.pawnArmorSharpMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.pawnArmorBluntMult;
-            modified_ArmorRatingHeat = original_ArmorRatingHeat;
-
-
-            modified_SmokeSensitivity = 1;
-            modified_Suppressability = 1;
-            modified_NightVisionEfficiency = 0;
-            modified_ReloadSpeed = 1;
-            modified_AimingAccuracy = 1;
-
-            modified_CarryWeight = 40;
-            modified_CarryBulk = 20;
-
-            ClearModdedTools();
-            for (int i = 0; i < original_Tools.Count; i++)
+            try
             {
-                ModToolAtIndex(i);
-            }
+                modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.pawnArmorSharpMult;
+                modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.pawnArmorBluntMult;
+                modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
-            if (pawnDef.race.Humanlike)
+
+                modified_SmokeSensitivity = 1;
+                modified_Suppressability = 1;
+                modified_NightVisionEfficiency = 0;
+                modified_ReloadSpeed = 1;
+                modified_AimingAccuracy = 1;
+
+                modified_CarryWeight = 40;
+                modified_CarryBulk = 20;
+
+                ClearModdedTools();
+                for (int i = 0; i < original_Tools.Count; i++)
+                {
+                    ModToolAtIndex(i);
+                }
+
+                if (pawnDef.race.Humanlike)
+                {
+                    modified_BodyShapeDef = CE_BodyShapeDefOf.Humanoid;
+
+                    modified_MeleeDodgeChance = 1f;
+                    modified_MeleeParryChance = 1f;
+                    modified_MeleeCritChance = 1f;
+                }
+                else
+                {//todo too lazy to make any sort of guessing algorithm
+                    modified_BodyShapeDef = CE_BodyShapeDefOf.Quadruped;
+
+                    modified_MeleeDodgeChance = 0.1f;
+                    modified_MeleeParryChance = 0.1f;
+                    modified_MeleeCritChance = 0.1f;
+                }
+            }
+            catch (Exception ex)
             {
-                modified_BodyShapeDef = CE_BodyShapeDefOf.Humanoid;
-
-                modified_MeleeDodgeChance = 1f;
-                modified_MeleeParryChance = 1f;
-                modified_MeleeCritChance = 1f;
-            }
-            else
-            {//todo too lazy to make any sort of guessing algorithm
-                modified_BodyShapeDef = CE_BodyShapeDefOf.Quadruped;
-
-                modified_MeleeDodgeChance = 0.1f;
-                modified_MeleeParryChance = 0.1f;
-                modified_MeleeCritChance = 0.1f;
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 
         //TODO
         public override void Patch()
         {
-            PatchStatBases();
-
-            pawnDef.tools.Clear();
-            BuildTools();
-            for (int i = 0; i < modified_Tools.Count; i++)
+            try
             {
-                pawnDef.tools.Add(modified_Tools[i]);
+                PatchStatBases();
+
+                pawnDef.tools.Clear();
+                BuildTools();
+                for (int i = 0; i < modified_Tools.Count; i++)
+                {
+                    pawnDef.tools.Add(modified_Tools[i]);
+                }
+
+                PatchModExtensions();
+
+                PatchComps();
+
+                PatchITabs();
             }
-
-            PatchModExtensions();
-
-            PatchComps();
-
-            PatchITabs();
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override StringBuilder ExportXML()

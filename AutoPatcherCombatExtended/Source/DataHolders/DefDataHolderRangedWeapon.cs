@@ -100,131 +100,171 @@ namespace nuff.AutoPatcherCombatExtended
                 def = weaponThingDef;
             }
 
-            //need to make sure these lists aren't null before starting DetermineGunKind
-            if (weaponThingDef.statBases == null)
+            try
             {
-                weaponThingDef.statBases = new List<StatModifier>();
-            }
-            if (weaponThingDef.weaponTags == null)
-            {
-                weaponThingDef.weaponTags = new List<string>();
-            }
+                //need to make sure these lists aren't null before starting DetermineGunKind
+                if (weaponThingDef.statBases == null)
+                {
+                    weaponThingDef.statBases = new List<StatModifier>();
+                }
+                if (weaponThingDef.weaponTags == null)
+                {
+                    weaponThingDef.weaponTags = new List<string>();
+                }
 
-            if (!weaponThingDef.tools.NullOrEmpty())
-            {
-                original_Tools = weaponThingDef.tools.ToList();
+                if (!weaponThingDef.tools.NullOrEmpty())
+                {
+                    original_Tools = weaponThingDef.tools.ToList();
+                }
+                original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
+                original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+                original_RangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
+                original_WorkToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
+                original_BurstShotCount = original_VerbProperties.burstShotCount;
+                stuffed = weaponThingDef.MadeFromStuff;
             }
-            original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
-            original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
-            original_RangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
-            original_WorkToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
-            original_BurstShotCount = original_VerbProperties.burstShotCount;
-            stuffed = weaponThingDef.MadeFromStuff;
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
         public override void AutoCalculate()
         {
-            gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
-            //if (APCESettings.printLogs)
-            //{
-            //    Log.Message($"APCE thinks that gun {def.label} from {def.modContentPack.Name} is a gun of kind: " + gunKind.ToString());
-            //}
-            CalculateWeaponTechMult();
-            if (gunKind == APCEConstants.gunKinds.Mortar)
+            try
             {
-                CalculateMortar();
-                return;
-            }
-
-            if (!original_Tools.NullOrEmpty())
-            {
-                ClearModdedTools();
-                for (int i = 0; i < original_Tools.Count; i++)
+                gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
+                //if (APCESettings.printLogs)
+                //{
+                //    Log.Message($"APCE thinks that gun {def.label} from {def.modContentPack.Name} is a gun of kind: " + gunKind.ToString());
+                //}
+                CalculateWeaponTechMult();
+                if (gunKind == APCEConstants.gunKinds.Mortar)
                 {
-                    ModToolAtIndex(i);
+                    CalculateMortar();
+                    return;
+                }
+
+                if (!original_Tools.NullOrEmpty())
+                {
+                    ClearModdedTools();
+                    for (int i = 0; i < original_Tools.Count; i++)
+                    {
+                        ModToolAtIndex(i);
+                    }
+                }
+
+                CalculateStatBaseValues();
+
+                if (gunKind == APCEConstants.gunKinds.BeamGun)
+                {
+                    modified_UsesAmmo = false;
+                    return;
+                }
+
+                CalculateVerbPropValues();
+
+                if (gunKind == APCEConstants.gunKinds.Flamethrower)
+                {
+                    modified_AmmoSetDef = APCEDefOf.AmmoSet_Flamethrower;
+                }
+
+                if (modified_AmmoSetDef == null)
+                {
+                    FixAmmoSet();
+                }
+
+                if (gunKind != APCEConstants.gunKinds.Grenade)
+                {
+                    CalculateCompFireModesValues();
+                    CalculateCompAmmoUserValues();
+                }
+                else
+                {
+                    CalculateGrenade();
                 }
             }
-
-            CalculateStatBaseValues();
-
-            if (gunKind == APCEConstants.gunKinds.BeamGun)
+            catch (Exception ex)
             {
-                modified_UsesAmmo = false;
-                return;
-            }
-
-            CalculateVerbPropValues();
-
-            if (gunKind == APCEConstants.gunKinds.Flamethrower)
-            {
-                modified_AmmoSetDef = APCEDefOf.AmmoSet_Flamethrower;
-            }
-
-            if (modified_AmmoSetDef == null)
-            {
-                FixAmmoSet();
-            }
-
-            if (gunKind != APCEConstants.gunKinds.Grenade)
-            {
-                CalculateCompFireModesValues();
-                CalculateCompAmmoUserValues();
-            }
-            else
-            {
-                CalculateGrenade();
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
         
 
         public override void PrePatch()
         {
-            
-            if (gunKind != APCEConstants.gunKinds.Grenade && gunKind != APCEConstants.gunKinds.BeamGun)
+            try
             {
-                FixAmmoSet();
-                FixDefaultProjectile();
-            }
 
-            base.PrePatch();
+                if (gunKind != APCEConstants.gunKinds.Grenade && gunKind != APCEConstants.gunKinds.BeamGun)
+                {
+                    FixAmmoSet();
+                    FixDefaultProjectile();
+                }
+
+                base.PrePatch();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in PrePatch() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void PostPatch()
         {
-            FixAmmoSet();
-            FixDefaultProjectile();
+            try
+            {
+                FixAmmoSet();
+                FixDefaultProjectile();
 
-            base.PostPatch();
+                base.PostPatch();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in PostPatch() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void Patch()
         {
-            PatchStatBases();
-            BuildTools();
-
-            if (!modified_Tools.NullOrEmpty())
+            try
             {
-                weaponThingDef.tools = new List<Tool>(); // changed from clear, because grenades are given a generic tool despite having an empty list, and this combines a null check + clear into one
-                for (int i = 0; i < modified_Tools.Count; i++)
+                PatchStatBases();
+                BuildTools();
+
+                if (!modified_Tools.NullOrEmpty())
                 {
-                    weaponThingDef.tools.Add(modified_Tools[i]);
+                    weaponThingDef.tools = new List<Tool>(); // changed from clear, because grenades are given a generic tool despite having an empty list, and this combines a null check + clear into one
+                    for (int i = 0; i < modified_Tools.Count; i++)
+                    {
+                        weaponThingDef.tools.Add(modified_Tools[i]);
+                    }
                 }
+
+                if (gunKind == APCEConstants.gunKinds.BeamGun)
+                    return;
+
+                if (!usingCustomVerb)
+                {
+                    PatchVerb();
+                }
+
+                if (gunKind == APCEConstants.gunKinds.Grenade)
+                {
+                    PatchGrenade();
+                    return;
+                }
+
+                PatchComps();
             }
-
-            if (gunKind == APCEConstants.gunKinds.BeamGun)
-                return;
-
-            if (!usingCustomVerb)
+            catch (Exception ex)
             {
-                PatchVerb();
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
-
-            if (gunKind == APCEConstants.gunKinds.Grenade)
-            {
-                PatchGrenade();
-                return;
-            }
-
-            PatchComps();
         }
 
 

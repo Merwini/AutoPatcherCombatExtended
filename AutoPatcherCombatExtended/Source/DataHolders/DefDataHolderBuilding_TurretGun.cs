@@ -45,45 +45,69 @@ namespace nuff.AutoPatcherCombatExtended
                 def = thingDef;
             }
 
-            original_FillPercent = thingDef.fillPercent;
-            original_TurretBurstCooldownTime = thingDef.building.turretBurstCooldownTime;
+            try
+            {
+                original_FillPercent = thingDef.fillPercent;
+                original_TurretBurstCooldownTime = thingDef.building.turretBurstCooldownTime;
 
-            CompProperties_Refuelable compR = thingDef.GetCompProperties<CompProperties_Refuelable>();
-            original_HasCompRefuelable = compR != null;
+                CompProperties_Refuelable compR = thingDef.GetCompProperties<CompProperties_Refuelable>();
+                original_HasCompRefuelable = compR != null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void AutoCalculate()
         {
-            //if less than 0.85, will just set to the default 0.85, which is 1.49m in CE, enough to shoot over barricades but still be shot over by pawns.
-            if (original_FillPercent > 0.85)
+            try
             {
-                modified_FillPercent = original_FillPercent;
-            }
+                //if less than 0.85, will just set to the default 0.85, which is 1.49m in CE, enough to shoot over barricades but still be shot over by pawns.
+                if (original_FillPercent > 0.85)
+                {
+                    modified_FillPercent = original_FillPercent;
+                }
 
-            if (!(thingDef.weaponTags == null) && (thingDef.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0)))
-            {
-                modified_TurretBurstCooldownTime = 2;
-            }
-            else
-            {
-                modified_TurretBurstCooldownTime = original_TurretBurstCooldownTime * 0.5f;
-            }
+                if (!(thingDef.weaponTags == null) && (thingDef.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0)))
+                {
+                    modified_TurretBurstCooldownTime = 2;
+                }
+                else
+                {
+                    modified_TurretBurstCooldownTime = original_TurretBurstCooldownTime * 0.5f;
+                }
 
-            //TODO formula for calculating these
-            modified_AimingAccuracy = 1f;
-            modified_NightVisionEfficiency = 0.5f;
-            modified_ShootingAccuracyTurret = 1f;
+                //TODO formula for calculating these
+                modified_AimingAccuracy = 1f;
+                modified_NightVisionEfficiency = 0.5f;
+                modified_ShootingAccuracyTurret = 1f;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void Patch()
         {
-            thingDef.thingClass = typeof(Building_TurretGunCE);
-            thingDef.fillPercent = modified_FillPercent;
-            thingDef.building.turretBurstCooldownTime = modified_TurretBurstCooldownTime;
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy);
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret);
-            thingDef.comps.RemoveAll(c => c is CompProperties_Refuelable);
+            try
+            {
+                thingDef.thingClass = typeof(Building_TurretGunCE);
+                thingDef.fillPercent = modified_FillPercent;
+                thingDef.building.turretBurstCooldownTime = modified_TurretBurstCooldownTime;
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret);
+                thingDef.comps.RemoveAll(c => c is CompProperties_Refuelable);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override StringBuilder ExportXML()

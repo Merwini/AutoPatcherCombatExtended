@@ -72,35 +72,59 @@ namespace nuff.AutoPatcherCombatExtended
                 def = thingDef;
             }
 
-            original_description = thingDef.description.ToString();
-            original_projectile = thingDef.projectileWhenLoaded;
-            original_damage = original_projectile.projectile.damageAmountBase != -1 ? original_projectile.projectile.damageAmountBase : original_projectile.projectile.damageDef.defaultDamage;
-            original_compPropsExplosive = thingDef.GetCompProperties<CompProperties_Explosive>();
+            try
+            {
+                original_description = thingDef.description.ToString();
+                original_projectile = thingDef.projectileWhenLoaded;
+                original_damage = original_projectile.projectile.damageAmountBase != -1 ? original_projectile.projectile.damageAmountBase : original_projectile.projectile.damageDef.defaultDamage;
+                original_compPropsExplosive = thingDef.GetCompProperties<CompProperties_Explosive>();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void AutoCalculate()
         {
-            modified_defName = "APCE_Shell_" + thingDef.defName;
-            modified_stackLimit = 25;
+            try
+            {
+                modified_defName = "APCE_Shell_" + thingDef.defName;
+                modified_stackLimit = 25;
 
-            //todo maybe add fragments if damageDef is Bomb
-            modified_fragmentsBool = false;
+                //todo maybe add fragments if damageDef is Bomb
+                modified_fragmentsBool = false;
 
-            modified_AmmoSet = APCEDefOf.AmmoSet_81mmMortarShell;
+                modified_AmmoSet = APCEDefOf.AmmoSet_81mmMortarShell;
 
-            CalculateMortarAmmoCategoryDef();
-            CalculateMortarProjectileProps();
-            CalculateMortarProjectileThing();
+                CalculateMortarAmmoCategoryDef();
+                CalculateMortarProjectileProps();
+                CalculateMortarProjectileThing();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void Patch()
         {
-            RebuildProjectileProps();
-            RebuildProjectileCE();
-            RebuildFragmentsComp();
-            RebuildAmmo();
-            AddAmmoLink();
-            MarkForReplacement();
+            try
+            {
+                RebuildProjectileProps();
+                RebuildProjectileCE();
+                RebuildFragmentsComp();
+                RebuildAmmo();
+                AddAmmoLink();
+                MarkForReplacement();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override StringBuilder ExportXML()

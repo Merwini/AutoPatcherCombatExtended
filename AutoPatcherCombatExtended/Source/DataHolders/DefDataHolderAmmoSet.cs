@@ -130,91 +130,107 @@ namespace nuff.AutoPatcherCombatExtended
                 def = weaponDef;
             }
 
-            if (gunKind == APCEConstants.gunKinds.Default)
+            try
             {
-                gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
+                if (gunKind == APCEConstants.gunKinds.Default)
+                {
+                    gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
+                }
+                original_projectile = weaponDef.Verbs[0].defaultProjectile;
+                if (original_projectile != null)
+                {
+                    original_damage = original_projectile.projectile.GetDamageAmount(1, null);
+                    original_armorPenetration = original_projectile.projectile.GetArmorPenetration();
+                    original_speed = original_projectile.projectile.speed;
+                    original_explosionRadius = original_projectile.projectile.explosionRadius;
+                    original_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;
+                    original_applyDamageToExplosionCellsNeighbors = original_projectile.projectile.applyDamageToExplosionCellsNeighbors;
+                    original_damageDef = original_projectile.projectile.damageDef;
+                    original_extraDamages = original_projectile.projectile.extraDamages;
+                }
+
+                CalculateWeaponTechMult();
             }
-            original_projectile = weaponDef.Verbs[0].defaultProjectile;
-            if (original_projectile != null)
+            catch (Exception ex)
             {
-                original_damage = original_projectile.projectile.GetDamageAmount(1, null);
-                original_armorPenetration = original_projectile.projectile.GetArmorPenetration();
-                original_speed = original_projectile.projectile.speed;
-                original_explosionRadius = original_projectile.projectile.explosionRadius;
-                original_ai_IsIncendiary = original_projectile.projectile.ai_IsIncendiary;
-                original_applyDamageToExplosionCellsNeighbors = original_projectile.projectile.applyDamageToExplosionCellsNeighbors;
-                original_damageDef = original_projectile.projectile.damageDef;
-                original_extraDamages = original_projectile.projectile.extraDamages;
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
-            
-            CalculateWeaponTechMult();
         }
 
         public override void AutoCalculate()
         {
-            modified_ammoSetDefName = "APCEAmmoSet_" + weaponDef.defName;
-            modified_ammoSetLabel = "Ammo set for " + weaponDef.label;
-            modified_ammoSetDescription = "A procedurally generated ammo set for the " + weaponDef.label;
-
-            armorPenSharpModded = original_armorPenetration * ModData.gunSharpPenMult * original_techMult;
-            armorPenBluntModded = original_armorPenetration * ModData.gunBluntPenMult * original_techMult;
-
-            if (original_damageDef == DamageDefOf.Bomb && original_damage == 635)
-            {//since CE changes the default damage of Bomb from 50 to 635, projectiles relying on the default value will do unintended levels of damage
-                original_damage = 50;
-            }
-
-            ClearLists();
-
-            switch (gunKind)
+            try
             {
-                case APCEConstants.gunKinds.Bow:
-                    {
-                        CalculateAmmoBow();
-                        break;
-                    }
-                case APCEConstants.gunKinds.Shotgun:
-                    {
-                        CalculateAmmoShotgun();
-                        break;
-                    }
-                case APCEConstants.gunKinds.ExplosiveLauncher:
-                    {
-                        CalculateAmmoExplosiveLauncher();
-                        break;
-                    }
-                case APCEConstants.gunKinds.Turret:
-                    {
-                        if ((weaponDef.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_ExplosiveCE>() != null)
-                            || (weaponDef.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_Explosive>() != null)
-                            || (weaponDef.Verbs[0].defaultProjectile.thingClass == typeof(Projectile_Explosive)))
+                modified_ammoSetDefName = "APCEAmmoSet_" + weaponDef.defName;
+                modified_ammoSetLabel = "Ammo set for " + weaponDef.label;
+                modified_ammoSetDescription = "A procedurally generated ammo set for the " + weaponDef.label;
+
+                armorPenSharpModded = original_armorPenetration * ModData.gunSharpPenMult * original_techMult;
+                armorPenBluntModded = original_armorPenetration * ModData.gunBluntPenMult * original_techMult;
+
+                if (original_damageDef == DamageDefOf.Bomb && original_damage == 635)
+                {//since CE changes the default damage of Bomb from 50 to 635, projectiles relying on the default value will do unintended levels of damage
+                    original_damage = 50;
+                }
+
+                ClearLists();
+
+                switch (gunKind)
+                {
+                    case APCEConstants.gunKinds.Bow:
+                        {
+                            CalculateAmmoBow();
+                            break;
+                        }
+                    case APCEConstants.gunKinds.Shotgun:
+                        {
+                            CalculateAmmoShotgun();
+                            break;
+                        }
+                    case APCEConstants.gunKinds.ExplosiveLauncher:
                         {
                             CalculateAmmoExplosiveLauncher();
+                            break;
                         }
-                        else
+                    case APCEConstants.gunKinds.Turret:
                         {
-                            CalculateAmmoIndustrial();
+                            if ((weaponDef.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_ExplosiveCE>() != null)
+                                || (weaponDef.Verbs[0].defaultProjectile.GetCompProperties<CompProperties_Explosive>() != null)
+                                || (weaponDef.Verbs[0].defaultProjectile.thingClass == typeof(Projectile_Explosive)))
+                            {
+                                CalculateAmmoExplosiveLauncher();
+                            }
+                            else
+                            {
+                                CalculateAmmoIndustrial();
+                            }
+                            break;
                         }
-                        break;
-                    }
-                case APCEConstants.gunKinds.Grenade:
-                    {
-                        CalculateAmmoGrenade();
-                        break;
-                    }
-                default:
-                    {
-                        if ((weaponDef.techLevel == TechLevel.Spacer) || (weaponDef.techLevel == TechLevel.Ultra) || (weaponDef.techLevel == TechLevel.Archotech))
+                    case APCEConstants.gunKinds.Grenade:
                         {
-                            CalculateAmmoSpacer();
+                            CalculateAmmoGrenade();
+                            break;
+                        }
+                    default:
+                        {
+                            if ((weaponDef.techLevel == TechLevel.Spacer) || (weaponDef.techLevel == TechLevel.Ultra) || (weaponDef.techLevel == TechLevel.Archotech))
+                            {
+                                CalculateAmmoSpacer();
 
+                            }
+                            else
+                            {
+                                CalculateAmmoIndustrial();
+                            }
+                            break;
                         }
-                        else
-                        {
-                            CalculateAmmoIndustrial();
-                        }
-                        break;
-                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 
@@ -811,15 +827,23 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void Patch()
         {
-            BuildSecondaryDamages();
+            try
+            {
+                BuildSecondaryDamages();
 
-            BuildOrModifyProjectiles();
+                BuildOrModifyProjectiles();
 
-            BuildAmmoLinks();
+                BuildAmmoLinks();
 
-            BuildOrModifyAmmoSet();
+                BuildOrModifyAmmoSet();
 
-            ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
+                ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override StringBuilder ExportXML()

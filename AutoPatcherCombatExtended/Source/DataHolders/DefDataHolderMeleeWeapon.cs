@@ -51,66 +51,90 @@ namespace nuff.AutoPatcherCombatExtended
                 def = thingDef;
             }
 
-            if (!thingDef.tools.NullOrEmpty())
+            try
             {
-                original_Tools = thingDef.tools.ToList();
+                if (!thingDef.tools.NullOrEmpty())
+                {
+                    original_Tools = thingDef.tools.ToList();
+                }
+                original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
+                stuffed = thingDef.MadeFromStuff;
             }
-            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
-            stuffed = thingDef.MadeFromStuff;
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void AutoCalculate()
         {
-            modified_Mass = original_Mass;
-            modified_Bulk = modified_Mass * 2f; //TODO better calculation
-            modified_WeaponToughness = DataHolderUtils.WeaponToughnessAutocalc(thingDef, modified_Bulk);
-            CalculateStatMods();
-            CalculateWeaponTechMult();
-            if (!original_Tools.NullOrEmpty())
+            try
             {
-                ClearModdedTools();
-                for (int i = 0; i < original_Tools.Count; i++)
+                modified_Mass = original_Mass;
+                modified_Bulk = modified_Mass * 2f; //TODO better calculation
+                modified_WeaponToughness = DataHolderUtils.WeaponToughnessAutocalc(thingDef, modified_Bulk);
+                CalculateStatMods();
+                CalculateWeaponTechMult();
+                if (!original_Tools.NullOrEmpty())
                 {
-                    ModToolAtIndex(i);
+                    ClearModdedTools();
+                    for (int i = 0; i < original_Tools.Count; i++)
+                    {
+                        ModToolAtIndex(i);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 
         public override void Patch()
         {
-            if (thingDef.equippedStatOffsets == null)
+            try
             {
-                thingDef.equippedStatOffsets = new List<StatModifier>();
-            }
-            if (thingDef.statBases == null)
-            {
-                thingDef.statBases = new List<StatModifier>();
-            }
-
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
-            if (stuffed)
-            {
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
-            }
-            else
-            {
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
-            }
-            DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
-
-            DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
-            DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
-            DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
-
-            if (!original_Tools.NullOrEmpty())
-            {
-                thingDef.tools.Clear();
-                BuildTools();
-                for (int i = 0; i < modified_Tools.Count; i++)
+                if (thingDef.equippedStatOffsets == null)
                 {
-                    thingDef.tools.Add(modified_Tools[i]);
+                    thingDef.equippedStatOffsets = new List<StatModifier>();
                 }
+                if (thingDef.statBases == null)
+                {
+                    thingDef.statBases = new List<StatModifier>();
+                }
+
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+                if (stuffed)
+                {
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
+                }
+                else
+                {
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
+                }
+                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
+
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
+                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
+
+                if (!original_Tools.NullOrEmpty())
+                {
+                    thingDef.tools.Clear();
+                    BuildTools();
+                    for (int i = 0; i < modified_Tools.Count; i++)
+                    {
+                        thingDef.tools.Add(modified_Tools[i]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 

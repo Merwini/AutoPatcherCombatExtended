@@ -45,72 +45,96 @@ namespace nuff.AutoPatcherCombatExtended
                 def = hediffDef;
             }
 
-            verbGiver = hediffDef.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
-            if (verbGiver != null && verbGiver.tools != null)
+            try
             {
-                original_Tools = verbGiver.tools.ToList();
-            }
-
-            if (hediffDef.stages.NullOrEmpty())
-                return;
-            for (int i = 0; i < hediffDef.stages.Count; i++)
-            {
-                float armorRatingSharp = 0f;
-                float armorRatingBlunt = 0f;
-                float armorRatingHeat = 0f;
-
-                if (hediffDef.stages[i].statOffsets != null)
+                verbGiver = hediffDef.comps?.Find((HediffCompProperties c) => c is HediffCompProperties_VerbGiver) as HediffCompProperties_VerbGiver;
+                if (verbGiver != null && verbGiver.tools != null)
                 {
-                    armorRatingSharp = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-                    armorRatingBlunt = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-                    armorRatingHeat = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+                    original_Tools = verbGiver.tools.ToList();
                 }
 
-                original_ArmorRatingSharp.Add(armorRatingSharp);
-                original_ArmorRatingBlunt.Add(armorRatingBlunt);
-                original_ArmorRatingHeat.Add(armorRatingHeat);
+                if (hediffDef.stages.NullOrEmpty())
+                    return;
+                for (int i = 0; i < hediffDef.stages.Count; i++)
+                {
+                    float armorRatingSharp = 0f;
+                    float armorRatingBlunt = 0f;
+                    float armorRatingHeat = 0f;
+
+                    if (hediffDef.stages[i].statOffsets != null)
+                    {
+                        armorRatingSharp = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+                        armorRatingBlunt = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+                        armorRatingHeat = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+                    }
+
+                    original_ArmorRatingSharp.Add(armorRatingSharp);
+                    original_ArmorRatingBlunt.Add(armorRatingBlunt);
+                    original_ArmorRatingHeat.Add(armorRatingHeat);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 
         public override void AutoCalculate()
         {
-            if (!original_Tools.NullOrEmpty())
+            try
             {
-                ClearModdedTools();
-                for (int i = 0; i < original_Tools.Count; i++)
+                if (!original_Tools.NullOrEmpty())
                 {
-                    ModToolAtIndex(i);
+                    ClearModdedTools();
+                    for (int i = 0; i < original_Tools.Count; i++)
+                    {
+                        ModToolAtIndex(i);
+                    }
+                }
+                if (!hediffDef.stages.NullOrEmpty())
+                {
+                    for (int i = 0; i < hediffDef.stages.Count; i++)
+                    {
+                        modified_ArmorRatingSharp.Add(original_ArmorRatingSharp[i] * ModData.hediffSharpMult);
+                        modified_ArmorRatingBlunt.Add(original_ArmorRatingBlunt[i] * ModData.hediffBluntMult);
+                        modified_ArmorRatingHeat.Add(original_ArmorRatingHeat[i]);
+                    }
                 }
             }
-            if (!hediffDef.stages.NullOrEmpty())
+            catch (Exception ex)
             {
-                for (int i = 0; i < hediffDef.stages.Count; i++)
-                {
-                    modified_ArmorRatingSharp.Add(original_ArmorRatingSharp[i] * ModData.hediffSharpMult);
-                    modified_ArmorRatingBlunt.Add(original_ArmorRatingBlunt[i] * ModData.hediffBluntMult);
-                    modified_ArmorRatingHeat.Add(original_ArmorRatingHeat[i]);
-                }
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
         public override void Patch()
         {
-            if (!hediffDef.stages.NullOrEmpty())
+            try
             {
-                for (int i = 0; i < hediffDef.stages.Count; i++)
+                if (!hediffDef.stages.NullOrEmpty())
                 {
-                    DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
-                    DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
-                    DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
+                    for (int i = 0; i < hediffDef.stages.Count; i++)
+                    {
+                        DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
+                        DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
+                        DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
+                    }
+                }
+                if (verbGiver != null && !original_Tools.NullOrEmpty())
+                {
+                    verbGiver.tools.Clear();
+                    BuildTools();
+                    for (int i = 0; i < modified_Tools.Count; i++)
+                    {
+                        verbGiver.tools.Add(modified_Tools[i]);
+                    }
                 }
             }
-            if (verbGiver != null && !original_Tools.NullOrEmpty())
+            catch (Exception ex)
             {
-                verbGiver.tools.Clear();
-                BuildTools();
-                for (int i = 0; i < modified_Tools.Count; i++)
-                {
-                    verbGiver.tools.Add(modified_Tools[i]);
-                }
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 

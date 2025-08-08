@@ -75,57 +75,82 @@ namespace nuff.AutoPatcherCombatExtended
                 def = thingDef;
             }
 
-            original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
-            original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
-            original_ArmorRatingHeat = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
-            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0.01f);
-            original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
-            original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
-            original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
-            original_StuffEffectMultiplierArmor = thingDef.statBases.GetStatValueFromList(StatDefOf.StuffEffectMultiplierArmor, 0);
+            try
+            {
+                original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
+                original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
+                original_ArmorRatingHeat = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+                original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0.01f);
+                original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
+                original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
+                original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
+                original_StuffEffectMultiplierArmor = thingDef.statBases.GetStatValueFromList(StatDefOf.StuffEffectMultiplierArmor, 0);
 
-            CheckWhatCovers();
+                CheckWhatCovers();
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void AutoCalculate()
         {
-            CalculateApparelTechMult();
+            try
+            {
+                CalculateApparelTechMult();
 
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.apparelSharpMult * apparelTechMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.apparelBluntMult * apparelTechMult;
-            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+                modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.apparelSharpMult * apparelTechMult;
+                modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.apparelBluntMult * apparelTechMult;
+                modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
-            modified_Mass = Math.Min(original_Mass, 50);
-            modified_MaxHitPoints = original_MaxHitPoints;
-            modified_StuffEffectMultiplierArmor = original_StuffEffectMultiplierArmor;
+                modified_Mass = Math.Min(original_Mass, 50);
+                modified_MaxHitPoints = original_MaxHitPoints;
+                modified_StuffEffectMultiplierArmor = original_StuffEffectMultiplierArmor;
 
-            CalculateBulk();
-            CalculateStatMods();
+                CalculateBulk();
+                CalculateStatMods();
+            }
+            catch (Exception ex) 
+            {
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void Patch()
         {
-            //check for null def in case this object was loaded without the def present e.g. from the mod source not being active
-            if (def != null)
+            try
             {
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
-
-                if (!thingDef.stuffCategories.NullOrEmpty())
+                //check for null def in case this object was loaded without the def present e.g. from the mod source not being active
+                if (def != null)
                 {
-                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor);
-                }
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
+                    DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
 
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+                    if (!thingDef.stuffCategories.NullOrEmpty())
+                    {
+                        DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor);
+                    }
+
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
+                    DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
+                    DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+                    DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
+                    DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 

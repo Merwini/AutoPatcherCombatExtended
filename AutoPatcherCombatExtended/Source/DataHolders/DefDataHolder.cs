@@ -16,6 +16,7 @@ namespace nuff.AutoPatcherCombatExtended
         public bool alreadyRegistered = false;
         public string defName;
         public string parentModPackageId; //todo I don't seem to use this for anything?
+        public StringBuilder logBuilder = new StringBuilder();
 
         public Def def;
 
@@ -415,6 +416,21 @@ namespace nuff.AutoPatcherCombatExtended
             patch.AppendLine();
 
             return patch.ToString();
+        }
+
+        internal void StartNewLog()
+        {
+            logBuilder = new StringBuilder();
+        }
+
+        internal void AddLogItem(string fieldName, string value)
+        {
+            logBuilder.AppendLine();
+        }
+
+        internal void PrintLog()
+        {
+            Log.Message(logBuilder.ToString());
         }
     }
 }

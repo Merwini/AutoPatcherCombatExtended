@@ -44,23 +44,47 @@ namespace nuff.AutoPatcherCombatExtended
                 def = geneDef;
             }
 
-            original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-            original_ArmorRatingHeat = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            try
+            {
+                original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+                original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+                original_ArmorRatingHeat = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void AutoCalculate()
         {
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.geneArmorBluntMult;
-            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+            try
+            {
+                modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
+                modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.geneArmorBluntMult;
+                modified_ArmorRatingHeat = original_ArmorRatingHeat;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void Patch()
         {
-            DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-            DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-            DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+            try
+            {
+                DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+                DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+                DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
         public override StringBuilder ExportXML()
         {

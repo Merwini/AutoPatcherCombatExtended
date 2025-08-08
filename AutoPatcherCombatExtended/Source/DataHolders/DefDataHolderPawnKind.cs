@@ -46,86 +46,110 @@ namespace nuff.AutoPatcherCombatExtended
                 def = kindDef;
             }
 
-            original_CombatPower = kindDef.combatPower;
-
-            if (kindDef.apparelTags != null)
+            try
             {
-                foreach (string str in kindDef.apparelTags)
+                original_CombatPower = kindDef.combatPower;
+
+                if (kindDef.apparelTags != null)
                 {
-                    original_ApparelTags.Add(str);
+                    foreach (string str in kindDef.apparelTags)
+                    {
+                        original_ApparelTags.Add(str);
+                    }
+                }
+                if (kindDef.weaponTags != null)
+                {
+                    foreach (string str in kindDef.weaponTags)
+                    {
+                        original_WeaponTags.Add(str);
+                    }
                 }
             }
-            if (kindDef.weaponTags != null)
+            catch (Exception ex)
             {
-                foreach (string str in kindDef.weaponTags)
-                {
-                    original_WeaponTags.Add(str);
-                }
+                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
         }
 
         public override void AutoCalculate()
         {
-            if (!original_ApparelTags.NullOrEmpty())
+            try
             {
-                foreach (string str in original_ApparelTags)
+                if (!original_ApparelTags.NullOrEmpty())
                 {
-                    modified_ApparelTags.Add(str);
-                }
-            }
-
-            if (!original_WeaponTags.NullOrEmpty())
-            {
-                foreach (string str in original_WeaponTags)
-                {
-                    modified_WeaponTags.Add(str);
+                    foreach (string str in original_ApparelTags)
+                    {
+                        modified_ApparelTags.Add(str);
+                    }
                 }
 
-                //if the PawnKind can spawn with weapons, give it the ability to have a backpack.
-                modified_ApparelTags.Add("IndustrialBasic");
-                modified_ApparelTags.Add("IndustrialMilitaryBasic");
+                if (!original_WeaponTags.NullOrEmpty())
+                {
+                    foreach (string str in original_WeaponTags)
+                    {
+                        modified_WeaponTags.Add(str);
+                    }
+
+                    //if the PawnKind can spawn with weapons, give it the ability to have a backpack.
+                    modified_ApparelTags.Add("IndustrialBasic");
+                    modified_ApparelTags.Add("IndustrialMilitaryBasic");
+                }
+
+                modified_CombatPower = original_CombatPower;
+
+                modified_MinMags = 2;
+                modified_MaxMags = 5;
             }
-
-            modified_CombatPower = original_CombatPower;
-
-            modified_MinMags = 2;
-            modified_MaxMags = 5;
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
+                Log.Error(ex.ToString());
+            }
         }
 
         public override void Patch()
         {
-            if (modified_ApparelTags.Count > 0)
+            try
             {
-                if (kindDef.apparelTags == null)
-                    kindDef.apparelTags = new List<string>();
-                kindDef.apparelTags.Clear();
-                foreach (string str in modified_ApparelTags)
+                if (modified_ApparelTags.Count > 0)
                 {
-                    kindDef.apparelTags.Add(str);
+                    if (kindDef.apparelTags == null)
+                        kindDef.apparelTags = new List<string>();
+                    kindDef.apparelTags.Clear();
+                    foreach (string str in modified_ApparelTags)
+                    {
+                        kindDef.apparelTags.Add(str);
+                    }
                 }
-            }
 
-            if (modified_WeaponTags.Count > 0)
-            {
-                if (kindDef.weaponTags == null)
-                    kindDef.weaponTags = new List<string>();
-                kindDef.weaponTags.Clear();
-                foreach (string str in modified_WeaponTags)
+                if (modified_WeaponTags.Count > 0)
                 {
-                    kindDef.weaponTags.Add(str);
+                    if (kindDef.weaponTags == null)
+                        kindDef.weaponTags = new List<string>();
+                    kindDef.weaponTags.Clear();
+                    foreach (string str in modified_WeaponTags)
+                    {
+                        kindDef.weaponTags.Add(str);
+                    }
                 }
-            }
 
-            if (kindDef.modExtensions == null)
+                if (kindDef.modExtensions == null)
+                {
+                    kindDef.modExtensions = new List<DefModExtension>();
+                }
+                LoadoutPropertiesExtension loadout = new LoadoutPropertiesExtension();
+                loadout.primaryMagazineCount = new FloatRange(modified_MinMags, modified_MaxMags);
+
+                DataHolderUtils.AddOrReplaceExtension(kindDef, loadout);
+
+                kindDef.combatPower = modified_CombatPower;
+            }
+            catch (Exception ex)
             {
-                kindDef.modExtensions = new List<DefModExtension>();
+                Log.Error($"Exception in Patch() for: {def.defName}");
+                Log.Error(ex.ToString());
             }
-            LoadoutPropertiesExtension loadout = new LoadoutPropertiesExtension();
-            loadout.primaryMagazineCount = new FloatRange(modified_MinMags, modified_MaxMags);
-
-            DataHolderUtils.AddOrReplaceExtension(kindDef, loadout);
-
-            kindDef.combatPower = modified_CombatPower;
         }
 
         public override StringBuilder ExportXML()
