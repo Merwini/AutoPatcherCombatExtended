@@ -210,7 +210,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     try
                     {
-                        ddh.Patch();
+                        ddh.ApplyPatch();
                     }
                     catch (Exception ex)
                     {

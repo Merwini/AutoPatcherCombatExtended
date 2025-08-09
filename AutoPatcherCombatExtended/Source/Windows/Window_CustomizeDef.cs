@@ -45,7 +45,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.PreClose();
             dataHolder.PrePatch();
-            dataHolder.Patch();
+            dataHolder.ApplyPatch();
             dataHolder.PostPatch();
         }
     }

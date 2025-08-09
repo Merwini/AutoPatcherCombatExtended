@@ -44,6 +44,9 @@ namespace nuff.AutoPatcherCombatExtended
                 def = geneDef;
             }
 
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
@@ -52,13 +55,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
         public override void AutoCalculate()
         {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
@@ -67,13 +79,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
-        public override void Patch()
+        public override void ApplyPatch()
         {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
@@ -82,10 +103,17 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in Patch() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
+
         public override StringBuilder ExportXML()
         {
             xml = DataHolderUtils.GetXmlForDef(geneDef);

@@ -30,7 +30,7 @@ namespace nuff.AutoPatcherCombatExtended
         public static ModContentPack thisModContent;
         public static Mod thisMod;
         public static bool suggestionWindowOpened = false;
-        public static bool shouldRunController = false;
+        public static bool shouldRunController = true;
 
         public string searchTerm = "";
         public Vector2 leftScrollPosition = new Vector2();

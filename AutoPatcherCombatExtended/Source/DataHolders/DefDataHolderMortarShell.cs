@@ -72,6 +72,9 @@ namespace nuff.AutoPatcherCombatExtended
                 def = thingDef;
             }
 
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 original_description = thingDef.description.ToString();
@@ -81,13 +84,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
         public override void AutoCalculate()
         {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 modified_defName = "APCE_Shell_" + thingDef.defName;
@@ -104,13 +116,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
-        public override void Patch()
+        public override void ApplyPatch()
         {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 RebuildProjectileProps();
@@ -122,8 +143,14 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in Patch() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 

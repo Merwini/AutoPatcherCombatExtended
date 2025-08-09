@@ -17,6 +17,8 @@ namespace nuff.AutoPatcherCombatExtended
         public string defName;
         public string parentModPackageId; //todo I don't seem to use this for anything?
         public StringBuilder logBuilder = new StringBuilder();
+        public bool failedToPatch = false;
+        public bool threwError = false;
 
         public Def def;
 
@@ -127,7 +129,7 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
         //will use the modified_ fields to edit the def
-        public abstract void Patch();
+        public abstract void ApplyPatch();
 
         //will use the modified_ fields to generate an xml patch for the def
         public virtual StringBuilder ExportXML()
@@ -418,19 +420,27 @@ namespace nuff.AutoPatcherCombatExtended
             return patch.ToString();
         }
 
-        internal void StartNewLog()
+        public void StartNewLogEntry()
         {
             logBuilder = new StringBuilder();
+            threwError = false;
         }
 
-        internal void AddLogItem(string fieldName, string value)
+        public void AddLogItem(string fieldName, string value)
         {
             logBuilder.AppendLine();
         }
 
-        internal void PrintLog()
+        public void PrintLog()
         {
-            Log.Message(logBuilder.ToString());
+            if (threwError && APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
+            {
+                Log.Error(logBuilder.ToString());
+            }
+            else if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
+            {
+                Log.Message(logBuilder.ToString());
+            }
         }
     }
 }

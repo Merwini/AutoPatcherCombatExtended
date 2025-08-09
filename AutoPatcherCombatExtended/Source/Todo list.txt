@@ -2,6 +2,8 @@
 TODO bipod for ranged weapons
 TODO autocalc muzzleFlashScale
 
+TODO move DefDataHolder def casting to a method
+
 TODO button in Window for Ranged Weapons to let user input real-world gun values, run them through formulas in gun google doc
 
 TODO Stuff patcher for modded materials - needed for armors that don't have armor values, but just apply a multiplier to the Stuff statBases

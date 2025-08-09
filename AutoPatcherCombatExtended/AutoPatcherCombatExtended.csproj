@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TrashFolder\PatchVehicle.cs" />
     <None Include="APCE Item1" />
     <Compile Include="Source\APCEPatchExport.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderMortarShell.cs" />

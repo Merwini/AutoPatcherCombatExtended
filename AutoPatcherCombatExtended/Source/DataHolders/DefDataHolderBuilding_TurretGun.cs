@@ -45,6 +45,9 @@ namespace nuff.AutoPatcherCombatExtended
                 def = thingDef;
             }
 
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 original_FillPercent = thingDef.fillPercent;
@@ -55,13 +58,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
         public override void AutoCalculate()
         {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 //if less than 0.85, will just set to the default 0.85, which is 1.49m in CE, enough to shoot over barricades but still be shot over by pawns.
@@ -86,13 +98,22 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
-        public override void Patch()
+        public override void ApplyPatch()
         {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 thingDef.thingClass = typeof(Building_TurretGunCE);
@@ -105,8 +126,14 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in Patch() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 

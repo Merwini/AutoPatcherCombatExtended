@@ -29,7 +29,7 @@ namespace nuff.AutoPatcherCombatExtended
             GetOriginalData();
             //Needs to call AutoCalculate and Patch during construction because it is usually instantiated by a RangedWeapon that needs the AmmoDef immediately afterward
             AutoCalculate();
-            Patch();
+            ApplyPatch();
         }
 
         ThingDef weaponDef;
@@ -130,6 +130,9 @@ namespace nuff.AutoPatcherCombatExtended
                 def = weaponDef;
             }
 
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 if (gunKind == APCEConstants.gunKinds.Default)
@@ -153,13 +156,46 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in GetOriginalData() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in GetOriginalData for: {def.defName} AMMOSET named: {modified_ammoSetDefName}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                //if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
+                //{
+                //    try
+                //    {
+                //        logBuilder.AppendLine($"Ammoset built for weapon: {def?.defName ?? "NULL DEF"}");
+                //        logBuilder.AppendLine($"Gunkind: {gunKind}");
+                //        logBuilder.AppendLine($"Original projectile non-null: {(original_projectile != null).ToString()}");
+                //        logBuilder.AppendLine($"Original damage: {original_damage}");
+                //        logBuilder.AppendLine($"Original armor penetration: {original_armorPenetration}");
+                //        logBuilder.AppendLine($"Original projectile speed: {original_speed}");
+                //        logBuilder.AppendLine($"Original explosion radius: {original_explosionRadius}");
+                //        logBuilder.AppendLine($"Original AI incendiary: {original_ai_IsIncendiary}");
+                //        logBuilder.AppendLine($"Original apply damage to explosion cell neighbors: {original_applyDamageToExplosionCellsNeighbors}");
+                //        logBuilder.AppendLine($"Original damageDef: {original_damageDef?.defName ?? "NULL"}");
+                //        logBuilder.AppendLine($"Original extraDamages count: {(original_extraDamages != null ? original_extraDamages.Count.ToString() : "NULL")}");
+                //        logBuilder.AppendLine($"Tech multiplier: {original_techMult}");
+                //    }
+                //    catch(Exception ex)
+                //    {
+                //        logBuilder.AppendLine("Error while building verbose log output.");
+                //        logBuilder.AppendLine(ex.ToString());
+                //    }
+                //}
+
+                PrintLog();
             }
         }
 
         public override void AutoCalculate()
         {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
             try
             {
                 modified_ammoSetDefName = "APCEAmmoSet_" + weaponDef.defName;
@@ -170,7 +206,8 @@ namespace nuff.AutoPatcherCombatExtended
                 armorPenBluntModded = original_armorPenetration * ModData.gunBluntPenMult * original_techMult;
 
                 if (original_damageDef == DamageDefOf.Bomb && original_damage == 635)
-                {//since CE changes the default damage of Bomb from 50 to 635, projectiles relying on the default value will do unintended levels of damage
+                {
+                    //since CE changes the default damage of Bomb from 50 to 635, projectiles relying on the default value will do unintended levels of damage
                     original_damage = 50;
                 }
 
@@ -229,8 +266,62 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                Log.Error($"Exception in AutoCalculate() for: {def.defName}");
-                Log.Error(ex.ToString());
+                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"} AMMOSET named: {modified_ammoSetDefName}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                //if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
+                //{
+                //    try
+                //    {
+                //        logBuilder.AppendLine($"Final AutoCalculate values for weapon: {def?.defName ?? "NULL DEF"}");
+                //        logBuilder.AppendLine($"Modified ammo set defName: {modified_ammoSetDefName}");
+                //        logBuilder.AppendLine($"Modified ammo set label: {modified_ammoSetLabel}");
+                //        logBuilder.AppendLine($"ArmorPen Sharp Modded: {armorPenSharpModded}");
+                //        logBuilder.AppendLine($"ArmorPen Blunt Modded: {armorPenBluntModded}");
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        logBuilder.AppendLine("Error while building verbose log output in AutoCalculate.");
+                //        logBuilder.AppendLine(ex.ToString());
+                //    }
+                //}
+
+                PrintLog();
+            }
+        }
+
+
+        public override void ApplyPatch()
+        {
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
+            try
+            {
+                BuildSecondaryDamages();
+
+                BuildOrModifyProjectiles();
+
+                BuildAmmoLinks();
+
+                BuildOrModifyAmmoSet();
+
+                ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
+            }
+            catch (Exception ex)
+            {
+                logBuilder.AppendLine($"Exception in ApplyPatch for: {def.defName} AMMOSET named {modified_ammoSetDefName}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
@@ -825,27 +916,6 @@ namespace nuff.AutoPatcherCombatExtended
             return;
         }
 
-        public override void Patch()
-        {
-            try
-            {
-                BuildSecondaryDamages();
-
-                BuildOrModifyProjectiles();
-
-                BuildAmmoLinks();
-
-                BuildOrModifyAmmoSet();
-
-                ProjectilePropertiesCE ppce = modified_ammoSetDef.ammoTypes[0].projectile.projectile as ProjectilePropertiesCE;
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Exception in Patch() for: {def.defName}");
-                Log.Error(ex.ToString());
-            }
-        }
-
         public override StringBuilder ExportXML()
         {
             //todo
@@ -903,7 +973,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     ModData = APCESettings.modDataDict[weaponDef.modContentPack.PackageId];
                     //Destringify();
-                    Patch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
+                    ApplyPatch(); //unlike the other DataHolders, AmmoSet needs to Patch ASAP so the def is in the database by the time ranged weapons try to look it up
                 }
             }
             base.ExposeData();
