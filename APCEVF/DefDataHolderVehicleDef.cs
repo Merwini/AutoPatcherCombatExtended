@@ -57,56 +57,107 @@ namespace nuff.AutoPatcherCombatExtended.VF
                 def = vehicleDef;
             }
 
-            original_ArmorRatingSharp = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            original_ArmorRatingBlunt = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-            original_ArmorRatingHeat = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
 
-            original_ComponentArmorSharps.Clear();
-            original_ComponentArmorBlunts.Clear();
-            original_ComponentHealths.Clear();
-            for (int i = 0; i < vehicleDef.components.Count; i++)
+            try
             {
-                original_ComponentArmorSharps.Add(vehicleDef.components[i].armor.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0));
-                original_ComponentArmorBlunts.Add(vehicleDef.components[i].armor.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0));
-                original_ComponentHealths.Add(vehicleDef.components[i].health);
-            }
+                original_ArmorRatingSharp = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+                original_ArmorRatingBlunt = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+                original_ArmorRatingHeat = vehicleDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
 
-            for (int i = 0; i < vehicleDef.vehicleStats.Count; i++)
-            {
-                if (vehicleDef.vehicleStats[i].statDef == VehicleStatDefOf.CargoCapacity)
+                original_ComponentArmorSharps.Clear();
+                original_ComponentArmorBlunts.Clear();
+                original_ComponentHealths.Clear();
+                for (int i = 0; i < vehicleDef.components.Count; i++)
                 {
-                    cargoIndex = i;
-                    original_CargoCapacity = vehicleDef.vehicleStats[i].value;
-                    break;
+                    original_ComponentArmorSharps.Add(vehicleDef.components[i].armor.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0));
+                    original_ComponentArmorBlunts.Add(vehicleDef.components[i].armor.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0));
+                    original_ComponentHealths.Add(vehicleDef.components[i].health);
                 }
+
+                for (int i = 0; i < vehicleDef.vehicleStats.Count; i++)
+                {
+                    if (vehicleDef.vehicleStats[i].statDef == VehicleStatDefOf.CargoCapacity)
+                    {
+                        cargoIndex = i;
+                        original_CargoCapacity = vehicleDef.vehicleStats[i].value;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
             }
         }
 
         public override void AutoCalculate()
         {
-            modified_ArmorRatingSharp = original_ArmorRatingSharp * modData.vehicleSharpMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * modData.vehicleBluntMult;
-            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
-            modified_ComponentArmorSharps.Clear();
-            modified_ComponentArmorBlunts.Clear();
-            modified_ComponentHealths.Clear();
-
-            for (int i = 0; i < vehicleDef.components.Count; i++)
+            try
             {
-                modified_ComponentArmorSharps.Add(original_ComponentArmorSharps[i] * modData.vehicleSharpMult);
-                modified_ComponentArmorBlunts.Add(original_ComponentArmorBlunts[i] * modData.vehicleBluntMult);
-                modified_ComponentHealths.Add((int)(original_ComponentHealths[i] * modData.vehicleHealthMult));
-            }
+                modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.vehicleSharpMult;
+                modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.vehicleBluntMult;
+                modified_ArmorRatingHeat = original_ArmorRatingHeat;
 
-            modified_CargoCapacity = original_CargoCapacity;
+                modified_ComponentArmorSharps.Clear();
+                modified_ComponentArmorBlunts.Clear();
+                modified_ComponentHealths.Clear();
+
+                for (int i = 0; i < vehicleDef.components.Count; i++)
+                {
+                    modified_ComponentArmorSharps.Add(original_ComponentArmorSharps[i] * ModData.vehicleSharpMult);
+                    modified_ComponentArmorBlunts.Add(original_ComponentArmorBlunts[i] * ModData.vehicleBluntMult);
+                    modified_ComponentHealths.Add((int)(original_ComponentHealths[i] * ModData.vehicleHealthMult));
+                }
+
+                modified_CargoCapacity = original_CargoCapacity;
+            }
+            catch (Exception ex)
+            {
+                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
+            }
         }  
         
-        public override void Patch()
+        public override void ApplyPatch()
         {
-            PatchVehicleStatBases();
-            PatchVehicleComponents();
-            PatchVehicleStats();
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+
+            try
+            {
+                PatchVehicleStatBases();
+                PatchVehicleComponents();
+                PatchVehicleStats();
+            }
+            catch (Exception ex)
+            {
+                logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
+            }
         }
 
         public override StringBuilder ExportXML()

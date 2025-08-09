@@ -66,63 +66,114 @@ namespace nuff.AutoPatcherCombatExtended.VF
                 def = turretDef;
             }
 
-            original_Projectile = turretDef.projectile;
-            original_WarmUpTimer = turretDef.warmUpTimer;
-            original_ReloadTimer = turretDef.reloadTimer;
-            original_MinRange = turretDef.minRange;
-            original_MaxRange = turretDef.maxRange;
-            original_MagazineCapacity = turretDef.magazineCapacity;
-            original_ChargePerAmmoCount = turretDef.chargePerAmmoCount;
-            original_speed = turretDef.projectileSpeed;
-            if (turretDef.ammunition != null && turretDef.ammunition.AllowedDefCount != 0)
-            {
-                foreach (ThingDef ammu in turretDef.ammunition.AllowedThingDefs)
-                {
-                    original_ammunitions.Add(ammu);
-                }
-            }
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
 
-            pseudoweapon = CreatePseudoWeapon(turretDef);
+            try
+            {
+                original_Projectile = turretDef.projectile;
+                original_WarmUpTimer = turretDef.warmUpTimer;
+                original_ReloadTimer = turretDef.reloadTimer;
+                original_MinRange = turretDef.minRange;
+                original_MaxRange = turretDef.maxRange;
+                original_MagazineCapacity = turretDef.magazineCapacity;
+                original_ChargePerAmmoCount = turretDef.chargePerAmmoCount;
+                original_speed = turretDef.projectileSpeed;
+                if (turretDef.ammunition != null && turretDef.ammunition.AllowedDefCount != 0)
+                {
+                    foreach (ThingDef ammu in turretDef.ammunition.AllowedThingDefs)
+                    {
+                        original_ammunitions.Add(ammu);
+                    }
+                }
+
+                pseudoweapon = CreatePseudoWeapon(turretDef);
+            }
+            catch (Exception ex)
+            {
+                logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
+            }
         }
 
         public override void AutoCalculate()
         {
-            DetermineVehicleTurretKind();
-            ammoSetDataHolder = new DefDataHolderAmmoSet(pseudoweapon, gunKind);
-            
-            modified_AmmoSetString = ammoSetDataHolder.GeneratedAmmoSetDef.defName;
-            modified_Speed = ammoSetDataHolder.GeneratedAmmoSetDef.ammoTypes[0].projectile.projectile.speed;
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
-            modified_Sway = 0.82f;
-            modified_Spread = 0.01f;
-            modified_Recoil = -1;
-            modified_WarmUpTimer = original_WarmUpTimer;
-            modified_ReloadTimer = original_ReloadTimer * 2f; //TODO maybe change based on gunKind
-            modified_MinRange = original_MinRange;
-            modified_MaxRange = original_MaxRange * 2f;
-            modified_MagazineCapacity = original_MagazineCapacity;
-            modified_ChargePerAmmoCount = 1;
-            
-            modified_ShotHeight = 2f;
+            try
+            {
+                DetermineVehicleTurretKind();
+                ammoSetDataHolder = new DefDataHolderAmmoSet(pseudoweapon, gunKind);
+
+                modified_AmmoSetString = ammoSetDataHolder.GeneratedAmmoSetDef.defName;
+                modified_Speed = ammoSetDataHolder.GeneratedAmmoSetDef.ammoTypes[0].projectile.projectile.speed;
+
+                modified_Sway = 0.82f;
+                modified_Spread = 0.01f;
+                modified_Recoil = -1;
+                modified_WarmUpTimer = original_WarmUpTimer;
+                modified_ReloadTimer = original_ReloadTimer * 2f; //TODO maybe change based on gunKind
+                modified_MinRange = original_MinRange;
+                modified_MaxRange = original_MaxRange * 2f;
+                modified_MagazineCapacity = original_MagazineCapacity;
+                modified_ChargePerAmmoCount = 1;
+
+                modified_ShotHeight = 2f;
+            }
+            catch (Exception ex)
+            {
+                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
+            }
         }
 
-        public override void Patch()
+        public override void ApplyPatch()
         {
-            turretDef.warmUpTimer = modified_WarmUpTimer;
-            turretDef.reloadTimer = modified_ReloadTimer;
-            turretDef.minRange = modified_MinRange;
-            turretDef.maxRange = modified_MaxRange;
-            turretDef.magazineCapacity = modified_MagazineCapacity;
-            turretDef.chargePerAmmoCount = modified_ChargePerAmmoCount;
-            turretDef.genericAmmo = false;
-            turretDef.projectile = ammoSetDataHolder?.GeneratedAmmoSetDef.ammoTypes[0].projectile ?? DefDatabase<AmmoSetDef>.AllDefsListForReading.First(def => def.defName == modified_AmmoSetString).ammoTypes[0].projectile;
-            
-            turretDef.projectileSpeed = modified_Speed;
-            
-            //This needs to be cleared. In vanilla, these shifts are just visual, but with CE they cause every shot to miss.
-            turretDef.projectileShifting = new List<float>();
+            StartNewLogEntry();
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
-            PatchCEExtension();
+            try
+            {
+                turretDef.warmUpTimer = modified_WarmUpTimer;
+                turretDef.reloadTimer = modified_ReloadTimer;
+                turretDef.minRange = modified_MinRange;
+                turretDef.maxRange = modified_MaxRange;
+                turretDef.magazineCapacity = modified_MagazineCapacity;
+                turretDef.chargePerAmmoCount = modified_ChargePerAmmoCount;
+                turretDef.genericAmmo = false;
+                turretDef.projectile = ammoSetDataHolder?.GeneratedAmmoSetDef.ammoTypes[0].projectile ?? DefDatabase<AmmoSetDef>.AllDefsListForReading.First(def => def.defName == modified_AmmoSetString).ammoTypes[0].projectile;
+
+                turretDef.projectileSpeed = modified_Speed;
+
+                //This needs to be cleared. In vanilla, these shifts are just visual, but with CE they cause every shot to miss.
+                turretDef.projectileShifting = new List<float>();
+
+                PatchCEExtension();
+            }
+            catch (Exception ex)
+            {
+                logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine(ex.ToString());
+                threwError = true;
+            }
+            finally
+            {
+                //TODO verbose logging
+                PrintLog();
+            }
         }
 
         public override StringBuilder ExportXML()
