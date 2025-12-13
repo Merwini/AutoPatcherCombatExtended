@@ -47,6 +47,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         internal BodyShapeDef modified_BodyShapeDef;
 
+        float floorArmorPenetrationSharp;
+        float floorArmorPenetrationBlunt;
+
         public override void GetOriginalData()
         {
             //constructed by APCEController, def assigned by constructor
@@ -266,8 +269,30 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= ModData.pawnToolPowerMult;
-            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * ModData.pawnToolSharpPenetration, 0, 99999);
-            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * ModData.pawnToolBluntPenetration, 0, 99999);
+            CalculateMinimumPenetrations(i);
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * ModData.pawnToolSharpPenetration, floorArmorPenetrationSharp, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * ModData.pawnToolBluntPenetration, floorArmorPenetrationBlunt, 99999);
+        }
+
+        public void CalculateMinimumPenetrations(int i)
+        {
+            //TODO null checks
+            DamageArmorCategoryDef ac = modified_ToolCapacityDefs[i][0].VerbsProperties.First().meleeDamageDef.armorCategory;
+            if (ac == DamageArmorCategoryDefOf.Sharp)
+            {
+                floorArmorPenetrationSharp = modified_ToolPowers[i] * 0.1f * pawnDef.race.baseBodySize;
+                floorArmorPenetrationBlunt = floorArmorPenetrationSharp;
+            }
+            else if (ac == APCEDefOfTwo.Blunt)
+            {
+                floorArmorPenetrationSharp = 0;
+                floorArmorPenetrationBlunt = modified_ToolPowers[i] * 0.25f * pawnDef.race.baseBodySize;
+            }
+            else //heat or maybe mods add new ones
+            {
+                floorArmorPenetrationSharp = 0;
+                floorArmorPenetrationBlunt = 0;
+            }
         }
 
         public void PatchStatBases()
