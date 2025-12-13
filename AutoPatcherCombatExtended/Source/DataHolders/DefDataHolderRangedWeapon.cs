@@ -22,8 +22,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public ThingDef weaponThingDef;
 
-        float rangedToolTechMult;
-
         //original statbase stuff
         float original_Mass;
         float original_RangedWeaponCooldown;
@@ -86,6 +84,8 @@ namespace nuff.AutoPatcherCombatExtended
         int modified_grenadeDamage;
         float modified_explosionRadius;
 
+        float floorArmorPenetrationSharp;
+        float floorArmorPenetrationBlunt;
 
         public override void GetOriginalData()
         {
@@ -293,7 +293,6 @@ namespace nuff.AutoPatcherCombatExtended
                 PrintLog();
             }
         }
-
 
         public override StringBuilder ExportXML()
         {
@@ -995,16 +994,38 @@ namespace nuff.AutoPatcherCombatExtended
                 default:
                     break;
             }
-            rangedToolTechMult = techMult;
+            this.techMult = techMult;
         }
 
         public override void ModToolAtIndex(int i)
         {
             base.ModToolAtIndex(i);
             modified_ToolPowers[i] *= ModData.weaponToolPowerMult;
-            //TODO - I think gun tools should not use techMult? Will weaken things with intended weapons like bayonets, but be better for most cases
-            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * ModData.weaponToolSharpPenetration, 0, 99999);
-            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * ModData.weaponToolBluntPenetration, 0, 99999);
+            CalculateMinimumPenetrations(i);
+            modified_ToolArmorPenetrationSharps[i] = Mathf.Clamp(modified_ToolArmorPenetrationSharps[i] * ModData.weaponToolSharpPenetration, floorArmorPenetrationSharp, 99999);
+            modified_ToolArmorPenetrationBlunts[i] = Mathf.Clamp(modified_ToolArmorPenetrationBlunts[i] * ModData.weaponToolBluntPenetration, floorArmorPenetrationBlunt, 99999);
+        }
+
+        public void CalculateMinimumPenetrations(int i)
+        {
+            //TODO null checks
+            // No tech mult for gun tools, wouldn't make much sense
+            DamageArmorCategoryDef ac = modified_ToolCapacityDefs[i][0].VerbsProperties.First().meleeDamageDef.armorCategory;
+            if (ac == DamageArmorCategoryDefOf.Sharp)
+            {
+                floorArmorPenetrationSharp = modified_ToolPowers[i] * 0.1f;
+                floorArmorPenetrationBlunt = floorArmorPenetrationSharp;
+            }
+            else if (ac == APCEDefOfTwo.Blunt)
+            {
+                floorArmorPenetrationSharp = 0;
+                floorArmorPenetrationBlunt = modified_ToolPowers[i] * 0.33f;
+            }
+            else //heat or maybe mods add new ones
+            {
+                floorArmorPenetrationSharp = 0;
+                floorArmorPenetrationBlunt = 0;
+            }
         }
 
         public void CalculateMortar()
