@@ -49,6 +49,7 @@ namespace nuff.AutoPatcherCombatExtended
         public float advancedArmorShootingAccuracy = 0.2f;
 
         //weapon settings
+        public bool gunsUseAmmo = true;
         public float gunSharpPenMult = 10f;
         public float gunBluntPenMult = 40f;
         public float gunTechMultAnimal = 0.5f;
@@ -368,6 +369,7 @@ namespace nuff.AutoPatcherCombatExtended
                 Scribe_Values.Look(ref advancedArmorShootingAccuracy, "advancedArmorShootingAccuracy", 0.2f);
 
                 // Weapon settings
+                Scribe_Values.Look(ref gunsUseAmmo, "gunsUseAmmo", true);
                 Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult", 10f);
                 Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult", 40f);
                 Scribe_Values.Look(ref gunTechMultAnimal, "gunTechMultAnimal", 0.5f);

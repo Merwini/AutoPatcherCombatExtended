@@ -144,6 +144,8 @@ namespace nuff.AutoPatcherCombatExtended
 
                         list.Gap();
 
+                        list.CheckboxLabeled("Ranged Weapons Use Ammo", ref modData.gunsUseAmmo);
+
                         string maximumWeaponMassBuffer = modData.maximumWeaponMass.ToString();
                         list.TextFieldNumericLabeled("Maximum weapon mass (default 20.0)", ref modData.maximumWeaponMass, ref maximumWeaponMassBuffer);
                     }

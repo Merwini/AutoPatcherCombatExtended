@@ -169,6 +169,8 @@ namespace nuff.AutoPatcherCombatExtended
 
                 CalculateStatBaseValues();
 
+                modified_UsesAmmo = ModData.gunsUseAmmo;
+
                 if (gunKind == APCEConstants.gunKinds.BeamGun)
                 {
                     modified_UsesAmmo = false;
