@@ -62,6 +62,8 @@ namespace nuff.AutoPatcherCombatExtended
             //    harmony.Patch(CheckIfDefNeedsPatchedMethod, prefix: new HarmonyMethod(CheckIfDefNeedsPatchedPrefix));
             //}
             #endregion
+
+            harmony.PatchAll();
         }
     }
 
@@ -95,36 +97,62 @@ namespace nuff.AutoPatcherCombatExtended
         }
     }
 
-    //[HarmonyPatch(typeof(APCEController), nameof(APCEController.DetermineDefType))]
-    //public class APCEVehiclePatch
-    //{
-    //    public static bool Prefix(ref Def def, ref APCEPatchLogger log)
-    //    {
-    //        if (def.GetType() == APCEHarmonyPatches.VehicleDef)
-    //        {
-    //            APCEHarmonyPatches.PatchVehicle.Invoke(null, new object[] { def, log });
-    //            return false;
-    //        }
-    //        else if (def.GetType() == APCEHarmonyPatches.VehicleTurretDef)
-    //        {
-    //            APCEHarmonyPatches.PatchVehicleTurret.Invoke(null, new object[] { def, log });
-    //            return false;
-    //        }
-    //        return true;
-    //    }
-    //}
+    #region CE_SettingGetters
 
-    //public class APCEDetectVehiclePatch
-    //{
-    //    public static bool Prefix(ref Def def, ref bool __result)
-    //    {
-    //        if (def.GetType() == APCEHarmonyPatches.VehicleTurretDef
-    //            && !def.modExtensions.Any(me => me.GetType() == APCEHarmonyPatches.CETurretDataDefModExtension))
-    //        {
-    //            __result = true;
-    //            return false;
-    //        }
-    //        return true;
-    //    }
-    //}
+    [HarmonyPatch(typeof(CombatExtended.Settings))]
+    [HarmonyPatch(nameof(CombatExtended.Settings.EnableApparelAutopatcher), MethodType.Getter)]
+    public static class EnableApparelAutopatcher_Postfix
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref bool __result)
+        {
+            __result = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CombatExtended.Settings))]
+    [HarmonyPatch(nameof(CombatExtended.Settings.EnableWeaponAutopatcher), MethodType.Getter)]
+    public static class EnableWeaponAutopatcher_Postfix
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref bool __result)
+        {
+            __result = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CombatExtended.Settings))]
+    [HarmonyPatch(nameof(CombatExtended.Settings.EnableWeaponToughnessAutopatcher), MethodType.Getter)]
+    public static class EnableWeaponToughnessAutopatcher_Postfix
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref bool __result)
+        {
+            __result = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CombatExtended.Settings))]
+    [HarmonyPatch(nameof(CombatExtended.Settings.EnableRaceAutopatcher), MethodType.Getter)]
+    public static class EnableRaceAutopatcher_Postfix
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref bool __result)
+        {
+            __result = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CombatExtended.Settings))]
+    [HarmonyPatch(nameof(CombatExtended.Settings.EnablePawnKindAutopatcher), MethodType.Getter)]
+    public static class EnablePawnKindAutopatcher_Postfix
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref bool __result)
+        {
+            __result = false;
+        }
+    }
+
+    #endregion
 }

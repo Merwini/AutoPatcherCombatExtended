@@ -36,37 +36,39 @@ namespace nuff.AutoPatcherCombatExtended
         {
             this.Settings = GetSettings<APCESettings>();
             APCESettings.thisMod = this;
-            try
-            {
-                Type loaderType = Type.GetType("CombatExtended.Loader.Loader, 0CombatExtendedLoader");
-                if (loaderType != null)
-                {
-                    CEMod = LoadedModManager.GetMod(loaderType);
-                }
-            }
-            catch (TypeLoadException ex)
-            {
-                Log.Message("Type CombatExtended.Loader.Loader not found. Are you running the dev build?");
-            }
-            if (CEMod == null)
-            {
-                Type controllerType = Type.GetType("CombatExtended.Controller, CombatExtended");
-                if (controllerType != null)
-                {
-                    CEMod = LoadedModManager.GetMod(controllerType);
-                }
-            }
+            //try
+            //{
+            //    Type loaderType = Type.GetType("CombatExtended.Loader.Loader, 0CombatExtendedLoader");
+            //    if (loaderType != null)
+            //    {
+            //        CEMod = LoadedModManager.GetMod(loaderType);
+            //    }
+            //}
+            //catch (TypeLoadException ex)
+            //{
+            //    Log.Message("Type CombatExtended.Loader.Loader not found. Are you running the dev build?");
+            //}
+            //if (CEMod == null)
+            //{
+            //    Type controllerType = Type.GetType("CombatExtended.Controller, CombatExtended");
+            //    if (controllerType != null)
+            //    {
+            //        CEMod = LoadedModManager.GetMod(controllerType);
+            //    }
+            //}
+
+            APCEHarmonyPatches harmony = new APCEHarmonyPatches();
+
             //CEMod = LoadedModManager.GetMod(typeof(CombatExtended.Controller));
-            if (CEMod != null)
-            {
-                CESettings = CEMod.GetSettings<Settings>();
-                AdjustCESettings();
-            }
-            else
-            {
-                Log.Error("Unable to find Combat Extended settings and adjust them. Good luck.");
-            }
-            
+            //if (CEMod != null)
+            //{
+            //    CESettings = CEMod.GetSettings<Settings>();
+            //    AdjustCESettings();
+            //}
+            //else
+            //{
+            //    Log.Error("Unable to find Combat Extended settings and adjust them. Good luck.");
+            //}
         }
 
         public override string SettingsCategory()

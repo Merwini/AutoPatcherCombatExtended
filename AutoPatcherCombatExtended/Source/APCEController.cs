@@ -24,7 +24,7 @@ namespace nuff.AutoPatcherCombatExtended
             CompatibilityPatches compat = new CompatibilityPatches(thisMod);
             compat.PatchMods();
 
-            APCEHarmonyPatches harmony = new APCEHarmonyPatches();
+            //APCEHarmonyPatches harmony = new APCEHarmonyPatches();
 
             APCESaveLoad saveLoad = new APCESaveLoad();
             APCESaveLoad.LoadDataHolders();
