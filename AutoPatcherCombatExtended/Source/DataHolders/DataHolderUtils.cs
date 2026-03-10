@@ -381,7 +381,7 @@ namespace nuff.AutoPatcherCombatExtended
                 return null;
             }
 
-            string defType = def.GetType().Name;
+            Type defType = def.GetType();
             XmlDocument xmlDoc = asset.xmlDoc;
 
             if (xmlDoc != null)
@@ -391,7 +391,8 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     foreach (XmlNode node in allDefs)
                     {
-                        if (node.Name != defType)
+                        // Modded GetType().Name works for vanilla types, but modded types need FullName in order to match
+                        if (node.Name != defType.Name && node.Name != defType.FullName)
                             continue;
 
                         XmlNode defNameNode = node.SelectSingleNode("defName");
