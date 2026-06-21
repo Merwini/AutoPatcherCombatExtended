@@ -160,7 +160,6 @@ namespace nuff.AutoPatcherCombatExtended
             }
             finally
             {
-                //TODO verbose logging
                 PrintLog();
             }
         }
@@ -203,7 +202,6 @@ namespace nuff.AutoPatcherCombatExtended
             }
             finally
             {
-                //TODO verbose logging
                 PrintLog();
             }
         }
