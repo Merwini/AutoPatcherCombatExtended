@@ -162,7 +162,7 @@ namespace nuff.AutoPatcherCombatExtended
                 LoadoutPropertiesExtension loadout = new LoadoutPropertiesExtension();
                 loadout.primaryMagazineCount = new FloatRange(modified_MinMags, modified_MaxMags);
 
-                DataHolderUtils.AddOrReplaceExtension(kindDef, loadout);
+                GeneralUtils.AddOrReplaceExtension(kindDef, loadout);
 
                 kindDef.combatPower = modified_CombatPower;
             }
@@ -181,7 +181,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            xml = DataHolderUtils.GetXmlForDef(kindDef);
+            xml = GeneralUtils.GetXmlForDef(kindDef);
 
             patchOps = new List<string>();
 

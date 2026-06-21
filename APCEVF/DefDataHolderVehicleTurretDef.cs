@@ -215,7 +215,7 @@ namespace nuff.AutoPatcherCombatExtended.VF
                 ammoSet = modified_AmmoSetString
             };
 
-            DataHolderUtils.AddOrReplaceExtension(turretDef, extension);
+            GeneralUtils.AddOrReplaceExtension(turretDef, extension);
         }
 
         public ThingDef CreatePseudoWeapon(VehicleTurretDef def)

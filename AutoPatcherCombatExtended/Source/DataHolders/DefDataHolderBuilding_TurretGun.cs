@@ -119,9 +119,9 @@ namespace nuff.AutoPatcherCombatExtended
                 thingDef.thingClass = typeof(Building_TurretGunCE);
                 thingDef.fillPercent = modified_FillPercent;
                 thingDef.building.turretBurstCooldownTime = modified_TurretBurstCooldownTime;
-                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
-                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy);
-                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret);
                 thingDef.comps.RemoveAll(c => c is CompProperties_Refuelable);
             }
             catch (Exception ex)
@@ -139,7 +139,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            xml = DataHolderUtils.GetXmlForDef(thingDef);
+            xml = GeneralUtils.GetXmlForDef(thingDef);
 
             patchOps = new List<string>();
             patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "AimingAccuracy", modified_AimingAccuracy));

@@ -146,7 +146,7 @@ namespace nuff.AutoPatcherCombatExtended
 
             try
             {
-                gunKind = DataHolderUtils.DetermineGunKind(weaponThingDef);
+                gunKind = GeneralUtils.DetermineGunKind(weaponThingDef);
                 if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
                 {
                     //Log.Message($"APCE thinks that gun {def.label} from {def.modContentPack.Name} is a gun of kind: " + gunKind.ToString());
@@ -314,7 +314,7 @@ namespace nuff.AutoPatcherCombatExtended
                 modified_defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
             }
 
-            xml = DataHolderUtils.GetXmlForDef(weaponThingDef);
+            xml = GeneralUtils.GetXmlForDef(weaponThingDef);
 
             patchOps = new List<string>();
             patchOps.Add(GeneratePatchOpMakeGunCECompatible());
@@ -759,7 +759,7 @@ namespace nuff.AutoPatcherCombatExtended
                     break;
             }
 
-            modified_WeaponToughness = DataHolderUtils.WeaponToughnessAutocalc(weaponThingDef, modified_Bulk);
+            modified_WeaponToughness = GeneralUtils.WeaponToughnessAutocalc(weaponThingDef, modified_Bulk);
             modified_WorkToMake = original_WorkToMake;
             modified_RangedWeaponCooldown = original_RangedWeaponCooldown;
         }
@@ -767,21 +767,21 @@ namespace nuff.AutoPatcherCombatExtended
         {
             RemoveVanillaStatBases();
 
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.Mass, modified_Mass);
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_RangedWeaponCooldown);
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.WorkToMake, modified_WorkToMake);
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_SightsEfficiency);
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_ShotSpread);
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_SwayFactor);
-            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_burstShotCount);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.Mass, modified_Mass);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_RangedWeaponCooldown);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.WorkToMake, modified_WorkToMake);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_SightsEfficiency);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_ShotSpread);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_SwayFactor);
+            GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_burstShotCount);
             if (stuffed)
             {
-                DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
+                GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
             }
             else
             {
-                DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
+                GeneralUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
             }
         }
         public void PatchComps()
@@ -846,7 +846,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             VerbPropertiesCE newVerbPropsCE = new VerbPropertiesCE();
-            DataHolderUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
+            GeneralUtils.CopyFields(weaponThingDef.Verbs[0], newVerbPropsCE);
 
             newVerbPropsCE.ticksBetweenBurstShots = modified_ticksBetweenBurstShots;
             newVerbPropsCE.range = modified_range;
@@ -1109,7 +1109,7 @@ namespace nuff.AutoPatcherCombatExtended
         public AmmoDef GenerateGrenadeAmmoDef()
         {
             AmmoDef ammoGrenade = new AmmoDef();
-            DataHolderUtils.CopyFields(weaponThingDef, ammoGrenade);
+            GeneralUtils.CopyFields(weaponThingDef, ammoGrenade);
 
             ammoGrenade.thingClass = typeof(AmmoThing);
             ammoGrenade.graphicData.graphicClass = typeof(Graphic_Multi);

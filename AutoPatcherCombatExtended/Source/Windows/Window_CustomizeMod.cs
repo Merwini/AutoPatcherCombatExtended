@@ -367,7 +367,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 return dataHolder;
             }
-            else if (APCEController.TryGenerateDataHolderForDef(def))
+            else if (DataHolderUtils.TryGenerateDataHolderForDef(def))
             {
                 modData.defDict.TryGetValue(def, out DefDataHolder ddh2);
                     ddh2.AutoCalculate();

@@ -97,9 +97,9 @@ namespace nuff.AutoPatcherCombatExtended
 
             try
             {
-                DataHolderUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-                DataHolderUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-                DataHolderUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
             }
             catch (Exception ex)
             {
@@ -116,7 +116,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            xml = DataHolderUtils.GetXmlForDef(geneDef);
+            xml = GeneralUtils.GetXmlForDef(geneDef);
 
             patchOps = new List<string>();
             patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statOffsets", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));

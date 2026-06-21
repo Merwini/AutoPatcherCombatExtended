@@ -72,6 +72,18 @@ public static class GeneralUtils
         }
     }
 
+    public static bool AddCompReplaceMe(ThingDef oldThingDef, ThingDef newThingDef)
+    {
+        CompProperties_ReplaceMe newComp_ReplaceMe = new CompProperties_ReplaceMe()
+        {
+            thingToSpawn = newThingDef
+        };
+        if (oldThingDef.comps == null)
+            oldThingDef.comps = new List<CompProperties>();
+        oldThingDef.comps.Add(newComp_ReplaceMe);
+        return true;
+    }
+
     public static void CopyFields(object source, object destination, bool skipDefNameAndHash = false)
     {
         if (source == null || destination == null)
@@ -119,6 +131,14 @@ public static class GeneralUtils
         }
 
         return newToolCE;
+    }
+
+    public static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
+    {
+        //experimental reflection attempt
+        Type tpp = typeof(ProjectileProperties);
+        FieldInfo dab = tpp.GetField("damageAmountBase", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        dab.SetValue(newPPCE, (int)damage);
     }
 
     public static APCEConstants.gunKinds DetermineGunKind(ThingDef thingDef)

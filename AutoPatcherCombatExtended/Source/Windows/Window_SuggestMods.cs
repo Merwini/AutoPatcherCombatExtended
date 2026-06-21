@@ -205,7 +205,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             base.PreOpen();
 
-            APCEController.FindModsNeedingPatched();
+            ModAndDefCheckUtils.FindModsNeedingPatched();
 
             if (!APCESettings.modsToRecommendAdd.NullOrEmpty())
             {

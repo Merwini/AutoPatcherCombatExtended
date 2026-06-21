@@ -186,7 +186,7 @@ namespace nuff.AutoPatcherCombatExtended
         public void RebuildProjectileProps()
         {
             modified_ProjectilePropsCE = new ProjectilePropertiesCE();
-            DataHolderUtils.CopyFields(original_projectile.projectile, modified_ProjectilePropsCE);
+            GeneralUtils.CopyFields(original_projectile.projectile, modified_ProjectilePropsCE);
             modified_ProjectilePropsCE.damageDef = modified_damageDef;
             modified_ProjectilePropsCE.damageAmountBase = modified_damageAmount;
             modified_ProjectilePropsCE.explosionRadius = modified_explosionRadius;
@@ -207,7 +207,7 @@ namespace nuff.AutoPatcherCombatExtended
                     defName = modified_projectileName,
                     shortHash = 0
                 };
-                DataHolderUtils.CopyFields(original_projectile, modified_projectile, true);
+                GeneralUtils.CopyFields(original_projectile, modified_projectile, true);
                 modified_projectile.comps = new List<CompProperties>(); //needs to be a separate list, to preserve the original
                 foreach (CompProperties comp in original_projectile.comps)
                 {
@@ -266,7 +266,7 @@ namespace nuff.AutoPatcherCombatExtended
                     defName = modified_defName,
                     shortHash = 0 //hash later
                 };
-                DataHolderUtils.CopyFields(thingDef, modified_shell, true);
+                GeneralUtils.CopyFields(thingDef, modified_shell, true);
                 modified_shell.comps = new List<CompProperties>(); //needs to be a separate list, to preserve the original
                 foreach (CompProperties comp in thingDef.comps)
                 {

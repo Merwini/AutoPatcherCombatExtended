@@ -174,14 +174,6 @@ namespace nuff.AutoPatcherCombatExtended
             return;
         }
 
-        public static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
-        {
-            //experimental reflection attempt
-            Type tpp = typeof(ProjectileProperties);
-            FieldInfo dab = tpp.GetField("damageAmountBase", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            dab.SetValue(newPPCE, (int)damage);
-        }
-
         public static bool ReplaceRecipes(ThingDef oldThingDef, ThingDef newThingDef, int newRecipeCount)
         {
             bool foundRecipe = false;
@@ -198,18 +190,6 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
             return foundRecipe;
-        }
-
-        public static bool AddCompReplaceMe(ThingDef oldThingDef, ThingDef newThingDef)
-        {
-            CompProperties_ReplaceMe newComp_ReplaceMe = new CompProperties_ReplaceMe()
-            {
-                thingToSpawn = newThingDef
-            };
-            if (oldThingDef.comps == null)
-                oldThingDef.comps = new List<CompProperties>();
-            oldThingDef.comps.Add(newComp_ReplaceMe);
-            return true;
         }
 
         /*

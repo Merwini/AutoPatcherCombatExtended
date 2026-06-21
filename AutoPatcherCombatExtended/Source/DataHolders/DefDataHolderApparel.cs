@@ -148,24 +148,24 @@ namespace nuff.AutoPatcherCombatExtended
                 //check for null def in case this object was loaded without the def present e.g. from the mod source not being active
                 if (def != null)
                 {
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.Mass, modified_Mass);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.Mass, modified_Mass);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn);
 
                     if (!thingDef.stuffCategories.NullOrEmpty())
                     {
-                        DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor);
+                        GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor);
                     }
 
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
                 }
             }
             catch (Exception ex)
@@ -183,7 +183,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            xml = DataHolderUtils.GetXmlForDef(thingDef);
+            xml = GeneralUtils.GetXmlForDef(thingDef);
 
             patchOps = new List<string>();
             patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));

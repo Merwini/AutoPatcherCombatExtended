@@ -184,7 +184,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            xml = DataHolderUtils.GetXmlForDef(pawnDef);
+            xml = GeneralUtils.GetXmlForDef(pawnDef);
 
             patchOps = new List<string>();
 
@@ -297,21 +297,21 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void PatchStatBases()
         {
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
 
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.Suppressability, modified_Suppressability);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.Suppressability, modified_Suppressability);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
 
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight);
+            GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk);
         }
         public void PatchModExtensions()
         {
@@ -319,33 +319,33 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 bodyShape = modified_BodyShapeDef
             };
-            DataHolderUtils.AddOrReplaceExtension(pawnDef, racePropsExt);
+            GeneralUtils.AddOrReplaceExtension(pawnDef, racePropsExt);
         }
 
         public void PatchComps()
         {
             CompProperties_Inventory cp_inv = new CompProperties_Inventory();
-            DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_inv);
+            GeneralUtils.AddOrReplaceCompProps(pawnDef, cp_inv);
 
             CompProperties_TacticalManager cp_tm = new CompProperties_TacticalManager();
-            DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_tm);
+            GeneralUtils.AddOrReplaceCompProps(pawnDef, cp_tm);
 
             if (pawnDef.race.intelligence != Intelligence.Animal)
             {
                 CompProperties_Suppressable cp_sup = new CompProperties_Suppressable();
-                DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_sup);
+                GeneralUtils.AddOrReplaceCompProps(pawnDef, cp_sup);
 
                 CompProperties cp_ag = new CompProperties()
                 {
                     compClass = typeof(CompAmmoGiver)
                 };
-                DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_ag);
+                GeneralUtils.AddOrReplaceCompProps(pawnDef, cp_ag);
 
                 CompProperties cp_pg = new CompProperties()
                 {
                     compClass = typeof(CompPawnGizmo)
                 };
-                DataHolderUtils.AddOrReplaceCompProps(pawnDef, cp_pg);
+                GeneralUtils.AddOrReplaceCompProps(pawnDef, cp_pg);
 
                 //TODO CompArmorDurability
             }

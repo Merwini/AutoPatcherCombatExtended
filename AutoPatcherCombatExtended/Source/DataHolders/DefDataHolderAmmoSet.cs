@@ -137,7 +137,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (gunKind == APCEConstants.gunKinds.Default)
                 {
-                    gunKind = DataHolderUtils.DetermineGunKind(weaponDef);
+                    gunKind = GeneralUtils.DetermineGunKind(weaponDef);
                 }
                 original_projectile = weaponDef.Verbs[0].defaultProjectile;
                 if (original_projectile != null)
@@ -1027,7 +1027,7 @@ namespace nuff.AutoPatcherCombatExtended
 
                     secondaryDamage = modified_secondaryDamages[i] //this should have been populated already at this point
                 };
-                DataHolderUtils.SetDamage(newProjProps, modified_damages[i]);
+                GeneralUtils.SetDamage(newProjProps, modified_damages[i]);
                 ThingDef td = DefDatabase<ThingDef>.GetNamedSilentFail(modified_projectileNames[i]);
                 
                 //todo this is stupid just do if td=null make it with defName and then set values either way

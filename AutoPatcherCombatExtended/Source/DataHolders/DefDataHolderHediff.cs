@@ -137,9 +137,9 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     for (int i = 0; i < hediffDef.stages.Count; i++)
                     {
-                        DataHolderUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
-                        DataHolderUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
-                        DataHolderUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
+                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
+                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
+                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
                     }
                 }
                 if (verbGiver != null && !original_Tools.NullOrEmpty())
@@ -167,7 +167,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            xml = DataHolderUtils.GetXmlForDef(hediffDef);
+            xml = GeneralUtils.GetXmlForDef(hediffDef);
 
             //for keeping track of whether any of the patchOps for armor values have had to add a statOffets node for a given <stages> index, so it isn't re-added by one of the others
             List<bool> addedStatOffsets = new List<bool>();

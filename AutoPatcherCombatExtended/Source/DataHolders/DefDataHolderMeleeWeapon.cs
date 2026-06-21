@@ -85,7 +85,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 modified_Mass = original_Mass;
                 modified_Bulk = modified_Mass * 2f; //TODO better calculation
-                modified_WeaponToughness = DataHolderUtils.WeaponToughnessAutocalc(thingDef, modified_Bulk);
+                modified_WeaponToughness = GeneralUtils.WeaponToughnessAutocalc(thingDef, modified_Bulk);
                 CalculateStatMods();
                 CalculateWeaponTechMult();
                 if (!original_Tools.NullOrEmpty())
@@ -126,21 +126,21 @@ namespace nuff.AutoPatcherCombatExtended
                     thingDef.statBases = new List<StatModifier>();
                 }
 
-                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.Mass, modified_Mass);
-                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.Mass, modified_Mass);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
                 if (stuffed)
                 {
-                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
                 }
                 else
                 {
-                    DataHolderUtils.AddOrChangeStat(ref     thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
+                    GeneralUtils.AddOrChangeStat(ref     thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
                 }
-                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
 
-                DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
-                DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
-                DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
                 if (!original_Tools.NullOrEmpty())
                 {
                     thingDef.tools.Clear();
@@ -166,7 +166,7 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override StringBuilder ExportXML()
         {
-            xml = DataHolderUtils.GetXmlForDef(thingDef);
+            xml = GeneralUtils.GetXmlForDef(thingDef);
 
             patchOps = new List<string>();
             patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Mass", modified_Mass, original_Mass));
