@@ -16,7 +16,7 @@ namespace nuff.AutoPatcherCombatExtended
     public static class DataHolderUtils
     {
         //Made my own so I can use it to change equippedStatOffSets, too
-        public static void AddOrChangeStat(List<StatModifier> list, StatDef stat, float value)
+        public static void AddOrChangeStat(ref List<StatModifier> list, StatDef stat, float value)
         {
             if (list == null)
             {

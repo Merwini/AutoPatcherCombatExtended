@@ -97,9 +97,9 @@ namespace nuff.AutoPatcherCombatExtended
 
             try
             {
-                DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-                DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-                DataHolderUtils.AddOrChangeStat(geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+                DataHolderUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+                DataHolderUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+                DataHolderUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
             }
             catch (Exception ex)
             {

@@ -126,22 +126,21 @@ namespace nuff.AutoPatcherCombatExtended
                     thingDef.statBases = new List<StatModifier>();
                 }
 
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.Mass, modified_Mass);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.Mass, modified_Mass);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
                 if (stuffed)
                 {
-                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
+                    DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
                 }
                 else
                 {
-                    DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
+                    DataHolderUtils.AddOrChangeStat(ref     thingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
                 }
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.MeleeCounterParryBonus, modified_MeleeCounterParryBonus);
 
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
-                DataHolderUtils.AddOrChangeStat(thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
-
+                DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
                 if (!original_Tools.NullOrEmpty())
                 {
                     thingDef.tools.Clear();

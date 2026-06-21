@@ -137,9 +137,9 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     for (int i = 0; i < hediffDef.stages.Count; i++)
                     {
-                        DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
-                        DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
-                        DataHolderUtils.AddOrChangeStat(hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
+                        DataHolderUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
+                        DataHolderUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
+                        DataHolderUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
                     }
                 }
                 if (verbGiver != null && !original_Tools.NullOrEmpty())

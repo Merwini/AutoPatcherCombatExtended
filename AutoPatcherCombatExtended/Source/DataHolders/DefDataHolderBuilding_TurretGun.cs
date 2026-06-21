@@ -119,9 +119,9 @@ namespace nuff.AutoPatcherCombatExtended
                 thingDef.thingClass = typeof(Building_TurretGunCE);
                 thingDef.fillPercent = modified_FillPercent;
                 thingDef.building.turretBurstCooldownTime = modified_TurretBurstCooldownTime;
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy);
-                DataHolderUtils.AddOrChangeStat(thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy);
+                DataHolderUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret);
                 thingDef.comps.RemoveAll(c => c is CompProperties_Refuelable);
             }
             catch (Exception ex)

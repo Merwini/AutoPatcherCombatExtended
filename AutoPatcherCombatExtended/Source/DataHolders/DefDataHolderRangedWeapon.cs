@@ -767,21 +767,21 @@ namespace nuff.AutoPatcherCombatExtended
         {
             RemoveVanillaStatBases();
 
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.Mass, modified_Mass);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_RangedWeaponCooldown);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, StatDefOf.WorkToMake, modified_WorkToMake);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_SightsEfficiency);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_ShotSpread);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_SwayFactor);
-            DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_burstShotCount);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.Mass, modified_Mass);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.RangedWeapon_Cooldown, modified_RangedWeaponCooldown);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, StatDefOf.WorkToMake, modified_WorkToMake);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.SightsEfficiency, modified_SightsEfficiency);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.ShotSpread, modified_ShotSpread);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.SwayFactor, modified_SwayFactor);
+            DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.BurstShotCount, modified_burstShotCount);
             if (stuffed)
             {
-                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
+                DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.StuffEffectMultiplierToughness, modified_WeaponToughness);
             }
             else
             {
-                DataHolderUtils.AddOrChangeStat(weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
+                DataHolderUtils.AddOrChangeStat(ref weaponThingDef.statBases, CE_StatDefOf.ToughnessRating, modified_WeaponToughness);
             }
         }
         public void PatchComps()

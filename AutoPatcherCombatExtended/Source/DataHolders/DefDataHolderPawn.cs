@@ -297,22 +297,21 @@ namespace nuff.AutoPatcherCombatExtended
 
         public void PatchStatBases()
         {
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
 
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.Suppressability, modified_Suppressability);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
 
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.Suppressability, modified_Suppressability);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
-
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-            DataHolderUtils.AddOrChangeStat(pawnDef.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight);
+            DataHolderUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk);
         }
         public void PatchModExtensions()
         {

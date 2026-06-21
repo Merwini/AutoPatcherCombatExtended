@@ -183,17 +183,17 @@ namespace nuff.AutoPatcherCombatExtended.VF
 
         internal void PatchVehicleStatBases()
         {
-            DataHolderUtils.AddOrChangeStat(vehicleDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-            DataHolderUtils.AddOrChangeStat(vehicleDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-            DataHolderUtils.AddOrChangeStat(vehicleDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+            DataHolderUtils.AddOrChangeStat(ref vehicleDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+            DataHolderUtils.AddOrChangeStat(ref vehicleDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+            DataHolderUtils.AddOrChangeStat(ref vehicleDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
         }
 
         internal void PatchVehicleComponents()
         {
             for (int i = 0; i < vehicleDef.components.Count; i++)
             {
-                DataHolderUtils.AddOrChangeStat(vehicleDef.components[i].armor, StatDefOf.ArmorRating_Sharp, modified_ComponentArmorSharps[i]);
-                DataHolderUtils.AddOrChangeStat(vehicleDef.components[i].armor, StatDefOf.ArmorRating_Blunt, modified_ComponentArmorBlunts[i]);
+                DataHolderUtils.AddOrChangeStat(ref vehicleDef.components[i].armor, StatDefOf.ArmorRating_Sharp, modified_ComponentArmorSharps[i]);
+                DataHolderUtils.AddOrChangeStat(ref vehicleDef.components[i].armor, StatDefOf.ArmorRating_Blunt, modified_ComponentArmorBlunts[i]);
                 vehicleDef.components[i].health = modified_ComponentHealths[i];
             }
         }
