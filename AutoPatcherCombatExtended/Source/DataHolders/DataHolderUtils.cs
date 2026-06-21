@@ -198,7 +198,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public static void GenerateDataHolderForMod(ModContentPack mod)
+        public static void PrepareModDataHolder(ModContentPack mod)
         {
             //Don't generate a ModDataHolder if it already generated during SaveLoad
             if (!APCESettings.modDataDict.ContainsKey(mod.PackageId))

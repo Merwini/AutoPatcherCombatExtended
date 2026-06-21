@@ -48,7 +48,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {
-                DataHolderUtils.GenerateDataHolderForMod(mod);
+                DataHolderUtils.PrepareModDataHolder(mod);
             }
 
             foreach (var holder in APCESettings.modDataDict)
