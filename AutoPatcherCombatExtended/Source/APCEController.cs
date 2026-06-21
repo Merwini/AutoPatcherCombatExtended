@@ -44,7 +44,7 @@ namespace nuff.AutoPatcherCombatExtended
         }
 
         // This is called by WriteSettings of the Mod class, because it needs to run every time settings are changed.
-        public static void APCEPatchController()
+        public static void RunPatches()
         {
             foreach (ModContentPack mod in APCESettings.modsToPatch)
             {

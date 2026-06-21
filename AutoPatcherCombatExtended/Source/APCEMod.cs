@@ -369,7 +369,7 @@ namespace nuff.AutoPatcherCombatExtended
             APCEController.RemoveListDuplicates(APCESettings.modsByPackageId);
             if (APCESettings.shouldRunController)
             {
-                APCEController.APCEPatchController();
+                APCEController.RunPatches();
             }
             base.WriteSettings();
         }
