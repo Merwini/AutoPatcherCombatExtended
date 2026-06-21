@@ -230,7 +230,6 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void PreClose()
         {
-            base.PreClose();
             if (APCESettings.modsByPackageId == null)
             {
                 Log.Warning("List modsByPackageId was null, it should not have been");
@@ -290,6 +289,7 @@ namespace nuff.AutoPatcherCombatExtended
                 }
             }
 
+            base.PreClose();
         }
 
         public override void PostClose()

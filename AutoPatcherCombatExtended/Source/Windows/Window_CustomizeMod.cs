@@ -274,7 +274,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 Rect listRect = new Rect(0, 0, inRect.width, inRect.height * 0.75f);
                 //list.ListControlMods(listRect, ref APCESettings.activeMods, ref APCESettings.modsToPatch, ref searchTerm, ref leftScrollPosition, ref rightScrollPosition,
-                //        ref leftSelectedObject2, ref rightSelectedObject2, "Mods to patch", rectPCT: 1f);
+                //ref leftSelectedObject2, ref rightSelectedObject2, "Mods to patch", rectPCT: 1f);
                 list.ListControlDefs(listRect, ref searchTerm, ref leftScrollPosition, ref rightScrollPosition,
                     ref leftSelectedObject, ref rightSelectedObject, "Defs to patch", rectPCT: 1f, modData);
 
@@ -370,7 +370,7 @@ namespace nuff.AutoPatcherCombatExtended
             else if (DataHolderUtils.TryGenerateDataHolderForDef(def))
             {
                 modData.defDict.TryGetValue(def, out DefDataHolder ddh2);
-                    ddh2.AutoCalculate();
+                ddh2.AutoCalculate();
                 return ddh2;
             }
             else
@@ -395,7 +395,9 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                string ()
+                string errorSource = $"Window_CustomizeMod.PreClose() for mod {mod.Name}";
+                Log.Error($"Exception during {errorSource}: \n{ex}");
+                Find.WindowStack.Add(new Window_ShowException(ex, errorSource));
             }
             finally
             {

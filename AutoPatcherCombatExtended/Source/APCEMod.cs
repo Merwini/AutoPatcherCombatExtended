@@ -364,31 +364,6 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
-        public void AdjustCESettings()
-        {
-            if (CESettings == null)
-                return;
-
-            string[] autopatcherFieldNames = {
-            "enableApparelAutopatcher",
-            "enableWeaponAutopatcher",
-            "enableRaceAutopatcher",
-            "enablePawnKindAutopatcher",
-            "enableWeaponToughnessAutopatcher"
-            };
-
-            Type settingsType = typeof(Settings);
-
-            foreach (string fieldName in autopatcherFieldNames)
-            {
-                FieldInfo field = settingsType.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field != null && field.FieldType == typeof(bool))
-                {
-                    field.SetValue(CESettings, false);
-                }
-            }
-        }
-
         public override void WriteSettings()
         {
             APCEController.RemoveListDuplicates(APCESettings.modsByPackageId);
@@ -397,16 +372,6 @@ namespace nuff.AutoPatcherCombatExtended
                 APCEController.APCEPatchController();
             }
             base.WriteSettings();
-        }
-
-        public static bool RegisterDefTypeFolder(string folderName, Type defType)
-        {
-            defFolderTypesDictionary.TryAdd(folderName, defType);
-            if (defFolderTypesDictionary.TryGetValue(folderName, out Type value) && value == defType)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }
