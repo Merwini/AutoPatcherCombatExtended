@@ -45,13 +45,18 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
 
             try
             {
                 original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+                logBuilder.AppendLine($"original_ArmorRatingSharp : {original_ArmorRatingSharp}");
+
                 original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+                logBuilder.AppendLine($"original_ArmorRatingBlunt : {original_ArmorRatingBlunt}");
+
                 original_ArmorRatingHeat = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+                logBuilder.AppendLine($"original_ArmorRatingHeat: {original_ArmorRatingHeat}");
             }
             catch (Exception ex)
             {
@@ -61,7 +66,6 @@ namespace nuff.AutoPatcherCombatExtended
             }
             finally
             {
-                //TODO verbose logging
                 PrintLog();
             }
         }
@@ -69,13 +73,18 @@ namespace nuff.AutoPatcherCombatExtended
         public override void AutoCalculate()
         {
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
 
             try
             {
                 modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
+                logBuilder.AppendLine($"modified_ArmorRatingSharp: {modified_ArmorRatingSharp}");
+
                 modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.geneArmorBluntMult;
+                logBuilder.AppendLine($"modified_ArmorRatingBlunt: {modified_ArmorRatingBlunt}");
+
                 modified_ArmorRatingHeat = original_ArmorRatingHeat;
+                logBuilder.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat}");
             }
             catch (Exception ex)
             {
@@ -85,7 +94,6 @@ namespace nuff.AutoPatcherCombatExtended
             }
             finally
             {
-                //TODO verbose logging
                 PrintLog();
             }
         }
@@ -93,23 +101,22 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ApplyPatch()
         {
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
 
             try
             {
-                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat, logBuilder);
             }
             catch (Exception ex)
             {
-                logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
                 logBuilder.AppendLine(ex.ToString());
                 threwError = true;
             }
             finally
             {
-                //TODO verbose logging
                 PrintLog();
             }
         }
