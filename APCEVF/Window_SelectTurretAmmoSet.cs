@@ -28,13 +28,12 @@ namespace nuff.AutoPatcherCombatExtended.VF
         {
             Listing_Standard list = new Listing_Standard();
 
-            // Begin main listing (Header)
             list.Begin(inRect);
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), $"Select AmmoSet for {dataHolder.def.label}");
             Text.Font = GameFont.Small;
             list.End();
-            list.Gap(45);  // Added gap to separate elements
+            list.Gap(45); // Added gap to separate elements
 
             // Enum Selector for sorting method
             float enumHeight = 25f;
