@@ -15,8 +15,10 @@ namespace nuff.AutoPatcherCombatExtended;
 public static class GeneralUtils
 {
 
-    public static void AddOrChangeStat(ref List<StatModifier> list, StatDef stat, float value)
+    public static void AddOrChangeStat(ref List<StatModifier> list, StatDef stat, float value, StringBuilder logBuilder = null)
     {
+        bool addedStat = false;
+
         if (list == null)
         {
             list = new List<StatModifier>();
@@ -27,10 +29,18 @@ public static class GeneralUtils
         {
             list[index].value = value;
         }
+
         //can't think of a use case where I would need to add a 0 value statmod, and adding this check will save vetting in the patch methods
         else if (value != 0)
         {
+            addedStat = true;
             list.Add(new StatModifier() { stat = stat, value = value });
+        }
+
+        if (logBuilder != null)
+        {
+            string action = addedStat ? "Added new stat" : "Updated existing stat";
+            logBuilder.AppendLine($"{action} {stat.defName} with value {value}");
         }
     }
 
