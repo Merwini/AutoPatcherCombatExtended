@@ -122,7 +122,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void AutoCalculate()
         {
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
             try
             {
@@ -168,7 +168,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void ApplyPatch()
         {
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
 
             try
             {
