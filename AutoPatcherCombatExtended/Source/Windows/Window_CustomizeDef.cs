@@ -43,10 +43,23 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override void PreClose()
         {
-            base.PreClose();
-            dataHolder.PrePatch();
-            dataHolder.ApplyPatch();
-            dataHolder.PostPatch();
+            try
+            {
+                dataHolder.PrePatch();
+                dataHolder.ApplyPatch();
+                dataHolder.PostPatch();
+            }
+            catch (Exception ex)
+            {
+                string defName = dataHolder.def?.defName;
+                string modSource = dataHolder.def?.modContentPack.Name;
+                Log.Error($"Exception during Window_CustomizeDef.PreClose() for {defName} from {modSource}: \n{ex}");
+                Find.WindowStack.Add(new Window_ShowException(ex, defName, modSource));
+            }
+            finally
+            {
+                base.PreClose();
+            }
         }
     }
 }

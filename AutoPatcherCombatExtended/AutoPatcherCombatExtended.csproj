@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Source\Utils\GeneralUtils.cs" />
     <Compile Include="Source\Utils\ModAndDefCheckUtils.cs" />
+    <Compile Include="Source\Windows\Window_ShowException.cs" />
     <Compile Include="TrashFolder\PatchVehicle.cs" />
     <None Include="APCE Item1" />
     <Compile Include="Source\APCEPatchExport.cs" />
