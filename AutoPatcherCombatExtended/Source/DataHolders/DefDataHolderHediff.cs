@@ -46,7 +46,7 @@ namespace nuff.AutoPatcherCombatExtended
             }
 
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine($"Starting GetOriginalData log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
 
             try
             {
@@ -71,9 +71,15 @@ namespace nuff.AutoPatcherCombatExtended
                         armorRatingHeat = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
                     }
 
+                    logBuilder.AppendLine($"Hediff stage: {i}");
                     original_ArmorRatingSharp.Add(armorRatingSharp);
+                    logBuilder.AppendLine($"original_ArmorRatingSharp: {armorRatingSharp}");
+
                     original_ArmorRatingBlunt.Add(armorRatingBlunt);
+                    logBuilder.AppendLine($"original_ArmorRatingBlunt: {armorRatingBlunt}");
+
                     original_ArmorRatingHeat.Add(armorRatingHeat);
+                    logBuilder.AppendLine($"original_ArmorRatingHeat: {armorRatingHeat}");
                 }
             }
             catch (Exception ex)
@@ -92,7 +98,7 @@ namespace nuff.AutoPatcherCombatExtended
         public override void AutoCalculate()
         {
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine($"Starting AutoCalculate log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
 
             try
             {
@@ -108,9 +114,15 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     for (int i = 0; i < hediffDef.stages.Count; i++)
                     {
+                        logBuilder.AppendLine($"Hediff stage: {i}");
                         modified_ArmorRatingSharp.Add(original_ArmorRatingSharp[i] * ModData.hediffSharpMult);
+                        logBuilder.AppendLine($"modified_ArmorRatingSharp: {modified_ArmorRatingSharp[i]}");
+
                         modified_ArmorRatingBlunt.Add(original_ArmorRatingBlunt[i] * ModData.hediffBluntMult);
+                        logBuilder.AppendLine($"modified_ArmorRatingBlunt: {modified_ArmorRatingBlunt[i]}");
+
                         modified_ArmorRatingHeat.Add(original_ArmorRatingHeat[i]);
+                        logBuilder.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat[i]}");
                     }
                 }
             }
@@ -122,14 +134,13 @@ namespace nuff.AutoPatcherCombatExtended
             }
             finally
             {
-                //TODO verbose logging
                 PrintLog();
             }
         }
         public override void ApplyPatch()
         {
             StartNewLogEntry();
-            logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine($"Starting ApplyPatch log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
 
             try
             {
@@ -137,9 +148,10 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     for (int i = 0; i < hediffDef.stages.Count; i++)
                     {
-                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i]);
-                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i]);
-                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i]);
+                        logBuilder.AppendLine($"Hediff stage: {i}");
+                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i], logBuilder);
+                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i], logBuilder);
+                        GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i], logBuilder);
                     }
                 }
                 if (verbGiver != null && !original_Tools.NullOrEmpty())
@@ -154,13 +166,12 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+                logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
                 logBuilder.AppendLine(ex.ToString());
                 threwError = true;
             }
             finally
             {
-                //TODO verbose logging
                 PrintLog();
             }
         }
@@ -325,7 +336,6 @@ namespace nuff.AutoPatcherCombatExtended
             modified_ToolArmorPenetrationSharps[i] *= ModData.pawnToolBluntPenetration;
         }
 
-        //TODO
         public override void ExposeData()
         {
             if (Scribe.mode == LoadSaveMode.LoadingVars
