@@ -51,10 +51,9 @@ namespace nuff.AutoPatcherCombatExtended
             }
             catch (Exception ex)
             {
-                string defName = dataHolder.def?.defName;
-                string modSource = dataHolder.def?.modContentPack.Name;
-                Log.Error($"Exception during Window_CustomizeDef.PreClose() for {defName} from {modSource}: \n{ex}");
-                Find.WindowStack.Add(new Window_ShowException(ex, defName, modSource));
+                string errorSource = $"Window_CustomizeDef.PreClose() for def {dataHolder.def?.defName} from mod {dataHolder.def?.modContentPack.Name}";
+                Log.Error($"Exception during Window_CustomizeDef.PreClose() for {errorSource}: \n{ex}");
+                Find.WindowStack.Add(new Window_ShowException(ex, errorSource));
             }
             finally
             {

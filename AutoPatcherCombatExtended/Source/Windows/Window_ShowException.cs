@@ -16,9 +16,9 @@ namespace nuff.AutoPatcherCombatExtended
 
         public override Vector2 InitialSize => new Vector2(900f, 650f);
 
-        public Window_ShowException(Exception ex, string defName, string modSource)
+        public Window_ShowException(Exception ex, string errorSource)
         {
-            exceptionText = ex?.ToString() ?? "Unknown exception";
+            exceptionText = ($"Exception during {errorSource}. \n:" + ex?.ToString() ?? "Unknown exception");
 
             doCloseButton = false;
             doCloseX = true;
@@ -36,7 +36,7 @@ namespace nuff.AutoPatcherCombatExtended
             Text.Font = GameFont.Small;
 
             Rect descRect = new Rect(inRect.x, titleRect.yMax + 8f, inRect.width, 50f);
-            Widgets.Label(descRect, "An error occurred while applying your changes. Please copy this error and report it on the Steam Workshop page.");
+            Widgets.Label(descRect, "An error occurred. Please copy this error and report it on the Steam Workshop page.");
 
             float buttonHeight = 35f;
             float gap = 10f;
@@ -45,7 +45,7 @@ namespace nuff.AutoPatcherCombatExtended
             if (Widgets.ButtonText(buttonRect, "Copy error"))
             {
                 GUIUtility.systemCopyBuffer = exceptionText;
-                Messages.Message("APCE error copied to clipboard.", MessageTypeDefOf.PositiveEvent, false);
+                Messages.Message("error copied to clipboard.", MessageTypeDefOf.PositiveEvent, false);
             }
 
             Rect closeRect = new Rect(buttonRect.xMax + gap, inRect.yMax - buttonHeight, 180f, buttonHeight);
