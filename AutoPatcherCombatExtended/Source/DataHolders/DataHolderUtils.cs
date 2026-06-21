@@ -1,15 +1,16 @@
-﻿using System;
+﻿using CombatExtended;
+using RimWorld;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 using System.Xml;
-using Verse;
-using RimWorld;
-using CombatExtended;
-using System.Reflection;
 using UnityEngine;
+using Verse;
+using Verse.AI;
 
 namespace nuff.AutoPatcherCombatExtended
 {
@@ -197,6 +198,101 @@ namespace nuff.AutoPatcherCombatExtended
             }
         }
 
+        public static void GenerateDataHolderForMod(ModContentPack mod)
+        {
+            //Don't generate a ModDataHolder if it already generated during SaveLoad
+            if (!APCESettings.modDataDict.ContainsKey(mod.PackageId))
+            {
+                ModDataHolder mdh = new ModDataHolder(mod);
+            }
+        }
+
+        public static bool TryGenerateDataHolderForDef(Def def)
+        {
+            try
+            {
+                if (HandleDelegatedDefTypesGenerate(def))
+                {
+                    return true;
+                }
+                else if (def is ThingDef td)
+                {
+                    if (td.IsApparel)
+                    {
+                        GenerateDefDataHolder(def, APCEConstants.DefTypes.Apparel);
+                        return true;
+                    }
+                    else if (td.IsWeapon)
+                    {
+                        if (td.IsRangedWeapon
+                            && (!typeof(Verb_CastAbility).IsAssignableFrom(td.Verbs[0].verbClass))
+                            && (!typeof(Verb_CastBase).IsAssignableFrom(td.Verbs[0].verbClass)))
+                        {
+                            GenerateDefDataHolder(def, APCEConstants.DefTypes.RangedWeapon);
+                            return true;
+                        }
+                        else //if (td.IsMeleeWeapon)
+                        {
+                            GenerateDefDataHolder(def, APCEConstants.DefTypes.MeleeWeapon);
+                            return true;
+                        }
+                    }
+                    else if (typeof(Pawn).IsAssignableFrom(td.thingClass))
+                    {
+                        GenerateDefDataHolder(def, APCEConstants.DefTypes.Pawn);
+                        return true;
+                    }
+                    else if (typeof(Building_TurretGun).IsAssignableFrom(td.thingClass))
+                    {
+                        GenerateDefDataHolder(def, APCEConstants.DefTypes.Building_TurretGun);
+                        return true;
+                    }
+                    else if ((td.thingCategories != null) && td.thingCategories.Contains(APCEDefOf.MortarShells))
+                    {
+                        GenerateDefDataHolder(def, APCEConstants.DefTypes.MortarShell);
+                        return true;
+                    }
+                }
+                else if (def is HediffDef hd)
+                {
+                    GenerateDefDataHolder(def, APCEConstants.DefTypes.Hediff);
+                    return true;
+                }
+                else if (def is PawnKindDef pkd)
+                {
+                    GenerateDefDataHolder(def, APCEConstants.DefTypes.PawnKind);
+                    return true;
+                }
+                else if (ModLister.BiotechInstalled
+                    && def is GeneDef gene)
+                {
+                    GenerateDefDataHolder(def, APCEConstants.DefTypes.Gene);
+                    return true;
+                }
+                else
+                {
+                    HandleUnknownDefGenerate(def);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"Exception while trying to generate DefDataHolder for def {def.defName} from mod {def.modContentPack.Name}. Exception: \n" + ex.ToString());
+                return false;
+            }
+        }
+
+        public static bool HandleDelegatedDefTypesGenerate(Def def)
+        {
+            Type defType = def.GetType();
+            if (APCESettings.typeHandlerDictionaryGenerate.TryGetValue(defType, out var handler))
+            {
+                handler.DynamicInvoke(def);
+                return true;
+            }
+            return false;
+        }
+
         public static void GenerateDefDataHolder(Def def, APCEConstants.DefTypes defType)
         {
             DefDataHolder ddh;
@@ -232,6 +328,13 @@ namespace nuff.AutoPatcherCombatExtended
                 case APCEConstants.DefTypes.Stuff: //TODO Stuff is not a def, figure out a way to work with them
                     break;
             }
+        }
+
+        public static void HandleUnknownDefGenerate(Def def)
+        {
+            //TODO remove? most unhandled def types are not in need of patching
+            //Log.Warning($"Unable to generate DefDataHolder for {def.defName} from mod {def.modContentPack.Name}. Type {def.GetType()} is unrecognized.");
+            return;
         }
 
         public static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
