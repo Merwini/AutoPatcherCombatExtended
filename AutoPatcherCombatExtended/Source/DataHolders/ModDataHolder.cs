@@ -133,7 +133,7 @@ namespace nuff.AutoPatcherCombatExtended
         {
             foreach (Def def in mod.AllDefs)
             {
-                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
                 if (need == APCEConstants.NeedsPatch.yes)
                 {
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
@@ -151,7 +151,7 @@ namespace nuff.AutoPatcherCombatExtended
             {
                 if (entry.Value == APCEConstants.NeedsPatch.yes && !defDict.ContainsKey(entry.Key))
                 {
-                    APCEController.TryGenerateDataHolderForDef(entry.Key);
+                    DataHolderUtils.TryGenerateDataHolderForDef(entry.Key);
                 }
             }
         }
@@ -252,12 +252,13 @@ namespace nuff.AutoPatcherCombatExtended
             return true;
         }
 
-        public void RebuildDefsToPatchDict(List<string> namesList, List<string> typesList)
+        // TODO refactor so I don't check every def twice with CheckIfDefNeedsPatched
+        public void RebuildSavedDefsToPatchDict(List<string> namesList, List<string> typesList)
         {
             //populate the dictionary with all patchable defs as "no", will be flipped the "yes" further below if appropriate
             foreach (Def def in mod.AllDefs)
             {
-                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
                 if (need != APCEConstants.NeedsPatch.ignore)
                 {
                     defsToPatch[def] = APCEConstants.NeedsPatch.no;
@@ -314,7 +315,7 @@ namespace nuff.AutoPatcherCombatExtended
             //populate the rest of the dictionary for defs NOT to patch
             foreach (Def def in mod.AllDefs)
             {
-                APCEConstants.NeedsPatch need = APCEController.CheckIfDefNeedsPatched(def);
+                APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
                 if (need != APCEConstants.NeedsPatch.ignore && !defsToPatch.ContainsKey(def))
                 {
                     defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
@@ -428,7 +429,7 @@ namespace nuff.AutoPatcherCombatExtended
                 {
                     defsToPatchNames = new List<string>();
                 }
-                RebuildDefsToPatchDict(defsToPatchNames, defsToPatchTypes);
+                RebuildSavedDefsToPatchDict(defsToPatchNames, defsToPatchTypes);
             }
         }
 

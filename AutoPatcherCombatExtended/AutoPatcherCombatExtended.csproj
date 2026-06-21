@@ -10,7 +10,7 @@
     <RootNamespace>nuff.AutoPatcherCombatExtended</RootNamespace>
     <AssemblyName>AutoPatcherCombatExtended</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-	  <LangVersion>14.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
@@ -60,7 +60,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\ModAndDefCheckUtils.cs" />
+    <Compile Include="Source\Utils\GeneralUtils.cs" />
+    <Compile Include="Source\Utils\ModAndDefCheckUtils.cs" />
     <Compile Include="TrashFolder\PatchVehicle.cs" />
     <None Include="APCE Item1" />
     <Compile Include="Source\APCEPatchExport.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="Source\DataHolders\DefDataHolderPawn.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderPawnKind.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderRangedWeapon.cs" />
-    <Compile Include="Source\DataHolders\DataHolderUtils.cs" />
+    <Compile Include="Source\Utils\DataHolderUtils.cs" />
     <Compile Include="Source\DataHolders\DefDataHolderStuff.cs" />
     <Compile Include="Source\DataHolders\ModDataHolder.cs" />
     <Compile Include="Source\Patchers\PatchGenes.cs" />
