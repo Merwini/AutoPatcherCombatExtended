@@ -151,59 +151,111 @@ public static class GeneralUtils
         dab.SetValue(newPPCE, (int)damage);
     }
 
-    public static APCEConstants.gunKinds DetermineGunKind(ThingDef thingDef)
+    public static APCEConstants.gunKinds DetermineGunKind(ThingDef thingDef, APCEConstants.PatchStageLog log)
     {
+        StringBuilder logText = log.Text;
         try
         {
             //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             if (thingDef.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                logText.AppendLine("Gun has weaponTag \"Artillery\", returning Mortar as gun kind.");
                 return APCEConstants.gunKinds.Mortar;
+            }
             else if (thingDef.Verbs[0].verbClass == typeof(Verb_ShootBeam))
+            {
+                logText.AppendLine("Gun has verbClass \"Verb_ShootBeam\", returning BeamGun as gun kind.");
                 return APCEConstants.gunKinds.BeamGun;
+            }
             else if (thingDef.Verbs[0].verbClass == typeof(Verb_SpewFire))
+            {
+                logText.AppendLine("Gun has verbClass \"Verb_SpewFire\", returning Flamethrower as gun kind.");
                 return APCEConstants.gunKinds.Flamethrower;
+            }
             else if (thingDef.weaponTags.Any(str => str.IndexOf("TurretGun", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                logText.AppendLine("Gun has weaponTag \"TurretGun\", returning Turret as gun kind.");
                 return APCEConstants.gunKinds.Turret;
+            }
+
             //a bow is a pre-industrial ranged weapon with a burst count of 1. Can't find a good way to discern high-tech bows
             else if ((thingDef.techLevel.CompareTo(TechLevel.Medieval) <= 0) && (thingDef.Verbs[0].burstShotCount == 1))
+            {
+                logText.AppendLine("Gun is Medieval or lower tech level and fires a single projectile, returning Bow as gun kind.");
                 return APCEConstants.gunKinds.Bow;
+            }
+
             //a grenade uses a different verb from most weapons
             //TODO switch this back to grenade after I actually implement grenade-patching
             else if (thingDef.Verbs[0].verbClass == typeof(Verb_LaunchProjectile))
+            {
+                logText.AppendLine("Gun has verbClass \"Verb_LaunchProjectile\", is probably a grenade but grenade patching isn't impelemented so returning ExplosiveLauncher as gun kind instead.");
                 //return APCEConstants.gunKinds.Grenade;
                 return APCEConstants.gunKinds.ExplosiveLauncher;
+            }
             //explosive launchers
-            else if ((thingDef.Verbs[0].CausesExplosion))
+            else if (thingDef.Verbs[0].CausesExplosion)
+            {
+                logText.AppendLine("Gun's primary Verb causes an explosion, returning ExplosiveLauncher as gun kind.");
                 return APCEConstants.gunKinds.ExplosiveLauncher;
+            }
 
             //a shotgun is an industrial or higher weapon and has one of the following: shotgun in its defname, label, or description, OR shotgun or gauge in its projectile
             else if ((thingDef.defName.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
                         || (thingDef.label.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
                         || (thingDef.description.IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
-                        || (thingDef.Verbs[0].defaultProjectile != null && ((thingDef.Verbs[0].defaultProjectile.ToString().IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
+                        || (thingDef.Verbs[0]?.defaultProjectile != null && ((thingDef.Verbs[0].defaultProjectile.ToString().IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
                                                                          || (thingDef.Verbs[0].defaultProjectile.ToString().IndexOf("gauge", 0, StringComparison.OrdinalIgnoreCase) != -1))))
+            {
+                logText.AppendLine("Gun has \"shotgun\" in its name or description, or the name or description of its projectile. Returning Shotgun as gun kind.");
                 return APCEConstants.gunKinds.Shotgun;
+            }
+
             //a handgun is an industrial or higher weapon with burst count 1 and a range < 13
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount == 1) && (thingDef.Verbs[0].range < 13))
+            {
+                logText.AppendLine("Gun is Industrial tech level or higher, fires a single shot, and has range less than 13 cells. Returning Handgun as gun kind.");
                 return APCEConstants.gunKinds.Handgun;
+            }
+
             // a precision rifle is an industrial or higher weapon with burst count 1 and a range >= 13
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount == 1) && (thingDef.Verbs[0].range >= 13))
-                return APCEConstants.gunKinds.precisionRifle;
-            //an SMG is an industrial or higher weapon with burst count > 1 but < 6 and a range < 26
-            else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount > 1) && (thingDef.Verbs[0].burstShotCount < 6) && (thingDef.Verbs[0].range < 25.9))
+            {
+                logText.AppendLine("Gun is Industrial tech level or higher, fires a single shot, and has range greater than or equal to 13 cells. Returning PrecisionRifle as gun kind.");
+                return APCEConstants.gunKinds.PrecisionRifle;
+            }
+
+            //an SMG is an industrial or higher weapon with burst count > 1 and a range < 25.9
+            else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount > 1) && (thingDef.Verbs[0].range < 25.9))
+            {
+                logText.AppendLine("Gun is Industrial tech level or higher, fires a multi-shot burst, and has range less than 26 cells. Returning SMG as gun kind.");
                 return APCEConstants.gunKinds.SMG;
-            //an assault rifle is an industrial or higher weapon with burst count > 1 but <= 6 and a range >= 26
+            }
+
+            //an assault rifle is an industrial or higher weapon with burst count > 1 but <= 3 and a range >= 25.9
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount > 1) && (thingDef.Verbs[0].burstShotCount <= 3) && (thingDef.Verbs[0].range >= 25.9))
-                return APCEConstants.gunKinds.assaultRifle;
-            //a machine gun is an industrial or higher weapon with range >= 26 and burst count >= 3
-            else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].range >= 25.8) && (thingDef.Verbs[0].burstShotCount > 3))
+            {
+                logText.AppendLine("Gun is Industrial tech level or higher, fires a multi-shot burst between 2 and 3 projectiles, and has range greater than or equal to 26 cells. Returning AssaultRifle as gun kind.");
+                return APCEConstants.gunKinds.AssaultRifle;
+            }
+
+            //a machine gun is an industrial or higher weapon with range >= 26 and burst count > 3
+            else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].range >= 25.9) && (thingDef.Verbs[0].burstShotCount > 3))
+            {
+                logText.AppendLine("Gun is Industrial tech level or higher, fires a multi-shot burst greater than 3 projectiles, and has range greater than or equal to 26 cells. Returning MachineGun as gun kind.");
                 return APCEConstants.gunKinds.MachineGun;
+            }
+
             else
+            {
+                logText.AppendLine("Failed to match any gun kind rules, returning Other as gun kind");
                 return APCEConstants.gunKinds.Other;
+            }
         }
         catch (Exception ex)
         {
-            Log.Warning($"Exception when trying to determine a gun kind for def {thingDef.defName} from mod {thingDef.modContentPack.Name}. Returning gunKinds.Other. Exception is: \n" + ex.ToString());
+            log.ThrewError = true;
+            logText.AppendLine($"Exception when trying to determine a gun kind for def {thingDef?.defName} from mod {thingDef.modContentPack?.Name}. Returning Other as gun kind. Exception is: \n" + ex.ToString());
             return APCEConstants.gunKinds.Other;
         }
     }

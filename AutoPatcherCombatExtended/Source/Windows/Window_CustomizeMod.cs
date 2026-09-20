@@ -62,7 +62,7 @@ class Window_CustomizeMod : Window
             list.Gap();
             list.Label("Weapon Stuff:");
             list.CheckboxLabeled("Limit Weapon Mass: ", ref modData.limitWeaponMass);
-            list.CheckboxLabeled("Try to patch custom verbs on guns (safety not guaranteed): ", ref modData.patchCustomVerbs);
+            list.CheckboxLabeled("Try to patch weapons with custom Verbs (safety not guaranteed): ", ref modData.patchCustomVerbs);
             list.Gap();
             list.Label("Apparel Stuff:");
             //list.CheckboxLabeled("Patch apparels from selected mods: ", ref APCESettings.patchApparels);

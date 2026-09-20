@@ -45,8 +45,9 @@ public class DefDataHolderHediff : DefDataHolder
             def = hediffDef;
         }
 
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting GetOriginalData log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.GetOriginalData);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting GetOriginalData log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
@@ -71,33 +72,34 @@ public class DefDataHolderHediff : DefDataHolder
                     armorRatingHeat = hediffDef.stages[i].statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
                 }
 
-                logBuilder.AppendLine($"Hediff stage: {i}");
+                logText.AppendLine($"Hediff stage: {i}");
                 original_ArmorRatingSharp.Add(armorRatingSharp);
-                logBuilder.AppendLine($"original_ArmorRatingSharp: {armorRatingSharp}");
+                logText.AppendLine($"original_ArmorRatingSharp: {armorRatingSharp}");
 
                 original_ArmorRatingBlunt.Add(armorRatingBlunt);
-                logBuilder.AppendLine($"original_ArmorRatingBlunt: {armorRatingBlunt}");
+                logText.AppendLine($"original_ArmorRatingBlunt: {armorRatingBlunt}");
 
                 original_ArmorRatingHeat.Add(armorRatingHeat);
-                logBuilder.AppendLine($"original_ArmorRatingHeat: {armorRatingHeat}");
+                logText.AppendLine($"original_ArmorRatingHeat: {armorRatingHeat}");
             }
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
         }
     }
 
     public override void AutoCalculate()
     {
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting AutoCalculate log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.AutoCalculate);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting AutoCalculate log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
@@ -113,33 +115,34 @@ public class DefDataHolderHediff : DefDataHolder
             {
                 for (int i = 0; i < hediffDef.stages.Count; i++)
                 {
-                    logBuilder.AppendLine($"Hediff stage: {i}");
+                    logText.AppendLine($"Hediff stage: {i}");
                     modified_ArmorRatingSharp.Add(original_ArmorRatingSharp[i] * ModData.hediffSharpMult);
-                    logBuilder.AppendLine($"modified_ArmorRatingSharp: {modified_ArmorRatingSharp[i]}");
+                    logText.AppendLine($"modified_ArmorRatingSharp: {modified_ArmorRatingSharp[i]}");
 
                     modified_ArmorRatingBlunt.Add(original_ArmorRatingBlunt[i] * ModData.hediffBluntMult);
-                    logBuilder.AppendLine($"modified_ArmorRatingBlunt: {modified_ArmorRatingBlunt[i]}");
+                    logText.AppendLine($"modified_ArmorRatingBlunt: {modified_ArmorRatingBlunt[i]}");
 
                     modified_ArmorRatingHeat.Add(original_ArmorRatingHeat[i]);
-                    logBuilder.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat[i]}");
+                    logText.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat[i]}");
                 }
             }
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
         }
     }
     public override void ApplyPatch()
     {
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting ApplyPatch log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ApplyPatch);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting ApplyPatch log entry for hediff {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
@@ -147,10 +150,10 @@ public class DefDataHolderHediff : DefDataHolder
             {
                 for (int i = 0; i < hediffDef.stages.Count; i++)
                 {
-                    logBuilder.AppendLine($"Hediff stage: {i}");
-                    GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i], logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i], logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i], logBuilder);
+                    logText.AppendLine($"Hediff stage: {i}");
+                    GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp[i], logText);
+                    GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt[i], logText);
+                    GeneralUtils.AddOrChangeStat(ref hediffDef.stages[i].statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat[i], logText);
                 }
             }
             if (verbGiver != null && !original_Tools.NullOrEmpty())
@@ -165,13 +168,13 @@ public class DefDataHolderHediff : DefDataHolder
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.ApplyPatch);
         }
     }
 

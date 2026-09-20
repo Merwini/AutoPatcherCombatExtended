@@ -45,37 +45,39 @@ public class DefDataHolderBuilding_TurretGun : DefDataHolder
             def = thingDef;
         }
 
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting GetOriginalData log entry for Building_TurretGun {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.GetOriginalData);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting GetOriginalData log entry for Building_TurretGun {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
             original_FillPercent = thingDef.fillPercent;
-            logBuilder.AppendLine($"original_FillPercent: {original_FillPercent}");
+            logText.AppendLine($"original_FillPercent: {original_FillPercent}");
 
             original_TurretBurstCooldownTime = thingDef.building.turretBurstCooldownTime;
-            logBuilder.AppendLine($"original_TurretBurstCooldownTime: {original_TurretBurstCooldownTime}");
+            logText.AppendLine($"original_TurretBurstCooldownTime: {original_TurretBurstCooldownTime}");
 
             CompProperties_Refuelable compR = thingDef.GetCompProperties<CompProperties_Refuelable>();
             original_HasCompRefuelable = compR != null;
-            logBuilder.AppendLine($"original_HasCompRefuelable: {original_HasCompRefuelable}");
+            logText.AppendLine($"original_HasCompRefuelable: {original_HasCompRefuelable}");
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
         }
     }
 
     public override void AutoCalculate()
     {
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting AutoCalculate log entry for Building_TurretGun {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.AutoCalculate);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting AutoCalculate log entry for Building_TurretGun {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
@@ -88,7 +90,7 @@ public class DefDataHolderBuilding_TurretGun : DefDataHolder
             {
                 modified_FillPercent = 0.85f;
             }
-            logBuilder.AppendLine($"modified_FillPercent: {modified_FillPercent}");
+            logText.AppendLine($"modified_FillPercent: {modified_FillPercent}");
 
             if (!(thingDef.weaponTags == null) && (thingDef.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0)))
             {
@@ -98,65 +100,66 @@ public class DefDataHolderBuilding_TurretGun : DefDataHolder
             {
                 modified_TurretBurstCooldownTime = original_TurretBurstCooldownTime * 0.5f;
             }
-            logBuilder.AppendLine($"modified_TurretBurstCooldownTime: {modified_TurretBurstCooldownTime}");
+            logText.AppendLine($"modified_TurretBurstCooldownTime: {modified_TurretBurstCooldownTime}");
 
             //TODO formula for calculating these
             modified_AimingAccuracy = 1f;
-            logBuilder.AppendLine($"modified_AimingAccuracy: {modified_AimingAccuracy}");
+            logText.AppendLine($"modified_AimingAccuracy: {modified_AimingAccuracy}");
 
             modified_NightVisionEfficiency = 0.5f;
-            logBuilder.AppendLine($"modified_NightVisionEfficiency: {modified_NightVisionEfficiency}");
+            logText.AppendLine($"modified_NightVisionEfficiency: {modified_NightVisionEfficiency}");
 
             modified_ShootingAccuracyTurret = 1f;
-            logBuilder.AppendLine($"modified_ShootingAccuracyTurret: {modified_ShootingAccuracyTurret}");
+            logText.AppendLine($"modified_ShootingAccuracyTurret: {modified_ShootingAccuracyTurret}");
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
         }
     }
 
     public override void ApplyPatch()
     {
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting ApplyPatch log entry for Building_TurretGun for {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ApplyPatch);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting ApplyPatch log entry for Building_TurretGun for {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
             thingDef.thingClass = typeof(Building_TurretGunCE);
-            logBuilder.AppendLine("Set thingClass to Building_TurretGunCE");
+            logText.AppendLine("Set thingClass to Building_TurretGunCE");
 
             thingDef.fillPercent = modified_FillPercent;
-            logBuilder.AppendLine($"Set fillPercent to {modified_FillPercent}");
+            logText.AppendLine($"Set fillPercent to {modified_FillPercent}");
 
             thingDef.building.turretBurstCooldownTime = modified_TurretBurstCooldownTime;
-            logBuilder.AppendLine($"Set turretBurstCooldownTime to {modified_TurretBurstCooldownTime}");
+            logText.AppendLine($"Set turretBurstCooldownTime to {modified_TurretBurstCooldownTime}");
 
-            GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy, logBuilder);
-            GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy, logBuilder);
-            GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret, logBuilder);
+            GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy, logText);
+            GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_AimingAccuracy, logText);
+            GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ShootingAccuracyTurret, modified_ShootingAccuracyTurret, logText);
 
             thingDef.comps.RemoveAll(c => c is CompProperties_Refuelable);
             if (original_HasCompRefuelable)
             {
-                logBuilder.AppendLine($"Removed all CompProperties_Refuelable");
+                logText.AppendLine($"Removed all CompProperties_Refuelable");
             }
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.ApplyPatch);
         }
     }
 

@@ -46,9 +46,9 @@ public class APCEConstants
         Grenade,
         Handgun,
         SMG,
-        assaultRifle,
+        AssaultRifle,
         Shotgun,
-        precisionRifle,
+        PrecisionRifle,
         MachineGun,
         ExplosiveLauncher,
         Turret,
@@ -134,5 +134,23 @@ public class APCEConstants
         None,
         Normal,
         Verbose
+    }
+
+    public enum PatchStage
+    {
+        GetOriginalData,
+        AutoCalculate,
+        PrePatch,
+        ApplyPatch,
+        PostPatch,
+        ExposeData
+    }
+    public sealed class PatchStageLog
+    {
+        public StringBuilder Text { get; } = new();
+        public DateTime? StartedAtTime { get; set; }
+        public DateTime? EndedAtTime { get; set; }
+        public bool ThrewError { get; set; }
+        public bool IsRunning { get; set; }
     }
 }

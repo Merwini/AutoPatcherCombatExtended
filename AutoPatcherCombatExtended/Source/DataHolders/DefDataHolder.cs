@@ -16,9 +16,6 @@ public abstract class DefDataHolder : IExposable
     public bool alreadyRegistered = false;
     public string defName;
     public string parentModPackageId; //todo I don't seem to use this for anything?
-    public StringBuilder logBuilder = new StringBuilder();
-    public bool failedToPatch = false;
-    public bool threwError = false;
 
     public Def def;
 
@@ -56,6 +53,11 @@ public abstract class DefDataHolder : IExposable
     internal XmlNode xml;
     internal StringBuilder patch;
     internal List<string> patchOps;
+
+    public readonly Dictionary<APCEConstants.PatchStage, APCEConstants.PatchStageLog> stageLogs =
+    Enum.GetValues(typeof(APCEConstants.PatchStage))
+        .Cast<APCEConstants.PatchStage>()
+        .ToDictionary(stage => stage, _ => new APCEConstants.PatchStageLog());
 
     public DefDataHolder()
     {
@@ -420,26 +422,36 @@ public abstract class DefDataHolder : IExposable
         return patch.ToString();
     }
 
-    public void StartNewLogEntry()
+    public APCEConstants.PatchStageLog StartNewLogEntry(APCEConstants.PatchStage stage)
     {
-        logBuilder = new StringBuilder();
-        threwError = false;
+        APCEConstants.PatchStageLog entry = stageLogs[stage];
+
+        entry.Text.Clear();
+        entry.StartedAtTime = DateTime.Now;
+        entry.IsRunning = true;
+        entry.ThrewError = false;
+
+        return entry;
     }
 
-    public void AddLogItem(string fieldName, string value)
+    public void CloseLogEntry(APCEConstants.PatchStage stage)
     {
-        logBuilder.AppendLine();
+        APCEConstants.PatchStageLog entry = stageLogs[stage];
+
+        entry.IsRunning = false;
+        entry.EndedAtTime = DateTime.Now;
+        PrintLog(entry);
     }
 
-    public void PrintLog()
+    public void PrintLog(APCEConstants.PatchStageLog log)
     {
-        if (threwError && APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
+        if (log.ThrewError && APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
         {
-            Log.Error(logBuilder.ToString());
+            Log.Error(log.Text.ToString());
         }
         else if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
         {
-            Log.Message(logBuilder.ToString());
+            Log.Message(log.Text.ToString());
         }
     }
 }

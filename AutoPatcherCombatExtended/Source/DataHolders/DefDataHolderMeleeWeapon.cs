@@ -51,8 +51,9 @@ public class DefDataHolderMeleeWeapon : DefDataHolder
             def = thingDef;
         }
 
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.GetOriginalData);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -65,21 +66,22 @@ public class DefDataHolderMeleeWeapon : DefDataHolder
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
             //TODO verbose logging
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
         }
     }
 
     public override void AutoCalculate()
     {
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.AutoCalculate);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -99,21 +101,22 @@ public class DefDataHolderMeleeWeapon : DefDataHolder
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
             //TODO verbose logging
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
         }
     }
 
     public override void ApplyPatch()
     {
-        StartNewLogEntry();
-        logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ApplyPatch);
+        StringBuilder logText = log.Text;
+        logText.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -153,14 +156,14 @@ public class DefDataHolderMeleeWeapon : DefDataHolder
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
-            logBuilder.AppendLine(ex.ToString());
-            threwError = true;
+            logText.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
+            logText.AppendLine(ex.ToString());
+            log.ThrewError = true;
         }
         finally
         {
             //TODO verbose logging
-            PrintLog();
+            CloseLogEntry(APCEConstants.PatchStage.ApplyPatch);
         }
     }
 
