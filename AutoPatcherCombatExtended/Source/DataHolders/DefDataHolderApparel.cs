@@ -7,410 +7,409 @@ using Verse;
 using RimWorld;
 using CombatExtended;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+public class DefDataHolderApparel : DefDataHolder
 {
-    public class DefDataHolderApparel : DefDataHolder
+    //TODO: headgear layers
+    public DefDataHolderApparel()
     {
-        //TODO: headgear layers
-        public DefDataHolderApparel()
+        //empty constructor for use by SaveLoad
+    }
+
+    public DefDataHolderApparel(ThingDef def) : base(def)
+    {
+    }
+
+    public ThingDef thingDef;
+
+    //should I make this a list or dictionary or something?
+    //unsaved values taken from unpatched def
+    float original_ArmorRatingSharp;
+    float original_ArmorRatingBlunt;
+    float original_ArmorRatingHeat;
+    float original_Mass;
+    float original_CarryWeight;
+    float original_ShootingAccuracyPawn;
+    float original_MaxHitPoints;
+    float original_StuffEffectMultiplierArmor;
+
+    //unsaved calculated values
+    float apparelTechMult;
+    bool isHeadgear;
+    bool isSkin = false;
+    bool isMid = false;
+    bool isShell = false;
+    bool coversTorso = false;
+    bool coversLegs = false;
+    bool isArmor = false;
+
+    //saved modified values
+    //vanilla bloc
+    internal float modified_ArmorRatingSharp;
+    internal float modified_ArmorRatingBlunt;
+    internal float modified_ArmorRatingHeat;
+    internal float modified_Mass;
+    internal float modified_MaxHitPoints;
+    internal float modified_ShootingAccuracyPawn;
+    internal float modified_StuffEffectMultiplierArmor;
+
+    //CE bloc
+    internal float modified_Bulk;
+    internal float modified_WornBulk;
+    internal float modified_CarryWeight;
+    internal float modified_CarryBulk;
+    internal float modified_SmokeSensitivity;
+    internal float modified_NightVisionEfficiency;
+
+    public override void GetOriginalData()
+    {
+        //constructed by APCEController, def assigned by constructor
+        if (def != null && thingDef == null)
         {
-            //empty constructor for use by SaveLoad
+            this.thingDef = def as ThingDef;
+        }
+        //constructed by SaveLoad, thingDef loaded from xml
+        else if (thingDef != null && def == null)
+        {
+            def = thingDef;
         }
 
-        public DefDataHolderApparel(ThingDef def) : base(def)
+        StartNewLogEntry();
+        logBuilder.AppendLine($"Starting GetOriginalData log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "NULL MOD"}");
+
+        try
         {
+            original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
+            logBuilder.AppendLine($"original_ArmorRatingSharp: {original_ArmorRatingSharp}");
+
+            original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
+            logBuilder.AppendLine($"original_ArmorRatingBlunt: {original_ArmorRatingBlunt}");
+
+            original_ArmorRatingHeat = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            logBuilder.AppendLine($"original_ArmorRatingHeat: {original_ArmorRatingHeat}");
+
+            original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0.01f);
+            logBuilder.AppendLine($"original_Mass: {original_Mass}");
+
+            original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
+            logBuilder.AppendLine($"original_MaxHitPoints: {original_MaxHitPoints}");
+
+            original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
+            logBuilder.AppendLine($"original_CarryWeight: {original_CarryWeight}");
+
+            original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
+            logBuilder.AppendLine($"original_ShootingAccuracyPawn: {original_ShootingAccuracyPawn}");
+
+            original_StuffEffectMultiplierArmor = thingDef.statBases.GetStatValueFromList(StatDefOf.StuffEffectMultiplierArmor, 0);
+            logBuilder.AppendLine($"original_StuffEffectMultiplierArmor: {original_StuffEffectMultiplierArmor}");
+
+            CheckWhatCovers(); // TODO worth logging coverage?
+
         }
-
-        public ThingDef thingDef;
-
-        //should I make this a list or dictionary or something?
-        //unsaved values taken from unpatched def
-        float original_ArmorRatingSharp;
-        float original_ArmorRatingBlunt;
-        float original_ArmorRatingHeat;
-        float original_Mass;
-        float original_CarryWeight;
-        float original_ShootingAccuracyPawn;
-        float original_MaxHitPoints;
-        float original_StuffEffectMultiplierArmor;
-
-        //unsaved calculated values
-        float apparelTechMult;
-        bool isHeadgear; 
-        bool isSkin = false;
-        bool isMid = false;
-        bool isShell = false;
-        bool coversTorso = false;
-        bool coversLegs = false;
-        bool isArmor = false;
-
-        //saved modified values
-        //vanilla bloc
-        internal float modified_ArmorRatingSharp;
-        internal float modified_ArmorRatingBlunt;
-        internal float modified_ArmorRatingHeat;
-        internal float modified_Mass;
-        internal float modified_MaxHitPoints;
-        internal float modified_ShootingAccuracyPawn;
-        internal float modified_StuffEffectMultiplierArmor;
-
-        //CE bloc
-        internal float modified_Bulk;
-        internal float modified_WornBulk;
-        internal float modified_CarryWeight;
-        internal float modified_CarryBulk;
-        internal float modified_SmokeSensitivity;
-        internal float modified_NightVisionEfficiency;
-
-        public override void GetOriginalData()
+        catch (Exception ex)
         {
-            //constructed by APCEController, def assigned by constructor
-            if (def != null && thingDef == null)
-            {
-                this.thingDef = def as ThingDef;
-            }
-            //constructed by SaveLoad, thingDef loaded from xml
-            else if (thingDef != null && def == null)
-            {
-                def = thingDef;
-            }
-
-            StartNewLogEntry();
-            logBuilder.AppendLine($"Starting GetOriginalData log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "NULL MOD"}");
-
-            try
-            {
-                original_ArmorRatingSharp = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0.01f);
-                logBuilder.AppendLine($"original_ArmorRatingSharp: {original_ArmorRatingSharp}");
-
-                original_ArmorRatingBlunt = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0.01f);
-                logBuilder.AppendLine($"original_ArmorRatingBlunt: {original_ArmorRatingBlunt}");
-
-                original_ArmorRatingHeat = thingDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
-                logBuilder.AppendLine($"original_ArmorRatingHeat: {original_ArmorRatingHeat}");
-
-                original_Mass = thingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0.01f);
-                logBuilder.AppendLine($"original_Mass: {original_Mass}");
-
-                original_MaxHitPoints = thingDef.statBases.GetStatValueFromList(StatDefOf.MaxHitPoints, 0);
-                logBuilder.AppendLine($"original_MaxHitPoints: {original_MaxHitPoints}");
-
-                original_CarryWeight = thingDef.equippedStatOffsets.GetStatValueFromList(CE_StatDefOf.CarryWeight, 0);
-                logBuilder.AppendLine($"original_CarryWeight: {original_CarryWeight}");
-
-                original_ShootingAccuracyPawn = thingDef.equippedStatOffsets.GetStatValueFromList(StatDefOf.ShootingAccuracyPawn, 0);
-                logBuilder.AppendLine($"original_ShootingAccuracyPawn: {original_ShootingAccuracyPawn}");
-
-                original_StuffEffectMultiplierArmor = thingDef.statBases.GetStatValueFromList(StatDefOf.StuffEffectMultiplierArmor, 0);
-                logBuilder.AppendLine($"original_StuffEffectMultiplierArmor: {original_StuffEffectMultiplierArmor}");
-
-                CheckWhatCovers(); // TODO worth logging coverage?
-
-            }
-            catch (Exception ex)
-            {
-                logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
-                logBuilder.AppendLine(ex.ToString());
-                threwError = true;
-            }
-            finally
-            {
-                PrintLog();
-            }
+            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
+            logBuilder.AppendLine(ex.ToString());
+            threwError = true;
         }
-
-        public override void AutoCalculate()
+        finally
         {
-            StartNewLogEntry();
-            logBuilder.AppendLine($"Starting AutoCalculate log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
-
-            try
-            {
-                CalculateApparelTechMult();
-                logBuilder.AppendLine($"tech level mult: {apparelTechMult}");
-
-                modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.apparelSharpMult * apparelTechMult;
-                logBuilder.AppendLine($"modified_ArmorRatingSharp: {original_ArmorRatingSharp} * {ModData.apparelSharpMult} * {apparelTechMult} = {modified_ArmorRatingSharp}");
-
-                modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.apparelBluntMult * apparelTechMult;
-                logBuilder.AppendLine($"modified_ArmorRatingBlunt: {original_ArmorRatingBlunt} * {ModData.apparelBluntMult} * {apparelTechMult} = {modified_ArmorRatingBlunt}");
-
-                modified_ArmorRatingHeat = original_ArmorRatingHeat;
-                logBuilder.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat}");
-
-                modified_Mass = Math.Min(original_Mass, 50);
-                logBuilder.AppendLine($"modified_Mass: {modified_Mass} (capped at 50)");
-
-                modified_MaxHitPoints = original_MaxHitPoints;
-                logBuilder.AppendLine($"modified_MaxHitPoints: {modified_MaxHitPoints}");
-
-                modified_StuffEffectMultiplierArmor = original_StuffEffectMultiplierArmor;
-                logBuilder.AppendLine($"modified_StuffEffectMultiplierArmor: {modified_StuffEffectMultiplierArmor}");
-
-                CalculateBulk();
-                logBuilder.AppendLine($"modified_Bulk: {modified_Bulk} and modified_WornBulk: {modified_WornBulk}");
-
-                CalculateStatMods(); // logging done inside method
-            }
-            catch (Exception ex)
-            {
-                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
-                logBuilder.AppendLine(ex.ToString());
-                threwError = true;
-            }
-            finally
-            {
-                PrintLog();
-            }
+            PrintLog();
         }
+    }
 
-        public override void ApplyPatch()
+    public override void AutoCalculate()
+    {
+        StartNewLogEntry();
+        logBuilder.AppendLine($"Starting AutoCalculate log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
+
+        try
         {
-            StartNewLogEntry();
-            logBuilder.AppendLine($"Starting ApplyPatch log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+            CalculateApparelTechMult();
+            logBuilder.AppendLine($"tech level mult: {apparelTechMult}");
 
-            try
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.apparelSharpMult * apparelTechMult;
+            logBuilder.AppendLine($"modified_ArmorRatingSharp: {original_ArmorRatingSharp} * {ModData.apparelSharpMult} * {apparelTechMult} = {modified_ArmorRatingSharp}");
+
+            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.apparelBluntMult * apparelTechMult;
+            logBuilder.AppendLine($"modified_ArmorRatingBlunt: {original_ArmorRatingBlunt} * {ModData.apparelBluntMult} * {apparelTechMult} = {modified_ArmorRatingBlunt}");
+
+            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+            logBuilder.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat}");
+
+            modified_Mass = Math.Min(original_Mass, 50);
+            logBuilder.AppendLine($"modified_Mass: {modified_Mass} (capped at 50)");
+
+            modified_MaxHitPoints = original_MaxHitPoints;
+            logBuilder.AppendLine($"modified_MaxHitPoints: {modified_MaxHitPoints}");
+
+            modified_StuffEffectMultiplierArmor = original_StuffEffectMultiplierArmor;
+            logBuilder.AppendLine($"modified_StuffEffectMultiplierArmor: {modified_StuffEffectMultiplierArmor}");
+
+            CalculateBulk();
+            logBuilder.AppendLine($"modified_Bulk: {modified_Bulk} and modified_WornBulk: {modified_WornBulk}");
+
+            CalculateStatMods(); // logging done inside method
+        }
+        catch (Exception ex)
+        {
+            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+            logBuilder.AppendLine(ex.ToString());
+            threwError = true;
+        }
+        finally
+        {
+            PrintLog();
+        }
+    }
+
+    public override void ApplyPatch()
+    {
+        StartNewLogEntry();
+        logBuilder.AppendLine($"Starting ApplyPatch log entry for apparel {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+
+        try
+        {
+            //check for null def in case this object was loaded without the def present e.g. from the mod source not being active
+            if (def != null)
             {
-                //check for null def in case this object was loaded without the def present e.g. from the mod source not being active
-                if (def != null)
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.Mass, modified_Mass, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn, logBuilder);
+
+                if (!thingDef.stuffCategories.NullOrEmpty())
                 {
-                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.Mass, modified_Mass, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.MaxHitPoints, modified_MaxHitPoints, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, StatDefOf.ShootingAccuracyPawn, modified_ShootingAccuracyPawn, logBuilder);
+                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor, logBuilder);
+                }
 
-                    if (!thingDef.stuffCategories.NullOrEmpty())
-                    {
-                        GeneralUtils.AddOrChangeStat(ref thingDef.statBases, StatDefOf.StuffEffectMultiplierArmor, modified_StuffEffectMultiplierArmor, logBuilder);
-                    }
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity, logBuilder);
+                GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency, logBuilder);
+            }
+        }
+        catch (Exception ex)
+        {
+            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+            logBuilder.AppendLine(ex.ToString());
+            threwError = true;
+        }
+        finally
+        {
+            PrintLog();
+        }
+    }
 
-                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.Bulk, modified_Bulk, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.statBases, CE_StatDefOf.WornBulk, modified_WornBulk, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryWeight, modified_CarryWeight, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.CarryBulk, modified_CarryBulk, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity, logBuilder);
-                    GeneralUtils.AddOrChangeStat(ref thingDef.equippedStatOffsets, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency, logBuilder);
+    public override StringBuilder ExportXML()
+    {
+        xml = GeneralUtils.GetXmlForDef(thingDef);
+
+        patchOps = new List<string>();
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Mass", modified_Mass, original_Mass));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Bulk", modified_Bulk));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "WornBulk", modified_WornBulk));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MaxHitPoints", modified_MaxHitPoints, original_MaxHitPoints));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "StuffEffectMultiplierArmor", modified_StuffEffectMultiplierArmor, original_StuffEffectMultiplierArmor));
+
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryBulk", modified_CarryBulk));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryWeight", modified_CarryWeight, original_CarryWeight));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "ShootingAccuracyPawn", modified_ShootingAccuracyPawn, original_ShootingAccuracyPawn));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "SmokeSensitivity", modified_SmokeSensitivity));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "NightVisionEfficiency", modified_NightVisionEfficiency));
+
+        base.ExportXML();
+
+        return patch;
+    }
+
+    public override void ExposeData()
+    {
+        if (Scribe.mode == LoadSaveMode.LoadingVars
+            || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+        {
+            Scribe_Defs.Look(ref thingDef, "def");
+            Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0);
+            Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
+            Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
+            Scribe_Values.Look(ref modified_Mass, "modified_Mass", 0f);
+            Scribe_Values.Look(ref modified_MaxHitPoints, "modified_MaxHitPoints", 0f);
+            Scribe_Values.Look(ref modified_ShootingAccuracyPawn, "modified_ShootingAccuracyPawn", 0f);
+            Scribe_Values.Look(ref modified_Bulk, "modified_Bulk", 0f);
+            Scribe_Values.Look(ref modified_WornBulk, "modified_WornBulk", 0f);
+            Scribe_Values.Look(ref modified_CarryWeight, "modified_CarryWeight", 0f);
+            Scribe_Values.Look(ref modified_CarryBulk, "modified_CarryBulk", 0f);
+            Scribe_Values.Look(ref modified_SmokeSensitivity, "modified_SmokeSensitivity", 0f);
+            Scribe_Values.Look(ref modified_NightVisionEfficiency, "modified_NightVisionEfficiency", 0f);
+            Scribe_Values.Look(ref modified_StuffEffectMultiplierArmor, "modified_StuffEffectMultiplierArmor", 0f);
+        }
+        base.ExposeData();
+    }
+
+    public void CalculateApparelTechMult()
+    {
+        float techMult = 1f;
+        switch (thingDef.techLevel)
+        {
+            case TechLevel.Animal:
+                techMult *= ModData.apparelTechMultAnimal;
+                break;
+            case TechLevel.Neolithic:
+                techMult *= ModData.apparelTechMultNeolithic;
+                break;
+            case TechLevel.Medieval:
+                techMult *= ModData.apparelTechMultMedieval;
+                break;
+            case TechLevel.Industrial:
+                techMult *= ModData.apparelTechMultIndustrial;
+                break;
+            case TechLevel.Spacer:
+                techMult *= ModData.apparelTechMultSpacer;
+                break;
+            case TechLevel.Ultra:
+                techMult *= ModData.apparelTechMultUltratech;
+                break;
+            case TechLevel.Archotech:
+                techMult *= ModData.apparelTechMultArchotech;
+                break;
+            default:
+                break;
+        }
+
+        apparelTechMult = techMult;
+    }
+
+    public void CheckWhatCovers()
+    {
+        for (int i = 0; i < thingDef.apparel.layers.Count; i++)
+        {
+            //string matching is sloppy but helps with compatibility for custom alien race layers
+            if (thingDef.apparel.layers[i] == ApparelLayerDefOf.OnSkin || thingDef.apparel.layers[i].ToString().ToUpper().Contains("SKIN") || thingDef.apparel.layers[i] == CE_ApparelLayerDefOf.StrappedHead)
+            {
+                isSkin = true;
+            }
+            if (thingDef.apparel.layers[i] == ApparelLayerDefOf.Middle || thingDef.apparel.layers[i].ToString().ToUpper().Contains("MID") || thingDef.apparel.layers[i] == ApparelLayerDefOf.Overhead)
+            {
+                isMid = true;
+                if (thingDef.apparel.layers[i] == ApparelLayerDefOf.Overhead)
+                {
+                    isHeadgear = true;
                 }
             }
-            catch (Exception ex)
+            if (thingDef.apparel.layers[i] == ApparelLayerDefOf.Shell || thingDef.apparel.layers[i].ToString().ToUpper().Contains("SHELL") || thingDef.apparel.layers[i].ToString().ToUpper().Contains("OUTER"))
             {
-                logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
-                logBuilder.AppendLine(ex.ToString());
-                threwError = true;
-            }
-            finally
-            {
-                PrintLog();
+                isShell = true;
             }
         }
-
-        public override StringBuilder ExportXML()
+        if (thingDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
         {
-            xml = GeneralUtils.GetXmlForDef(thingDef);
-
-            patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Mass", modified_Mass, original_Mass));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "Bulk", modified_Bulk));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "WornBulk", modified_WornBulk));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "MaxHitPoints", modified_MaxHitPoints, original_MaxHitPoints));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statBases", "StuffEffectMultiplierArmor", modified_StuffEffectMultiplierArmor, original_StuffEffectMultiplierArmor));
-
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryBulk", modified_CarryBulk));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "CarryWeight", modified_CarryWeight, original_CarryWeight));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "ShootingAccuracyPawn", modified_ShootingAccuracyPawn, original_ShootingAccuracyPawn));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "SmokeSensitivity", modified_SmokeSensitivity));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "equippedStatOffsets", "NightVisionEfficiency", modified_NightVisionEfficiency));
-
-            base.ExportXML();
-
-            return patch;
+            coversTorso = true;
         }
-
-        public override void ExposeData()
+        if (thingDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs))
         {
-            if (Scribe.mode == LoadSaveMode.LoadingVars
-                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
-            {
-                Scribe_Defs.Look(ref thingDef, "def");
-                Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0);
-                Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
-                Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
-                Scribe_Values.Look(ref modified_Mass, "modified_Mass", 0f);
-                Scribe_Values.Look(ref modified_MaxHitPoints, "modified_MaxHitPoints", 0f);
-                Scribe_Values.Look(ref modified_ShootingAccuracyPawn, "modified_ShootingAccuracyPawn", 0f);
-                Scribe_Values.Look(ref modified_Bulk, "modified_Bulk", 0f);
-                Scribe_Values.Look(ref modified_WornBulk, "modified_WornBulk", 0f);
-                Scribe_Values.Look(ref modified_CarryWeight, "modified_CarryWeight", 0f);
-                Scribe_Values.Look(ref modified_CarryBulk, "modified_CarryBulk", 0f);
-                Scribe_Values.Look(ref modified_SmokeSensitivity, "modified_SmokeSensitivity", 0f);
-                Scribe_Values.Look(ref modified_NightVisionEfficiency, "modified_NightVisionEfficiency", 0f);
-                Scribe_Values.Look(ref modified_StuffEffectMultiplierArmor, "modified_StuffEffectMultiplierArmor", 0f);
-            }
-            base.ExposeData();
+            coversLegs = true;
         }
-
-        public void CalculateApparelTechMult()
+        //probably still need a more elegant method to decide if an apparel should be counted as armor, but this is better than the old method of checking if mass > 2
+        if ((thingDef.thingCategories != null && (thingDef.thingCategories.Contains(ThingCategoryDefOf.ApparelArmor) || thingDef.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear)))
+            || (thingDef.tradeTags != null && thingDef.tradeTags.Any(tag => tag.ToLower().Contains("armor")))
+            || original_ArmorRatingSharp > 0.5f
+            || original_ArmorRatingBlunt > 0.5f)
         {
-            float techMult = 1f;
-            switch (thingDef.techLevel)
-            {
-                case TechLevel.Animal:
-                    techMult *= ModData.apparelTechMultAnimal;
-                    break;
-                case TechLevel.Neolithic:
-                    techMult *= ModData.apparelTechMultNeolithic;
-                    break;
-                case TechLevel.Medieval:
-                    techMult *= ModData.apparelTechMultMedieval;
-                    break;
-                case TechLevel.Industrial:
-                    techMult *= ModData.apparelTechMultIndustrial;
-                    break;
-                case TechLevel.Spacer:
-                    techMult *= ModData.apparelTechMultSpacer;
-                    break;
-                case TechLevel.Ultra:
-                    techMult *= ModData.apparelTechMultUltratech;
-                    break;
-                case TechLevel.Archotech:
-                    techMult *= ModData.apparelTechMultArchotech;
-                    break;
-                default:
-                    break;
-            }
-
-            apparelTechMult = techMult;
+            isArmor = true;
         }
+    }
 
-        public void CheckWhatCovers()
+    public void CalculateBulk()
+    {
+        //rewrite notes:
+        //flak vest 5 bulk, 3 wulk
+        //flak pants 4 bulk, 2.5 wulk
+        //jackets, parkas, flak jacket, etc are about 5-7.5, bulk 1-3 wulk
+        //whole-body armor 80-100, bulk 12-15 wulk
+        float newBulk = 0;
+        float newWornBulk = 0;
+        if (isArmor)
         {
-            for (int i = 0; i < thingDef.apparel.layers.Count; i++)
+            if (isHeadgear)
             {
-                //string matching is sloppy but helps with compatibility for custom alien race layers
-                if (thingDef.apparel.layers[i] == ApparelLayerDefOf.OnSkin || thingDef.apparel.layers[i].ToString().ToUpper().Contains("SKIN") || thingDef.apparel.layers[i] == CE_ApparelLayerDefOf.StrappedHead)
-                {
-                    isSkin = true;
-                }
-                if (thingDef.apparel.layers[i] == ApparelLayerDefOf.Middle || thingDef.apparel.layers[i].ToString().ToUpper().Contains("MID") || thingDef.apparel.layers[i] == ApparelLayerDefOf.Overhead)
-                {
-                    isMid = true;
-                    if (thingDef.apparel.layers[i] == ApparelLayerDefOf.Overhead)
-                    {
-                        isHeadgear = true;
-                    }
-                }
-                if (thingDef.apparel.layers[i] == ApparelLayerDefOf.Shell || thingDef.apparel.layers[i].ToString().ToUpper().Contains("SHELL") || thingDef.apparel.layers[i].ToString().ToUpper().Contains("OUTER"))
-                {
-                    isShell = true;
-                }
+                newBulk = 5;
+                newWornBulk = 3;
             }
-            if (thingDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
+            else
             {
-                coversTorso = true;
-            }
-            if (thingDef.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs))
-            {
-                coversLegs = true;
-            }
-            //probably still need a more elegant method to decide if an apparel should be counted as armor, but this is better than the old method of checking if mass > 2
-            if ((thingDef.thingCategories != null && (thingDef.thingCategories.Contains(ThingCategoryDefOf.ApparelArmor) || thingDef.thingCategories.Contains(ThingCategoryDefOf.ArmorHeadgear)))
-                || (thingDef.tradeTags != null && thingDef.tradeTags.Any(tag => tag.ToLower().Contains("armor")))
-                || original_ArmorRatingSharp > 0.5f
-                || original_ArmorRatingBlunt > 0.5f)
-            {
-                isArmor = true;
+                if (coversLegs)
+                {
+                    newBulk += 5;
+                    newWornBulk += 3;
+                }
+                if (coversTorso)
+                {
+                    newBulk += 5;
+                    newWornBulk += 3;
+                }
+                if (isMid && isShell)
+                {
+                    newBulk *= 8;
+                    newWornBulk *= 2;
+                }
             }
         }
 
-        public void CalculateBulk()
-        {            
-            //rewrite notes:
-            //flak vest 5 bulk, 3 wulk
-            //flak pants 4 bulk, 2.5 wulk
-            //jackets, parkas, flak jacket, etc are about 5-7.5, bulk 1-3 wulk
-            //whole-body armor 80-100, bulk 12-15 wulk
-            float newBulk = 0;
-            float newWornBulk = 0;
-            if (isArmor)
-            {
-                if (isHeadgear)
-                {
-                    newBulk = 5;
-                    newWornBulk = 3;
-                }
-                else
-                {
-                    if (coversLegs)
-                    {
-                        newBulk += 5;
-                        newWornBulk += 3;
-                    }
-                    if (coversTorso)
-                    {
-                        newBulk += 5;
-                        newWornBulk += 3;
-                    }
-                    if (isMid && isShell)
-                    {
-                        newBulk *= 8;
-                        newWornBulk *= 2;
-                    }
-                }
-            }
+        modified_Bulk = newBulk;
+        modified_WornBulk = newWornBulk;
+    }
 
-            modified_Bulk = newBulk;
-            modified_WornBulk = newWornBulk;
-        }
-
-        public void CalculateStatMods()
+    public void CalculateStatMods()
+    {
+        //smoke sensitivty / nightvision for headgear
+        if (thingDef.apparel.bodyPartGroups.Any(bpgd =>
         {
-            //smoke sensitivty / nightvision for headgear
-            if (thingDef.apparel.bodyPartGroups.Any(bpgd =>
+            if (bpgd == BodyPartGroupDefOf.Eyes || bpgd == BodyPartGroupDefOf.FullHead)
+                return true;
+            else
+                return false;
+        }))
+        {
+            if (thingDef.equippedStatOffsets == null)
             {
-                if (bpgd == BodyPartGroupDefOf.Eyes || bpgd == BodyPartGroupDefOf.FullHead)
-                    return true;
-                else
-                    return false;
-            }))
-            {
-                if (thingDef.equippedStatOffsets == null)
-                {
-                    thingDef.equippedStatOffsets = new List<StatModifier>();
-                }
-                if (thingDef.techLevel >= TechLevel.Industrial)
-                {
-                    modified_SmokeSensitivity = -1;
-                    logBuilder.AppendLine($"added {modified_SmokeSensitivity} smoke sensitivity modifier to industrial+ headgear that covers eyes");
-                }
-                if (thingDef.techLevel >= TechLevel.Spacer)
-                {
-                    modified_NightVisionEfficiency = 0.6f;
-                    logBuilder.AppendLine($"added {modified_NightVisionEfficiency} night vision modifier to spacer+ headgear that covers eyes");
-                }
+                thingDef.equippedStatOffsets = new List<StatModifier>();
             }
+            if (thingDef.techLevel >= TechLevel.Industrial)
+            {
+                modified_SmokeSensitivity = -1;
+                logBuilder.AppendLine($"added {modified_SmokeSensitivity} smoke sensitivity modifier to industrial+ headgear that covers eyes");
+            }
+            if (thingDef.techLevel >= TechLevel.Spacer)
+            {
+                modified_NightVisionEfficiency = 0.6f;
+                logBuilder.AppendLine($"added {modified_NightVisionEfficiency} night vision modifier to spacer+ headgear that covers eyes");
+            }
+        }
 
-            //carryweight, carrybulk, shootingAccuracyPawn for body armors
-            if (isArmor && (thingDef.techLevel >= TechLevel.Industrial) && coversLegs && coversTorso && isShell)
+        //carryweight, carrybulk, shootingAccuracyPawn for body armors
+        if (isArmor && (thingDef.techLevel >= TechLevel.Industrial) && coversLegs && coversTorso && isShell)
+        {
+            modified_CarryWeight += 40;
+            modified_CarryBulk += 5;
+            if (isMid)
             {
                 modified_CarryWeight += 40;
                 modified_CarryBulk += 5;
-                if (isMid)
-                {
-                    modified_CarryWeight += 40;
-                    modified_CarryBulk += 5;
-                }
-                logBuilder.AppendLine($"Added {modified_CarryWeight} CarryWeight and {modified_CarryBulk} CarryBulk to full-body industrial+ apparel");
+            }
+            logBuilder.AppendLine($"Added {modified_CarryWeight} CarryWeight and {modified_CarryBulk} CarryBulk to full-body industrial+ apparel");
 
-                if (original_ShootingAccuracyPawn == 0)
-                {
-                    modified_ShootingAccuracyPawn = 0.2f;
-                    logBuilder.AppendLine($"Added {modified_ShootingAccuracyPawn} ShootingAccuracyPawn to full-body industrial+ apparel");
-                }
+            if (original_ShootingAccuracyPawn == 0)
+            {
+                modified_ShootingAccuracyPawn = 0.2f;
+                logBuilder.AppendLine($"Added {modified_ShootingAccuracyPawn} ShootingAccuracyPawn to full-body industrial+ apparel");
             }
         }
     }

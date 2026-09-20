@@ -6,432 +6,431 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+public class ModDataHolder : IExposable
 {
-    public class ModDataHolder : IExposable
+    public ModContentPack mod;
+
+    public string packageId;
+    public bool isCustomized = false;
+    //TODO methods to change values instead of modifying them directly, need this to flip isCustomized to true
+    //Also TODO write a method that resets all values to match those in apceDefaults. Call this before running autocalcs or patches. This is so that, if the player changes the defaults, they don't have to restart to get those changes to permeate down to the ModDataHolders
+
+    public Dictionary<Def, APCEConstants.NeedsPatch> defsToPatch = new Dictionary<Def, APCEConstants.NeedsPatch>();
+    //for saving and loading so def names can be validated
+    public List<string> defsToPatchNames = new List<string>();
+    public List<string> defsToPatchTypes = new List<string>();
+
+    //
+    public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
+
+    //for storing Implied Defs to be added to dictionary after a foreach is finished, so it doesn't modify the collection
+    public List<DefDataHolder> delayedRegistrations = new List<DefDataHolder>();
+
+    //toggles //todo remove
+    public bool patchCustomVerbs = false;
+    public bool limitWeaponMass = false;
+    public bool patchHeadgearLayers = true;
+
+    //apparel values
+    public float apparelSharpMult = 10f;
+    public float apparelBluntMult = 40f;
+    public float apparelTechMultAnimal = 0.25f;
+    public float apparelTechMultNeolithic = 0.5f;
+    public float apparelTechMultMedieval = 0.75f;
+    public float apparelTechMultIndustrial = 1f;
+    public float apparelTechMultSpacer = 2f;
+    public float apparelTechMultUltratech = 3f;
+    public float apparelTechMultArchotech = 4f;
+
+    public float advancedArmorCarryWeight = 80f;
+    public float advancedArmorCarryBulk = 10f;
+    public float advancedArmorShootingAccuracy = 0.2f;
+
+    //weapon settings
+    public bool gunsUseAmmo = true;
+    public float gunSharpPenMult = 10f;
+    public float gunBluntPenMult = 40f;
+    public float gunTechMultAnimal = 0.5f;
+    public float gunTechMultNeolithic = 1f;
+    public float gunTechMultMedieval = 2f;
+    public float gunTechMultIndustrial = 4;
+    public float gunTechMultSpacer = 5;
+    public float gunTechMultUltratech = 6;
+    public float gunTechMultArchotech = 8;
+
+    public float weaponToolPowerMult = 1f;
+    public float weaponToolSharpPenetration = 1f;
+    public float weaponToolBluntPenetration = 4f;
+    public float weaponToolTechMultAnimal = 1f;
+    public float weaponToolTechMultNeolithic = 1f;
+    public float weaponToolTechMultMedieval = 1f;
+    public float weaponToolTechMultIndustrial = 2f;
+    public float weaponToolTechMultSpacer = 3f;
+    public float weaponToolTechMultUltratech = 4f;
+    public float weaponToolTechMultArchotech = 6f;
+
+    public float maximumWeaponMass = 20f;
+
+    //pawn settings
+    public float pawnArmorSharpMult = 10;
+    public float pawnArmorBluntMult = 40;
+
+    public float pawnToolPowerMult = 1f;
+    public float pawnToolSharpPenetration = 10f;
+    public float pawnToolBluntPenetration = 40f;
+
+    public float pawnKindMinMags = 2f;
+    public float pawnKindMaxMags = 5f;
+
+    public bool patchBackpacks = true;
+
+    public float geneArmorSharpMult = 10;
+    public float geneArmorBluntMult = 10;
+
+    //hediff settings
+    public float hediffSharpMult = 10;
+    public float hediffBluntMult = 40;
+
+    //other
+    public float vehicleSharpMult = 15;
+    public float vehicleBluntMult = 15;
+    public float vehicleHealthMult = 3;
+
+    public ModDataHolder()
     {
-        public ModContentPack mod;
+        //for being constructed by SaveLoad
+    }
 
-        public string packageId;
-        public bool isCustomized = false;
-        //TODO methods to change values instead of modifying them directly, need this to flip isCustomized to true
-        //Also TODO write a method that resets all values to match those in apceDefaults. Call this before running autocalcs or patches. This is so that, if the player changes the defaults, they don't have to restart to get those changes to permeate down to the ModDataHolders
+    public ModDataHolder(ModContentPack mcp)
+    {
+        this.mod = mcp;
+        this.packageId = mcp.PackageId;
+        RegisterSelfInDict();
+        SelectDefsToPatch();
+    }
 
-        public Dictionary<Def, APCEConstants.NeedsPatch> defsToPatch = new Dictionary<Def, APCEConstants.NeedsPatch>();
-        //for saving and loading so def names can be validated
-        public List<string> defsToPatchNames = new List<string>();
-        public List<string> defsToPatchTypes = new List<string>();
-
-        //
-        public Dictionary<Def, DefDataHolder> defDict = new Dictionary<Def, DefDataHolder>();
-
-        //for storing Implied Defs to be added to dictionary after a foreach is finished, so it doesn't modify the collection
-        public List<DefDataHolder> delayedRegistrations = new List<DefDataHolder>();
-
-        //toggles //todo remove
-        public bool patchCustomVerbs = false;
-        public bool limitWeaponMass = false;
-        public bool patchHeadgearLayers = true;
-
-        //apparel values
-        public float apparelSharpMult = 10f;
-        public float apparelBluntMult = 40f;
-        public float apparelTechMultAnimal = 0.25f;
-        public float apparelTechMultNeolithic = 0.5f;
-        public float apparelTechMultMedieval = 0.75f;
-        public float apparelTechMultIndustrial = 1f;
-        public float apparelTechMultSpacer = 2f;
-        public float apparelTechMultUltratech = 3f;
-        public float apparelTechMultArchotech = 4f; 
-        
-        public float advancedArmorCarryWeight = 80f;
-        public float advancedArmorCarryBulk = 10f;
-        public float advancedArmorShootingAccuracy = 0.2f;
-
-        //weapon settings
-        public bool gunsUseAmmo = true;
-        public float gunSharpPenMult = 10f;
-        public float gunBluntPenMult = 40f;
-        public float gunTechMultAnimal = 0.5f;
-        public float gunTechMultNeolithic = 1f;
-        public float gunTechMultMedieval = 2f;
-        public float gunTechMultIndustrial = 4;
-        public float gunTechMultSpacer = 5;
-        public float gunTechMultUltratech = 6;
-        public float gunTechMultArchotech = 8;
-
-        public float weaponToolPowerMult = 1f;
-        public float weaponToolSharpPenetration = 1f;
-        public float weaponToolBluntPenetration = 4f;
-        public float weaponToolTechMultAnimal = 1f;
-        public float weaponToolTechMultNeolithic = 1f;
-        public float weaponToolTechMultMedieval = 1f;
-        public float weaponToolTechMultIndustrial = 2f;
-        public float weaponToolTechMultSpacer = 3f;
-        public float weaponToolTechMultUltratech = 4f;
-        public float weaponToolTechMultArchotech = 6f;
-
-        public float maximumWeaponMass = 20f;
-
-        //pawn settings
-        public float pawnArmorSharpMult = 10;
-        public float pawnArmorBluntMult = 40;
-
-        public float pawnToolPowerMult = 1f;
-        public float pawnToolSharpPenetration = 10f;
-        public float pawnToolBluntPenetration = 40f;
-
-        public float pawnKindMinMags = 2f;
-        public float pawnKindMaxMags = 5f;
-
-        public bool patchBackpacks = true;
-
-        public float geneArmorSharpMult = 10;
-        public float geneArmorBluntMult = 10;
-
-        //hediff settings
-        public float hediffSharpMult = 10;
-        public float hediffBluntMult = 40;
-
-        //other
-        public float vehicleSharpMult = 15;
-        public float vehicleBluntMult = 15;
-        public float vehicleHealthMult = 3;
-
-        public ModDataHolder()
+    public void GetModContentPack()
+    {
+        if (packageId == null)
         {
-            //for being constructed by SaveLoad
+            Log.Error("ModDataHolder tried to get ModContentPack but PackageId was null");
         }
-
-        public ModDataHolder(ModContentPack mcp)
+        mod = LoadedModManager.RunningMods.FirstOrDefault(m => m.PackageId == packageId);
+        if (mod == null)
         {
-            this.mod = mcp;
-            this.packageId = mcp.PackageId;
-            RegisterSelfInDict();
-            SelectDefsToPatch();
+            Log.Error($"ModDataHolder tried to get ModContentPack, but found none with PackageId {packageId}");
         }
+    }
 
-        public void GetModContentPack()
+    public void Reset()
+    {
+        //TODO reset values to those of nuff.apcedefaults. Maybe just construct a new one?
+    }
+
+    public void SelectDefsToPatch()
+    {
+        foreach (Def def in mod.AllDefs)
         {
-            if (packageId == null)
+            APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
+            if (need == APCEConstants.NeedsPatch.yes)
             {
-                Log.Error("ModDataHolder tried to get ModContentPack but PackageId was null");
+                defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
             }
-            mod = LoadedModManager.RunningMods.FirstOrDefault(m => m.PackageId == packageId);
-            if (mod == null)
+            else if (need == APCEConstants.NeedsPatch.no || need == APCEConstants.NeedsPatch.unsure)
             {
-                Log.Error($"ModDataHolder tried to get ModContentPack, but found none with PackageId {packageId}");
+                defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
             }
         }
+    }
 
-        public void Reset()
+    public void GenerateDefDataHolders()
+    {
+        foreach (var entry in defsToPatch)
         {
-            //TODO reset values to those of nuff.apcedefaults. Maybe just construct a new one?
-        }
-
-        public void SelectDefsToPatch()
-        {
-            foreach (Def def in mod.AllDefs)
+            if (entry.Value == APCEConstants.NeedsPatch.yes && !defDict.ContainsKey(entry.Key))
             {
-                APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
-                if (need == APCEConstants.NeedsPatch.yes)
+                DataHolderUtils.TryGenerateDataHolderForDef(entry.Key);
+            }
+        }
+    }
+
+    public void ReCalc()
+    {
+        foreach (var entry in defDict)
+        {
+            if (!entry.Value.isCustomized)
+            {
+                entry.Value.AutoCalculate();
+            }
+        }
+    }
+
+    public void PrePatch()
+    {
+        foreach (var entry in defsToPatch)
+        {
+            if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
+            {
+                try
                 {
-                    defsToPatch.Add(def, APCEConstants.NeedsPatch.yes);
+                    ddh.PrePatch();
                 }
-                else if (need == APCEConstants.NeedsPatch.no || need == APCEConstants.NeedsPatch.unsure)
+                catch (Exception ex)
                 {
-                    defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
+                    Log.Warning($"Failed to prepatch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
                 }
             }
         }
+    }
 
-        public void GenerateDefDataHolders()
+    public void PostPatch()
+    {
+        foreach (var entry in defsToPatch)
         {
-            foreach (var entry in defsToPatch)
+            if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
             {
-                if (entry.Value == APCEConstants.NeedsPatch.yes && !defDict.ContainsKey(entry.Key))
+                try
                 {
-                    DataHolderUtils.TryGenerateDataHolderForDef(entry.Key);
+                    ddh.PostPatch();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Failed to postpatch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
                 }
             }
         }
+    }
 
-        public void ReCalc()
+    public void Patch()
+    {
+        foreach (var entry in defsToPatch)
         {
-            foreach (var entry in defDict)
+            if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
             {
-                if (!entry.Value.isCustomized)
+                try
                 {
-                    entry.Value.AutoCalculate();
+                    ddh.ApplyPatch();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Failed to patch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
                 }
             }
         }
+    }
 
-        public void PrePatch()
+    //this is for Implied defs like AmmoSets to register themselves late so they don't break the 'foreach entry in Dictionary' methods by modifying the collection
+    public void RegisterDelayedHolders()
+    {
+        if (!delayedRegistrations.NullOrEmpty())
         {
-            foreach (var entry in defsToPatch)
+            foreach (DefDataHolder ddh in delayedRegistrations)
             {
-                if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
-                {
-                    try
-                    {
-                        ddh.PrePatch();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Warning($"Failed to prepatch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
-                    }
-                }
+                ddh.RegisterSelfInDicts();
             }
         }
+    }
 
-        public void PostPatch()
+    //returns true if new entry is added to dict or value was null. returns false if value is replaced.
+    public bool RegisterSelfInDict()
+    {
+        if (APCESettings.modDataDict.TryGetValue(packageId, out var existing))
         {
-            foreach (var entry in defsToPatch)
+            if (existing == null)
             {
-                if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
-                {
-                    try
-                    {
-                        ddh.PostPatch();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Warning($"Failed to postpatch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
-                    }
-                }
-            }
-        }
-
-        public void Patch()
-        {
-            foreach (var entry in defsToPatch)
-            {
-                if (entry.Value == APCEConstants.NeedsPatch.yes && defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
-                {
-                    try
-                    {
-                        ddh.ApplyPatch();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Warning($"Failed to patch def {entry.Key.defName} from mod {mod.Name} due to exception: \n" + ex.ToString());
-                    }
-                }
-            }
-        }
-
-        //this is for Implied defs like AmmoSets to register themselves late so they don't break the 'foreach entry in Dictionary' methods by modifying the collection
-        public void RegisterDelayedHolders()
-        {
-            if (!delayedRegistrations.NullOrEmpty())
-            {
-                foreach (DefDataHolder ddh in delayedRegistrations)
-                {
-                    ddh.RegisterSelfInDicts();
-                }
-            }
-        }
-
-        //returns true if new entry is added to dict or value was null. returns false if value is replaced.
-        public bool RegisterSelfInDict()
-        {
-            if (APCESettings.modDataDict.TryGetValue(packageId, out var existing))
-            {
-                if (existing == null)
-                {
-                    APCESettings.modDataDict[packageId] = this;
-                    return true;
-                }
-
                 APCESettings.modDataDict[packageId] = this;
-                return false;
+                return true;
             }
 
             APCESettings.modDataDict[packageId] = this;
-            return true;
+            return false;
         }
 
-        // TODO refactor so I don't check every def twice with CheckIfDefNeedsPatched
-        public void RebuildSavedDefsToPatchDict(List<string> namesList, List<string> typesList)
+        APCESettings.modDataDict[packageId] = this;
+        return true;
+    }
+
+    // TODO refactor so I don't check every def twice with CheckIfDefNeedsPatched
+    public void RebuildSavedDefsToPatchDict(List<string> namesList, List<string> typesList)
+    {
+        //populate the dictionary with all patchable defs as "no", will be flipped the "yes" further below if appropriate
+        foreach (Def def in mod.AllDefs)
         {
-            //populate the dictionary with all patchable defs as "no", will be flipped the "yes" further below if appropriate
-            foreach (Def def in mod.AllDefs)
+            APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
+            if (need != APCEConstants.NeedsPatch.ignore)
             {
-                APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
-                if (need != APCEConstants.NeedsPatch.ignore)
-                {
-                    defsToPatch[def] = APCEConstants.NeedsPatch.no;
-                }
+                defsToPatch[def] = APCEConstants.NeedsPatch.no;
+            }
+        }
+
+        if (namesList.NullOrEmpty() || typesList.NullOrEmpty())
+        {
+            return;
+        }
+
+        if (namesList.Count != typesList.Count)
+        {
+            Log.Warning("Error in loading list of defs to patch, names list and types list are not the same length");
+            return;
+        }
+
+        for (int i = 0; i < namesList.Count; i++)
+        {
+            //skip ammosets since they won't exist at this point. will register themselves as they are constructed.
+            if (typesList[i] == "CombatExtended.AmmoSetDef")
+            {
+                continue;
             }
 
-            if (namesList.NullOrEmpty() || typesList.NullOrEmpty())
+            Type defType = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .FirstOrDefault(t => t.FullName == typesList[i]);
+            if (defType == null || !typeof(Def).IsAssignableFrom(defType))
             {
-                return;
+                Log.Warning($"Skipping invalid or missing Def with name {namesList[i]} and type {defType}");
+                continue;
             }
 
-            if (namesList.Count != typesList.Count)
+            var method = typeof(DefDatabase<>).MakeGenericType(defType).GetMethod("GetNamedSilentFail", new Type[] { typeof(string) });
+            if (method != null)
             {
-                Log.Warning("Error in loading list of defs to patch, names list and types list are not the same length");
-                return;
-            }
-
-            for (int i = 0; i < namesList.Count; i++)
-            {
-                //skip ammosets since they won't exist at this point. will register themselves as they are constructed.
-                if (typesList[i] == "CombatExtended.AmmoSetDef")
+                Def foundDef = method.Invoke(null, new object[] { namesList[i] }) as Def;
+                if (foundDef != null)
                 {
-                    continue;
-                }
-
-                Type defType = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .FirstOrDefault(t => t.FullName == typesList[i]);
-                if (defType == null || !typeof(Def).IsAssignableFrom(defType))
-                {
-                    Log.Warning($"Skipping invalid or missing Def with name {namesList[i]} and type {defType}");
-                    continue;
-                }
-
-                var method = typeof(DefDatabase<>).MakeGenericType(defType).GetMethod("GetNamedSilentFail", new Type[] { typeof(string) });
-                if (method != null)
-                {
-                    Def foundDef = method.Invoke(null, new object[] { namesList[i] }) as Def;
-                    if (foundDef != null)
-                    {
-                        defsToPatch[foundDef] = APCEConstants.NeedsPatch.yes;
-                    }
-                    else
-                    {
-                        Log.Warning($"Def not found: {namesList[i]} (Type: {typesList[i]})");
-                    }
+                    defsToPatch[foundDef] = APCEConstants.NeedsPatch.yes;
                 }
                 else
                 {
-                    Log.Warning($"Could not find DefDatabase<T> for type: {defType}");
+                    Log.Warning($"Def not found: {namesList[i]} (Type: {typesList[i]})");
                 }
             }
-
-            //populate the rest of the dictionary for defs NOT to patch
-            foreach (Def def in mod.AllDefs)
+            else
             {
-                APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
-                if (need != APCEConstants.NeedsPatch.ignore && !defsToPatch.ContainsKey(def))
-                {
-                    defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
-                }
+                Log.Warning($"Could not find DefDatabase<T> for type: {defType}");
             }
         }
 
-        public void ExposeData()
+        //populate the rest of the dictionary for defs NOT to patch
+        foreach (Def def in mod.AllDefs)
         {
-            //only bother to save data if the user has changed values. If not, just recalculate during patching
-            if (Scribe.mode == LoadSaveMode.LoadingVars
-                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+            APCEConstants.NeedsPatch need = ModAndDefCheckUtils.CheckIfDefNeedsPatched(def);
+            if (need != APCEConstants.NeedsPatch.ignore && !defsToPatch.ContainsKey(def))
             {
-                //turn the defsToPatch dictionary into a list of strings
-                if (Scribe.mode == LoadSaveMode.Saving)
+                defsToPatch.Add(def, APCEConstants.NeedsPatch.no);
+            }
+        }
+    }
+
+    public void ExposeData()
+    {
+        //only bother to save data if the user has changed values. If not, just recalculate during patching
+        if (Scribe.mode == LoadSaveMode.LoadingVars
+            || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+        {
+            //turn the defsToPatch dictionary into a list of strings
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                defsToPatchNames = new List<string>();
+                defsToPatchTypes = new List<string>();
+                foreach (var entry in defsToPatch)
                 {
-                    defsToPatchNames = new List<string>();
-                    defsToPatchTypes = new List<string>();
-                    foreach (var entry in defsToPatch)
+                    if (entry.Value == APCEConstants.NeedsPatch.yes)
                     {
-                        if (entry.Value == APCEConstants.NeedsPatch.yes)
-                        {
-                            defsToPatchNames.Add(entry.Key.defName);
-                            defsToPatchTypes.Add(entry.Key.GetType().ToString());
-                        }
+                        defsToPatchNames.Add(entry.Key.defName);
+                        defsToPatchTypes.Add(entry.Key.GetType().ToString());
                     }
                 }
-
-                Scribe_Values.Look(ref packageId, "packageId");
-                Scribe_Values.Look(ref isCustomized, "isCustomized");
-                Scribe_Collections.Look(ref defsToPatchNames, "defsToPatchNames");
-                Scribe_Collections.Look(ref defsToPatchTypes, "defsToPatchTypes");
-
-                //toggles
-                Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
-                Scribe_Values.Look(ref limitWeaponMass, "limitWeaponMass", false);
-                Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers", true);
-
-                // Apparel values
-                Scribe_Values.Look(ref apparelSharpMult, "apparelSharpMult", 10);
-                Scribe_Values.Look(ref apparelBluntMult, "apparelBluntMult", 40);
-                Scribe_Values.Look(ref apparelTechMultAnimal, "apparelTechMultAnimal", 0.25f);
-                Scribe_Values.Look(ref apparelTechMultNeolithic, "apparelTechMultNeolithic", 0.5f);
-                Scribe_Values.Look(ref apparelTechMultMedieval, "apparelTechMultMedieval", 0.75f);
-                Scribe_Values.Look(ref apparelTechMultIndustrial, "apparelTechMultIndustrial", 1f);
-                Scribe_Values.Look(ref apparelTechMultSpacer, "apparelTechMultSpacer", 2f);
-                Scribe_Values.Look(ref apparelTechMultUltratech, "apparelTechMultUltratech", 3f);
-                Scribe_Values.Look(ref apparelTechMultArchotech, "apparelTechMultArchotech", 4f);
-
-                Scribe_Values.Look(ref advancedArmorCarryWeight, "advancedArmorCarryWeight", 80f);
-                Scribe_Values.Look(ref advancedArmorCarryBulk, "advancedArmorCarryBulk", 10f);
-                Scribe_Values.Look(ref advancedArmorShootingAccuracy, "advancedArmorShootingAccuracy", 0.2f);
-
-                // Weapon settings
-                Scribe_Values.Look(ref gunsUseAmmo, "gunsUseAmmo", true);
-                Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult", 10f);
-                Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult", 40f);
-                Scribe_Values.Look(ref gunTechMultAnimal, "gunTechMultAnimal", 0.5f);
-                Scribe_Values.Look(ref gunTechMultNeolithic, "gunTechMultNeolithic", 1f);
-                Scribe_Values.Look(ref gunTechMultMedieval, "gunTechMultMedieval", 2f);
-                Scribe_Values.Look(ref gunTechMultIndustrial, "gunTechMultIndustrial", 4f);
-                Scribe_Values.Look(ref gunTechMultSpacer, "gunTechMultSpacer", 5f);
-                Scribe_Values.Look(ref gunTechMultUltratech, "gunTechMultUltratech", 6f);
-                Scribe_Values.Look(ref gunTechMultArchotech, "gunTechMultArchotech", 8f);
-
-                Scribe_Values.Look(ref weaponToolPowerMult, "weaponToolPowerMult", 1f);
-                Scribe_Values.Look(ref weaponToolSharpPenetration, "weaponToolSharpPenetration", 1f);
-                Scribe_Values.Look(ref weaponToolBluntPenetration, "weaponToolBluntPenetration", 4f);
-                Scribe_Values.Look(ref weaponToolTechMultAnimal, "weaponToolTechMultAnimal", 1f);
-                Scribe_Values.Look(ref weaponToolTechMultNeolithic, "weaponToolTechMultNeolithic", 1f);
-                Scribe_Values.Look(ref weaponToolTechMultMedieval, "weaponToolTechMultMedieval", 1f);
-                Scribe_Values.Look(ref weaponToolTechMultIndustrial, "weaponToolTechMultIndustrial", 2f);
-                Scribe_Values.Look(ref weaponToolTechMultSpacer, "weaponToolTechMultSpacer", 3f);
-                Scribe_Values.Look(ref weaponToolTechMultUltratech, "weaponToolTechMultUltratech", 4f);
-                Scribe_Values.Look(ref weaponToolTechMultArchotech, "weaponToolTechMultArchotech", 6f);
-
-                Scribe_Values.Look(ref maximumWeaponMass, "maximumWeaponMass", 20f);
-
-                // Pawn settings
-                Scribe_Values.Look(ref pawnArmorSharpMult, "pawnArmorSharpMult", 10f);
-                Scribe_Values.Look(ref pawnArmorBluntMult, "pawnArmorBluntMult", 40f);
-
-                Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolPowerMult", 1f);
-                Scribe_Values.Look(ref pawnToolSharpPenetration, "pawnToolSharpPenetration", 10f);
-                Scribe_Values.Look(ref pawnToolBluntPenetration, "pawnToolBluntPenetration", 40f);
-
-                Scribe_Values.Look(ref pawnKindMinMags, "pawnKindMinMags", 2f);
-                Scribe_Values.Look(ref pawnKindMaxMags, "pawnKindMaxMags", 5f);
-
-                Scribe_Values.Look(ref patchBackpacks, "patchBackpacks", true);
-
-                Scribe_Values.Look(ref geneArmorSharpMult, "geneArmorSharpMult", 10f);
-                Scribe_Values.Look(ref geneArmorBluntMult, "geneArmorBluntMult", 10f);
-
-                // Hediff settings
-                Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult", 10f);
-                Scribe_Values.Look(ref hediffBluntMult, "hediffBluntMult", 40f);
-
-                // Other
-                Scribe_Values.Look(ref vehicleSharpMult, "vehicleSharpMult", 15f);
-                Scribe_Values.Look(ref vehicleBluntMult, "vehicleBluntMult", 15f);
-                Scribe_Values.Look(ref vehicleHealthMult, "vehicleHealthMult", 3f);
             }
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                APCESettings.modDataDict.Add(packageId, this);
-                mod = LoadedModManager.RunningMods.First(m => m.PackageId == packageId);
 
-                //turn the list of defName strings back into a dictionary
-                if (defsToPatchNames == null)
-                {
-                    defsToPatchNames = new List<string>();
-                }
-                RebuildSavedDefsToPatchDict(defsToPatchNames, defsToPatchTypes);
-            }
+            Scribe_Values.Look(ref packageId, "packageId");
+            Scribe_Values.Look(ref isCustomized, "isCustomized");
+            Scribe_Collections.Look(ref defsToPatchNames, "defsToPatchNames");
+            Scribe_Collections.Look(ref defsToPatchTypes, "defsToPatchTypes");
+
+            //toggles
+            Scribe_Values.Look(ref patchCustomVerbs, "patchCustomVerbs", false);
+            Scribe_Values.Look(ref limitWeaponMass, "limitWeaponMass", false);
+            Scribe_Values.Look(ref patchHeadgearLayers, "patchHeadgearLayers", true);
+
+            // Apparel values
+            Scribe_Values.Look(ref apparelSharpMult, "apparelSharpMult", 10);
+            Scribe_Values.Look(ref apparelBluntMult, "apparelBluntMult", 40);
+            Scribe_Values.Look(ref apparelTechMultAnimal, "apparelTechMultAnimal", 0.25f);
+            Scribe_Values.Look(ref apparelTechMultNeolithic, "apparelTechMultNeolithic", 0.5f);
+            Scribe_Values.Look(ref apparelTechMultMedieval, "apparelTechMultMedieval", 0.75f);
+            Scribe_Values.Look(ref apparelTechMultIndustrial, "apparelTechMultIndustrial", 1f);
+            Scribe_Values.Look(ref apparelTechMultSpacer, "apparelTechMultSpacer", 2f);
+            Scribe_Values.Look(ref apparelTechMultUltratech, "apparelTechMultUltratech", 3f);
+            Scribe_Values.Look(ref apparelTechMultArchotech, "apparelTechMultArchotech", 4f);
+
+            Scribe_Values.Look(ref advancedArmorCarryWeight, "advancedArmorCarryWeight", 80f);
+            Scribe_Values.Look(ref advancedArmorCarryBulk, "advancedArmorCarryBulk", 10f);
+            Scribe_Values.Look(ref advancedArmorShootingAccuracy, "advancedArmorShootingAccuracy", 0.2f);
+
+            // Weapon settings
+            Scribe_Values.Look(ref gunsUseAmmo, "gunsUseAmmo", true);
+            Scribe_Values.Look(ref gunSharpPenMult, "gunSharpPenMult", 10f);
+            Scribe_Values.Look(ref gunBluntPenMult, "gunBluntPenMult", 40f);
+            Scribe_Values.Look(ref gunTechMultAnimal, "gunTechMultAnimal", 0.5f);
+            Scribe_Values.Look(ref gunTechMultNeolithic, "gunTechMultNeolithic", 1f);
+            Scribe_Values.Look(ref gunTechMultMedieval, "gunTechMultMedieval", 2f);
+            Scribe_Values.Look(ref gunTechMultIndustrial, "gunTechMultIndustrial", 4f);
+            Scribe_Values.Look(ref gunTechMultSpacer, "gunTechMultSpacer", 5f);
+            Scribe_Values.Look(ref gunTechMultUltratech, "gunTechMultUltratech", 6f);
+            Scribe_Values.Look(ref gunTechMultArchotech, "gunTechMultArchotech", 8f);
+
+            Scribe_Values.Look(ref weaponToolPowerMult, "weaponToolPowerMult", 1f);
+            Scribe_Values.Look(ref weaponToolSharpPenetration, "weaponToolSharpPenetration", 1f);
+            Scribe_Values.Look(ref weaponToolBluntPenetration, "weaponToolBluntPenetration", 4f);
+            Scribe_Values.Look(ref weaponToolTechMultAnimal, "weaponToolTechMultAnimal", 1f);
+            Scribe_Values.Look(ref weaponToolTechMultNeolithic, "weaponToolTechMultNeolithic", 1f);
+            Scribe_Values.Look(ref weaponToolTechMultMedieval, "weaponToolTechMultMedieval", 1f);
+            Scribe_Values.Look(ref weaponToolTechMultIndustrial, "weaponToolTechMultIndustrial", 2f);
+            Scribe_Values.Look(ref weaponToolTechMultSpacer, "weaponToolTechMultSpacer", 3f);
+            Scribe_Values.Look(ref weaponToolTechMultUltratech, "weaponToolTechMultUltratech", 4f);
+            Scribe_Values.Look(ref weaponToolTechMultArchotech, "weaponToolTechMultArchotech", 6f);
+
+            Scribe_Values.Look(ref maximumWeaponMass, "maximumWeaponMass", 20f);
+
+            // Pawn settings
+            Scribe_Values.Look(ref pawnArmorSharpMult, "pawnArmorSharpMult", 10f);
+            Scribe_Values.Look(ref pawnArmorBluntMult, "pawnArmorBluntMult", 40f);
+
+            Scribe_Values.Look(ref pawnToolPowerMult, "pawnToolPowerMult", 1f);
+            Scribe_Values.Look(ref pawnToolSharpPenetration, "pawnToolSharpPenetration", 10f);
+            Scribe_Values.Look(ref pawnToolBluntPenetration, "pawnToolBluntPenetration", 40f);
+
+            Scribe_Values.Look(ref pawnKindMinMags, "pawnKindMinMags", 2f);
+            Scribe_Values.Look(ref pawnKindMaxMags, "pawnKindMaxMags", 5f);
+
+            Scribe_Values.Look(ref patchBackpacks, "patchBackpacks", true);
+
+            Scribe_Values.Look(ref geneArmorSharpMult, "geneArmorSharpMult", 10f);
+            Scribe_Values.Look(ref geneArmorBluntMult, "geneArmorBluntMult", 10f);
+
+            // Hediff settings
+            Scribe_Values.Look(ref hediffSharpMult, "hediffSharpMult", 10f);
+            Scribe_Values.Look(ref hediffBluntMult, "hediffBluntMult", 40f);
+
+            // Other
+            Scribe_Values.Look(ref vehicleSharpMult, "vehicleSharpMult", 15f);
+            Scribe_Values.Look(ref vehicleBluntMult, "vehicleBluntMult", 15f);
+            Scribe_Values.Look(ref vehicleHealthMult, "vehicleHealthMult", 3f);
         }
+        if (Scribe.mode == LoadSaveMode.LoadingVars)
+        {
+            APCESettings.modDataDict.Add(packageId, this);
+            mod = LoadedModManager.RunningMods.First(m => m.PackageId == packageId);
 
+            //turn the list of defName strings back into a dictionary
+            if (defsToPatchNames == null)
+            {
+                defsToPatchNames = new List<string>();
+            }
+            RebuildSavedDefsToPatchDict(defsToPatchNames, defsToPatchTypes);
+        }
     }
+
 }

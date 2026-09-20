@@ -6,86 +6,85 @@ using System.Threading.Tasks;
 using Verse;
 using System.Reflection;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+class CompatibilityPatches
 {
-    class CompatibilityPatches
+    public CompatibilityPatches(ModContentPack content)
     {
-        public CompatibilityPatches(ModContentPack content)
-        {
-            ConstructCompat(content);
-        }
+        ConstructCompat(content);
+    }
 
-        //this is a stripped down version of CE's Controller.PostLoad using IModPart
-        public void ConstructCompat(ModContentPack content)
+    //this is a stripped down version of CE's Controller.PostLoad using IModPart
+    public void ConstructCompat(ModContentPack content)
+    {
+        Queue<Assembly> toProcess = new Queue<Assembly>(content.assemblies.loadedAssemblies);
+        List<ICompat> modParts = new List<ICompat>();
+        while (toProcess.Any())
         {
-            Queue<Assembly> toProcess = new Queue<Assembly>(content.assemblies.loadedAssemblies);
-            List<ICompat> modParts = new List<ICompat>();
-            while (toProcess.Any())
+            Assembly assembly = toProcess.Dequeue();
+
+            foreach (Type t in assembly.GetTypes().Where(x => typeof(ICompat).IsAssignableFrom(x) && !x.IsAbstract))
             {
-                Assembly assembly = toProcess.Dequeue();
+                ICompat imp = ((ICompat)t.GetConstructor(new Type[] { }).Invoke(new object[] { }));
+                modParts.Add(imp);
+            }
+        }
+    }
 
-                foreach (Type t in assembly.GetTypes().Where(x => typeof(ICompat).IsAssignableFrom(x) && !x.IsAbstract))
+    public void PatchMods()
+    {
+        PatchPBF();
+        PatchMPBF();
+    }
+
+    public void PatchPBF()
+    {
+        if (ModsConfig.IsActive("statistno1.personabond"))
+        {
+            ModContentPack personabond = null;
+
+            foreach (ModContentPack mod in LoadedModManager.RunningModsListForReading)
+            {
+                if (mod.PackageId == "statistno1.personabond")
                 {
-                    ICompat imp = ((ICompat)t.GetConstructor(new Type[] { }).Invoke(new object[] { }));
-                    modParts.Add(imp);
+                    personabond = mod;
+                    break;
+                }
+            }
+
+            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
+            {
+                if (def.defName.StartsWith("PBF_"))
+                {
+                    def.modContentPack = personabond;
+                    personabond.AddDef(def);
                 }
             }
         }
-
-        public void PatchMods()
+    }
+    public void PatchMPBF()
+    {
+        if (ModsConfig.IsActive("daria40K.mightypersonabondforgepatch"))
         {
-            PatchPBF();
-            PatchMPBF();
-        }
+            ModContentPack mightypersonabond = null;
 
-        public void PatchPBF()
-        {
-            if (ModsConfig.IsActive("statistno1.personabond"))
+            foreach (ModContentPack mod in LoadedModManager.RunningModsListForReading)
             {
-                ModContentPack personabond = null;
-
-                foreach (ModContentPack mod in LoadedModManager.RunningModsListForReading)
+                if (mod.PackageId == "daria40k.mightypersonabondforgepatch")
                 {
-                    if (mod.PackageId == "statistno1.personabond")
-                    {
-                        personabond = mod;
-                        break;
-                    }
-                }
-
-                foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
-                {
-                    if (def.defName.StartsWith("PBF_"))
-                    {
-                        def.modContentPack = personabond;
-                        personabond.AddDef(def);
-                    }
+                    mightypersonabond = mod;
+                    break;
                 }
             }
-        }
-        public void PatchMPBF()
-        {
-            if (ModsConfig.IsActive("daria40K.mightypersonabondforgepatch"))
+
+            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
             {
-                ModContentPack mightypersonabond = null;
-
-                foreach (ModContentPack mod in LoadedModManager.RunningModsListForReading)
+                if (def.modContentPack == null
+                    && def.defName.EndsWith("_Bond"))
                 {
-                    if (mod.PackageId == "daria40k.mightypersonabondforgepatch")
-                    {
-                        mightypersonabond = mod;
-                        break;
-                    }
-                }
-
-                foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
-                {
-                    if (def.modContentPack == null
-                        && def.defName.EndsWith("_Bond"))
-                    {
-                        def.modContentPack = mightypersonabond;
-                        mightypersonabond.AddDef(def);
-                    }
+                    def.modContentPack = mightypersonabond;
+                    mightypersonabond.AddDef(def);
                 }
             }
         }

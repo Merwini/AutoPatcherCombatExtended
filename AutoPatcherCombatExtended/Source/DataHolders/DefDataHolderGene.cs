@@ -7,145 +7,144 @@ using Verse;
 using RimWorld;
 using CombatExtended;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+public class DefDataHolderGene : DefDataHolder
 {
-    public class DefDataHolderGene : DefDataHolder
+    //TODO can genes add verbs? Need to look into whether they would need patching.
+    public DefDataHolderGene()
     {
-        //TODO can genes add verbs? Need to look into whether they would need patching.
-        public DefDataHolderGene()
+        //empty constructor for use by SaveLoad
+    }
+
+    public DefDataHolderGene(GeneDef def) : base(def)
+    {
+    }
+
+    public GeneDef geneDef;
+
+    float original_ArmorRatingSharp;
+    float original_ArmorRatingBlunt;
+    float original_ArmorRatingHeat;
+
+    internal float modified_ArmorRatingSharp;
+    internal float modified_ArmorRatingBlunt;
+    internal float modified_ArmorRatingHeat;
+
+    public override void GetOriginalData()
+    {
+        //constructed by APCEController, def assigned by constructor
+        if (def != null && geneDef == null)
         {
-            //empty constructor for use by SaveLoad
+            this.geneDef = def as GeneDef;
+        }
+        //constructed by SaveLoad, thingDef loaded from xml
+        else if (geneDef != null && def == null)
+        {
+            def = geneDef;
         }
 
-        public DefDataHolderGene(GeneDef def) : base(def)
+        StartNewLogEntry();
+        logBuilder.AppendLine($"Starting GetOriginalData log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+
+        try
         {
+            original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+            logBuilder.AppendLine($"original_ArmorRatingSharp : {original_ArmorRatingSharp}");
+
+            original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+            logBuilder.AppendLine($"original_ArmorRatingBlunt : {original_ArmorRatingBlunt}");
+
+            original_ArmorRatingHeat = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            logBuilder.AppendLine($"original_ArmorRatingHeat: {original_ArmorRatingHeat}");
         }
-
-        public GeneDef geneDef;
-
-        float original_ArmorRatingSharp;
-        float original_ArmorRatingBlunt;
-        float original_ArmorRatingHeat;
-
-        internal float modified_ArmorRatingSharp;
-        internal float modified_ArmorRatingBlunt;
-        internal float modified_ArmorRatingHeat;
-
-        public override void GetOriginalData()
+        catch (Exception ex)
         {
-            //constructed by APCEController, def assigned by constructor
-            if (def != null && geneDef == null)
-            {
-                this.geneDef = def as GeneDef;
-            }
-            //constructed by SaveLoad, thingDef loaded from xml
-            else if (geneDef != null && def == null)
-            {
-                def = geneDef;
-            }
-
-            StartNewLogEntry();
-            logBuilder.AppendLine($"Starting GetOriginalData log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
-
-            try
-            {
-                original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-                logBuilder.AppendLine($"original_ArmorRatingSharp : {original_ArmorRatingSharp}");
-
-                original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-                logBuilder.AppendLine($"original_ArmorRatingBlunt : {original_ArmorRatingBlunt}");
-
-                original_ArmorRatingHeat = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
-                logBuilder.AppendLine($"original_ArmorRatingHeat: {original_ArmorRatingHeat}");
-            }
-            catch (Exception ex)
-            {
-                logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
-                logBuilder.AppendLine(ex.ToString());
-                threwError = true;
-            }
-            finally
-            {
-                PrintLog();
-            }
+            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            threwError = true;
         }
-
-        public override void AutoCalculate()
+        finally
         {
-            StartNewLogEntry();
-            logBuilder.AppendLine($"Starting AutoCalculate log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
-
-            try
-            {
-                modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
-                logBuilder.AppendLine($"modified_ArmorRatingSharp: {modified_ArmorRatingSharp}");
-
-                modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.geneArmorBluntMult;
-                logBuilder.AppendLine($"modified_ArmorRatingBlunt: {modified_ArmorRatingBlunt}");
-
-                modified_ArmorRatingHeat = original_ArmorRatingHeat;
-                logBuilder.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat}");
-            }
-            catch (Exception ex)
-            {
-                logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
-                logBuilder.AppendLine(ex.ToString());
-                threwError = true;
-            }
-            finally
-            {
-                PrintLog();
-            }
+            PrintLog();
         }
+    }
 
-        public override void ApplyPatch()
+    public override void AutoCalculate()
+    {
+        StartNewLogEntry();
+        logBuilder.AppendLine($"Starting AutoCalculate log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+
+        try
         {
-            StartNewLogEntry();
-            logBuilder.AppendLine($"Starting ApplyPatch log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+            modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
+            logBuilder.AppendLine($"modified_ArmorRatingSharp: {modified_ArmorRatingSharp}");
 
-            try
-            {
-                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp, logBuilder);
-                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt, logBuilder);
-                GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat, logBuilder);
-            }
-            catch (Exception ex)
-            {
-                logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
-                logBuilder.AppendLine(ex.ToString());
-                threwError = true;
-            }
-            finally
-            {
-                PrintLog();
-            }
+            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.geneArmorBluntMult;
+            logBuilder.AppendLine($"modified_ArmorRatingBlunt: {modified_ArmorRatingBlunt}");
+
+            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+            logBuilder.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat}");
         }
-
-        public override StringBuilder ExportXML()
+        catch (Exception ex)
         {
-            xml = GeneralUtils.GetXmlForDef(geneDef);
-
-            patchOps = new List<string>();
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statOffsets", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statOffsets", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
-            patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statOffsets", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
-
-            base.ExportXML();
-
-            return patch;
+            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            threwError = true;
         }
-
-        public override void ExposeData()
+        finally
         {
-            Scribe_Defs.Look(ref geneDef, "def");
-            if (Scribe.mode == LoadSaveMode.LoadingVars
-                || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
-            {
-                Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0f);
-                Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
-                Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
-            }
-            base.ExposeData();
+            PrintLog();
         }
+    }
+
+    public override void ApplyPatch()
+    {
+        StartNewLogEntry();
+        logBuilder.AppendLine($"Starting ApplyPatch log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack.Name ?? "UNKNOWN MOD"}");
+
+        try
+        {
+            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp, logBuilder);
+            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt, logBuilder);
+            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat, logBuilder);
+        }
+        catch (Exception ex)
+        {
+            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            threwError = true;
+        }
+        finally
+        {
+            PrintLog();
+        }
+    }
+
+    public override StringBuilder ExportXML()
+    {
+        xml = GeneralUtils.GetXmlForDef(geneDef);
+
+        patchOps = new List<string>();
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statOffsets", "ArmorRating_Sharp", modified_ArmorRatingSharp, original_ArmorRatingSharp));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statOffsets", "ArmorRating_Blunt", modified_ArmorRatingBlunt, original_ArmorRatingBlunt));
+        patchOps.Add(APCEPatchExport.GeneratePatchOperationFor(xml, "statOffsets", "ArmorRating_Heat", modified_ArmorRatingHeat, original_ArmorRatingHeat));
+
+        base.ExportXML();
+
+        return patch;
+    }
+
+    public override void ExposeData()
+    {
+        Scribe_Defs.Look(ref geneDef, "def");
+        if (Scribe.mode == LoadSaveMode.LoadingVars
+            || (Scribe.mode == LoadSaveMode.Saving && isCustomized == true))
+        {
+            Scribe_Values.Look(ref modified_ArmorRatingSharp, "modified_ArmorRatingSharp", 0f);
+            Scribe_Values.Look(ref modified_ArmorRatingBlunt, "modified_ArmorRatingBlunt", 0f);
+            Scribe_Values.Look(ref modified_ArmorRatingHeat, "modified_ArmorRatingHeat", 0f);
+        }
+        base.ExposeData();
     }
 }

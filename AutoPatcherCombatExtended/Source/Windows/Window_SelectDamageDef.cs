@@ -6,115 +6,114 @@ using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+class Window_SelectDamageDef : Window
 {
-    class Window_SelectDamageDef : Window
+    string searchTerm = "";
+    Vector2 leftScrollPosition = new Vector2();
+    DamageDef selectedDef = null;
+
+    List<DamageDef> defList;
+    int index;
+    bool isListMode = false;
+
+    private DamageDef originalDef;
+    private Action<DamageDef> onAccept;
+
+    public Window_SelectDamageDef(List<DamageDef> defList, int index)
     {
-        string searchTerm = "";
-        Vector2 leftScrollPosition = new Vector2();
-        DamageDef selectedDef = null;
+        this.defList = defList;
+        this.index = index;
+        this.selectedDef = defList[index];
+        this.isListMode = true;
+    }
 
-        List<DamageDef> defList;
-        int index;
-        bool isListMode = false;
+    public Window_SelectDamageDef(ref DamageDef damageDef, Action<DamageDef> onAccept)
+    {
+        this.originalDef = damageDef;
+        this.onAccept = onAccept;
+        selectedDef = originalDef;
+    }
 
-        private DamageDef originalDef;
-        private Action<DamageDef> onAccept;
+    public override void DoWindowContents(Rect inRect)
+    {
+        Listing_Standard list = new Listing_Standard();
 
-        public Window_SelectDamageDef(List<DamageDef> defList, int index)
+        list.Begin(inRect);
+        Text.Font = GameFont.Medium;
+        Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select DamageDef");
+        Text.Font = GameFont.Small;
+        list.End();
+        list.Gap(45);
+
+        float searchBoxHeight = 25f;
+        Rect searchBoxRect = new Rect(inRect.x + 10, 60, inRect.width - 20, searchBoxHeight);
+        searchTerm = Widgets.TextField(searchBoxRect, searchTerm);
+
+        float listTop = searchBoxRect.yMax + 10;
+        float listBottomPadding = 50f;
+        Rect listArea = new Rect(inRect.x + 10, listTop, inRect.width - 20, inRect.height - listTop - listBottomPadding);
+        GUI.BeginGroup(listArea, new GUIStyle(GUI.skin.box));
+
+        List<DamageDef> tempList = new List<DamageDef>();
+
+        tempList = DefDatabase<DamageDef>.AllDefsListForReading
+            .Where(item => item.defName.ToLower().Contains(searchTerm.ToLower()))
+            .OrderBy(def => def.defName)
+            .ToList();
+
+
+        float num = 3f;
+        Rect viewRect = new Rect(0f, 0f, listArea.width - 16f, tempList.Count * 32f);
+        Widgets.BeginScrollView(listArea.AtZero(), ref leftScrollPosition, viewRect);
+
+        if (!tempList.NullOrEmpty())
         {
-            this.defList = defList;
-            this.index = index;
-            this.selectedDef = defList[index];
-            this.isListMode = true;
+            foreach (DamageDef def in tempList)
+            {
+                Rect rowRect = new Rect(x: 5, y: num, width: listArea.width - 6, height: 30);
+                Widgets.DrawHighlightIfMouseover(rowRect);
+                if (def == selectedDef)
+                {
+                    Widgets.DrawHighlightSelected(rowRect);
+                }
+
+
+                Widgets.Label(rowRect, def.defName);
+
+                if (Widgets.ButtonInvisible(rowRect))
+                {
+                    selectedDef = def;
+                }
+
+                num += 32f;
+            }
         }
 
-        public Window_SelectDamageDef(ref DamageDef damageDef, Action<DamageDef> onAccept)
+        Widgets.EndScrollView();
+        GUI.EndGroup();
+
+        float buttonWidth = (inRect.width - 30) / 2;
+        Rect acceptButtonRect = new Rect(inRect.x + 10, inRect.yMax - 40, buttonWidth, 30);
+        Rect cancelButtonRect = new Rect(inRect.x + 20 + buttonWidth, inRect.yMax - 40, buttonWidth, 30);
+
+        if (Widgets.ButtonText(acceptButtonRect, "Accept", true, false, Color.green) && selectedDef != null)
         {
-            this.originalDef = damageDef;
-            this.onAccept = onAccept;
-            selectedDef = originalDef;
+            if (isListMode)
+            {
+                defList[index] = selectedDef;
+            }
+            else
+            {
+                onAccept?.Invoke(selectedDef);
+            }
+            Close();
         }
 
-        public override void DoWindowContents(Rect inRect)
+        if (Widgets.ButtonText(cancelButtonRect, "Cancel", true, false, Color.red))
         {
-            Listing_Standard list = new Listing_Standard();
-
-            list.Begin(inRect);
-            Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 17f, 35f), "Select DamageDef");
-            Text.Font = GameFont.Small;
-            list.End();
-            list.Gap(45);
-
-            float searchBoxHeight = 25f;
-            Rect searchBoxRect = new Rect(inRect.x + 10, 60, inRect.width - 20, searchBoxHeight);
-            searchTerm = Widgets.TextField(searchBoxRect, searchTerm);
-
-            float listTop = searchBoxRect.yMax + 10;
-            float listBottomPadding = 50f;
-            Rect listArea = new Rect(inRect.x + 10, listTop, inRect.width - 20, inRect.height - listTop - listBottomPadding);
-            GUI.BeginGroup(listArea, new GUIStyle(GUI.skin.box));
-
-            List<DamageDef> tempList = new List<DamageDef>();
-
-            tempList = DefDatabase<DamageDef>.AllDefsListForReading
-                .Where(item => item.defName.ToLower().Contains(searchTerm.ToLower()))
-                .OrderBy(def => def.defName)
-                .ToList();
-            
-
-            float num = 3f;
-            Rect viewRect = new Rect(0f, 0f, listArea.width - 16f, tempList.Count * 32f);
-            Widgets.BeginScrollView(listArea.AtZero(), ref leftScrollPosition, viewRect);
-
-            if (!tempList.NullOrEmpty())
-            {
-                foreach (DamageDef def in tempList)
-                {
-                    Rect rowRect = new Rect(x: 5, y: num, width: listArea.width - 6, height: 30);
-                    Widgets.DrawHighlightIfMouseover(rowRect);
-                    if (def == selectedDef)
-                    {
-                        Widgets.DrawHighlightSelected(rowRect);
-                    }
-
-                    
-                    Widgets.Label(rowRect, def.defName);
-
-                    if (Widgets.ButtonInvisible(rowRect))
-                    {
-                        selectedDef = def;
-                    }
-
-                    num += 32f;
-                }
-            }
-
-            Widgets.EndScrollView();
-            GUI.EndGroup();
-
-            float buttonWidth = (inRect.width - 30) / 2;
-            Rect acceptButtonRect = new Rect(inRect.x + 10, inRect.yMax - 40, buttonWidth, 30);
-            Rect cancelButtonRect = new Rect(inRect.x + 20 + buttonWidth, inRect.yMax - 40, buttonWidth, 30);
-
-            if (Widgets.ButtonText(acceptButtonRect, "Accept", true, false, Color.green) && selectedDef != null)
-            {
-                if (isListMode)
-                {
-                    defList[index] = selectedDef;
-                }
-                else
-                {
-                    onAccept?.Invoke(selectedDef);
-                }
-                Close();
-            }
-
-            if (Widgets.ButtonText(cancelButtonRect, "Cancel", true, false, Color.red))
-            {
-                Close();
-            }
+            Close();
         }
     }
 }

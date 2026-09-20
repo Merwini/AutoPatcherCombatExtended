@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+class Window_SelectBodyPartsNaturalArmor : Window
 {
-    class Window_SelectBodyPartsNaturalArmor : Window
+    public override void DoWindowContents(Rect inRect)
     {
-        public override void DoWindowContents(Rect inRect)
-        {
-            //TODO
-            Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 150f - 17f, 35f), $"Not implmented yet. Use escape key to close");
-        }
+        //TODO
+        Text.Font = GameFont.Medium;
+        Widgets.Label(new Rect(0f, 0f, inRect.width - 150f - 17f, 35f), $"Not implmented yet. Use escape key to close");
     }
 }

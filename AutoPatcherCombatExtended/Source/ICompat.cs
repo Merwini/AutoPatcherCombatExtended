@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+public interface ICompat
 {
-    public interface ICompat
-    {
-    }
 }

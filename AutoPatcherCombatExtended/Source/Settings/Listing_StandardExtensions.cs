@@ -8,15 +8,15 @@ using Verse;
 using RimWorld;
 using System.Reflection;
 
-namespace nuff.AutoPatcherCombatExtended
-{
+namespace nuff.AutoPatcherCombatExtended;
+
 	public static class Listing_StandardExtensions
 	{
 
 		#region EnumLicense
 		/*
 		    Code used and modified from Compact Hediffs by PeteTimesSix, under MIT License
-		 
+
 		    MIT License
 
 			Copyright (c) 2020 PeteTimesSix
@@ -145,7 +145,7 @@ namespace nuff.AutoPatcherCombatExtended
 
 			MIT License
 
-			Copyright (c) 2017 
+			Copyright (c) 2017
 
 			Permission is hereby granted, free of charge, to any person obtaining a copy
 			of this software and associated documentation files (the "Software"), to deal
@@ -166,7 +166,7 @@ namespace nuff.AutoPatcherCombatExtended
 			SOFTWARE.
 		 */
 		#endregion
-		public static void ListControlMods(this Listing_Standard listingStandard, Rect inRect, ref List<ModContentPack> leftList, ref List<ModContentPack> rightList, 
+		public static void ListControlMods(this Listing_Standard listingStandard, Rect inRect, ref List<ModContentPack> leftList, ref List<ModContentPack> rightList,
 										ref string searchTerm, ref Vector2 leftScrollPosition, ref Vector2 rightScrollPosition, ref ModContentPack leftSelectedObject, ref ModContentPack rightSelectedObject,
 										string columnLabel, float rectPCT)
 		{
@@ -482,9 +482,9 @@ namespace nuff.AutoPatcherCombatExtended
 			{
 				rightList.Add(item: leftSelectedObject);
 				if (addDelegate != null)
-                {
+            {
 					addDelegate.DynamicInvoke(leftSelectedObject);
-                }
+            }
 
 				rightList = rightList.OrderBy(mcp =>
 				{
@@ -513,4 +513,3 @@ namespace nuff.AutoPatcherCombatExtended
 		}
 		*/
 	}
-}

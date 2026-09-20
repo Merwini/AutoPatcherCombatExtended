@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+public class DefDataHolderStuff
 {
-    public class DefDataHolderStuff
-    { 
-        //TODO not really a def, but needs patching
-    }
+    //TODO not really a def, but needs patching
 }

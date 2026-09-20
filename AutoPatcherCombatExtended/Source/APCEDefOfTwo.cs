@@ -8,15 +8,12 @@ using System.Reflection;
 using System.Text;
 using Verse;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+[DefOf]
+public static class APCEDefOfTwo
 {
+    #pragma warning disable CS0649
 
-    [DefOf]
-    public static class APCEDefOfTwo
-    {
-        //TODO maybe find a better way to do this. Literally just need this reference, but APCEDefOf already has a 'Blunt'. Stupid design to allow defs of different types to have the same defName
-        #pragma warning disable CS0649
-
-        public static DamageArmorCategoryDef Blunt;
-    }
+    public static DamageArmorCategoryDef Blunt;
 }

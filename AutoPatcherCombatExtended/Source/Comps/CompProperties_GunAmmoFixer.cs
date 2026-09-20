@@ -5,13 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace nuff.AutoPatcherCombatExtended
+namespace nuff.AutoPatcherCombatExtended;
+
+class CompProperties_GunAmmoFixer : CompProperties
 {
-    class CompProperties_GunAmmoFixer : CompProperties
+    public CompProperties_GunAmmoFixer()
     {
-        public CompProperties_GunAmmoFixer()
-        {
-            compClass = typeof(CompGunAmmoFixer);
-        }
+        compClass = typeof(CompGunAmmoFixer);
     }
 }

@@ -1,0 +1,38 @@
+﻿{
+    "version":  "2.0.0",
+    "tasks":  [
+                  {
+                      "label":  "Build APCE solution",
+                      "type":  "process",
+                      "command":  "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+                      "args":  [
+                                   "${workspaceFolder}\\AutoPatcherCombatExtended.sln",
+                                   "/restore",
+                                   "/t:Build",
+                                   "/p:Configuration=${input:configuration}",
+                                   "/p:Platform=Any CPU",
+                                   "/nologo"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "problemMatcher":  "$msCompile",
+                      "group":  {
+                                    "kind":  "build",
+                                    "isDefault":  true
+                                }
+                  }
+              ],
+    "inputs":  [
+                   {
+                       "id":  "configuration",
+                       "type":  "pickString",
+                       "description":  "Build configuration",
+                       "options":  [
+                                       "Debug",
+                                       "Release"
+                                   ],
+                       "default":  "Debug"
+                   }
+               ]
+}
