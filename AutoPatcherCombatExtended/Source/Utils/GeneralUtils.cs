@@ -15,20 +15,13 @@ namespace nuff.AutoPatcherCombatExtended;
 public static class GeneralUtils
 {
 
-    public static void AddOrChangeStat(ref List<StatModifier> list, StatDef stat, float value, StringBuilder logText)
+    public static void AddOrChangeStat(ref List<StatModifier> list, StatDef stat, float value)
     {
-        bool addedStat = false;
+        //bool addedStat = false;
 
         if (list == null)
         {
             list = new List<StatModifier>();
-            logText.AppendLine("AddOrChangeStat called with null List. Assigned empty List.");
-        }
-
-        if (stat == null)
-        {
-            logText.AppendLine("AddOrChangeStat called with null StatDef. Returning.");
-            return;
         }
 
         int index = list.FindIndex(x => x.stat == stat);
@@ -40,32 +33,19 @@ public static class GeneralUtils
         //can't think of a use case where I would need to add a 0 value statmod, and adding this check will save vetting in the patch methods
         else if (value != 0)
         {
-            addedStat = true;
+            //addedStat = true;
             list.Add(new StatModifier() { stat = stat, value = value });
         }
 
-        string action = addedStat ? "Added new stat" : "Updated existing stat";
-        logText.AppendLine($"{action} {stat.defName} with value {value}");
+        // string action = addedStat ? "Added new stat" : "Updated existing stat";
+        // logText.AppendLine($"{action} {stat.defName} with value {value}");
     }
 
-    public static void AddOrReplaceCompProps(ThingDef def, CompProperties comp, StringBuilder logText)
+    public static void AddOrReplaceCompProps(ThingDef def, CompProperties comp)
     {
-        if (def == null)
-        {
-            logText.AppendLine("AddOrReplaceCompProps called with null def. Returning.");
-            return;
-        }
-
-        if (comp == null)
-        {
-            logText.AppendLine("AddOrReplaceCompProps called with null CompProprties. Returning.");
-            return;
-        }
-
         if (def.comps == null)
         {
             def.comps = new List<CompProperties>();
-            logText.AppendLine("Null comps on, assigned empty List.");
         }
 
         Type compType = comp.GetType();
@@ -74,65 +54,41 @@ public static class GeneralUtils
         if (index != -1)
         {
             def.comps[index] = comp;
-            logText.AppendLine("Found existing CompProperties and replaced it with the new one.");
         }
         else
         {
             def.comps.Add(comp);
-            logText.AppendLine("Found no existing CompProperties, added the new one.");
         }
     }
 
-    public static void AddOrReplaceExtension(Def def, DefModExtension newExtension, StringBuilder logText)
+    public static void AddOrReplaceExtension(Def def, DefModExtension newExtension)
     {
-        if (def == null)
-        {
-            logText.AppendLine("AddOrReplaceExtension called with null def. Returning.");
-            return;
-        }
-
-        if (newExtension == null)
-        {
-            logText.AppendLine("AddOrReplaceExtension called with null DefModExtension. Returning.");
-            return;
-        }
-
         if (def.modExtensions == null)
         {
             def.modExtensions = new List<DefModExtension>();
-            logText.AppendLine("Null modExtensions, assigned empty List.");
         }
 
         Type extensionType = newExtension.GetType();
-        logText.AppendLine($"Checking List for defModExtension of Type {extensionType}");
         int index = def.modExtensions.FindIndex(ext => ext.GetType() == extensionType);
 
         if (index != -1)
         {
             def.modExtensions[index] = newExtension;
-            logText.AppendLine("Found existing defModExtension and replaced it with the new one.");
         }
         else
         {
             def.modExtensions.Add(newExtension);
-            logText.AppendLine("Found no existing defModExtension, added the new one.");
         }
     }
 
-    public static bool AddCompReplaceMe(ThingDef oldThingDef, ThingDef newThingDef, StringBuilder logText)
+    public static bool AddCompReplaceMe(ThingDef oldThingDef, ThingDef newThingDef)
     {
         CompProperties_ReplaceMe newComp_ReplaceMe = new CompProperties_ReplaceMe()
         {
             thingToSpawn = newThingDef
         };
-        if (oldThingDef.comps == null)
-        {
-            oldThingDef.comps = new List<CompProperties>();
-            logText.AppendLine($"Null comps on {oldThingDef.defName}, made empty List");
-        }
-
-        oldThingDef.comps.Add(newComp_ReplaceMe);
-        logText.AppendLine($"Added CompProperties_ReplaceMe.");
+        
+        AddOrReplaceCompProps(oldThingDef, newComp_ReplaceMe);
 
         return true;
     }
@@ -193,38 +149,32 @@ public static class GeneralUtils
         dab.SetValue(newPPCE, (int)damage);
     }
 
-    public static APCEConstants.gunKinds DetermineGunKind(ThingDef thingDef, APCEConstants.PatchStageLog log)
+    public static APCEConstants.gunKinds DetermineGunKind(ThingDef thingDef, DefDataHolder holder)
     {
-        StringBuilder logText = log.Text;
         try
         {
             if (thingDef.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))
             {
-                logText.AppendLine("Gun has weaponTag \"Artillery\", returning Mortar as gun kind.");
                 return APCEConstants.gunKinds.Mortar;
             }
             else if (thingDef.Verbs[0].verbClass == typeof(Verb_ShootBeam))
             {
-                logText.AppendLine("Gun has verbClass \"Verb_ShootBeam\", returning BeamGun as gun kind.");
                 return APCEConstants.gunKinds.BeamGun;
             }
             else if (thingDef.Verbs[0].verbClass == typeof(Verb_SpewFire))
             {
-                logText.AppendLine("Gun has verbClass \"Verb_SpewFire\", returning Flamethrower as gun kind.");
                 return APCEConstants.gunKinds.Flamethrower;
             }
-            
+
             //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             else if (thingDef.weaponTags.Any(str => str.IndexOf("TurretGun", StringComparison.OrdinalIgnoreCase) >= 0))
             {
-                logText.AppendLine("Gun has weaponTag \"TurretGun\", returning Turret as gun kind.");
                 return APCEConstants.gunKinds.Turret;
             }
 
             //a bow is a pre-industrial ranged weapon with a burst count of 1. Can't find a good way to discern high-tech bows
             else if ((thingDef.techLevel.CompareTo(TechLevel.Medieval) <= 0) && (thingDef.Verbs[0].burstShotCount == 1))
             {
-                logText.AppendLine("Gun is Medieval or lower tech level and fires a single projectile, returning Bow as gun kind.");
                 return APCEConstants.gunKinds.Bow;
             }
 
@@ -232,14 +182,12 @@ public static class GeneralUtils
             //TODO switch this back to grenade after I actually implement grenade-patching
             else if (thingDef.Verbs[0].verbClass == typeof(Verb_LaunchProjectile))
             {
-                logText.AppendLine("Gun has verbClass \"Verb_LaunchProjectile\", is probably a grenade but grenade patching isn't impelemented so returning ExplosiveLauncher as gun kind instead.");
                 //return APCEConstants.gunKinds.Grenade;
                 return APCEConstants.gunKinds.ExplosiveLauncher;
             }
             //explosive launchers
             else if (thingDef.Verbs[0].CausesExplosion)
             {
-                logText.AppendLine("Gun's primary Verb causes an explosion, returning ExplosiveLauncher as gun kind.");
                 return APCEConstants.gunKinds.ExplosiveLauncher;
             }
 
@@ -250,55 +198,48 @@ public static class GeneralUtils
                         || (thingDef.Verbs[0]?.defaultProjectile != null && ((thingDef.Verbs[0].defaultProjectile.ToString().IndexOf("shotgun", 0, StringComparison.OrdinalIgnoreCase) != -1)
                                                                          || (thingDef.Verbs[0].defaultProjectile.ToString().IndexOf("gauge", 0, StringComparison.OrdinalIgnoreCase) != -1))))
             {
-                logText.AppendLine("Gun has \"shotgun\" in its name or description, or the name or description of its projectile. Returning Shotgun as gun kind.");
                 return APCEConstants.gunKinds.Shotgun;
             }
 
             //a handgun is an industrial or higher weapon with burst count 1 and a range < 13
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount == 1) && (thingDef.Verbs[0].range < 13))
             {
-                logText.AppendLine("Gun is Industrial tech level or higher, fires a single shot, and has range less than 13 cells. Returning Handgun as gun kind.");
                 return APCEConstants.gunKinds.Handgun;
             }
 
             // a precision rifle is an industrial or higher weapon with burst count 1 and a range >= 13
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount == 1) && (thingDef.Verbs[0].range >= 13))
             {
-                logText.AppendLine("Gun is Industrial tech level or higher, fires a single shot, and has range greater than or equal to 13 cells. Returning PrecisionRifle as gun kind.");
                 return APCEConstants.gunKinds.PrecisionRifle;
             }
 
             //an SMG is an industrial or higher weapon with burst count > 1 and a range < 25.9
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount > 1) && (thingDef.Verbs[0].range < 25.9))
             {
-                logText.AppendLine("Gun is Industrial tech level or higher, fires a multi-shot burst, and has range less than 26 cells. Returning SMG as gun kind.");
                 return APCEConstants.gunKinds.SMG;
             }
 
             //an assault rifle is an industrial or higher weapon with burst count > 1 but <= 3 and a range >= 25.9
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].burstShotCount > 1) && (thingDef.Verbs[0].burstShotCount <= 3) && (thingDef.Verbs[0].range >= 25.9))
             {
-                logText.AppendLine("Gun is Industrial tech level or higher, fires a multi-shot burst between 2 and 3 projectiles, and has range greater than or equal to 26 cells. Returning AssaultRifle as gun kind.");
                 return APCEConstants.gunKinds.AssaultRifle;
             }
 
             //a machine gun is an industrial or higher weapon with range >= 26 and burst count > 3
             else if ((thingDef.techLevel.CompareTo(TechLevel.Industrial) >= 0) && (thingDef.Verbs[0].range >= 25.9) && (thingDef.Verbs[0].burstShotCount > 3))
             {
-                logText.AppendLine("Gun is Industrial tech level or higher, fires a multi-shot burst greater than 3 projectiles, and has range greater than or equal to 26 cells. Returning MachineGun as gun kind.");
                 return APCEConstants.gunKinds.MachineGun;
             }
 
             else
             {
-                logText.AppendLine("Failed to match any gun kind rules, returning Other as gun kind");
                 return APCEConstants.gunKinds.Other;
             }
         }
         catch (Exception ex)
         {
-            log.ThrewError = true;
-            logText.AppendLine($"Exception when trying to determine a gun kind for def {thingDef?.defName} from mod {thingDef.modContentPack?.Name}. Returning Other as gun kind. Exception is: \n" + ex.ToString());
+            holder.logBuilder.AppendLine($"Exception when trying to determine a gun kind for def {thingDef?.defName} from mod {thingDef.modContentPack?.Name}. Returning Other as gun kind. Exception is: \n" + ex.ToString());
+            holder.hasErrorInLog = true;
             return APCEConstants.gunKinds.Other;
         }
     }

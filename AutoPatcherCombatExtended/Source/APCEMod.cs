@@ -15,8 +15,8 @@ namespace nuff.AutoPatcherCombatExtended;
 public class AutoPatcherCombatExtended : Mod
 {
     APCESettings Settings;
-    Mod CEMod;
-    Settings CESettings;
+    //Mod CEMod;
+    //Settings CESettings;
 
     internal static Dictionary<string, Type> defFolderTypesDictionary = new Dictionary<string, Type>
     {

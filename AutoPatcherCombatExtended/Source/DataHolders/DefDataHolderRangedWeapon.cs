@@ -118,9 +118,7 @@ public class DefDataHolderRangedWeapon : DefDataHolder
             def = weaponThingDef;
         }
 
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.GetOriginalData);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting GetOriginalData log entry for Ranged Weapon {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -128,86 +126,72 @@ public class DefDataHolderRangedWeapon : DefDataHolder
             if (weaponThingDef.statBases == null)
             {
                 weaponThingDef.statBases = new List<StatModifier>();
-                logText.AppendLine("Had null statBases, made new List");
             }
             if (weaponThingDef.weaponTags == null)
             {
                 weaponThingDef.weaponTags = new List<string>();
-                logText.AppendLine("Had null weaponTags, made new List");
             }
 
             if (!weaponThingDef.tools.NullOrEmpty())
             {
                 original_Tools = weaponThingDef.tools.ToList();
-                logText.AppendLine($"Preserved original Tools list with count: {original_Tools.Count}");
             }
             else
             {
-                logText.AppendLine("Had null or empty Tools list, skipping");
+                logBuilder.AppendLine("Had null or empty Tools list, will cause issues if used in melee");
             }
 
             original_VerbProperties = weaponThingDef.Verbs[0]; // TODO eventually make compatible with MVCF
-            logText.AppendLine($"Preserved original Verb of Type: {original_VerbProperties.verbClass}");
-
             original_IsCustomVerb = IsUsingCustomVerb(); 
-            logText.AppendLine($"Verb class {original_VerbProperties.verbClass} is a {(original_IsCustomVerb ? "Custom" : "Vanilla or CE")} Verb.");
-
             original_Mass = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.Mass, 0);
-            logText.AppendLine($"original_Mass: {original_Mass}");
-
             original_RangedWeaponCooldown = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.RangedWeapon_Cooldown, 0);
-            logText.AppendLine($"original_RangedWeaponCooldown: {original_RangedWeaponCooldown}");
-
             original_WorkToMake = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.WorkToMake, 0);
-            logText.AppendLine($"original_WorkToMake: {original_WorkToMake}");
-
             original_BurstShotCount = original_VerbProperties.burstShotCount;
-            logText.AppendLine($"original_BurstShotCount: {original_BurstShotCount}");
-
             stuffed = weaponThingDef.MadeFromStuff;
-            logText.AppendLine($"stuffed: {stuffed}");
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
+            logBuilder.AppendLine($"Finished GetOriginalData for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void AutoCalculate()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.AutoCalculate);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting AutoCalculate log entry for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting AutoCalculate log entry for Ranged Weapon {def?.defName ?? "NULL DEF"}");
 
         try
         {
-            if (original_IsCustomVerb && !ModData.patchCustomVerbs)
+            if (!HasProjectile())
             {
-                logText.AppendLine(CustomVerbMessage);
+                logBuilder.AppendLine("Ranged weapon has no Verbs or Verb has no defaultProjectile. Can't be auto-patched.");
                 return;
             }
 
-            logText.AppendLine("Attempting to determine kind of gun.");
-            gunKind = GeneralUtils.DetermineGunKind(weaponThingDef, log);
+            if (original_IsCustomVerb && !ModData.patchCustomVerbs)
+            {
+                logBuilder.AppendLine(CustomVerbMessage);
+                return;
+            }
 
-            CalculateWeaponTechMult(logText);
+            gunKind = GeneralUtils.DetermineGunKind(weaponThingDef, this);
+
+            CalculateWeaponTechMult();
 
             if (gunKind == APCEConstants.gunKinds.Mortar)
             {
-                logText.AppendLine("Calculating stats for a mortar and stopping Autocalculate.");
+                logBuilder.AppendLine("Calculating Mortar");
                 CalculateMortar();
                 return;
             }
 
             if (!original_Tools.NullOrEmpty())
             {
-                logText.AppendLine("Starting Tools.");
                 ClearModdedTools();
                 for (int i = 0; i < original_Tools.Count; i++)
                 {
@@ -216,37 +200,34 @@ public class DefDataHolderRangedWeapon : DefDataHolder
             }
             else
             {
-                logText.AppendLine("No Tools, skipping.");
+                logBuilder.AppendLine("Null or empty Tools");
             }
 
-            CalculateStatBaseValues(logText);
+            CalculateStatBaseValues();
 
             modified_UsesAmmo = ModData.gunsUseAmmo && gunKind != APCEConstants.gunKinds.BeamGun;
-            logText.AppendLine($"modified_UsesAmmo: {modified_UsesAmmo}");
 
             if (gunKind == APCEConstants.gunKinds.BeamGun)
             {
-                logText.AppendLine("Autocalculate complete due to gun kind being BeamGun");
                 return;
             }
 
-            CalculateVerbPropValues(logText);
+            CalculateVerbPropValues();
 
             if (gunKind == APCEConstants.gunKinds.Flamethrower)
             {
                 modified_AmmoSetDef = APCEDefOf.AmmoSet_Flamethrower;
-                logText.AppendLine("Gun kind is flamethrower, assigning CE flamethrower AmmoSet");
             }
 
             if (modified_AmmoSetDef == null)
             {
-                FixAmmoSet(logText);
+                FixAmmoSet();
             }
 
             if (gunKind != APCEConstants.gunKinds.Grenade)
             {
-                CalculateCompFireModesValues(logText);
-                CalculateCompAmmoUserValues(logText);
+                CalculateCompFireModesValues();
+                CalculateCompAmmoUserValues();
             }
             else
             {
@@ -255,91 +236,105 @@ public class DefDataHolderRangedWeapon : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
+            logBuilder.AppendLine($"Finished AutoCalculate for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
 
     public override void PrePatch()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.PrePatch);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting PrePatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting PrePatch log entry for Ranged Weapon {def?.defName ?? "NULL DEF"}");
 
         try
         {
+            if (!HasProjectile())
+            {
+                logBuilder.AppendLine("Ranged weapon has no Verbs or Verb has no defaultProjectile. Can't be auto-patched.");
+                return;
+            }
+
             if (original_IsCustomVerb && !ModData.patchCustomVerbs)
             {
-                logText.AppendLine(CustomVerbMessage);
+                logBuilder.AppendLine(CustomVerbMessage);
                 return;
             }
 
             if (gunKind != APCEConstants.gunKinds.Grenade && gunKind != APCEConstants.gunKinds.BeamGun)
             {
-                FixAmmoSet(logText);
-                FixDefaultProjectile(logText);
+                FixAmmoSet();
+                FixDefaultProjectile();
             }
 
             base.PrePatch();
         }
         catch (Exception ex)
         {
-            log.ThrewError = true;
-            logText.AppendLine(ex.ToString());
+            logBuilder.AppendLine($"Exception in PrePatch for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            CloseLogEntry(APCEConstants.PatchStage.PrePatch);
+            logBuilder.AppendLine($"Finished PrePatch for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void PostPatch()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.PostPatch);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting PostPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting PostPatch log entry for Ranged Weapon {def?.defName ?? "NULL DEF"}");
 
         try
         {
-            if (original_IsCustomVerb && !ModData.patchCustomVerbs)
+            if (!HasProjectile())
             {
-                logText.AppendLine(CustomVerbMessage);
+                logBuilder.AppendLine("Ranged weapon has no Verbs or Verb has no defaultProjectile. Can't be auto-patched.");
                 return;
             }
 
-            FixAmmoSet(logText);
-            FixDefaultProjectile(logText);
+            if (original_IsCustomVerb && !ModData.patchCustomVerbs)
+            {
+                logBuilder.AppendLine(CustomVerbMessage);
+                return;
+            }
+
+            FixAmmoSet();
+            FixDefaultProjectile();
 
             base.PostPatch();
         }
         catch (Exception ex)
         {
-            log.ThrewError = true;
-            logText.AppendLine(ex.ToString());
+            logBuilder.AppendLine($"Exception in PostPatch for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            CloseLogEntry(APCEConstants.PatchStage.PostPatch);
+            logBuilder.AppendLine($"Finished PostPatch for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void ApplyPatch()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ApplyPatch);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting ApplyPatch log entry for Ranged Weapon {def?.defName ?? "NULL DEF"}");
 
         try
         {
+            if (!HasProjectile())
+            {
+                logBuilder.AppendLine("Ranged weapon has no Verbs or Verb has no defaultProjectile. Can't be auto-patched.");
+                return;
+            }
+
             if (original_IsCustomVerb && !ModData.patchCustomVerbs)
             {
-                logText.AppendLine(CustomVerbMessage);
+                logBuilder.AppendLine(CustomVerbMessage);
                 return;
             }
 
@@ -370,14 +365,13 @@ public class DefDataHolderRangedWeapon : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            //TODO verbose logging
-            CloseLogEntry(APCEConstants.PatchStage.ApplyPatch);
+            logBuilder.AppendLine($"Finished ApplyPatch for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
@@ -735,10 +729,6 @@ public class DefDataHolderRangedWeapon : DefDataHolder
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ExposeData);
-                StringBuilder logText = log.Text;
-                logText.AppendLine($"Starting ExposeData log entry for ammoset for {def?.defName ?? "NULL DEF"}");
-
                 if (!string.IsNullOrEmpty(verbClassName))
                 {
                     modified_verbClass = Type.GetType(verbClassName);
@@ -749,10 +739,8 @@ public class DefDataHolderRangedWeapon : DefDataHolder
                     }
                 }
 
-                FixAmmoSet(logText);
-                FixDefaultProjectile(logText);
-
-                CloseLogEntry(APCEConstants.PatchStage.ExposeData);
+                FixAmmoSet();
+                FixDefaultProjectile();
             }
             //if (Scribe.mode == LoadSaveMode.LoadingVars && gunKind == APCEConstants.gunKinds.Grenade)
             //{
@@ -761,22 +749,12 @@ public class DefDataHolderRangedWeapon : DefDataHolder
         }
         base.ExposeData();
     }
-    public void CalculateStatBaseValues(StringBuilder logText)
+    public void CalculateStatBaseValues()
     {
-        logText.AppendLine("Starting Stat Base calculation.");
-
         float ssAccuracyMod = weaponThingDef.statBases.GetStatValueFromList(StatDefOf.AccuracyLong, 0.5f) * 0.1f;
-        logText.AppendLine($"ssAccuracyMod: {ssAccuracyMod}");
-
         float gunTechModAdd = weaponThingDef.techLevel.CompareTo(TechLevel.Industrial) * 0.1f;
-        logText.AppendLine($"gunTechModAdd: {gunTechModAdd}");
-
         float gunTechModMult = 1 - gunTechModAdd;
-        logText.AppendLine($"gunTechModMult: {gunTechModMult}");
-
         float recoilTechMod = 1 - (((float)weaponThingDef.techLevel - 3) * 0.2f);
-        logText.AppendLine($"recoilTechMod: {recoilTechMod}");
-
         //Recoil is also calculated here since I don't want to make another switch in the other method
         switch (gunKind)
         {
@@ -863,61 +841,38 @@ public class DefDataHolderRangedWeapon : DefDataHolder
                 break;
         }
 
-        // Put the logging down here so I don't have duplicate lines in almost every case. None of the above calcs should cause an exception.
-        logText.AppendLine($"modified_SightsEfficiency: {modified_SightsEfficiency}");
-        logText.AppendLine($"modified_ShotSpread: {modified_ShotSpread}");
-        logText.AppendLine($"modified_SwayFactor: {modified_SwayFactor}");
-        logText.AppendLine($"modified_Mass: {modified_Mass}");
-        logText.AppendLine($"modified_Bulk: {modified_Bulk}");
-        logText.AppendLine($"modified_recoilAmount: {modified_recoilAmount}");
-
         modified_WeaponToughness = GeneralUtils.WeaponToughnessAutocalc(weaponThingDef, modified_Bulk);
-        logText.AppendLine($"modified_WeaponToughness: {modified_WeaponToughness}");
-
         modified_WorkToMake = original_WorkToMake;
-        logText.AppendLine($"modified_WorkToMake: {modified_WorkToMake}");
-
         modified_RangedWeaponCooldown = original_RangedWeaponCooldown;
-        logText.AppendLine($"modified_RangedWeaponCooldown: {modified_RangedWeaponCooldown}");
     }
 
-    public void CalculateVerbPropValues(StringBuilder logText)
+    public void CalculateVerbPropValues()
     {
-        logText.AppendLine("Starting Verb Props calculation.");
-
         //if verb doesn't need patching, early return
         if ((original_VerbProperties.verbClass == typeof(Verb_ShootCE)) || (original_VerbProperties.verbClass == typeof(Verb_ShootCEOneUse)) || original_VerbProperties.verbClass == typeof(Verb_ShootBeam))
         {
-            logText.AppendLine("Verb is already CE-compatible, skipping.");
             return;
         }
 
         modified_ticksBetweenBurstShots = original_VerbProperties.ticksBetweenBurstShots;
-        logText.AppendLine($"modified_ticksBetweenBurstShots : {modified_ticksBetweenBurstShots}");
-
         modified_range = original_VerbProperties.range;
-        logText.AppendLine($"modified_range : {modified_range}");
 
         //if warmupTime is too low, some weapons will get stuck permanently unable to fire, since it fires when the timer ticks from 1 to 0, not when it is AT 0
         modified_warmupTime = original_VerbProperties.warmupTime;
-        logText.AppendLine($"modified_warmupTime : {modified_warmupTime}");
         if (modified_warmupTime < 0.07)
         {
             modified_warmupTime = 0.07f;
-            logText.AppendLine("warmupTime less than 0.07 can cause weapon to be unable to fire. Setting to 0.07 instead.");
         }
 
         //burst sizes are usually doubled, but need to account for single-shot weapons
         modified_burstShotCount = original_BurstShotCount;
         if (modified_burstShotCount != 1)
             modified_burstShotCount *= 2;
-        logText.AppendLine($"modified_burstShotCount : {modified_burstShotCount}");
 
         if (gunKind == APCEConstants.gunKinds.Turret || gunKind == APCEConstants.gunKinds.MachineGun)
             modified_recoilPattern = RecoilPattern.Mounted;
         else
             modified_recoilPattern = RecoilPattern.Regular;
-        logText.AppendLine($"modified_recoilPattern : {modified_recoilPattern}");
 
         if (original_VerbProperties.verbClass == typeof(Verb_Shoot))
             modified_verbClass = typeof(Verb_ShootCE);
@@ -930,18 +885,14 @@ public class DefDataHolderRangedWeapon : DefDataHolder
         {
             modified_verbClass = typeof(Verb_ShootCE);
         }
-        logText.AppendLine($"modified_verbClass : {modified_verbClass}");
     }
 
-    public void CalculateCompFireModesValues(StringBuilder logText)
+    public void CalculateCompFireModesValues()
     {
-        logText.AppendLine("Starting Fire Modes calculation.");
-
         if (modified_burstShotCount > 1)
             modified_aimedBurstShotCount = (int)(modified_burstShotCount / 2);
         else
             modified_aimedBurstShotCount = 1;
-        logText.AppendLine($"modified_aimedBurstShotCount : {modified_aimedBurstShotCount}");
 
         if (gunKind != APCEConstants.gunKinds.Turret)
         {
@@ -957,21 +908,12 @@ public class DefDataHolderRangedWeapon : DefDataHolder
             modified_noSnapshot = true;
             modified_aiAimMode = AimMode.AimedShot;
         }
-        logText.AppendLine($"modified_aiUseBurstMode : {modified_aiUseBurstMode}");
-        logText.AppendLine($"modified_noSingleShot : {modified_noSingleShot}");
-        logText.AppendLine($"modified_noSnapshot : {modified_noSnapshot}");
-        logText.AppendLine($"modified_aiAimMode : {modified_aiAimMode}");
     }
 
-    public void CalculateCompAmmoUserValues(StringBuilder logText)
+    public void CalculateCompAmmoUserValues()
     {
-        logText.AppendLine("Starting Ammo User calculation.");
-
         modified_loadedAmmoBulkFactor = 0;
-        logText.AppendLine($"modified_loadedAmmoBulkFactor : {modified_loadedAmmoBulkFactor}");
-
         modified_throwMote = true;
-        logText.AppendLine($"modified_throwMote : {modified_throwMote}");
 
         if (gunKind == APCEConstants.gunKinds.Bow)
         {
@@ -997,13 +939,9 @@ public class DefDataHolderRangedWeapon : DefDataHolder
             modified_magazineSize = modified_burstShotCount * 5;
             modified_reloadTime = 4f;
         }
-        logText.AppendLine($"modified_magazineSize : {modified_magazineSize}");
-        logText.AppendLine($"modified_reloadTime : {modified_reloadTime}");
-        logText.AppendLine($"modified_throwMote : {modified_throwMote}");
-        logText.AppendLine($"modified_reloadOneAtATime : {modified_reloadOneAtATime}");
     }
 
-    public void CalculateWeaponTechMult(StringBuilder logText)
+    public void CalculateWeaponTechMult()
     {
         float techMult = 1f;
         switch (weaponThingDef.techLevel)
@@ -1033,7 +971,6 @@ public class DefDataHolderRangedWeapon : DefDataHolder
                 break;
         }
         this.techMult = techMult;
-        logText.AppendLine($"Tech level multiplier of {techMult} based on tech level {weaponThingDef.techLevel}");
     }
 
     public override void ModToolAtIndex(int i)
@@ -1323,72 +1260,54 @@ public class DefDataHolderRangedWeapon : DefDataHolder
         }
     }
 
-    public void FixAmmoSet(StringBuilder logText)
+    public void FixAmmoSet()
     {
-        logText.AppendLine("Starting FixAmmoSet");
-
         if (modified_AmmoSetDef != null)
         {
-            logText.AppendLine($"Already has an AmmoSetDef: {modified_AmmoSetDef.defName}.");
             return;
         }
 
         if (modified_AmmoSetDefString != null)
         {
-            logText.AppendLine($"Has no AmmoSetDef, but has the defName of one saved: {modified_AmmoSetDefString}. Trying to find this AmmoSetDef.");
             modified_AmmoSetDef = DefDatabase<AmmoSetDef>.GetNamedSilentFail(modified_AmmoSetDefString);
-            if (modified_AmmoSetDef == null)
-            {
-                logText.AppendLine($"Failed to find a matching AmmoSetDef in DefDatabase.");
-            }
-            else
-            {
-                logText.AppendLine($"Successfully found and assigned AmmoSetDef.");
-            }
         }
 
         if (modified_AmmoSetDef == null)
         {
-            logText.AppendLine($"Generating new AmmoSet.");
             GenerateAmmoSet();
         }
     }
 
-    public void FixDefaultProjectile(StringBuilder logText)
+    public void FixDefaultProjectile()
     {
-        logText.AppendLine("Starting FixDefaultProjectile");
-
         if (modified_defaultProjectile != null)
         {
-            logText.AppendLine("Already has a default projectile set.");
             return;
         }
 
         if (modified_defaultProjectileString != null)
         {
-            logText.AppendLine("Has no default projectile set, but has the defName of one saved.");
             modified_defaultProjectile = DefDatabase<ThingDef>.GetNamedSilentFail(modified_defaultProjectileString);
-            if (modified_defaultProjectile == null)
-            {
-                logText.AppendLine($"Failed to find a matching def in DefDatabase.");
-            }
-            else
-            {
-                logText.AppendLine($"Successfully found and assigned default projectile.");
-            }
         }
 
         if (modified_defaultProjectile == null)
         {
-            logText.AppendLine($"Using AmmoSetDef to assign default projectile.");
             if (modified_AmmoSetDef == null)
             {
-                logText.AppendLine($"Somehow reached this point with no AmmoSetDef assigned.");
-                FixAmmoSet(logText);
+                FixAmmoSet();
             }
             modified_defaultProjectile = modified_AmmoSetDef.ammoTypes[0].projectile;
-            logText.AppendLine($"Default projectile: {modified_defaultProjectile.defName}.");
         }
+    }
+
+    private bool HasProjectile()
+    {
+        if (weaponThingDef.Verbs.NullOrEmpty()
+        || weaponThingDef.Verbs[0].defaultProjectile == null)
+        {
+            return false;
+        }
+        return true;
     }
 
     //this returns a float instead of just setting the value, so that the customization window can suggest it if burst shot is changed from 1 to another number

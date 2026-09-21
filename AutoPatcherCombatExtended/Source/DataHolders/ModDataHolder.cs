@@ -221,6 +221,17 @@ public class ModDataHolder : IExposable
         }
     }
 
+    public void PrintLogs()
+    {
+        foreach (var entry in defsToPatch)
+        {
+            if (defDict.TryGetValue(entry.Key, out DefDataHolder ddh))
+            {
+                ddh.PrintLogs();
+            }
+        }
+    }
+
     //this is for Implied defs like AmmoSets to register themselves late so they don't break the 'foreach entry in Dictionary' methods by modifying the collection
     public void RegisterDelayedHolders()
     {

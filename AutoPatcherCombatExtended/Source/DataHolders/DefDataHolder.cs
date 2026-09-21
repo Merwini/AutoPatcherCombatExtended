@@ -53,11 +53,8 @@ public abstract class DefDataHolder : IExposable
     internal XmlNode xml;
     internal StringBuilder patch;
     internal List<string> patchOps;
-
-    public readonly Dictionary<APCEConstants.PatchStage, APCEConstants.PatchStageLog> stageLogs =
-    Enum.GetValues(typeof(APCEConstants.PatchStage))
-        .Cast<APCEConstants.PatchStage>()
-        .ToDictionary(stage => stage, _ => new APCEConstants.PatchStageLog());
+    public StringBuilder logBuilder = new StringBuilder();
+    public bool hasErrorInLog = false;
 
     public DefDataHolder()
     {
@@ -204,6 +201,7 @@ public abstract class DefDataHolder : IExposable
                 power = modified_ToolPowers[i],
                 chanceFactor = modified_ToolChanceFactors[i]
             };
+
             modified_Tools.Add(newTool);
         }
     }
@@ -422,36 +420,23 @@ public abstract class DefDataHolder : IExposable
         return patch.ToString();
     }
 
-    public APCEConstants.PatchStageLog StartNewLogEntry(APCEConstants.PatchStage stage)
+    public void PrintLogs()
     {
-        APCEConstants.PatchStageLog entry = stageLogs[stage];
-
-        entry.Text.Clear();
-        entry.StartedAtTime = DateTime.Now;
-        entry.IsRunning = true;
-        entry.ThrewError = false;
-
-        return entry;
-    }
-
-    public void CloseLogEntry(APCEConstants.PatchStage stage)
-    {
-        APCEConstants.PatchStageLog entry = stageLogs[stage];
-
-        entry.IsRunning = false;
-        entry.EndedAtTime = DateTime.Now;
-        PrintLog(entry);
-    }
-
-    public void PrintLog(APCEConstants.PatchStageLog log)
-    {
-        if (log.ThrewError && APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Normal)
+        if (APCESettings.loggingLevel == APCEConstants.LoggingLevel.Verbose
+        || hasErrorInLog)
         {
-            Log.Error(log.Text.ToString());
+            if (hasErrorInLog)
+            {
+                Log.Error(logBuilder.ToString());
+            }
+            else
+            {
+                Log.Message(logBuilder.ToString());
+            }
         }
-        else if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
-        {
-            Log.Message(log.Text.ToString());
-        }
+
+        //reset log
+        logBuilder.Clear();
+        hasErrorInLog = false;
     }
 }

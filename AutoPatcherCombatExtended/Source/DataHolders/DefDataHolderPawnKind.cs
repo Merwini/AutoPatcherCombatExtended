@@ -46,9 +46,7 @@ class DefDataHolderPawnKind : DefDataHolder
             def = kindDef;
         }
 
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.GetOriginalData);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting GetOriginalData log entry for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting GetOriginalData log entry for PawnKind {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -71,22 +69,19 @@ class DefDataHolderPawnKind : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            //TODO verbose logging
-            CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
+            logBuilder.AppendLine($"Finished GetOriginalData for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void AutoCalculate()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.AutoCalculate);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting AutoCalculate log entry for PawnKind {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -117,22 +112,19 @@ class DefDataHolderPawnKind : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            //TODO verbose logging
-            CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
+            logBuilder.AppendLine($"Finished AutoCalculate for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void ApplyPatch()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ApplyPatch);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting ApplyPatch log entry for PawnKind {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -171,14 +163,13 @@ class DefDataHolderPawnKind : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in Patch for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            //TODO verbose logging
-            CloseLogEntry(APCEConstants.PatchStage.ApplyPatch);
+            logBuilder.AppendLine($"Finished ApplyPatch for: {def?.defName ?? "NULL DEF"}");
         }
     }
 

@@ -56,6 +56,7 @@ public static class InjectedDefHasher
 		}
 		catch (Exception ex)
 		{
+			Log.Warning(ex.ToString());
 			//HugsLibController.Logger.Error($"Failed to reflect short hash dependencies: {e.Message}");
 			//TODO make my own exception for this
 		}

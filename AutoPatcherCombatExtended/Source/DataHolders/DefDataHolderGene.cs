@@ -44,83 +44,67 @@ public class DefDataHolderGene : DefDataHolder
             def = geneDef;
         }
 
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.GetOriginalData);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting GetOriginalData log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
+        logBuilder.AppendLine($"Starting GetOriginalData log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
             original_ArmorRatingSharp = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
-            logText.AppendLine($"original_ArmorRatingSharp : {original_ArmorRatingSharp}");
-
             original_ArmorRatingBlunt = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
-            logText.AppendLine($"original_ArmorRatingBlunt : {original_ArmorRatingBlunt}");
-
             original_ArmorRatingHeat = geneDef.statOffsets.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
-            logText.AppendLine($"original_ArmorRatingHeat: {original_ArmorRatingHeat}");
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
+            logBuilder.AppendLine($"Finished GetOriginalData for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void AutoCalculate()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.AutoCalculate);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting AutoCalculate log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
+        logBuilder.AppendLine($"Starting AutoCalculate log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
             modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.geneArmorSharpMult;
-            logText.AppendLine($"modified_ArmorRatingSharp: {modified_ArmorRatingSharp}");
-
             modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.geneArmorBluntMult;
-            logText.AppendLine($"modified_ArmorRatingBlunt: {modified_ArmorRatingBlunt}");
-
             modified_ArmorRatingHeat = original_ArmorRatingHeat;
-            logText.AppendLine($"modified_ArmorRatingHeat: {modified_ArmorRatingHeat}");
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
+            logBuilder.AppendLine($"Finished AutoCalculate for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void ApplyPatch()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ApplyPatch);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting ApplyPatch log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
+        logBuilder.AppendLine($"Starting ApplyPatch log entry for gene {def?.defName ?? "NULL DEF"} from {def?.modContentPack?.Name ?? "UNKNOWN MOD"}");
 
         try
         {
-            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp, logText);
-            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt, logText);
-            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat, logText);
+            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
+            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
+            GeneralUtils.AddOrChangeStat(ref geneDef.statOffsets, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            CloseLogEntry(APCEConstants.PatchStage.ApplyPatch);
+            logBuilder.AppendLine($"Finished ApplyPatch for: {def?.defName ?? "NULL DEF"}");
         }
     }
 

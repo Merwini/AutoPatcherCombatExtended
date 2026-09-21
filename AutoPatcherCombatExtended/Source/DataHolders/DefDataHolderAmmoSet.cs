@@ -130,15 +130,13 @@ public class DefDataHolderAmmoSet : DefDataHolder
             def = weaponDef;
         }
 
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.GetOriginalData);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting GetOriginalData log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting GetOriginalData log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
         try
         {
             if (gunKind == APCEConstants.gunKinds.Default)
             {
-                gunKind = GeneralUtils.DetermineGunKind(weaponDef, log);
+                gunKind = GeneralUtils.DetermineGunKind(weaponDef, this);
             }
             original_projectile = weaponDef.Verbs[0].defaultProjectile;
             if (original_projectile != null)
@@ -157,46 +155,19 @@ public class DefDataHolderAmmoSet : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in GetOriginalData for: {def.defName} AMMOSET named: {modified_ammoSetDefName}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in GetOriginalData for: {def?.defName ?? "NULL DEF"} AMMOSET named: {modified_ammoSetDefName}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            //TODO verbose logging
-            //if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
-            //{
-            //    try
-            //    {
-            //        logText.AppendLine($"Ammoset built for weapon: {def?.defName ?? "NULL DEF"}");
-            //        logText.AppendLine($"Gunkind: {gunKind}");
-            //        logText.AppendLine($"Original projectile non-null: {(original_projectile != null).ToString()}");
-            //        logText.AppendLine($"Original damage: {original_damage}");
-            //        logText.AppendLine($"Original armor penetration: {original_armorPenetration}");
-            //        logText.AppendLine($"Original projectile speed: {original_speed}");
-            //        logText.AppendLine($"Original explosion radius: {original_explosionRadius}");
-            //        logText.AppendLine($"Original AI incendiary: {original_ai_IsIncendiary}");
-            //        logText.AppendLine($"Original apply damage to explosion cell neighbors: {original_applyDamageToExplosionCellsNeighbors}");
-            //        logText.AppendLine($"Original damageDef: {original_damageDef?.defName ?? "NULL"}");
-            //        logText.AppendLine($"Original extraDamages count: {(original_extraDamages != null ? original_extraDamages.Count.ToString() : "NULL")}");
-            //        logText.AppendLine($"Tech multiplier: {original_techMult}");
-            //    }
-            //    catch(Exception ex)
-            //    {
-            //        logText.AppendLine("Error while building verbose log output.");
-            //        logText.AppendLine(ex.ToString());
-            //    }
-            //}
-
-            CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
+            logBuilder.AppendLine($"Finished GetOriginalData for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
     public override void AutoCalculate()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.AutoCalculate);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting AutoCalculate log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -268,40 +239,20 @@ public class DefDataHolderAmmoSet : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"} AMMOSET named: {modified_ammoSetDefName}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in AutoCalculate for: {def?.defName ?? "NULL DEF"} AMMOSET named: {modified_ammoSetDefName}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            //TODO verbose logging
-            //if (APCESettings.loggingLevel >= APCEConstants.LoggingLevel.Verbose)
-            //{
-            //    try
-            //    {
-            //        logText.AppendLine($"Final AutoCalculate values for weapon: {def?.defName ?? "NULL DEF"}");
-            //        logText.AppendLine($"Modified ammo set defName: {modified_ammoSetDefName}");
-            //        logText.AppendLine($"Modified ammo set label: {modified_ammoSetLabel}");
-            //        logText.AppendLine($"ArmorPen Sharp Modded: {armorPenSharpModded}");
-            //        logText.AppendLine($"ArmorPen Blunt Modded: {armorPenBluntModded}");
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        logText.AppendLine("Error while building verbose log output in AutoCalculate.");
-            //        logText.AppendLine(ex.ToString());
-            //    }
-            //}
-
-            CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
+            logBuilder.AppendLine($"Finished AutoCalculate for: {def?.defName ?? "NULL DEF"}");
         }
     }
 
 
     public override void ApplyPatch()
     {
-        APCEConstants.PatchStageLog log = StartNewLogEntry(APCEConstants.PatchStage.ApplyPatch);
-        StringBuilder logText = log.Text;
-        logText.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
+        logBuilder.AppendLine($"Starting ApplyPatch log entry for ammoset for {def?.defName ?? "NULL DEF"}");
 
         try
         {
@@ -317,14 +268,13 @@ public class DefDataHolderAmmoSet : DefDataHolder
         }
         catch (Exception ex)
         {
-            logText.AppendLine($"Exception in ApplyPatch for: {def.defName} AMMOSET named {modified_ammoSetDefName}");
-            logText.AppendLine(ex.ToString());
-            log.ThrewError = true;
+            logBuilder.AppendLine($"Exception in ApplyPatch for: {def?.defName ?? "NULL DEF"} AMMOSET named: {modified_ammoSetDefName}");
+            logBuilder.AppendLine(ex.ToString());
+            hasErrorInLog = true;
         }
         finally
         {
-            //TODO verbose logging
-            CloseLogEntry(APCEConstants.PatchStage.ApplyPatch);
+            logBuilder.AppendLine($"Finished ApplyPatch for: {def?.defName ?? "NULL DEF"}");
         }
     }
 

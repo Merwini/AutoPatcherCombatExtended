@@ -48,6 +48,7 @@ public abstract class Window_CustomizeDef : Window
             dataHolder.PrePatch();
             dataHolder.ApplyPatch();
             dataHolder.PostPatch();
+            dataHolder.PrintLogs();
         }
         catch (Exception ex)
         {

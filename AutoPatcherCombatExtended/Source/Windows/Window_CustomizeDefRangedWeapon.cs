@@ -103,7 +103,7 @@ class Window_CustomizeDefRangedWeapon : Window_CustomizeDef
         {
             if (dataHolder.modified_AmmoSetDef == null)
             {
-                dataHolder.FixAmmoSet(dataHolder.stageLogs[APCEConstants.PatchStage.Other].Text);
+                dataHolder.FixAmmoSet();
             }
             list.Gap();
             list.Label("AmmoSet to use:");
@@ -117,7 +117,7 @@ class Window_CustomizeDefRangedWeapon : Window_CustomizeDef
         {
             if (dataHolder.modified_defaultProjectile == null)
             {
-                dataHolder.FixDefaultProjectile(dataHolder.stageLogs[APCEConstants.PatchStage.Other].Text);
+                dataHolder.FixDefaultProjectile();
             }
             list.Gap();
             list.Label("Projectile to use:");

@@ -64,6 +64,7 @@ public static class APCEController
                     holder.Value.Patch();
                     holder.Value.PostPatch();
                     holder.Value.RegisterDelayedHolders();
+                    holder.Value.PrintLogs();
                 }
                 catch (Exception ex)
                 {

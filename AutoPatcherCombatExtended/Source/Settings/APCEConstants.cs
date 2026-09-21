@@ -146,12 +146,4 @@ public class APCEConstants
         ExposeData,
         Other
     }
-    public sealed class PatchStageLog
-    {
-        public StringBuilder Text { get; } = new();
-        public DateTime? StartedAtTime { get; set; }
-        public DateTime? EndedAtTime { get; set; }
-        public bool ThrewError { get; set; }
-        public bool IsRunning { get; set; }
-    }
 }
