@@ -143,7 +143,8 @@ public class APCEConstants
         PrePatch,
         ApplyPatch,
         PostPatch,
-        ExposeData
+        ExposeData,
+        Other
     }
     public sealed class PatchStageLog
     {

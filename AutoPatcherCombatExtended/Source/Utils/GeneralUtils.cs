@@ -15,13 +15,20 @@ namespace nuff.AutoPatcherCombatExtended;
 public static class GeneralUtils
 {
 
-    public static void AddOrChangeStat(ref List<StatModifier> list, StatDef stat, float value, StringBuilder logBuilder = null)
+    public static void AddOrChangeStat(ref List<StatModifier> list, StatDef stat, float value, StringBuilder logText)
     {
         bool addedStat = false;
 
         if (list == null)
         {
             list = new List<StatModifier>();
+            logText.AppendLine("AddOrChangeStat called with null List. Assigned empty List.");
+        }
+
+        if (stat == null)
+        {
+            logText.AppendLine("AddOrChangeStat called with null StatDef. Returning.");
+            return;
         }
 
         int index = list.FindIndex(x => x.stat == stat);
@@ -37,60 +44,96 @@ public static class GeneralUtils
             list.Add(new StatModifier() { stat = stat, value = value });
         }
 
-        if (logBuilder != null)
-        {
-            string action = addedStat ? "Added new stat" : "Updated existing stat";
-            logBuilder.AppendLine($"{action} {stat.defName} with value {value}");
-        }
+        string action = addedStat ? "Added new stat" : "Updated existing stat";
+        logText.AppendLine($"{action} {stat.defName} with value {value}");
     }
 
-    public static void AddOrReplaceCompProps(ThingDef def, CompProperties comp)
+    public static void AddOrReplaceCompProps(ThingDef def, CompProperties comp, StringBuilder logText)
     {
+        if (def == null)
+        {
+            logText.AppendLine("AddOrReplaceCompProps called with null def. Returning.");
+            return;
+        }
+
+        if (comp == null)
+        {
+            logText.AppendLine("AddOrReplaceCompProps called with null CompProprties. Returning.");
+            return;
+        }
+
         if (def.comps == null)
         {
             def.comps = new List<CompProperties>();
+            logText.AppendLine("Null comps on, assigned empty List.");
         }
 
-        int index = def.comps.FindIndex(c => c.GetType() == comp.GetType());
+        Type compType = comp.GetType();
+        int index = def.comps.FindIndex(c => c.GetType() == compType);
 
         if (index != -1)
         {
             def.comps[index] = comp;
+            logText.AppendLine("Found existing CompProperties and replaced it with the new one.");
         }
         else
         {
             def.comps.Add(comp);
+            logText.AppendLine("Found no existing CompProperties, added the new one.");
         }
     }
 
-    public static void AddOrReplaceExtension(Def def, DefModExtension extension)
+    public static void AddOrReplaceExtension(Def def, DefModExtension newExtension, StringBuilder logText)
     {
+        if (def == null)
+        {
+            logText.AppendLine("AddOrReplaceExtension called with null def. Returning.");
+            return;
+        }
+
+        if (newExtension == null)
+        {
+            logText.AppendLine("AddOrReplaceExtension called with null DefModExtension. Returning.");
+            return;
+        }
+
         if (def.modExtensions == null)
         {
             def.modExtensions = new List<DefModExtension>();
+            logText.AppendLine("Null modExtensions, assigned empty List.");
         }
 
-        int index = def.modExtensions.FindIndex(ext => ext.GetType() == extension.GetType());
+        Type extensionType = newExtension.GetType();
+        logText.AppendLine($"Checking List for defModExtension of Type {extensionType}");
+        int index = def.modExtensions.FindIndex(ext => ext.GetType() == extensionType);
 
         if (index != -1)
         {
-            def.modExtensions[index] = extension;
+            def.modExtensions[index] = newExtension;
+            logText.AppendLine("Found existing defModExtension and replaced it with the new one.");
         }
         else
         {
-            def.modExtensions.Add(extension);
+            def.modExtensions.Add(newExtension);
+            logText.AppendLine("Found no existing defModExtension, added the new one.");
         }
     }
 
-    public static bool AddCompReplaceMe(ThingDef oldThingDef, ThingDef newThingDef)
+    public static bool AddCompReplaceMe(ThingDef oldThingDef, ThingDef newThingDef, StringBuilder logText)
     {
         CompProperties_ReplaceMe newComp_ReplaceMe = new CompProperties_ReplaceMe()
         {
             thingToSpawn = newThingDef
         };
         if (oldThingDef.comps == null)
+        {
             oldThingDef.comps = new List<CompProperties>();
+            logText.AppendLine($"Null comps on {oldThingDef.defName}, made empty List");
+        }
+
         oldThingDef.comps.Add(newComp_ReplaceMe);
+        logText.AppendLine($"Added CompProperties_ReplaceMe.");
+
         return true;
     }
 
@@ -145,7 +188,6 @@ public static class GeneralUtils
 
     public static void SetDamage(ProjectilePropertiesCE newPPCE, int damage)
     {
-        //experimental reflection attempt
         Type tpp = typeof(ProjectileProperties);
         FieldInfo dab = tpp.GetField("damageAmountBase", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         dab.SetValue(newPPCE, (int)damage);
@@ -156,7 +198,6 @@ public static class GeneralUtils
         StringBuilder logText = log.Text;
         try
         {
-            //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             if (thingDef.weaponTags.Any(str => str.IndexOf("Artillery", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 logText.AppendLine("Gun has weaponTag \"Artillery\", returning Mortar as gun kind.");
@@ -172,6 +213,8 @@ public static class GeneralUtils
                 logText.AppendLine("Gun has verbClass \"Verb_SpewFire\", returning Flamethrower as gun kind.");
                 return APCEConstants.gunKinds.Flamethrower;
             }
+            
+            //a turret is tagged as TurretGun, because it inherits that from BaseWeaponTurret
             else if (thingDef.weaponTags.Any(str => str.IndexOf("TurretGun", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 logText.AppendLine("Gun has weaponTag \"TurretGun\", returning Turret as gun kind.");

@@ -72,11 +72,21 @@ public class DefDataHolderPawn : DefDataHolder
             if (!pawnDef.tools.NullOrEmpty())
             {
                 original_Tools = pawnDef.tools.ToList();
+                logText.AppendLine($"Preserved original Tools with count: {original_Tools.Count}");
+            }
+            else
+            {
+                logText.AppendLine($"Failed to find original Tools, pawn may break if engaged in melee.");
             }
 
             original_ArmorRatingSharp = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Sharp, 0);
+            logText.AppendLine($"original_ArmorRatingSharp : {original_ArmorRatingSharp}");
+
             original_ArmorRatingBlunt = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Blunt, 0);
+            logText.AppendLine($"original_ArmorRatingBlunt : {original_ArmorRatingBlunt}");
+
             original_ArmorRatingHeat = pawnDef.statBases.GetStatValueFromList(StatDefOf.ArmorRating_Heat, 0);
+            logText.AppendLine($"original_ArmorRatingHeat : {original_ArmorRatingHeat}");
         }
         catch (Exception ex)
         {
@@ -86,7 +96,6 @@ public class DefDataHolderPawn : DefDataHolder
         }
         finally
         {
-            //TODO verbose logging
             CloseLogEntry(APCEConstants.PatchStage.GetOriginalData);
         }
     }
@@ -100,18 +109,34 @@ public class DefDataHolderPawn : DefDataHolder
         try
         {
             modified_ArmorRatingSharp = original_ArmorRatingSharp * ModData.pawnArmorSharpMult;
-            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.pawnArmorBluntMult;
-            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+            logText.AppendLine($"modified_ArmorRatingSharp : {modified_ArmorRatingSharp}");
 
+            modified_ArmorRatingBlunt = original_ArmorRatingBlunt * ModData.pawnArmorBluntMult;
+            logText.AppendLine($"modified_ArmorRatingBlunt : {modified_ArmorRatingBlunt}");
+
+            modified_ArmorRatingHeat = original_ArmorRatingHeat;
+            logText.AppendLine($"modified_ArmorRatingHeat : {modified_ArmorRatingHeat}");
 
             modified_SmokeSensitivity = 1;
+            logText.AppendLine($"modified_SmokeSensitivity : {modified_SmokeSensitivity}");
+
             modified_Suppressability = 1;
+            logText.AppendLine($"modified_Suppressability : {modified_Suppressability}");
+
             modified_NightVisionEfficiency = 0;
+            logText.AppendLine($"modified_NightVisionEfficiency : {modified_NightVisionEfficiency}");
+
             modified_ReloadSpeed = 1;
+            logText.AppendLine($"modified_ReloadSpeed : {modified_ReloadSpeed}");
+
             modified_AimingAccuracy = 1;
+            logText.AppendLine($"modified_AimingAccuracy : {modified_AimingAccuracy}");
 
             modified_CarryWeight = 40;
+            logText.AppendLine($"modified_CarryWeight : {modified_CarryWeight}");
+
             modified_CarryBulk = 20;
+            logText.AppendLine($"modified_CarryBulk : {modified_CarryBulk}");
 
             ClearModdedTools();
             for (int i = 0; i < original_Tools.Count; i++)
@@ -122,18 +147,30 @@ public class DefDataHolderPawn : DefDataHolder
             if (pawnDef.race.Humanlike)
             {
                 modified_BodyShapeDef = CE_BodyShapeDefOf.Humanoid;
+                logText.AppendLine($"modified_BodyShapeDef : {modified_BodyShapeDef.defName}");
 
                 modified_MeleeDodgeChance = 1f;
+                logText.AppendLine($"modified_MeleeDodgeChance : {modified_MeleeDodgeChance}");
+
                 modified_MeleeParryChance = 1f;
+                logText.AppendLine($"modified_MeleeParryChance : {modified_MeleeParryChance}");
+
                 modified_MeleeCritChance = 1f;
+                logText.AppendLine($"modified_MeleeCritChance : {modified_MeleeCritChance}");
             }
             else
             {//todo too lazy to make any sort of guessing algorithm
                 modified_BodyShapeDef = CE_BodyShapeDefOf.Quadruped;
+                logText.AppendLine($"modified_BodyShapeDef : {modified_BodyShapeDef.defName}");
 
                 modified_MeleeDodgeChance = 0.1f;
+                logText.AppendLine($"modified_MeleeDodgeChance : {modified_MeleeDodgeChance}");
+
                 modified_MeleeParryChance = 0.1f;
+                logText.AppendLine($"modified_MeleeParryChance : {modified_MeleeParryChance}");
+
                 modified_MeleeCritChance = 0.1f;
+                logText.AppendLine($"modified_MeleeCritChance : {modified_MeleeCritChance}");
             }
         }
         catch (Exception ex)
@@ -144,7 +181,6 @@ public class DefDataHolderPawn : DefDataHolder
         }
         finally
         {
-            //TODO verbose logging
             CloseLogEntry(APCEConstants.PatchStage.AutoCalculate);
         }
     }
@@ -157,7 +193,7 @@ public class DefDataHolderPawn : DefDataHolder
 
         try
         {
-            PatchStatBases();
+            PatchStatBases(logText);
 
             pawnDef.tools.Clear();
             BuildTools();
@@ -298,31 +334,31 @@ public class DefDataHolderPawn : DefDataHolder
         }
     }
 
-    public void PatchStatBases()
+    public void PatchStatBases(StringBuilder logText)
     {
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Sharp, modified_ArmorRatingSharp, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Blunt, modified_ArmorRatingBlunt, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, StatDefOf.ArmorRating_Heat, modified_ArmorRatingHeat, logText);
 
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.Suppressability, modified_Suppressability);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeDodgeChance, modified_MeleeDodgeChance, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeParryChance, modified_MeleeParryChance, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.MeleeCritChance, modified_MeleeCritChance, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.SmokeSensitivity, modified_SmokeSensitivity, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.Suppressability, modified_Suppressability, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.NightVisionEfficiency, modified_NightVisionEfficiency, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.ReloadSpeed, modified_ReloadSpeed, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.AimingAccuracy, modified_AimingAccuracy, logText);
 
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight);
-        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryWeight, modified_CarryWeight, logText);
+        GeneralUtils.AddOrChangeStat(ref pawnDef.statBases, CE_StatDefOf.CarryBulk, modified_CarryBulk, logText);
     }
-    public void PatchModExtensions()
+    public void PatchModExtensions(StringBuilder logText)
     {
         RacePropertiesExtensionCE racePropsExt = new RacePropertiesExtensionCE()
         {
             bodyShape = modified_BodyShapeDef
         };
-        GeneralUtils.AddOrReplaceExtension(pawnDef, racePropsExt);
+        GeneralUtils.AddOrReplaceExtension(pawnDef, racePropsExt, logText);
     }
 
     public void PatchComps()
