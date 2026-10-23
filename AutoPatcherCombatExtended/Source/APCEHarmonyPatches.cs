@@ -84,16 +84,23 @@ public class CompAmmoUserPostExposeDataPatch
 {
     public static void Postfix(CompAmmoUser __instance)
     {
-        if (__instance.UseAmmo && !__instance.Props.ammoSet.ammoTypes.Any(link => link.ammo == __instance.CurrentAmmo))
+        if (__instance.parent is Building_AutoloaderCE)
+            return; 
+            
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
-            __instance.CurrentAmmo = __instance.Props.ammoSet.ammoTypes[0].ammo;
-            __instance.selectedAmmo = __instance.Props.ammoSet.ammoTypes[0].ammo;
-        }
+            if (__instance.UseAmmo && !__instance.Props.ammoSet.ammoTypes.Any(link => link.ammo == __instance.CurrentAmmo))
+            {
+                __instance.CurrentAmmo = __instance.Props.ammoSet.ammoTypes[0].ammo;
+                __instance.selectedAmmo = __instance.Props.ammoSet.ammoTypes[0].ammo;
+            }
 
-        if (__instance.curMagCountInt > __instance.Props.magazineSize)
-        {
-            __instance.curMagCountInt = __instance.Props.magazineSize;
+            if (__instance.curMagCountInt > __instance.MagSize)
+            {
+                __instance.curMagCountInt = __instance.MagSize;
+            }
         }
+        
     }
 }
 
